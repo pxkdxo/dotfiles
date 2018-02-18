@@ -1,0 +1,12 @@
+#!/bin/env bash
+
+arr::charjoin() {
+    : "${1:-"$_"}"
+    trap 'printf '\''%s\n'\'' "${'"${_%%:*}[*]${_##"${_%%:*}"}"'}"' RETURN
+    IFS=${2-$IFS} return
+}
+
+arr::ifsjoin() {
+    : "${1:-"$_"}"
+    trap 'printf '\''%s\n'\'' "${'"${_%%:*}[*]${_##"${_%%:*}"}"'}"' RETURN
+}

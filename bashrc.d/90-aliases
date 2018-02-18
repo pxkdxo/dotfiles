@@ -1,0 +1,163 @@
+## alias definitions to source in bashrc
+## Patrick DeYoreo
+
+alias pacs='pacman -S'
+alias pacss='pacman -Ss'
+alias pacsi='pacman -Si'
+alias pacsc='pacman -Sc'
+alias pacscc='pacman -Scc'
+alias pacsy='pacman -Sy'
+alias pacsu='pacman -Su'
+alias pacsyu='pacman -Syu'
+alias pacsyy='pacman -Syy'
+alias pacsyyu='pacman -Syyu'
+
+alias paus='pacaur -S'
+alias pauss='pacaur -Ss'
+alias pausi='pacaur -Si'
+alias pausc='pacaur -Sc'
+alias pauscc='pacaur -Scc'
+alias pausy='pacaur -Sy'
+alias pausu='pacaur -Su'
+alias pausyu='pacaur -Syu'
+alias pausyy='pacaur -Syy'
+alias pausyyu='pacaur -Syyu'
+
+alias pacq='pacman -Q'
+alias pacqs='pacman -Qs'
+alias pacqi='pacman -Qi'
+alias pacql='pacman -Ql'
+alias pacqo='pacman -Qo'
+alias pacqk='pacman -Qk'
+alias pacqkk='pacman -Qkk'
+alias pacqdt='pacman -Qdt'
+alias pacqdtt='pacman -Qdtt'
+
+alias pauq='pacaur -Q'
+alias pauqs='pacaur -Qs'
+alias pauqi='pacaur -Qi'
+alias pauql='pacaur -Ql'
+alias pauqo='pacaur -Qo'
+alias pauqk='pacaur -Qk'
+alias pauqkk='pacaur -Qkk'
+alias pauqdt='pacaur -Qdt'
+alias pauqdtt='pacaur -Qdtt'
+
+alias pacr='pacman -R'
+alias pacrs='pacman -Rsud'
+alias pacrcs='pacman -Rcsud'
+alias pacrss='pacman -Rssud'
+alias pacrcss='pacman -Rcssud'
+
+alias paur='pacaur -R'
+alias paurs='pacaur -Rsud'
+alias paurcs='pacaur -Rcsud'
+alias paurss='pacaur -Rssud'
+alias paurcss='pacaur -Rcssud'
+
+alias mv='mv -ibv'
+alias rm='rm -Idv'
+
+alias mkdir='mkdir -pv'
+
+alias -R % '% --color=auto' grep fgrep egrep ls dir vdir pcre2grep diff pacman
+
+alias -R % '% -h' df du ls dir vdir
+
+alias mkd='mkdir'
+
+alias d='pushd'
+alias p='popd'
+alias s='dirs'
+
+alias l='ls -C'
+alias la='ls -CA'
+alias lr='ls -CR'
+alias ll='ls -l'
+alias lla='ls -lA'
+alias llr='ls -lR'
+
+alias acki='ack -i'
+alias grepi='grep -i'
+
+alias prep='pcre2grep'
+alias prepi='pcre2grep -i'
+
+alias py='python'
+alias py2='python2'
+alias py3='python3'
+
+alias which='type -p'
+
+alias top='htop'
+
+alias pbcut='xclip -selection primary'
+alias pbget='xclip -f -selection primary'
+alias pbput='xclip -o -selection primary'
+
+alias cbcut='xclip -selection clipboard'
+alias cbget='xclip -f -selection clipboard'
+alias cbput='xclip -o -selection clipboard'
+
+alias cbfcut='xclip-cutfile'
+alias cbfget='xclip-copyfile'
+alias cbfput='xclip-pastefile'
+
+alias mkvenv='mkvirtualenv'
+alias cdvenv='cdvirtualenv'
+alias lsvenv='lsvirtualenv'
+alias rmvenv='rmvirtualenv'
+
+alias pf='printf'
+alias pf-s='printf '"'"'%s'"'"
+alias pf-q='printf '"'"'%q'"'"
+alias pf-b='printf '"'"'%b'"'"
+alias pf-d='printf '"'"'%d'"'"
+alias pf-e='printf '"'"'%e'"'"
+alias pf-o='printf '"'"'%o'"'"
+alias pf-x='printf '"'"'%x'"'"
+
+alias pfn='printf '"'"'\n'"'"
+alias pfn-s='printf '"'"'%s\n'"'"
+alias pfn-q='printf '"'"'%q\n'"'"
+alias pfn-b='printf '"'"'%b\n'"'"
+alias pfn-d='printf '"'"'%d\n'"'"
+alias pfn-e='printf '"'"'%e\n'"'"
+alias pfn-o='printf '"'"'%o\n'"'"
+alias pfn-x='printf '"'"'%x\n'"'"
+
+alias pgrepa='pgrep -a'
+alias pgrepf='pgrep -f'
+alias pgrepi='pgrep -i'
+alias pgrepl='pgrep -l'
+alias pgrepaf='pgrep -af'
+alias pgrepai='pgrep -ai'
+alias pgrepfi='pgrep -fi'
+alias pgrepil='pgrep -il'
+alias pgrepafi='pgrep -afi'
+
+alias ydla='\
+youtube-dl                \
+  --extract-audio         \
+  --console-title         \
+  --ignore-errors         \
+  --audio-quality 0       \
+  --format                \
+    '"'"'bestaudio/best'"'"'      \
+  --output                \
+    '"'"'%(title)s.%(ext)s'"'"'   \
+  --geo-bypass            \
+  --playlist-random       \
+  --min-sleep-interval 1  \
+  --max-sleep-interval 7  \
+  --add-metadata          \
+  --metadata-from-title   \
+    '"'"'^((?P<artist>.+?) - ((?P<album>.+) - )?)?(?P<title>.+?)$'"'"' \
+  --exec '"'"'mv -bv {} ~/Music/"$(sed '"'"'"'"'"'"'"'"'
+      s@[[:space:]_]\+@_@g
+      s@_-_@.@g
+    '"'"'"'"'"'"'"'"' <<<{})" 2>/dev/null'"'"
+
+alias creds='gpg -d /crypt/patrick/creds.gpg'
+
+alias sudo='sudo '

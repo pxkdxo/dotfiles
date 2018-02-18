@@ -1,0 +1,52 @@
+#!/bin/env bash
+
+# histsync
+# author:   Patrick DeYoreo
+# ++++++++++++++++++++++++++++
+# -- source in ~/.bashrc
+
+# History parameters
+#HISTFILE=~/.bash_history
+#HISTSIZE=25000
+#HISTFILESIZE=25000
+#HISTCONTROL=ignoredups
+#HISTIGNORE='\:;*'
+#HISTTIMEFORMAT='%m-%d %H:%M:%S   '
+#shopt -s cmdhist
+
+## Auxilary file to be deleted upon exit
+#HISTTEMP=$(mktemp -t bash_history-XXXXXXXX)
+#trap 'rm -f "$HISTTEMP"' EXIT
+#
+## Function to sync history when a command is read
+#history-sync()
+#{
+#    HISTFILE=$HISTTEMP history -a
+#    sed -i -n '
+#    x
+#    ${
+#        G
+#        p
+#    }
+#    ' "$HISTTEMP"
+#
+#    sed -i -n -E '
+#    $!N
+#    s@^(.*\n)?[[:space:]]*'"$(sed -n '${s_@_\\@_g;p}' "$HISTTEMP")"'[[:space:]]*$@@
+#    H
+#    ${
+#        g
+#        p
+#        r '"$HISTTEMP"'
+#    }
+#    ' "$HISTFILE"
+#
+#    history -c && history -r
+#}
+#
+## Update history upon reading a command
+#PS0="\$([[ \"\$HISTCONTROL\" == sync ]] && history-sync)$PS0"
+#
+## Update history upon printing a prompt
+#PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'history -c && history -r'
+

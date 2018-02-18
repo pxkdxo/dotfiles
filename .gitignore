@@ -1,0 +1,21 @@
+## dotfiles
+
+## Exclude ssh keys
+ssh/*
+
+## Exclude gnupg data except for config files
+gnupg/*
+!gnupg/*.conf
+
+## Exclude repos used by awesome
+awesome/*
+!awesome/rc.lua
+!awesome/themes
+
+## Exclude mpd logs & data
+mpd/*
+!mpd/mpd.conf
+
+## Exclude ncmpcpp logs & data
+ncmpcpp/*
+!ncmpcpp/config

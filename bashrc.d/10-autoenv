@@ -1,0 +1,51 @@
+#!/bin/env bash
+
+## Library to help configure certain aspects of the environment
+
+## Sets a default text editor
+autoenv::EDITOR() {
+  unset -v EDITOR && {
+    local -a EDITOR=(vim emacs nano)
+    for EDITOR in "${@-"${EDITOR[@]}"}"; do
+      type "${EDITOR}" && {
+        declare -gx EDITOR="${EDITOR}"
+        break
+      }
+    done > /dev/null
+  }
+}
+
+## Sets command output colors
+autoenv::LS_COLORS() {
+  type dircolors > /dev/null && unset -v LS_COLORS && {
+    (( !$# )) && [[ -f ~/.dircolors ]] && set ~/.dircolors
+    [[ "$(dircolors -b "$@")" =~ ^LS_COLORS=\'([^\']*)\' ]]
+    declare -gx LS_COLORS="${BASH_REMATCH[1]}"
+  }
+}
+
+## Sets GCC output formatting
+autoenv::GCC_COLORS() {
+  local IFS=: && unset -v GCC_COLORS && {
+    local -A GCC_COLORS=( ['caret']='caret=01;32' ['error']='error=01;31'
+                          ['locus']='locus=01'    ['note']='note=01;36'
+                          ['quote']='quote=01'    ['warning']='warning=01;35' )
+    while (( $# )); do
+      : "${1%%=*}"
+      GCC_COLORS["$_"]="$_${1#"$_"}"
+      shift
+    done
+    declare -gx GCC_COLORS="${GCC_COLORS[*]}"
+  }
+}
+
+## Each arg matching a function in autoenv will trigger a call to that function
+## using the result of an indirect expansion on arg[@] as its parameter(s)
+autoenv::main() {
+  for _ in EDITOR LS_COLORS GCC_COLORS; do
+    declare -p "$_" || autoenv::"${_%'[@]'}"
+  done > /dev/null 2>&1 
+}
+
+## Apply default config
+autoenv::main

@@ -1,0 +1,13 @@
+#!/bin/env bash
+
+## print uppercase version of args
+str::caseup() { printf '%s\n' "${@^^}"; }
+str::ccaseup() { printf '%s\n' "${@^}"; }
+
+## print lowercase version of args
+str::casedn() { printf '%s\n' "${@,,}"; }
+str::ccasedn() { printf '%s\n' "${@,}"; }
+
+## print inverse version of args
+str::casein() { printf '%s\n' "${@~~}"; }
+str::ccasein() { printf '%s\n' "${@~}"; }

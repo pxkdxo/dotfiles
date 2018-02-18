@@ -1,0 +1,58 @@
+#!/bin/env bash
+
+## Collection of additions and modifications to Bash in the form of functions
+## Patrick DeYoreo
+#
+
+math::false() { 
+    [[ $1 = +([[:digit:]]) ]] && return $(( $1 ? ($1 < 255 ? $1 : 255) : 1 ))
+    builtin false
+}
+
+
+math::retval() { 
+    [[ $1 = +([[:digit:]]) ]] && return $(( $1 < 255 ? $1 : 255 ))
+    builtin true
+}
+
+
+math::accumulate() { 
+    trap "$(: "$(trap -p RETURN)"; printf '%s' "${_:-trap -- RETURN}")
+"'printf '"'"'%d\n'"'"' $(("${*:2}"))
+' RETURN;
+    IFS=$1 return
+}
+
+
+math::product() { 
+    accumulate '*' "$@"
+}
+
+
+math::sum() { 
+    accumulate '+' "$@"
+}
+
+
+math::xor() { 
+    accumulate '^' "$@"
+}
+
+
+math::and() { 
+    accumulate '&' "$@"
+}
+
+
+math::or() { 
+    accumulate '|' "$@"
+}
+
+math::compose() {
+  if local tmpdir && tmpdir=$(mktemp -d --tmpdir "$$.${FUNCNAME[0]}.XXX") \
+    && trap 'rm -rf "${tmpdir};"'"$(trap -p RETURN)" RETURN  \
+    && declare -F "$@" >/dev/null
+  then
+    :
+  fi
+}

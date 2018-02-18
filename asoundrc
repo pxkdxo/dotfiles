@@ -1,0 +1,24 @@
+## ~/.asoundrc
+## Patrick DeYoreo
+
+
+## Defaults
+
+pcm.!default pcm.sysdefault
+
+ctl.!default ctl.sysdefault
+
+
+## Pulse Audio
+
+pcm.pulse {
+   type pulse
+   hint {
+      show on
+      description "Default ALSA Output (currently PulseAudio Sound Server)"
+   }
+}
+
+ctl.pulse {
+   type pulse
+}

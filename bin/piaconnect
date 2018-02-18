@@ -1,0 +1,36 @@
+#!/bin/env bash
+
+## Parse options & check required arg
+if (( !$# )) || [[ $1 = -* ]]; then
+  case "$1" in
+    ## Print available configurations
+    -l|--list)
+      pia -l
+      exit 0
+      ;;
+
+    ## Print helpful information
+    -h|--help)
+      printf '%s: %s [-h|--help] [-l|--list] config\n' "${0##*/}" "${0##*/}"
+      printf '%s: configuration found in /etc/openvpn/client\n' "${0##*/}"
+      exit 2
+      ;;
+
+    ## Invalid option - print usage spec
+    * )
+      printf '%s: %s [-h|--help] [-l|--list] config\n' "${0##*/}" "${0##*/}" >&2
+      exit 2
+      ;;
+  esac
+fi
+
+## Check for root privileges
+if (( ${EUID} )); then
+  printf '%s: error: must run as root\n' "${0##*/}" >&2
+  exit 3
+fi
+
+## Evalute filename & initiate connection
+: "${1%${1##*/}}"
+: "${_:-/etc/openvpn/client/}${1##*/}"
+openvpn --config "${_%.conf}.conf"

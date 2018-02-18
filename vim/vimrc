@@ -1,0 +1,233 @@
+" ~/.vimrc : vim configuration
+" ViM version 8.0
+
+" -- Initialization --
+"
+" always encode in utf-8
+set encoding=utf-8
+
+" use vim defaults (rather than Vi)
+set nocompatible
+
+
+" -- Filetype & Syntax --
+"
+" detect filetype, load plugins, & apply indent-style
+filetype plugin indent on
+
+" perform syntax highlighting
+syntax enable
+
+
+" -- Formatting --
+"
+" number of spaces to use for each indent
+set shiftwidth=3
+
+" number of spaces to insert as a tab
+set softtabstop=3
+
+" visual width in spaces of a tab (i.e. '\t')
+set tabstop=3
+
+" insert spaces rather than tab characters
+set expandtab
+
+" line length beyond which insertion will trigger line break
+set textwidth=78
+
+" size of padding around cursor from buffer boundary
+set scrolloff=4
+
+
+" -- Patterns & Searching --
+"
+" search forward while pattern is being typed
+set incsearch
+
+" do not highlight search results
+set nohlsearch
+
+" ignore case when matching pattern
+set ignorecase
+
+" respect case if pattern contains uppercase
+set smartcase
+
+" briefly jump to match upon completing pair in 'matchpairs'
+set showmatch
+
+" character tuples to match as pairs
+set matchpairs=(:),{:},[:]
+
+
+" -- Verbosity --
+"
+" display line numbers
+set number
+
+" display current coordinates of the cursor
+set ruler
+
+" no alert when a search wraps to the start or end of a file
+set terse
+
+" display the most recent command below the editing-buffer
+set showcmd
+
+" always show the status line
+set laststatus=2
+
+" highlight column relative to 'textwidth'
+set colorcolumn=+1
+
+" show '@@@' in last line if truncated 
+set display=truncate
+
+
+" -- Editing --
+"
+" backspace over anything
+set backspace=indent,eol,start
+
+" allow visual-block selection of text-free columns
+set virtualedit=block
+
+" candidate bases for Ctrl-A & Ctrl-X (i.e. increment & decrement)
+set nrformats=hex,bin
+
+" preserve cursor position when jumping lines (e.g. 'G', 'gg')
+set nostartofline
+
+
+" -- History --
+"
+" size of the command history
+set history=8000
+
+" maximum number of changes that can be undone
+set undolevels=3000
+
+" save undo history while editing a file
+set undofile
+
+" save undofile in first directory listed that exists
+set undodir=~/.vim/undo,~/.local/share/vim,~/.cache/vim,~/.cache,.
+
+
+" -- Buffers --
+"
+" re-read open file if it has changed (unless deleted)
+set autoread
+
+" hide buffers rather than unloading them
+set hidden
+
+" place new window below current
+set splitbelow
+
+" place new window right of current
+set splitright
+
+
+" -- Command Completion --
+"
+" enable the command-completion menu
+set wildmenu
+
+" ignore filename case for completions
+set wildignorecase
+
+" complete common prefix & list options, then cycle through options
+set wildmode=list:longest,full
+
+
+" -- Window Title --
+"
+" set name of file in focused buffer as window title
+set title
+
+" limit width of window title to 68% of the titlebar
+set titlelen=68
+
+" try to generate window title from the following template
+let &titlestring = '%t%( %M%)%( (%{expand("%:~:.:h")})%)%( %a%)'
+
+
+" -- Terminals --
+"
+" fuck terminal bells
+set belloff=backspace,cursor,complete,esc,showmatch,wildmode
+
+" enable mouse in all modes
+set mouse=a
+
+" assume this terminal connection is a fast one
+set ttyfast
+
+
+" -- Colors --
+"
+" set highlighting for columns specified by 'colorcolumn'
+highlight colorcolumn term=bold cterm=bold ctermfg=7 ctermbg=4
+
+" set editor colors
+colorscheme desertEx
+
+
+" -- Globals --
+"
+" different highliting for differing levels of parenthesization
+let g:lisp_rainbow = 1
+
+" highlight brackets and braces
+let g:plaintex_delimiters = 1
+
+" default syntax for .sh files
+let g:is_bash = 1
+
+" enable heredoc folding
+let g:sh_fold_enabled= 2
+
+" error highlighting is broken for bash 4.4
+let g:sh_no_error= 1
+
+" use python 3 for powerline
+let g:powerline_pycmd = 'py3'
+
+
+" -- Locals --
+"
+" allow strings & numbers inside C comments
+let c_comment_strings = 1
+
+" highlight bad whitespace (i.e. trailing, mixture of tabs & spaces)
+let python_space_error_highlight = 1
+
+" highlight additional commands/options provided by bash
+let readline_has_bash = 1
+
+" should be using '\t', but just to be safe...
+let highlight_sedtabs = 1
+
+
+" -- Mappings --
+"
+" Search for visual selection ('*'/'#' to search, 'n'/'N' to repeat)
+vnoremap <silent> * :<C-U>
+	\let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+	\gvy/<C-R><C-R>=substitute(
+	\escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+	\gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+	\let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+	\gvy?<C-R><C-R>=substitute(
+	\escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+	\gVto :call setreg('"', old_reg, old_regtype)<CR>
+
+" Toggle syntax highlighting
+map <F7> :if exists("g:syntax_on") <Bar>
+	\   syntax off <Bar>
+	\ else <Bar>
+	\   syntax enable <Bar>
+	\ endif <CR>

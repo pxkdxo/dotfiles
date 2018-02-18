@@ -1,0 +1,8 @@
+#!/bin/env sh
+#
+## ~/profile.d/gpg-agent : gpg-agent environment config
+#
+
+## This value should match the output of `tty' at all times
+GPG_TTY="$(tty)"
+export GPG_TTY
