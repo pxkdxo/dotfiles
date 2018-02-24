@@ -1,36 +1,36 @@
 ! Powerarrow Dark
 
-*background: #1A1A1A
-*foreground: #DDDDFF
+*background:  #1a1a1a
+*foreground:  #ddddff
 
 !black
-*color0: #1A1A1A
-*color8: #6E6E6E
+*color0:      #1a1a1a
+*color8:      #6e6e6e
 
 !red
-*color1: #AF5360
-*color9: #EA6F81
+*color1:      #af5360
+*color9:      #ea6f81
 
 !green
-*color2: 447019
-*color10: #7BAB4E
+*color2:      447019
+*color10:     #7bab4e
 
 !yellow
-*color3: #D8D782
-*color11: #CFCD63
+*color3:      #d8d782
+*color11:     #cfcd63
 
 !blue
-*color12: #92ADCB
-*color4: #648BB5
+*color12:     #92adcb
+*color4:      #648bb5
 
 !magenta
-*color5: #E5C8D6
-*color13: #CB92AD
+*color5:      #e5c8d6
+*color13:     #cb92ad
 
 !cyan
-*color6: #406E6F
-*color14: #81DCDE
+*color6:      #406e6f
+*color14:     #81dcde
 
 !white
-*color7: #C6C6E5
-*color15: #DDDDFF
+*color7:      #c6c6e5
+*color15:     #ddddff

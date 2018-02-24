@@ -344,3 +344,16 @@ setopt                                                                    \
 #vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
 ## END OF FILE #################################################################
+
+## Obliterate files
+wipefiles () {
+	while ((#))
+	do
+		repeat 3
+		do
+			dd if=/dev/random of="$1" bs=1M count=$(( $(stat -c %s "$1") / 1024 ** 2 ))
+		done
+		rm -f "$1"
+		shift
+	done
+}

@@ -33,9 +33,11 @@ set vi-cmd-mode-string "\1\e[0;1m\2:\1\e[0m\2"
 ## vi insert-mode bindings
 set keymap vi-insert
 
-"\C-j":         "\C-v\n"
 "\M-\"":        "\"\"\M-[D"
 "\M-\'":        "\'\'\M-[D"
+
+"\C-j":         "\\\C-m"
+"\M-\C-j":      "\C-v\n"
 
 "\C-[\C-[":     vi-movement-mode
 "\M-[":         skip-csi-sequence
