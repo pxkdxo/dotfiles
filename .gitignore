@@ -1,7 +1,7 @@
 ## gitignore : dotfiles repo
 
 ## EXCLUDE EVERYTHING
-**/**
+**/*
 
 !/asoundrc
 
@@ -39,6 +39,8 @@
 !/vim/
 !/vim/vimrc
 !/vim/colors/**
+/vim/undo
+/vim/swap
 
 !/xinitrc
 !/xinitrc.d/**
