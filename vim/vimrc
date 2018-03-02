@@ -1,8 +1,6 @@
 " ~/.vimrc : vim configuration
 " ViM version 8.0
 
-" -- Initialization --
-"
 " always encode in utf-8
 set encoding=utf-8
 
@@ -12,52 +10,49 @@ set nocompatible
 
 " -- Filetype & Syntax --
 "
-" detect filetype, load plugins, & apply indent-style
+" detect filetype, load plugins, & apply indentation style
 filetype plugin indent on
-
+"
 " perform syntax highlighting
 syntax enable
 
 
 " -- Formatting --
 "
-" number of spaces to use for each indent
-set shiftwidth=3
-
-" number of spaces to insert as a tab
-set softtabstop=3
-
-" visual width in spaces of a tab (i.e. '\t')
-set tabstop=3
-
-" insert spaces rather than tab characters
+" insert spaces insted of tab characters
 set expandtab
-
-" line length beyond which insertion will trigger line break
+"
+" number of spaces to use for each indent
+set shiftwidth=2
+"
+" number of spaces to insert as a tab
+set softtabstop=2
+"
+" visual width of a tab character
+set tabstop=2
+"
+" line length beyond which insertion will cause trigger a linebreak
 set textwidth=78
-
-" size of padding around cursor from buffer boundary
-set scrolloff=4
 
 
 " -- Patterns & Searching --
 "
-" search forward while pattern is being typed
+" search forward as a pattern is being typed
 set incsearch
-
+"
 " do not highlight search results
 set nohlsearch
-
-" ignore case when matching pattern
+"
+" ignore case when matching a pattern
 set ignorecase
-
+"
 " respect case if pattern contains uppercase
 set smartcase
-
-" briefly jump to match upon completing pair in 'matchpairs'
+"
+" briefly jump to match upon completing pair from 'matchpairs'
 set showmatch
-
-" character tuples to match as pairs
+"
+" tuples of characters to match as pairs
 set matchpairs=(:),{:},[:]
 
 
@@ -65,169 +60,206 @@ set matchpairs=(:),{:},[:]
 "
 " display line numbers
 set number
-
-" display current coordinates of the cursor
+"
+" display current coordinates (line:column) of the cursor
 set ruler
-
-" no alert when a search wraps to the start or end of a file
-set terse
-
-" display the most recent command below the editing-buffer
+"
+" highlight the line the cursor is currently on (hl-group CursorLine)
+"set cursorline
+"
+" display most recent command below the buffer windows
 set showcmd
-
-" always show the status line
-set laststatus=2
-
-" highlight column relative to 'textwidth'
-set colorcolumn=+1
-
-" show '@@@' in last line if truncated 
+"
+" disable message about search wrapping across a file
+set terse
+"
+" set name of file in focused buffer as window title
+set title
+"
+" limit width of window title to 68% of the titlebar
+set titlelen=68
+"
+" print '@@@' if the last line is too long to fit in the window
 set display=truncate
+"
+" always display the status line
+set laststatus=2
+"
+" highlight all columns past 'textwidth' (hl-group ColorColumn)
+set colorcolumn=+1,+2,+3,+5,+7,+9
+"
+" characters for vsplit separators, fold text, and 'diff' deleted lines
+set fillchars=vert:¦,fold:·,diff:-
 
 
 " -- Editing --
 "
-" backspace over anything
+" time out on mappings and keycodes
+set timeout
+"
+" attempt to preserve cursor position when moving linewise
+set nostartofline
+"
+" candidate bases for CtrlA & Ctrl-X (i.e. increment & decrement)
+set nrformats=bin,hex
+"
+" backspace over additional objects
 set backspace=indent,eol,start
-
+"
 " allow visual-block selection of text-free columns
 set virtualedit=block
-
-" candidate bases for Ctrl-A & Ctrl-X (i.e. increment & decrement)
-set nrformats=hex,bin
-
-" preserve cursor position when jumping lines (e.g. 'G', 'gg')
-set nostartofline
+"
+" time in milliseconds to wait for completion of a mapping
+set ttimeoutlen=3000
+"
+" time in milliseconds to wait for completion of a key code
+set ttimeoutlen=100
+"
+" size of padding between the cursor and the vertical edges
+set scrolloff=3
+"
+" scroll horizontally one column at a time when 'wrap' is off
+set sidescroll=1
+"
+" size of padding between cursor and horiz. edges when 'wrap' is off
+set sidescrolloff=3
 
 
 " -- History --
 "
-" size of the command history
-set history=8000
-
-" maximum number of changes that can be undone
-set undolevels=3000
-
 " save undo history while editing a file
 set undofile
-
-" save undofile in first directory listed that exists
-set undodir=~/.vim/undo,~/.local/share/vim,~/.cache/vim,~/.cache,.
+"
+" maximum number of changes that can be undone
+set undolevels=10000
+"
+" save undofile in first valid directory 
+set undodir=~/.vim/undo,~/.local/share/vim/undo,.,~/tmp,$TMPDIR,/tmp
+"
+" save swapfile in first valid directory 
+set directory=~/.vim/swap,~/.local/share/vim/swap,.,~/tmp,$TMPDIR,/tmp
+"
+" size of the command history
+set history=10000
 
 
 " -- Buffers --
 "
-" re-read open file if it has changed (unless deleted)
+" re-read open file if it was changed by another program (unless deleted)
 set autoread
-
+"
 " hide buffers rather than unloading them
 set hidden
-
-" place new window below current
+"
+" place new window below the current
 set splitbelow
-
-" place new window right of current
+"
+" place new window right of the current
 set splitright
+"
+" encrypt buffers (undofiles, etc) when writing to disk
+set cryptmethod=blowfish2
 
 
-" -- Command Completion --
+" -- Completion --
+"
+set completeopt=menu,preview,longest,noselect
 "
 " enable the command-completion menu
 set wildmenu
-
+"
 " ignore filename case for completions
 set wildignorecase
-
+"
 " complete common prefix & list options, then cycle through options
 set wildmode=list:longest,full
 
 
-" -- Window Title --
+" -- Terminal --
 "
-" set name of file in focused buffer as window title
-set title
-
-" limit width of window title to 68% of the titlebar
-set titlelen=68
-
-" try to generate window title from the following template
-let &titlestring = '%t%( %M%)%( (%{expand("%:~:.:h")})%)%( %a%)'
-
-
-" -- Terminals --
+" do not redraw while running commands that were not typed (i.e. macros, etc)
+set lazyredraw
 "
 " fuck terminal bells
 set belloff=backspace,cursor,complete,esc,showmatch,wildmode
-
+"
 " enable mouse in all modes
 set mouse=a
-
-" assume this terminal connection is a fast one
-set ttyfast
 
 
 " -- Colors --
 "
-" set highlighting for columns specified by 'colorcolumn'
-highlight colorcolumn term=bold cterm=bold ctermfg=7 ctermbg=4
-
 " set editor colors
 colorscheme desertEx
 
 
-" -- Globals --
+" -- Language-Specific Syntax Options --
 "
-" different highliting for differing levels of parenthesization
-let g:lisp_rainbow = 1
-
-" highlight brackets and braces
-let g:plaintex_delimiters = 1
-
-" default syntax for .sh files
-let g:is_bash = 1
-
-" enable heredoc folding
-let g:sh_fold_enabled= 2
-
-" error highlighting is broken for bash 4.4
-let g:sh_no_error= 1
-
-" use python 3 for powerline
-let g:powerline_pycmd = 'py3'
-
-
-" -- Locals --
+" C / C++
+let c_comment_strings     = 1   " allow strings & numbers inside C comments
 "
-" allow strings & numbers inside C comments
-let c_comment_strings = 1
+" Lisp
+let g:lisp_rainbow        = 1   " highlight Lisp based on parenthesization
+"
+" Python
+let python_highlight_all  = 1   " enable all available highlighting for Python
+"
+" Readline
+let readline_has_bash     = 1   " highlight readline additions from by bash
+"
+" Sed
+let highlight_sedtabs     = 1   " should be using '\t' so highlight real tabs
+"
+" Shells
+let g:is_posix            = 1   " set default syntax for '*.sh' files
+let g:sh_fold_enabled     = 3   " enable folding of functions & heredocs
+let g:sh_no_error         = 1   " be conservative when highlighting errors
 
-" highlight bad whitespace (i.e. trailing, mixture of tabs & spaces)
-let python_space_error_highlight = 1
 
-" highlight additional commands/options provided by bash
-let readline_has_bash = 1
+" -- Folding --
+"
+set foldmethod=expr
+set foldexpr=GetFoldLvl(v:lnum)
 
-" should be using '\t', but just to be safe...
-let highlight_sedtabs = 1
+function! GetFoldLvl(lnum)
+  if getline(a:lnum) =~ '\S'
+    let this_indent = indent(a:lnum) / &shiftwidth
+    let next_indent = indent(nextnonblank(a:lnum + 1)) / &shiftwidth
+    if next_indent > this_indent
+      return '>' . next_indent
+    endif
+    if getline(a:lnum - 1) =~ '\S'
+      let prev_indent = indent(a:lnum - 1) / &shiftwidth
+      if prev_indent > this_indent
+        return '<' . prev_indent
+      endif
+    endif
+    return this_indent
+  endif
+  return '-1'
+endfunction
 
 
 " -- Mappings --
 "
-" Search for visual selection ('*'/'#' to search, 'n'/'N' to repeat)
-vnoremap <silent> * :<C-U>
-	\let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-	\gvy/<C-R><C-R>=substitute(
-	\escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-	\gV:call setreg('"', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
-	\let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-	\gvy?<C-R><C-R>=substitute(
-	\escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-	\gVto :call setreg('"', old_reg, old_regtype)<CR>
-
-" Toggle syntax highlighting
+" Toggle syntax highlighting on/off
 map <F7> :if exists("g:syntax_on") <Bar>
-	\   syntax off <Bar>
-	\ else <Bar>
-	\   syntax enable <Bar>
-	\ endif <CR>
+  \   syntax off <Bar>
+  \ else <Bar>
+  \   syntax enable <Bar>
+  \ endif <CR>
+
+
+" Search for selected text ('*'/'#' := forward/backward, 'n'/'N' := next/prev)
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=substitute(
+  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+
+" -- END --

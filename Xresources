@@ -1,7 +1,7 @@
 ! ~/.Xresources
 ! Patrick DeYoreo
 
-#include ".Xresources.d/colors/gruvbox_black"
+#include ".Xresources.d/colors/vertex"
 
 *locale                 : true
 *customization          : -color
@@ -18,23 +18,17 @@ Xft.rgba                : rgb
 
 XTerm*on3Clicks         : regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
 XTerm*termName          : xterm-256color
-Xterm*ttyModes          : intr ^c, erase ^?, start ^q, stop ^s, susp ^z
+XTerm*ttyModes          : erase ^?
 
-*vt100.altSendsEscape   : true
-*vt100.metaSendsEscape  : true
 *vt100.backarrowKey     : false
 *vt100.eightBitInput    : false
+*vt100.metaSendsEscape  : true
+
 *vt100.charClass        : 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+*vt100.trimSelection    : true
 
-*vt100.colorAttrMode    : true
-*vt100.colorMode        : true
-*vt100.dynamicColors    : true
-*vt100.veryBoldColors   : 6
-
-*vt100.faceName         : SauceCodePro Nerd Font Mono
-!*vt100.faceName         : CodeNewRoman Nerd Font Mono
-!*vt100.faceName         : Source Code Pro
 *vt100.renderFont       : true
+*vt100.faceName         : SauceCodePro Nerd Font Mono
 *vt100.faceSize         : 14
 *vt100.faceSize1        : 11
 *vt100.faceSize2        : 13
@@ -42,7 +36,6 @@ Xterm*ttyModes          : intr ^c, erase ^?, start ^q, stop ^s, susp ^z
 *vt100.faceSize4        : 16
 *vt100.faceSize5        : 17
 *vt100.faceSize6        : 19
-
 *vt100.font             : -*-terminus-bold-*-*-*-22-*-*-*-*-*-*-1
 *vt100.font1            : -*-terminus-medium-*-*-*-16-*-*-*-*-*-*-1
 *vt100.font2            : -*-terminus-medium-*-*-*-18-*-*-*-*-*-*-1
@@ -51,14 +44,19 @@ Xterm*ttyModes          : intr ^c, erase ^?, start ^q, stop ^s, susp ^z
 *vt100.font5            : -*-terminus-medium-*-*-*-28-*-*-*-*-*-*-1
 *vt100.font6            : -*-terminus-medium-*-*-*-32-*-*-*-*-*-*-1
 
+*vt100.colorAttrMode    : true
+*vt100.colorMode        : true
 *vt100.cursorBlink      : true
+*vt100.dynamicColors    : true
+*vt100.veryBoldColors   : 6
+
 *vt100.fastScroll       : true
 *vt100.jumpScroll       : true
 *vt100.multiScroll      : true
-*vt100.saveLines        : 4096
+*vt100.saveLines        : 6688
 *vt100.scrollKey        : true
 *vt100.scrollTtyOutput  : false
-*vt100.trimSelection    : true
+
 *vt100.visualBell       : true
 *vt100.visualBellDelay  : 0
 
@@ -66,6 +64,6 @@ Xterm*ttyModes          : intr ^c, erase ^?, start ^q, stop ^s, susp ^z
    Ctrl Shift <Key> C   : copy-selection(CLIPBOARD)   \n\
    Ctrl Shift <Key> V   : insert-selection(CLIPBOARD) \n\
    Ctrl <KeyPress>  P   : dabbrev-expand()            \n\
-   Ctrl Alt <Key>S      : secure()
+   Ctrl Alt   <Key> S   : secure()
 
 ! -- END --

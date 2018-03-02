@@ -72,36 +72,26 @@ alias s='dirs'
 
 alias l='ls -C'
 alias la='ls -CA'
-alias lr='ls -CR'
 alias ll='ls -l'
 alias lla='ls -lA'
-alias llr='ls -lR'
-
-alias acki='ack -i'
-alias grepi='grep -i'
 
 alias prep='pcre2grep'
-alias prepi='pcre2grep -i'
+
+alias top='htop'
+
+alias which='type -P'
 
 alias py='python'
 alias py2='python2'
 alias py3='python3'
 
-alias which='type -p'
+alias xc.c='xclip -selection clipboard'
+alias xc.p='xclip -selection primary'
+alias xc.s='xclip -selection secondary'
 
-alias top='htop'
-
-alias pbcut='xclip -selection primary'
-alias pbget='xclip -f -selection primary'
-alias pbput='xclip -o -selection primary'
-
-alias cbcut='xclip -selection clipboard'
-alias cbget='xclip -f -selection clipboard'
-alias cbput='xclip -o -selection clipboard'
-
-alias cbfcut='xclip-cutfile'
-alias cbfget='xclip-copyfile'
-alias cbfput='xclip-pastefile'
+alias xc.fcut='xclip-cutfile'
+alias xc.fcp='xclip-copyfile'
+alias xc.fput='xclip-pastefile'
 
 alias mkvenv='mkvirtualenv'
 alias cdvenv='cdvirtualenv'
@@ -125,16 +115,6 @@ alias pfn-d='printf '"'"'%d\n'"'"
 alias pfn-e='printf '"'"'%e\n'"'"
 alias pfn-o='printf '"'"'%o\n'"'"
 alias pfn-x='printf '"'"'%x\n'"'"
-
-alias pgrepa='pgrep -a'
-alias pgrepf='pgrep -f'
-alias pgrepi='pgrep -i'
-alias pgrepl='pgrep -l'
-alias pgrepaf='pgrep -af'
-alias pgrepai='pgrep -ai'
-alias pgrepfi='pgrep -fi'
-alias pgrepil='pgrep -il'
-alias pgrepafi='pgrep -afi'
 
 alias ydla='\
 youtube-dl                \

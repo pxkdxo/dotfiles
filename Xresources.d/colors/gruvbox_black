@@ -1,11 +1,11 @@
 ! Gruvbox-Black
 
-*background:  #0b0a09
-*foreground:  #fbebc2
+*background:  #1a1a1a
+*foreground:  #fbeed0
 *cursorColor: darkorange2
 
 !black
-*color0:      #0a0806
+*color0:      #1a1a1a
 *color8:      #6d5e4f
 
 !red
@@ -33,5 +33,5 @@
 *color14:     #8ec07c
 
 !white
-*color7:      #ad9e8f
-*color15:     #fbebc2
+*color7:      #b0a79f
+*color15:     #fbeed0

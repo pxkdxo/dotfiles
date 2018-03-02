@@ -1,19 +1,54 @@
-## dotfiles
+## gitignore : dotfiles repo
 
-## Exclude ssh keys
-ssh/**
+## EXCLUDE EVERYTHING
+**/*
 
-## Exclude gnupg data except for config files
-gnupg/**
-!gnupg/*.conf
+!/asoundrc
 
-## Exclude repos used by awesome
-awesome/**
+!/bash_logout
+!/bash_profile
+!/bashrc
+!/bashrc.d/**
 
-## Exclude mpd logs & data
-mpd/**
-!mpd/mpd.conf
+!/bin/**
 
-## Exclude ncmpcpp logs & data
-ncmpcpp/**
-!ncmpcpp/config
+!/devilspie2/**
+
+!/dircolors
+
+!/gnupg/
+!/gnupg/*.conf
+
+!/inputrc
+
+!/kbd/**
+
+!/mpd
+!/mpd/mpd.conf
+
+!/mutt/
+
+!/ncmpcpp
+!/ncmpcpp/config
+
+!/profile
+!/profile.d/**
+
+!/README.md
+
+!/vim/
+!/vim/vimrc
+!/vim/colors/**
+
+!/xinitrc
+!/xinitrc.d/**
+!/Xresources
+!/Xresources.d/**
+!/xserverrc
+
+!/zcompdump
+!/zlogin
+!/zshrc
+
+
+

@@ -13,13 +13,12 @@ mpd_connection_timeout = 5
 mpd_crossfade_time = 0
 
 ##### music visualizer #####
-visualizer_fifo_path = ~/.cache/mpd_output_stream.mono
-visualizer_output_name = MPD Output Stream (Mono)
+visualizer_fifo_path = ~/.cache/mpd_output.stereo
+visualizer_output_name = MPD Output (Stereo)
 visualizer_sync_interval = 25
-visualizer_in_stereo = no
+visualizer_in_stereo = yes
 visualizer_type = spectrum
 visualizer_color = 52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22
-#visualizer_look = ┼¢
 visualizer_look = ╬♥
 
 ##### system encoding #####

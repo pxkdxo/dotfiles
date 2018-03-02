@@ -1,6 +1,5 @@
 ## ~/.inputrc : readline config
 ## Patrick DeYoreo 
-## pdeyoreo@gmail.com
 
 $include /etc/inputrc
 
@@ -54,7 +53,7 @@ set keymap vi-insert
 "\M-[D":        backward-char
 "\C-b":         backward-char
 "\C-h":         backward-delete-char
-"\C-?":         backward-delete-char
+#"\C-?":         backward-delete-char
 "\C-x\C-?":     backward-kill-line
 "\M-\C-h":      backward-kill-word
 "\M-\C-?":      backward-kill-word
@@ -80,7 +79,7 @@ set keymap vi-insert
 "\M-{":         complete-into-braces
 "\M-~":         complete-username
 "\M-$":         complete-variable
-"\C-d":         delete-char
+#"\C-d":         delete-char
 "\M-[3~":       delete-char
 "\M-\\":        delete-horizontal-space
 "\M--":         digit-argument
@@ -184,7 +183,7 @@ set keymap vi-command
 "\M-[D":        backward-char
 "h":            backward-char
 "\C-b":         backward-char
-"\C-?":         backward-delete-char
+#"\C-?":         backward-delete-char
 "\C-x\C-?":     backward-kill-line
 "\M-\C-h":      backward-kill-word
 "\M-\C-?":      backward-kill-word
