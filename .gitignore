@@ -23,12 +23,12 @@
 
 !/kbd/**
 
-!/mpd
+!/mpd/
 !/mpd/mpd.conf
 
 !/mutt/
 
-!/ncmpcpp
+!/ncmpcpp/
 !/ncmpcpp/config
 
 !/profile
