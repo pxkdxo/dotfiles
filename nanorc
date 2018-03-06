@@ -1,0 +1,2 @@
+## load syntax plugins in nano
+include /usr/share/nano/*

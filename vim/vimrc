@@ -31,11 +31,11 @@ set softtabstop=2
 " visual width of a tab character
 set tabstop=2
 "
-" line length beyond which insertion will cause trigger a linebreak
-set textwidth=78
+" line length beyond which insertion will cause a linebreak
+set textwidth=79
 
 
-" -- Patterns & Searching --
+" -- Searching & Pattern Matching --
 "
 " search forward as a pattern is being typed
 set incsearch
@@ -56,7 +56,7 @@ set showmatch
 set matchpairs=(:),{:},[:]
 
 
-" -- Verbosity --
+" -- Information Visibility --
 "
 " display line numbers
 set number
@@ -64,56 +64,38 @@ set number
 " display current coordinates (line:column) of the cursor
 set ruler
 "
-" highlight the line the cursor is currently on (hl-group CursorLine)
-"set cursorline
-"
-" display most recent command below the buffer windows
-set showcmd
+" set name of file in focused buffer as window title
+set title
 "
 " disable message about search wrapping across a file
 set terse
 "
-" set name of file in focused buffer as window title
-set title
+" display most recent command below the buffer windows
+set showcmd
 "
-" limit width of window title to 68% of the titlebar
-set titlelen=68
-"
-" print '@@@' if the last line is too long to fit in the window
-set display=truncate
+" highlight the line the cursor is currently on
+set cursorline
 "
 " always display the status line
 set laststatus=2
 "
-" highlight all columns past 'textwidth' (hl-group ColorColumn)
+" print '@@@' if the last line is too long to fit in the window
+set display=truncate
+"
+" highlight columns relative to 'textwidth'
 set colorcolumn=+1,+2,+3,+5,+7,+9
-"
-" characters for vsplit separators, fold text, and 'diff' deleted lines
-set fillchars=vert:¦,fold:·,diff:-
 
 
-" -- Editing --
+" -- Cursor Position & Movement --
 "
-" time out on mappings and keycodes
-set timeout
-"
-" attempt to preserve cursor position when moving linewise
+" attempt to preserve cursor position when moving linewise 
 set nostartofline
 "
-" candidate bases for CtrlA & Ctrl-X (i.e. increment & decrement)
-set nrformats=bin,hex
-"
-" backspace over additional objects
+" allow a way to backspace over each additional item
 set backspace=indent,eol,start
 "
 " allow visual-block selection of text-free columns
 set virtualedit=block
-"
-" time in milliseconds to wait for completion of a mapping
-set ttimeoutlen=3000
-"
-" time in milliseconds to wait for completion of a key code
-set ttimeoutlen=100
 "
 " size of padding between the cursor and the vertical edges
 set scrolloff=3
@@ -125,7 +107,25 @@ set sidescroll=1
 set sidescrolloff=3
 
 
+" -- Key Timeout --
+"
+" time out on mappings and keycodes
+set timeout
+"
+" time in milliseconds to wait for completion of a mapping
+set timeoutlen=2250
+"
+" time out on mappings and keycodes
+set ttimeout
+"
+" time in milliseconds to wait for completion of a key code
+set ttimeoutlen=115
+
+
 " -- History --
+"
+" size of the command history
+set history=10000
 "
 " save undo history while editing a file
 set undofile
@@ -133,19 +133,16 @@ set undofile
 " maximum number of changes that can be undone
 set undolevels=10000
 "
-" save undofile in first valid directory 
-set undodir=~/.vim/undo,~/.local/share/vim/undo,.,~/tmp,$TMPDIR,/tmp
+" save undofile in first existing, writable directory 
+set undodir=~/.vim/undo,~/.local/share/vim,.,$TMPDIR,~/tmp,/tmp
 "
-" save swapfile in first valid directory 
-set directory=~/.vim/swap,~/.local/share/vim/swap,.,~/tmp,$TMPDIR,/tmp
-"
-" size of the command history
-set history=10000
+" save swapfile in first existing, writable directory 
+set directory=~/.vim/swap,~/.local/share/vim,.,$TMPDIR,~/tmp,/tmp
 
 
 " -- Buffers --
 "
-" re-read open file if it was changed by another program (unless deleted)
+" re-read open file if it was changed elsewhere
 set autoread
 "
 " hide buffers rather than unloading them
@@ -156,9 +153,6 @@ set splitbelow
 "
 " place new window right of the current
 set splitright
-"
-" encrypt buffers (undofiles, etc) when writing to disk
-set cryptmethod=blowfish2
 
 
 " -- Completion --
@@ -177,20 +171,26 @@ set wildmode=list:longest,full
 
 " -- Terminal --
 "
-" do not redraw while running commands that were not typed (i.e. macros, etc)
-set lazyredraw
-"
 " fuck terminal bells
-set belloff=backspace,cursor,complete,esc,showmatch,wildmode
+set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 "
-" enable mouse in all modes
+" enable mouse functionality in all modes
 set mouse=a
 
 
 " -- Colors --
 "
-" set editor colors
-colorscheme desertEx
+" set editor colorscheme
+if &g:t_Co == 256
+  colorscheme patrick_desertEx
+else
+  colorscheme patrick_peachpuff
+endif
+
+" highlight the line number of the current line
+highlight CursorLine   NONE
+highlight CursorLineNr NONE
+highlight CursorLineNr term=bold cterm=bold gui=bold
 
 
 " -- Language-Specific Syntax Options --
@@ -218,26 +218,26 @@ let g:sh_no_error         = 1   " be conservative when highlighting errors
 
 " -- Folding --
 "
-set foldmethod=expr
-set foldexpr=GetFoldLvl(v:lnum)
-
-function! GetFoldLvl(lnum)
-  if getline(a:lnum) =~ '\S'
-    let this_indent = indent(a:lnum) / &shiftwidth
-    let next_indent = indent(nextnonblank(a:lnum + 1)) / &shiftwidth
-    if next_indent > this_indent
-      return '>' . next_indent
-    endif
-    if getline(a:lnum - 1) =~ '\S'
-      let prev_indent = indent(a:lnum - 1) / &shiftwidth
-      if prev_indent > this_indent
-        return '<' . prev_indent
-      endif
-    endif
-    return this_indent
-  endif
-  return '-1'
-endfunction
+"set foldmethod=expr
+"set foldexpr=GetFoldLvl(v:lnum)
+"
+"function! GetFoldLvl(lnum)
+"  if getline(a:lnum) =~ '\S'
+"    let this_indent = indent(a:lnum) / &shiftwidth
+"    let next_indent = indent(nextnonblank(a:lnum + 1)) / &shiftwidth
+"    if next_indent > this_indent
+"      return '>' . next_indent
+"    endif
+"    if getline(a:lnum - 1) =~ '\S'
+"      let prev_indent = indent(a:lnum - 1) / &shiftwidth
+"      if prev_indent > this_indent
+"        return '<' . prev_indent
+"      endif
+"    endif
+"    return this_indent
+"  endif
+"  return '-1'
+"endfunction
 
 
 " -- Mappings --
@@ -256,10 +256,12 @@ vnoremap <silent> * :<C-U>
   \gvy/<C-R><C-R>=substitute(
   \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
+
 vnoremap <silent> # :<C-U>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
-" -- END --
+
+" -- end --

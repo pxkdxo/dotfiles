@@ -11,3 +11,7 @@ str::ccasedn() { printf '%s\n' "${@,}"; }
 ## print inverse version of args
 str::casein() { printf '%s\n' "${@~~}"; }
 str::ccasein() { printf '%s\n' "${@~}"; }
+
+pexp() {
+  printf '%s\n' "${@@P}"
+}

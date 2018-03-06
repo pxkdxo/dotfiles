@@ -1,8 +1,9 @@
-## gitignore : dotfiles repo
+## gitignore
 
 ## EXCLUDE EVERYTHING
 **/*
 
+## now include files one-by-one
 !/asoundrc
 
 !/bash_logout
@@ -28,6 +29,8 @@
 
 !/mutt/
 
+!/nanorc
+
 !/ncmpcpp/
 !/ncmpcpp/config
 
@@ -36,9 +39,12 @@
 
 !/README.md
 
+!/screenrc
+
 !/vim/
 !/vim/vimrc
 !/vim/colors/**
+!/vim/macros/**
 
 !/xinitrc
 !/xinitrc.d/**
