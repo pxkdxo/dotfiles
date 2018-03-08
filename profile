@@ -21,8 +21,8 @@ export PATH
 export TMPDIR="${TMPDIR:-"${XDG_RUNTIME_DIR:-/tmp}"}"
 
 ## Load additional profiles from ~/.profile.d
-if test -d ~/.profile.d; then
-  for _ in ~/.profile.d/?*; do
+if test -d "${HOME}"/.profile.d; then
+  for _ in "${HOME}"/.profile.d/?*; do
     test -f "$_" && . "$_"
   done
 fi

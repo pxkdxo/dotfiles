@@ -1,17 +1,24 @@
 #!/bin/env bash
 
-## print uppercase version of args
+## print uppercase version of each arg
 str::caseup() { printf '%s\n' "${@^^}"; }
 str::ccaseup() { printf '%s\n' "${@^}"; }
 
-## print lowercase version of args
+## print lowercase version of each arg
 str::casedn() { printf '%s\n' "${@,,}"; }
 str::ccasedn() { printf '%s\n' "${@,}"; }
 
-## print inverse version of args
+## print inversecase version of each arg
 str::casein() { printf '%s\n' "${@~~}"; }
 str::ccasein() { printf '%s\n' "${@~}"; }
 
-pexp() {
-  printf '%s\n' "${@@P}"
+## print ascii values given characters
+str::ord() { printf '%d\n' "${@/#/"'"}"; }
+
+## print characters given ascii values
+str::chr() {
+  local temp && printf -v temp '\%03o\n' "$@" && printf '%b\n' ${temp}
 }
+
+## perform prompt expansion each arg
+str::promptexp() { printf '%s\n' "${@@P}"; }

@@ -13,6 +13,8 @@
 
 !/bin/**
 
+!/compton.conf
+
 !/devilspie2/**
 
 !/dircolors
@@ -43,6 +45,10 @@
 
 !/screenrc
 
+!/surfraw/**
+
+!/tmux.conf
+
 !/vim/
 !/vim/vimrc
 !/vim/colors/**
@@ -50,8 +56,10 @@
 
 !/xinitrc
 !/xinitrc.d/**
+
 !/Xresources
 !/Xresources.d/**
+
 !/xserverrc
 
 !/zcompdump

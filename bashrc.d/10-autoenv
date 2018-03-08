@@ -1,18 +1,32 @@
 #!/bin/env bash
 ## Library of functions to help configure the environment
 
-## Each arg matching a function in autoenv will cause a call to that function
-## with the result of an indirect expansion on arg[@] as its parameter(s)
-autoenv::main() {
-  for _ in EDITOR LS_COLORS GCC_COLORS; do
-    declare -p "$_" || autoenv::"${_%'[@]'}"
-  done > /dev/null 2>&1 
-}
+
+## Mapping from variables to the functions that set them
+declare -A _autoenv=(
+  ['EDITOR']='autoenv::EDITOR'
+  ['LS_COLORS']='autoenv::LS_COLORS'
+  ['GCC_COLORS']='autoenv::GCC_COLORS'
+)
+
+
+## If given arguments, try to configure those variables.
+## Otherwise, try to configure any variables that are null.
+autoenv::main()
+if (( $# )); then "autoenv::$1"
+  while shift; do "autoenv::$1"
+  done
+else set -- "${!_autoenv[@]}"
+  while (( $# )); do
+    [[ ! -v $1 ]] && "${_autoenv[$1]}"
+    shift
+  done
+fi
 
 
 ## Sets a default text editor
-autoenv::EDITOR() 
-if unset -v EDITOR && local -a EDITOR=(vim nano); then
+autoenv::EDITOR()
+if unset -v EDITOR && local -a EDITOR=(vim vi nano); then
   for EDITOR in "$@" "${EDITOR[@]}"; do
     if read -r EDITOR < <(command -pv "${EDITOR}"); then
       declare -gx EDITOR="${EDITOR}"
@@ -42,7 +56,7 @@ if local IFS=: && unset -v GCC_COLORS && local -A GCC_COLORS=(
     ['caret']='caret=01;32' ['error']='error=01;31'
     ['locus']='locus=01'    ['note']='note=01;36'
     ['quote']='quote=01'    ['warning']='warning=01;35'
-  );
+);
 then
     while (( $# )); do
       : "${1%%=*}"
@@ -53,7 +67,7 @@ then
 fi
 
 
-## Apply environment config
+## Apply configuration
 autoenv::main "$@"
 
-## -- END --
+## -- end --

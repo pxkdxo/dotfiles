@@ -1,6 +1,8 @@
 ## alias definitions to source in bashrc
 ## Patrick DeYoreo
 
+alias sudo='sudo '
+
 alias pacs='pacman -S'
 alias pacss='pacman -Ss'
 alias pacsi='pacman -Si'
@@ -58,24 +60,25 @@ alias paurcss='pacaur -Rcssud'
 alias mv='mv -ibv'
 alias rm='rm -Idv'
 
+alias mkd='mkdir'
 alias mkdir='mkdir -pv'
 
-alias -R % '% --color=auto' grep fgrep egrep ls dir vdir pcre2grep diff pacman
+alias prep='pcre2grep'
+
+alias -R % '% --color=always' pacman pacaur 
+
+alias -R % '% --color=auto' ls dir vdir grep fgrep egrep pcre2grep diff
 
 alias -R % '% -h' df du ls dir vdir
 
-alias mkd='mkdir'
-
-alias d='pushd'
-alias p='popd'
-alias s='dirs'
+alias -- +='pushd'
+alias -- -='popd'
+alias -- d='dirs'
 
 alias l='ls -C'
 alias la='ls -CA'
 alias ll='ls -l'
 alias lla='ls -lA'
-
-alias prep='pcre2grep'
 
 alias top='htop'
 
@@ -85,59 +88,66 @@ alias py='python'
 alias py2='python2'
 alias py3='python3'
 
-alias xc.c='xclip -selection clipboard'
-alias xc.p='xclip -selection primary'
-alias xc.s='xclip -selection secondary'
+alias xcin='xclip -selection clipboard'
+alias xcout='xclip -selection clipboard -o'
+alias xctee='xclip -selection clipboard -f'
 
-alias xc.fcut='xclip-cutfile'
-alias xc.fcp='xclip-copyfile'
-alias xc.fput='xclip-pastefile'
+alias xc1in='xclip -selection primary'
+alias xc1out='xclip -selection primary -o'
+alias xc1tee='xclip -selection primary -f'
+
+alias xc2in='xclip -selection secondary'
+alias xc2out='xclip -selection secondary -o'
+alias xc2tee='xclip -selection secondary -f'
+
+alias xc-cutfile='xclip-cutfile'
+alias xc-copyfile='xclip-copyfile'
+alias xc-pastefile='xclip-pastefile'
 
 alias mkvenv='mkvirtualenv'
 alias cdvenv='cdvirtualenv'
 alias lsvenv='lsvirtualenv'
 alias rmvenv='rmvirtualenv'
 
-alias pf='printf'
-alias pf-s='printf '"'"'%s'"'"
-alias pf-q='printf '"'"'%q'"'"
-alias pf-b='printf '"'"'%b'"'"
-alias pf-d='printf '"'"'%d'"'"
-alias pf-e='printf '"'"'%e'"'"
-alias pf-o='printf '"'"'%o'"'"
-alias pf-x='printf '"'"'%x'"'"
+alias prf='printf'
+alias prfs='printf '"'"'%s'"'"
+alias prfq='printf '"'"'%q'"'"
+alias prfb='printf '"'"'%b'"'"
+alias prfd='printf '"'"'%d'"'"
+alias prfe='printf '"'"'%e'"'"
+alias prfo='printf '"'"'%o'"'"
+alias prfx='printf '"'"'%x'"'"
 
-alias pfn='printf '"'"'\n'"'"
-alias pfn-s='printf '"'"'%s\n'"'"
-alias pfn-q='printf '"'"'%q\n'"'"
-alias pfn-b='printf '"'"'%b\n'"'"
-alias pfn-d='printf '"'"'%d\n'"'"
-alias pfn-e='printf '"'"'%e\n'"'"
-alias pfn-o='printf '"'"'%o\n'"'"
-alias pfn-x='printf '"'"'%x\n'"'"
+alias prfn='printf '"'"'\n'"'"
+alias prfns='printf '"'"'%s\n'"'"
+alias prfnq='printf '"'"'%q\n'"'"
+alias prfnb='printf '"'"'%b\n'"'"
+alias prfnd='printf '"'"'%d\n'"'"
+alias prfne='printf '"'"'%e\n'"'"
+alias prfno='printf '"'"'%o\n'"'"
+alias prfnx='printf '"'"'%x\n'"'"
 
-alias ydla='\
-youtube-dl                \
-  --extract-audio         \
-  --console-title         \
-  --ignore-errors         \
-  --audio-quality 0       \
-  --format                \
-    '"'"'bestaudio/best'"'"'      \
-  --output                \
-    '"'"'%(title)s.%(ext)s'"'"'   \
-  --geo-bypass            \
-  --playlist-random       \
-  --min-sleep-interval 1  \
-  --max-sleep-interval 7  \
-  --add-metadata          \
-  --metadata-from-title   \
-    '"'"'^((?P<artist>.+?) - ((?P<album>.+) - )?)?(?P<title>.+?)$'"'"' \
-  --exec '"'"'mv -bv {} ~/Music/"$(sed '"'"'"'"'"'"'"'"'
-      s@[[:space:]_]\+@_@g
-      s@_-_@.@g
-    '"'"'"'"'"'"'"'"' <<<{})" 2>/dev/null'"'"
+alias ydla='youtube-dl \
+  --extract-audio \
+  --audio-quality 0 \
+  --console-title \
+  --format '"'"'bestaudio/best'"'"' \
+  --output '"'"'%(title)s.%(ext)s'"'"' \
+  --geo-bypass \
+  --ignore-errors \
+  --playlist-random \
+  --min-sleep-interval 1 \
+  --max-sleep-interval 7 \
+  --add-metadata \
+  --metadata-from-title \
+  '"'"'^((?P<artist>.+?)\s+-\s+((?P<album>.+)\s+-\s+)?)?(?P<title>.+?)$'"'"' \
+  --exec '"'"'mv -bv {} ~/Music/"$(sed -E '"'"'"'"'"'"'"'"'
+    s/\s+/_/g
+    s/__+/_/g
+    s/--+/-/g
+    s/-_-/-/g
+    s/_-_/./g
+    s/-\././g
+'"'"'"'"'"'"'"'"' <<<{})" 2>/dev/null'"'"
 
 alias creds='gpg -d /crypt/patrick/creds.gpg'
-
-alias sudo='sudo '

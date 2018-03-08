@@ -1,5 +1,0 @@
-#!/bin/env sh
-
-# start X compositor
-compton -bcCGf -D 22 -e 0.87 --inactive-dim 0.04 --no-fading-openclose \
-  --vsync opengl --write-pid-path "$HOME"/.cache/compton.pid

@@ -79,12 +79,12 @@ set cursorline
 " always display the status line
 set laststatus=2
 "
-" print '@@@' if the last line is too long to fit in the window
-set display=truncate
+" display last line in window as "@@@" if it doesn't fit
+" display unprintable characters in hex as <xx>
+set display=truncate,uhex
 "
 " highlight columns relative to 'textwidth'
 set colorcolumn=+1,+2,+3,+5,+7,+9
-
 
 " -- Cursor Position & Movement --
 "
@@ -134,10 +134,10 @@ set undofile
 set undolevels=10000
 "
 " save undofile in first existing, writable directory 
-set undodir=~/.vim/undo,~/.local/share/vim,.,$TMPDIR,~/tmp,/tmp
+set undodir=~/.vim/undo,~/.vim,~/.local/share/vim,.,~/tmp,$TMPDIR,/tmp
 "
 " save swapfile in first existing, writable directory 
-set directory=~/.vim/swap,~/.local/share/vim,.,$TMPDIR,~/tmp,/tmp
+set directory=~/.vim/swap,~/.vim,~/.local/share/vim,.,~/tmp,$TMPDIR,/tmp
 
 
 " -- Buffers --
@@ -182,9 +182,7 @@ set mouse=a
 "
 " set editor colorscheme
 if &g:t_Co == 256
-  colorscheme patrick_desertEx
-else
-  colorscheme patrick_peachpuff
+  colorscheme desertX
 endif
 
 " highlight the line number of the current line
@@ -197,11 +195,7 @@ highlight CursorLineNr term=bold cterm=bold gui=bold
 "
 " C / C++
 let c_comment_strings     = 1   " allow strings & numbers inside C comments
-"
-" Lisp
 let g:lisp_rainbow        = 1   " highlight Lisp based on parenthesization
-"
-" Python
 let python_highlight_all  = 1   " enable all available highlighting for Python
 "
 " Readline
@@ -211,33 +205,9 @@ let readline_has_bash     = 1   " highlight readline additions from by bash
 let highlight_sedtabs     = 1   " should be using '\t' so highlight real tabs
 "
 " Shells
-let g:is_posix            = 1   " set default syntax for '*.sh' files
-let g:sh_fold_enabled     = 3   " enable folding of functions & heredocs
-let g:sh_no_error         = 1   " be conservative when highlighting errors
-
-
-" -- Folding --
-"
-"set foldmethod=expr
-"set foldexpr=GetFoldLvl(v:lnum)
-"
-"function! GetFoldLvl(lnum)
-"  if getline(a:lnum) =~ '\S'
-"    let this_indent = indent(a:lnum) / &shiftwidth
-"    let next_indent = indent(nextnonblank(a:lnum + 1)) / &shiftwidth
-"    if next_indent > this_indent
-"      return '>' . next_indent
-"    endif
-"    if getline(a:lnum - 1) =~ '\S'
-"      let prev_indent = indent(a:lnum - 1) / &shiftwidth
-"      if prev_indent > this_indent
-"        return '<' . prev_indent
-"      endif
-"    endif
-"    return this_indent
-"  endif
-"  return '-1'
-"endfunction
+let g:is_posix            = 1   " set default syntax for *.sh files
+let g:sh_fold_enabled     = 1   " enable function & heredoc folding
+let g:sh_no_error         = 1   " relax error detection in sh files
 
 
 " -- Mappings --
