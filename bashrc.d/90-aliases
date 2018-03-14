@@ -1,3 +1,4 @@
+#!/bin/env bash
 ## alias definitions to source in bashrc
 ## Patrick DeYoreo
 
@@ -109,30 +110,32 @@ alias cdvenv='cdvirtualenv'
 alias lsvenv='lsvirtualenv'
 alias rmvenv='rmvirtualenv'
 
-alias prf='printf'
-alias prfs='printf '"'"'%s'"'"
-alias prfq='printf '"'"'%q'"'"
-alias prfb='printf '"'"'%b'"'"
-alias prfd='printf '"'"'%d'"'"
-alias prfe='printf '"'"'%e'"'"
-alias prfo='printf '"'"'%o'"'"
-alias prfx='printf '"'"'%x'"'"
+alias print='printf'
 
-alias prfn='printf '"'"'\n'"'"
-alias prfns='printf '"'"'%s\n'"'"
-alias prfnq='printf '"'"'%q\n'"'"
-alias prfnb='printf '"'"'%b\n'"'"
-alias prfnd='printf '"'"'%d\n'"'"
-alias prfne='printf '"'"'%e\n'"'"
-alias prfno='printf '"'"'%o\n'"'"
-alias prfnx='printf '"'"'%x\n'"'"
+alias pf='printf'
+alias pf-n='printf '"'"'\n'"'"
+alias pf-s='printf '"'"'%s'"'"
+alias pf-q='printf '"'"'%q'"'"
+alias pf-b='printf '"'"'%b'"'"
+alias pf-d='printf '"'"'%d'"'"
+alias pf-e='printf '"'"'%e'"'"
+alias pf-o='printf '"'"'%o'"'"
+alias pf-x='printf '"'"'%x'"'"
+
+alias pf-sn='printf '"'"'%s\n'"'"
+alias pf-qn='printf '"'"'%q\n'"'"
+alias pf-bn='printf '"'"'%b\n'"'"
+alias pf-dn='printf '"'"'%d\n'"'"
+alias pf-en='printf '"'"'%e\n'"'"
+alias pf-on='printf '"'"'%o\n'"'"
+alias pf-xn='printf '"'"'%x\n'"'"
 
 alias ydla='youtube-dl \
   --extract-audio \
   --audio-quality 0 \
   --console-title \
   --format '"'"'bestaudio/best'"'"' \
-  --output '"'"'%(title)s.%(ext)s'"'"' \
+  --output '"'"'~/.cache/%(title)s.%(ext)s'"'"' \
   --geo-bypass \
   --ignore-errors \
   --playlist-random \

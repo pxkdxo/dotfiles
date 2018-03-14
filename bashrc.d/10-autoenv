@@ -1,73 +1,72 @@
 #!/bin/env bash
-## Library of functions to help configure the environment
+
+## Functions to help configure the environment
 
 
-## Mapping from variables to the functions that set them
-declare -A _autoenv=(
-  ['EDITOR']='autoenv::EDITOR'
-  ['LS_COLORS']='autoenv::LS_COLORS'
-  ['GCC_COLORS']='autoenv::GCC_COLORS'
-)
+## If given arguments, configure corresponding variables.
+## Otherwise, configure all variables.
+autoenv::main() {
+  local -A __autoenv__=( 
+    [EDITOR]='autoenv::EDITOR'
+    [GCC_COLORS]='autoenv::GCC_COLORS'
+    [LS_COLORS]='autoenv::LS_COLORS'
+  )
 
+  (( $# == 0 )) && set -- "${!__autoenv__[@]}"
 
-## If given arguments, try to configure those variables.
-## Otherwise, try to configure any variables that are null.
-autoenv::main()
-if (( $# )); then "autoenv::$1"
-  while shift; do "autoenv::$1"
-  done
-else set -- "${!_autoenv[@]}"
   while (( $# )); do
-    [[ ! -v $1 ]] && "${_autoenv[$1]}"
+    ${__autoenv__[$1]-:}
     shift
   done
-fi
+}
 
 
-## Sets a default text editor
-autoenv::EDITOR()
-if unset -v EDITOR && local -a EDITOR=(vim vi nano); then
-  for EDITOR in "$@" "${EDITOR[@]}"; do
-    if read -r EDITOR < <(command -pv "${EDITOR}"); then
-      declare -gx EDITOR="${EDITOR}"
-      return
-    fi
-  done
-fi
 
+## Sets default text editor
+autoenv::EDITOR() {
+  unset -v EDITOR && {
+    local -a EDITOR=(vim vi nano)
+    for EDITOR in "$@" "${EDITOR[@]}"; do
+      command -pv "${EDITOR}" > /dev/null && {
+        declare -gx EDITOR="${EDITOR}"
+        break
+      }
+    done
+  }
+}
 
-## Sets command output colors
-autoenv::LS_COLORS()
-if wait $! && unset -v LS_COLORS; then
-  read -r LS_COLORS
-  if (( $# )); then
-    set -- "$1"
-  elif [[ -f ~/.dircolors ]]; then
-    set -- ~/.dircolors
-  fi
-  [[ "$("${LS_COLORS}" -b "$@")" =~ ^LS_COLORS=\'([^\']*)\' ]]
-  declare -gx LS_COLORS="${BASH_REMATCH[1]}"
-fi < <(command -pv dircolors)
 
 
 ## Sets GCC output formatting
-autoenv::GCC_COLORS()
-if local IFS=: && unset -v GCC_COLORS && local -A GCC_COLORS=( 
-    ['caret']='caret=01;32' ['error']='error=01;31'
-    ['locus']='locus=01'    ['note']='note=01;36'
-    ['quote']='quote=01'    ['warning']='warning=01;35'
-);
-then
+autoenv::GCC_COLORS() {
+  local IFS=$': \t\n' && unset -v GCC_COLORS && {
+    local -A GCC_COLORS=( [caret]='caret=01;32' [error]='error=01;31'
+                          [locus]='locus=01;36' [note]='note=01;35'      
+                          [quote]='quote=01;34' [warning]='warning=01;33' )
     while (( $# )); do
-      : "${1%%=*}"
-      GCC_COLORS["$_"]="$_${1#"$_"}"
+      GCC_COLORS[${1%%=*}]="${1%%=*}"'='"${1#*=}"
       shift
     done
     declare -gx GCC_COLORS="${GCC_COLORS[*]}"
-fi
+  }
+}
+
+
+
+## Sets command output colors
+autoenv::LS_COLORS() {
+  command -pv dircolors > /dev/null && unset -v LS_COLORS && {
+    local LS_COLORS='LS_COLORS='"'"'([^'"'"']*)'"'"';'
+    [[ $# -eq 0 && -f ~/.dircolors ]] && set -- ~/.dircolors
+    [[ "$(command -p dircolors -b "$@")" =~ ${LS_COLORS} ]]
+    declare -gx LS_COLORS="${BASH_REMATCH[1]}"
+  }
+}
+
 
 
 ## Apply configuration
 autoenv::main "$@"
 
-## -- end --
+
+## -- (END) --

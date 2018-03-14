@@ -7,4 +7,4 @@
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
 # autostart X at login
-[[ -v DISPLAY ]] && (( XDG_VTNR == 1 )) && exec startx
+[[ ! -v DISPLAY ]] && (( XDG_VTNR == 1 )) && exec startx
