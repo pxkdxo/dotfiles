@@ -80,7 +80,7 @@ declare -A ti=( ['bold']="$(tput bold)" ['dim']="$(tput dim)"
 ## Function to update the primary prompt (PS1)
 PS1() {
   PS1=\
-"${1-"\\[${ti[sgr0]}\\]"}"\
+'\['"${ti[sgr0]}${ti[dim]}${1}"'\]'\
 '$(tput rep '"$(("$(printf '%d' "'${2-"#"}")"))"' "$(("$(tput cols)"))")'\
 '\['"${ti[sgr0]}"'\]\n'\
 '\['"${ti[sgr0]}${ti[bold]}"'\]\u'\
@@ -93,7 +93,7 @@ PS1() {
 '\['"${ti[sgr0]}"'\]\n'\
 '\['"${ti[sgr0]}${ti[bold]}"'\]\D{%I:%M %p %Z}'\
 '\['"${ti[sgr0]}"'\]\n'\
-'\['"${ti[sgr0]}${ti[bold]}"'\]\$'"${3-"λ"}"\
+'\['"${ti[sgr0]}${ti[bold]}${1}"'\]\$'"${3-"λ"}"\
 '\['"${ti[sgr0]}"'\] '
 }
 declare -ft PS1
@@ -102,7 +102,7 @@ declare -ft PS1
 ## Function to update the secondary prompt (PS2)
 PS2() {
   PS2=\
-"${1-"\\[${ti[sgr0]}\\]"}"\
+'\['"${ti[sgr0]}${ti[bold]}${ti[dim]}${1}"'\]'\
 '$(( (LINENO - '"$(("${2-"${BASH_LINENO[-1]}"}"))"') / 10 ))'\
 '$(( (LINENO - '"$(("${2-"${BASH_LINENO[-1]}"}"))"') % 10 ))'\
 '\['"${ti[sgr0]}"'\] '
@@ -120,7 +120,7 @@ declare -ft PS3
 ## Execution-trace prompt
 PS4() {
   PS4=\
-"${1-"\\[${ti[sgr0]}\\]"}"\
+'\['"${ti[sgr0]}${ti[bold]}${ti[dim]}${1}"'\]'\
 "${2-"•"}"\
 '\['"${ti[sgr0]}${ti[bold]}"'\]'\
 "${3-"◆"}"\
@@ -132,10 +132,10 @@ declare -ft PS4
 ## Function to update prompts
 PS_update() {
   set -- "$(tput setaf "$(( ($?+123) % $(("${ti[colors]:=$(tput colors)}")) ))")"
-  PS1 '\['"${ti[sgr0]}${ti[dim]}$1"'\]' '~' 'λ'
-  PS2 '\['"${ti[sgr0]}${ti[bold]}${ti[dim]}$1"'\]' "${BASH_LINENO[-1]}"
+  PS1 "$1" '~' 'λ'
+  PS2 "$1" "${BASH_LINENO[-1]}"
   PS3 '•◆'
-  PS4 '\['"${ti[sgr0]}${ti[bold]}${ti[dim]}$1"'\]' '•' '◆'
+  PS4 "$1" '•' '◆'
 }
 declare -ft PS_update
 
