@@ -1,6 +1,6 @@
 " ~/.vimrc : vim configuration
 " ViM version 8.0
-
+"
 " always encode in utf-8
 set encoding=utf-8
 
@@ -8,9 +8,9 @@ set encoding=utf-8
 set nocompatible
 
 
-" -- Filetype & Syntax --
+" -- Filetype Detection --
 "
-" detect filetype, load plugins, & apply indentation style
+" detect, load plugins, & apply indent style
 filetype plugin indent on
 "
 " perform syntax highlighting
@@ -32,63 +32,58 @@ set softtabstop=2
 set tabstop=2
 "
 " line length beyond which insertion will cause a linebreak
-set textwidth=79
+set textwidth=80
 
 
 " -- Searching & Pattern Matching --
 "
-" search forward as a pattern is being typed
-set incsearch
-"
 " do not highlight search results
 set nohlsearch
 "
-" ignore case when matching a pattern
+" search forward as a pattern is being typed
+set incsearch
+"
+" ignore case when pattern matching
 set ignorecase
 "
-" respect case if pattern contains uppercase
+" respect case if pattern contains uppercase characters
 set smartcase
 "
-" briefly jump to match upon completing pair from 'matchpairs'
+" briefly jump to match upon completing a pair in 'matchpairs'
 set showmatch
-"
-" tuples of characters to match as pairs
-set matchpairs=(:),{:},[:]
 
 
-" -- Information Visibility --
+" -- Information & Verbosity --
 "
 " display line numbers
 set number
 "
-" display current coordinates (line:column) of the cursor
+" display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
 "
-" set name of file in focused buffer as window title
-set title
-"
-" disable message about search wrapping across a file
-set terse
-"
-" display most recent command below the buffer windows
+" display the most recent command below buffer windows
 set showcmd
 "
-" highlight the line the cursor is currently on
-set cursorline
+" disable alerts about searches wrapping to other end of file
+set terse
 "
-" always display the status line
-set laststatus=2
-"
-" display last line in window as "@@@" if it doesn't fit
-" display unprintable characters in hex as <xx>
-set display=truncate,uhex
+"set name of file in focused buffer as window title
+set title
 "
 " highlight columns relative to 'textwidth'
-set colorcolumn=+1,+2,+3,+5,+7,+9
-
-" -- Cursor Position & Movement --
+set colorcolumn=+1,+2,+3,+5
 "
-" attempt to preserve cursor position when moving linewise 
+" non-printable characters and lines larger than available space in window
+set display=truncate,uhex
+"
+" always show the status line
+set laststatus=2
+
+
+
+" -- Cursor & Scrolling --
+"
+" attempt to preserve cursor position when moving linewise
 set nostartofline
 "
 " allow a way to backspace over each additional item
@@ -97,14 +92,14 @@ set backspace=indent,eol,start
 " allow visual-block selection of text-free columns
 set virtualedit=block
 "
-" size of padding between the cursor and the vertical edges
-set scrolloff=3
+" lines of padding in between the cursor and window boundary
+set scrolloff=4
 "
-" scroll horizontally one column at a time when 'wrap' is off
+" columns of padding between cursor and window boundary (when 'wrap' is off)
+set sidescrolloff=4
+"
+" minimum number of columns to scroll horizontally (when 'wrap' is off)
 set sidescroll=1
-"
-" size of padding between cursor and horiz. edges when 'wrap' is off
-set sidescrolloff=3
 
 
 " -- Key Timeout --
@@ -124,20 +119,23 @@ set ttimeoutlen=115
 
 " -- History --
 "
-" size of the command history
-set history=10000
+" size of the command history 
+set history=1000
 "
-" save undo history while editing a file
+" maximum number of characters allowed between swapfile updates
+set updatecount=160
+"
+" directory preferences for location of swap files
+set directory=${XDG_CACHE_HOME}/vim/swap,~/.vim/swap,.,${XDG_RUNTIME_DIR}/vim
+"
+" save undo history to a file
 set undofile
 "
-" maximum number of changes that can be undone
-set undolevels=10000
+" number of changes that can be undone
+set undolevels=3000
 "
-" save undofile in first existing, writable directory 
-set undodir=~/.vim/undo,~/.vim,~/.local/share/vim,.,~/tmp,$TMPDIR,/tmp
-"
-" save swapfile in first existing, writable directory 
-set directory=~/.vim/swap,~/.vim,~/.local/share/vim,.,~/tmp,$TMPDIR,/tmp
+" directory for location of undo files
+set undodir=${XDG_DATA_HOME}/vim/undo,~/.vim/undo,.
 
 
 " -- Buffers --
@@ -157,6 +155,7 @@ set splitright
 
 " -- Completion --
 "
+" settings for insert-mode completion
 set completeopt=menu,preview,longest,noselect
 "
 " enable the command-completion menu
@@ -182,35 +181,37 @@ set mouse=a
 "
 " set editor colorscheme
 if &g:t_Co == 256
-  colorscheme desertX
+  colorscheme desertExP
 endif
 
-" highlight the line number of the current line
-highlight CursorLine   NONE
-highlight CursorLineNr NONE
-highlight CursorLineNr term=bold cterm=bold gui=bold
 
-
-" -- Language-Specific Syntax Options --
+" -- Python --
 "
-" C / C++
-let c_comment_strings     = 1   " allow strings & numbers inside C comments
-let g:lisp_rainbow        = 1   " highlight Lisp based on parenthesization
+set pyxversion=3                " Set preferred version of Python
+"
 let python_highlight_all  = 1   " enable all available highlighting for Python
+
+
+" -- C / C++ --
 "
-" Readline
-let readline_has_bash     = 1   " highlight readline additions from by bash
+let c_comment_strings     = 1   " allow strings & numbers inside C comments
+
+
+" -- Shells --
 "
-" Sed
-let highlight_sedtabs     = 1   " should be using '\t' so highlight real tabs
+let g:is_posix            = 1   " set posix as default syntax for .sh files
+let g:sh_fold_enabled     = 3   " if/do/for=4 here-docs=2 functions=1
+let g:sh_no_error         = 1   " relax error detection when editing .sh files
 "
-" Shells
-let g:is_posix            = 1   " set default syntax for *.sh files
-let g:sh_fold_enabled     = 1   " enable function & heredoc folding
-let g:sh_no_error         = 1   " relax error detection in sh files
+let readline_has_bash     = 1   " highlight additions available through bash
+"
+let highlight_sedtabs     = 1   " highlight real tab characters in sed scripts
 
 
 " -- Mappings --
+
+" Split to a new terminal window
+map <F4> :ter <CR>
 "
 " Toggle syntax highlighting on/off
 map <F7> :if exists("g:syntax_on") <Bar>
@@ -218,20 +219,17 @@ map <F7> :if exists("g:syntax_on") <Bar>
   \ else <Bar>
   \   syntax enable <Bar>
   \ endif <CR>
-
-
+"
 " Search for selected text ('*'/'#' := forward/backward, 'n'/'N' := next/prev)
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
   \gvy/<C-R><C-R>=substitute(
   \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-
+"
 vnoremap <silent> # :<C-U>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
-
-" -- end --

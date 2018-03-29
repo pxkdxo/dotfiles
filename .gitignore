@@ -26,10 +26,10 @@
 
 !/inputrc
 
-!/kbd/**
-
 !/mpd/
 !/mpd/mpd.conf
+
+!/mpv/
 
 !/mutt/
 
@@ -38,8 +38,11 @@
 !/ncmpcpp/
 !/ncmpcpp/config
 
+!/pacman/**
+
+!/pam_environment
+
 !/profile
-!/profile.d/**
 
 !/README.md
 
@@ -49,10 +52,7 @@
 
 !/tmux.conf
 
-!/vim/
-!/vim/vimrc
-!/vim/colors/**
-!/vim/macros/**
+!/vim/**
 
 !/xinitrc
 !/xinitrc.d/**
@@ -62,6 +62,5 @@
 
 !/xserverrc
 
-!/zcompdump
 !/zlogin
 !/zshrc

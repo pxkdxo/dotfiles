@@ -6,8 +6,8 @@
 
 ## run system scripts
 [[ -d '/etc/X11/xinit/xinitrc.d' ]] &&
-  for _ in '/etc/X11/xinit/xinitrc.d'/*; do
-    [[ -r "$_" ]] && source "$_"
+  for _ in '/etc/X11/xinit/xinitrc.d'/*.sh; do
+    [[ -r "$_" ]] && . "$_"
   done
 
 ## merge in user resources
@@ -16,8 +16,8 @@
 
 ## run user scripts
 [[ -d "${HOME}/.xinitrc.d" ]] &&
-  for _ in "${HOME}/.xinitrc.d"/*; do
-    [[ -r "$_" ]] && source "$_"
+  for _ in "${HOME}/.xinitrc.d"/*.sh; do
+    [[ -r "$_" ]] && . "$_"
   done
 
 ## pass control to window manager

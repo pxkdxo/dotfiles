@@ -9,13 +9,13 @@ alias() {
   : "$(trap -p RETURN)";  printf '%s\n' "${_:-trap - RETURN}"
   )" RETURN
 
-  trap 'cat <&2 <<\HELP >&2
+  trap '{ cat >&2; return 2; } <<@HELP
 alias: alias [-p] [name[=value] ... ]
        alias  -R  variable template [alias ... ]
-HELP
+@HELP
 ' ERR
 
-  if [[ "$1" = -R ]]; then
+  if [[ $1 = -R ]]; then
     shift
     set -- "${@/%/=$2}" "$1"
     shift
@@ -43,13 +43,13 @@ mkcd() {
   : "$(trap -p RETURN)";  printf '%s\n' "${_:-trap - RETURN}"
   )" RETURN
 
-  trap '{ cat >&2; return 2; } <<'"'"'@HELP'"'"'
+  trap '{ cat >&2; return 2; } <<@HELP
 mkcd: mkcd [options] directory ...
 @HELP' ERR
 
   mkdir "$@"
   cd -- "${!#}"
-}
+} && declare -ft mkcd
 
 
 ## `cd' into a directory and print its contents
@@ -60,12 +60,11 @@ cdls() {
   : "$(trap -p RETURN)";  printf '%s\n' "${_:-trap - RETURN}"
   )" RETURN
 
-  trap 'cat <&2 <<\HELP >&2
+  trap '{ cat >&2; return 2; } <<@HELP
 cdls: cdls [options] directory
-HELP' ERR
-
-  cd -"${@/#!(-@(L|P|e|@))/}" && ls "${@/%!(-!(L|P|e|@))/}"
-}
+@HELP' ERR
+  cd "${@##!(-@(L|P|e|@))/}" && ls "${@/%%-!(-!(L|P|e|@))/}"
+} && declare -ft cdls
 
 
 ## `cd' upward by "height" or to the filesystem root - whichever comes first
@@ -87,4 +86,4 @@ up() {
     printf 'up: %s: invalid expression\n' "${!#@Q}" >&2
     return 2
   fi
-}
+} && declare -ft up

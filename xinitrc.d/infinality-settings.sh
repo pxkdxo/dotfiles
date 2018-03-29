@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/env sh
 
 ###          freetype2-infinality-ultimate settings          ###
 ###              rev. 0.5, for freetype2 v.2.6.3             ###
@@ -32,7 +32,7 @@
 ### and set its name as the value.
 
 
-export INFINALITY_FT="ultimate4"
+export INFINALITY_FT="ultimate5"
 
 
 ### 2. If you want to create a custom style, uncomment the variables below

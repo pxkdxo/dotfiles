@@ -1,8 +1,7 @@
 ! ~/.Xresources : X server resources
 ! Patrick DeYoreo
 
-#include ".Xresources.d/colors/vertex"
-#include ".Xresources.d/Xft"
+#include ".Xresources.d/colors/gruvbox_black"
 
 *locale                   : true
 *customization            : -color
@@ -26,7 +25,8 @@ XTerm*on3Clicks           : regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[
 
 *vt100.renderFont         : true
 
-*vt100.faceName           : SauceCodePro Nerd Font Mono
+*vt100.faceName           : Source Code Pro
+!*vt100.faceName           : SauceCodePro Nerd Font Mono
 *vt100.faceSize           : 14
 *vt100.faceSize1          : 11
 *vt100.faceSize2          : 13
@@ -55,7 +55,7 @@ XTerm*on3Clicks           : regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[
 
 *vt100.scrollKey          : true
 *vt100.scrollTtyOutput    : false
-*vt100.saveLines          : 6688
+*vt100.saveLines          : 8192
 
 *vt100.visualBell         : true
 *vt100.visualBellDelay    : 0

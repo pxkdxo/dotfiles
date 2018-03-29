@@ -5,85 +5,61 @@
 alias sudo='sudo '
 
 alias pacs='pacman -S'
-alias pacss='pacman -Ss'
-alias pacsi='pacman -Si'
 alias pacsc='pacman -Sc'
-alias pacscc='pacman -Scc'
-alias pacsy='pacman -Sy'
+alias pacsi='pacman -Si'
+alias pacss='pacman -Ss'
 alias pacsu='pacman -Su'
-alias pacsyu='pacman -Syu'
-alias pacsyy='pacman -Syy'
 alias pacsyyu='pacman -Syyu'
 
-alias paus='pacaur -S'
-alias pauss='pacaur -Ss'
-alias pausi='pacaur -Si'
-alias pausc='pacaur -Sc'
-alias pauscc='pacaur -Scc'
-alias pausy='pacaur -Sy'
-alias pausu='pacaur -Su'
-alias pausyu='pacaur -Syu'
-alias pausyy='pacaur -Syy'
-alias pausyyu='pacaur -Syyu'
-
 alias pacq='pacman -Q'
-alias pacqs='pacman -Qs'
+alias pacqdt='pacman -Qdt'
 alias pacqi='pacman -Qi'
+alias pacqk='pacman -Qk'
 alias pacql='pacman -Ql'
 alias pacqo='pacman -Qo'
-alias pacqk='pacman -Qk'
-alias pacqkk='pacman -Qkk'
-alias pacqdt='pacman -Qdt'
-alias pacqdtt='pacman -Qdtt'
+alias pacqs='pacman -Qs'
 
-alias pauq='pacaur -Q'
-alias pauqs='pacaur -Qs'
-alias pauqi='pacaur -Qi'
-alias pauql='pacaur -Ql'
-alias pauqo='pacaur -Qo'
-alias pauqk='pacaur -Qk'
-alias pauqkk='pacaur -Qkk'
-alias pauqdt='pacaur -Qdt'
-alias pauqdtt='pacaur -Qdtt'
+alias pacr='pacman -Run'
+alias pacrs='pacman -Rsun'
+alias pacrcs='pacman -Rcsun'
+alias pacrcss='pacman -Rcssun'
+alias pacrss='pacman -Rssun'
 
-alias pacr='pacman -R'
-alias pacrs='pacman -Rsud'
-alias pacrcs='pacman -Rcsud'
-alias pacrss='pacman -Rssud'
-alias pacrcss='pacman -Rcssud'
-
-alias paur='pacaur -R'
-alias paurs='pacaur -Rsud'
-alias paurcs='pacaur -Rcsud'
-alias paurss='pacaur -Rssud'
-alias paurcss='pacaur -Rcssud'
+alias pacf='pacman -F'
+alias pacfl='pacman -Fl'
+alias pacfo='pacman -Fo'
+alias pacfsx='pacman -Fsx'
+alias pacfyy='pacman -Fyy'
 
 alias mv='mv -ibv'
 alias rm='rm -Idv'
 
-alias mkd='mkdir'
 alias mkdir='mkdir -pv'
 
-alias prep='pcre2grep'
+alias pcre='pcre2grep'
 
-alias -R % '% --color=always' pacman pacaur 
+alias -R '{}' '{} --color=auto' ls dir vdir grep fgrep egrep pcre2grep
 
-alias -R % '% --color=auto' ls dir vdir grep fgrep egrep pcre2grep diff
+alias -R '{}' '{} -h' ls dir vdir df du 
 
-alias -R % '% -h' df du ls dir vdir
+alias -- pu='pushd'
+alias -- po='popd'
+alias -- ds='dirs'
 
-alias -- +='pushd'
-alias -- -='popd'
-alias -- d='dirs'
+alias -R '{}' '{} -C' ls
 
-alias l='ls -C'
-alias la='ls -CA'
+alias l='ls'
+alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
 
-alias top='htop'
+alias rename='rename -ov'
 
 alias which='type -P'
+
+if command -pv htop >/dev/null; then
+  alias top='htop'
+fi
 
 alias py='python'
 alias py2='python2'
@@ -101,41 +77,73 @@ alias xc2in='xclip -selection secondary'
 alias xc2out='xclip -selection secondary -o'
 alias xc2tee='xclip -selection secondary -f'
 
-alias xc-cutfile='xclip-cutfile'
-alias xc-copyfile='xclip-copyfile'
-alias xc-pastefile='xclip-pastefile'
+alias xccutfile='xclip-cutfile'
+alias xccopyfile='xclip-copyfile'
+alias xcpastefile='xclip-pastefile'
 
 alias mkvenv='mkvirtualenv'
 alias cdvenv='cdvirtualenv'
 alias lsvenv='lsvirtualenv'
 alias rmvenv='rmvirtualenv'
 
-alias print='printf'
-
 alias pf='printf'
-alias pf-n='printf '"'"'\n'"'"
-alias pf-s='printf '"'"'%s'"'"
-alias pf-q='printf '"'"'%q'"'"
-alias pf-b='printf '"'"'%b'"'"
-alias pf-d='printf '"'"'%d'"'"
-alias pf-e='printf '"'"'%e'"'"
-alias pf-o='printf '"'"'%o'"'"
-alias pf-x='printf '"'"'%x'"'"
+alias pfd='printf '"'"'%d'"'"
+alias pfi='printf '"'"'%i'"'"
+alias pfo='printf '"'"'%o'"'"
+alias pfu='printf '"'"'%u'"'"
+alias pfx='printf '"'"'%x'"'"
+alias pfX='printf '"'"'%X'"'"
+alias pff='printf '"'"'%f'"'"
+alias pfe='printf '"'"'%e'"'"
+alias pfE='printf '"'"'%E'"'"
+alias pfg='printf '"'"'%g'"'"
+alias pfG='printf '"'"'%G'"'"
+alias pfc='printf '"'"'%c'"'"
+alias pfs='printf '"'"'%s'"'"
+alias pfb='printf '"'"'%b'"'"
+alias pfq='printf '"'"'%q'"'"
 
-alias pf-sn='printf '"'"'%s\n'"'"
-alias pf-qn='printf '"'"'%q\n'"'"
-alias pf-bn='printf '"'"'%b\n'"'"
-alias pf-dn='printf '"'"'%d\n'"'"
-alias pf-en='printf '"'"'%e\n'"'"
-alias pf-on='printf '"'"'%o\n'"'"
-alias pf-xn='printf '"'"'%x\n'"'"
+alias pfdn='printf '"'"'%d\n'"'"
+alias pfin='printf '"'"'%i\n'"'"
+alias pfon='printf '"'"'%o\n'"'"
+alias pfun='printf '"'"'%u\n'"'"
+alias pfxn='printf '"'"'%x\n'"'"
+alias pfXn='printf '"'"'%X\n'"'"
+alias pffn='printf '"'"'%f\n'"'"
+alias pfen='printf '"'"'%e\n'"'"
+alias pfEn='printf '"'"'%E\n'"'"
+alias pfgn='printf '"'"'%g\n'"'"
+alias pfGn='printf '"'"'%G\n'"'"
+alias pfcn='printf '"'"'%c\n'"'"
+alias pfsn='printf '"'"'%s\n'"'"
+alias pfbn='printf '"'"'%b\n'"'"
+alias pfqn='printf '"'"'%q\n'"'"
+
+alias findcwd='find . -maxdepth 1'
+
+alias credentials='gpg -d /crypt/patrick/Documents/credentials.gpg'
+alias credsdecrypt='gpg /crypt/patrick/Documents/credentials.gpg'
+alias credsencrypt='gpg -c /crypt/patrick/Documents/credentials'
+alias credsencsign='gpg -cs /crypt/patrick/Documents/credentials'
+
+alias groupmeminfo=\
+'column'\
+' --table'\
+' --table-columns Member,Non-Member'\
+' --columns 2'\
+' --output-separator $'"'"'\t'"'"\
+' <(paste --delimiters=$'"'"'\t'"'"\
+' <(grep "${USER}" /etc/group) <(grep -v "${USER}" /etc/group)'\
+' | sed -E '"'"'s/^\s+/- /'"'"')'\
+' | sed -E '"'"'1!s/^\<|(\s)\</\1> /g'"'"\
+' | expand'
 
 alias ydla='youtube-dl \
   --extract-audio \
   --audio-quality 0 \
   --console-title \
-  --format '"'"'bestaudio/best'"'"' \
-  --output '"'"'~/.cache/%(title)s.%(ext)s'"'"' \
+  --format "bestaudio/best" \
+  --output "${HOME}/Music/%(title)s.%(ext)s" \
   --geo-bypass \
   --ignore-errors \
   --playlist-random \
@@ -143,14 +151,4 @@ alias ydla='youtube-dl \
   --max-sleep-interval 7 \
   --add-metadata \
   --metadata-from-title \
-  '"'"'^((?P<artist>.+?)\s+-\s+((?P<album>.+)\s+-\s+)?)?(?P<title>.+?)$'"'"' \
-  --exec '"'"'mv -bv {} ~/Music/"$(sed -E '"'"'"'"'"'"'"'"'
-    s/\s+/_/g
-    s/__+/_/g
-    s/--+/-/g
-    s/-_-/-/g
-    s/_-_/./g
-    s/-\././g
-'"'"'"'"'"'"'"'"' <<<{})" 2>/dev/null'"'"
-
-alias creds='gpg -d /crypt/patrick/creds.gpg'
+'"'"'^((?P<artist>.+?)\s+-\s+((?P<album>.+)\s+-\s+)?)?(?P<title>.+?)$'"'"

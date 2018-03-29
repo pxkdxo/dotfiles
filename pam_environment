@@ -1,0 +1,16 @@
+#
+## ~/.pam_environment
+#
+
+XDG_CACHE_HOME  DEFAULT=@{HOME}/.cache
+XDG_CONFIG_HOME DEFAULT=@{HOME}/.config
+XDG_DATA_HOME   DEFAULT=@{HOME}/.local/share
+
+PKGDEST         DEFAULT=@{HOME}/.local/pkg
+SRCDEST         DEFAULT=@{HOME}/.local/src
+LOGDEST         DEFAULT=${XDG_DATA_HOME}/makepkg
+BUILDDIR        DEFAULT=${XDG_RUNTIME_DIR}/makepkg
+
+GNUPGHOME       DEFAULT=${XDG_CONFIG_HOME}/gnupg
+
+TIME_STYLE      DEFAULT="+%a %F %I:%M %p"

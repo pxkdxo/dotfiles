@@ -67,6 +67,3 @@ autoenv::LS_COLORS() {
 
 ## Apply configuration
 autoenv::main "$@"
-
-
-## -- (END) --

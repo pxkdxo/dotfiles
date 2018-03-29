@@ -1,7 +1,0 @@
-#!/bin/env sh
-#
-## gpg-agent.sh : gpg-agent environment configuration
-#
-
-## This value should always match the output of `tty'
-export GPG_TTY="$(tty)"
