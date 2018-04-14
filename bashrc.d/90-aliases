@@ -1,90 +1,47 @@
-#!/bin/env bash
-## alias definitions to source in bashrc
+#!/usr/bin/env bash
+#
+#
+## Bash Alias Definitions
 ## Patrick DeYoreo
+#
+
+## If an expanded alias ends with a blank, then the next word is also checked.
 
 alias sudo='sudo '
 
-alias pacs='pacman -S'
-alias pacsc='pacman -Sc'
-alias pacsi='pacman -Si'
-alias pacss='pacman -Ss'
-alias pacsu='pacman -Su'
-alias pacsyyu='pacman -Syyu'
 
-alias pacq='pacman -Q'
-alias pacqdt='pacman -Qdt'
-alias pacqi='pacman -Qi'
-alias pacqk='pacman -Qk'
-alias pacql='pacman -Ql'
-alias pacqo='pacman -Qo'
-alias pacqs='pacman -Qs'
+## -- Default Options --
 
-alias pacr='pacman -Run'
-alias pacrs='pacman -Rsun'
-alias pacrcs='pacman -Rcsun'
-alias pacrcss='pacman -Rcssun'
-alias pacrss='pacman -Rssun'
+alias -R '%' '% --color=auto' ls dir vdir grep pcre2grep
 
-alias pacf='pacman -F'
-alias pacfl='pacman -Fl'
-alias pacfo='pacman -Fo'
-alias pacfsx='pacman -Fsx'
-alias pacfyy='pacman -Fyy'
+alias -R '%' '% --preserve-root' chgrp chmod chown
+
+alias -R '%' '% --random-source=/dev/random' shred shuf sort
 
 alias mv='mv -ibv'
 alias rm='rm -Idv'
-
 alias mkdir='mkdir -pv'
+alias rename='rename -ov'
 
-alias pcre='pcre2grep'
 
-alias -R '{}' '{} --color=auto' ls dir vdir grep fgrep egrep pcre2grep
+## -- Command Overrides --
 
-alias -R '{}' '{} -h' ls dir vdir df du 
+alias which='type -P'
 
-alias -- pu='pushd'
-alias -- po='popd'
-alias -- ds='dirs'
+type -P htop >/dev/null \
+  && alias top='htop'
 
-alias -R '{}' '{} -C' ls
+
+## -- Builtin Shortcuts --
+
+alias pu='pushd'
+alias po='popd'
+alias ds='dirs'
 
 alias l='ls'
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
-
-alias rename='rename -ov'
-
-alias which='type -P'
-
-if command -pv htop >/dev/null; then
-  alias top='htop'
-fi
-
-alias py='python'
-alias py2='python2'
-alias py3='python3'
-
-alias xcin='xclip -selection clipboard'
-alias xcout='xclip -selection clipboard -o'
-alias xctee='xclip -selection clipboard -f'
-
-alias xc1in='xclip -selection primary'
-alias xc1out='xclip -selection primary -o'
-alias xc1tee='xclip -selection primary -f'
-
-alias xc2in='xclip -selection secondary'
-alias xc2out='xclip -selection secondary -o'
-alias xc2tee='xclip -selection secondary -f'
-
-alias xccutfile='xclip-cutfile'
-alias xccopyfile='xclip-copyfile'
-alias xcpastefile='xclip-pastefile'
-
-alias mkvenv='mkvirtualenv'
-alias cdvenv='cdvirtualenv'
-alias lsvenv='lsvirtualenv'
-alias rmvenv='rmvirtualenv'
 
 alias pf='printf'
 alias pfd='printf '"'"'%d'"'"
@@ -119,26 +76,110 @@ alias pfsn='printf '"'"'%s\n'"'"
 alias pfbn='printf '"'"'%b\n'"'"
 alias pfqn='printf '"'"'%q\n'"'"
 
+
+## -- External Shortcuts --
+
+alias pcre='pcre2grep'
+
+alias py='python'
+alias py2='python2'
+alias py3='python3'
+
+alias xclip-i='xclip -selection clipboard -i'
+alias xclip-o='xclip -selection clipboard -o'
+alias xclip-f='xclip -selection clipboard -f'
+
+alias xclip-i1='xclip -selection primary -i'
+alias xclip-o1='xclip -selection primary -o'
+alias xclip-f1='xclip -selection primary -f'
+
+alias xclip-i2='xclip -selection secondary -i'
+alias xclip-o2='xclip -selection secondary -o'
+alias xclip-f2='xclip -selection secondary -f'
+
+alias mkvenv='mkvirtualenv'
+alias cdvenv='cdvirtualenv'
+alias lsvenv='lsvirtualenv'
+alias rmvenv='rmvirtualenv'
+
+alias pacs='sudo pacman --sync'
+alias pacsc='sudo pacman --sync -c'
+alias pacsg='pacman --sync -g'
+alias pacsi='pacman --sync -i'
+alias pacss='pacman --sync -s'
+alias pacsu='sudo pacman --sync -u'
+alias pacsyy='sudo pacman --sync -yy'
+alias pacsyyu='sudo pacman --sync -yyu'
+
+alias pacq='pacman --query'
+alias pacqdt='pacman --query -dt'
+alias pacqg='pacman --query -g'
+alias pacqi='pacman --query -i'
+alias pacqk='pacman --query -k'
+alias pacqkk='pacman --query -kk'
+alias pacql='pacman --query -l'
+alias pacqo='pacman --query -o'
+alias pacqs='pacman --query -s'
+
+alias pacr='sudo pacman --remove -un'
+alias pacrs='sudo pacman --remove -sun'
+alias pacrcs='sudo pacman --remove -csun'
+alias pacrcss='sudo pacman --remove -cssun'
+alias pacrss='sudo pacman --remove -ssun'
+
+alias pacf='pacman --files'
+alias pacfl='pacman --files -l'
+alias pacfo='pacman --files -o'
+alias pacfs='pacman --files -s'
+alias pacfsx='pacman --files -sx'
+alias pacfyy='pacman --files -yy'
+
+alias gpg-decrypt='gpg --decrypt'
+alias gpg-symmetric='gpg --symmetric'
+alias gpg-sign='gpg --sign'
+alias gpg-sign-sym='gpg --sign --symmetric'
+
+
+#
+## Poor-Man's Functions
+#
+
+## find non-recursively in the current directory
 alias findcwd='find . -maxdepth 1'
 
-alias credentials='gpg -d /crypt/patrick/Documents/credentials.gpg'
-alias credsdecrypt='gpg /crypt/patrick/Documents/credentials.gpg'
-alias credsencrypt='gpg -c /crypt/patrick/Documents/credentials'
-alias credsencsign='gpg -cs /crypt/patrick/Documents/credentials'
 
-alias groupmeminfo=\
-'column'\
-' --table'\
-' --table-columns Member,Non-Member'\
-' --columns 2'\
-' --output-separator $'"'"'\t'"'"\
-' <(paste --delimiters=$'"'"'\t'"'"\
-' <(grep "${USER}" /etc/group) <(grep -v "${USER}" /etc/group)'\
-' | sed -E '"'"'s/^\s+/- /'"'"')'\
-' | sed -E '"'"'1!s/^\<|(\s)\</\1> /g'"'"\
-' | expand'
+## Print groups in member/non-member columns each sorted by gid
+alias usergroups='column \
+  --separator=$'"'"'\t'"'"' \
+  --table \
+  --output-separator=$'"'"'\t'"'"' \
+  <(paste --delimiters=$'"'"'\t'"'"' \
+    <(grep "${USER}" /etc/group \
+      | sort \
+        --field-separator=: \
+        --key=3g \
+      | column \
+        --separator=: \
+        --table \
+        --table-columns=GROUP,X,GID,USERS \
+        --table-hide=X
+    ) \
+    <(grep --invert-match "${USER}" /etc/group \
+      | sort \
+        --field-separator=: \
+        --key=3g \
+      | column \
+        --separator=: \
+        --table \
+        --table-columns=GROUP,X,GID,USERS \
+        --table-hide=X
+    ) | sed -E '"'"'s/^\s+/-\t/'"'"'
+  ) | expand'
 
-alias ydla='youtube-dl \
+
+## Download audio from youtube into ~/Music with available metadata
+alias ydla=\
+'youtube-dl \
   --extract-audio \
   --audio-quality 0 \
   --console-title \

@@ -9,7 +9,7 @@ alias() {
   : "$(trap -p RETURN)";  printf '%s\n' "${_:-trap - RETURN}"
   )" RETURN
 
-  trap '{ cat >&2; return 2; } <<@HELP
+  trap '{ cat >&2; return 2; } <<\@HELP
 alias: alias [-p] [name[=value] ... ]
        alias  -R  variable template [alias ... ]
 @HELP
@@ -43,7 +43,7 @@ mkcd() {
   : "$(trap -p RETURN)";  printf '%s\n' "${_:-trap - RETURN}"
   )" RETURN
 
-  trap '{ cat >&2; return 2; } <<@HELP
+  trap '{ cat >&2; return 2; } <<\@HELP
 mkcd: mkcd [options] directory ...
 @HELP' ERR
 
@@ -60,7 +60,7 @@ cdls() {
   : "$(trap -p RETURN)";  printf '%s\n' "${_:-trap - RETURN}"
   )" RETURN
 
-  trap '{ cat >&2; return 2; } <<@HELP
+  trap '{ cat >&2; return 2; } <<\@HELP
 cdls: cdls [options] directory
 @HELP' ERR
   cd "${@##!(-@(L|P|e|@))/}" && ls "${@/%%-!(-!(L|P|e|@))/}"

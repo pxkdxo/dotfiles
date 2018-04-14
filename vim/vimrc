@@ -1,11 +1,13 @@
 " ~/.vimrc : vim configuration
 " ViM version 8.0
+
+
+" use vim defaults (instead of Vi)
+set nocompatible
 "
 " always encode in utf-8
 set encoding=utf-8
 
-" use vim defaults (rather than Vi)
-set nocompatible
 
 
 " -- Filetype Detection --
@@ -15,6 +17,7 @@ filetype plugin indent on
 "
 " perform syntax highlighting
 syntax enable
+
 
 
 " -- Formatting --
@@ -31,11 +34,12 @@ set softtabstop=2
 " visual width of a tab character
 set tabstop=2
 "
-" line length beyond which insertion will cause a linebreak
+" length beyond which insertion will cause a linebreak
 set textwidth=80
 
 
-" -- Searching & Pattern Matching --
+
+" -- Searching & Patterns --
 "
 " do not highlight search results
 set nohlsearch
@@ -53,7 +57,8 @@ set smartcase
 set showmatch
 
 
-" -- Information & Verbosity --
+
+" -- Display & Verbosity --
 "
 " display line numbers
 set number
@@ -64,16 +69,13 @@ set ruler
 " display the most recent command below buffer windows
 set showcmd
 "
-" disable alerts about searches wrapping to other end of file
-set terse
-"
-"set name of file in focused buffer as window title
+"set name of file in current buffer as window title
 set title
 "
 " highlight columns relative to 'textwidth'
 set colorcolumn=+1,+2,+3,+5
 "
-" non-printable characters and lines larger than available space in window
+" handling of non-printable characters and lines too large for window
 set display=truncate,uhex
 "
 " always show the status line
@@ -102,7 +104,8 @@ set sidescrolloff=4
 set sidescroll=1
 
 
-" -- Key Timeout --
+
+" -- Key Timeouts --
 "
 " time out on mappings and keycodes
 set timeout
@@ -117,25 +120,27 @@ set ttimeout
 set ttimeoutlen=115
 
 
+
 " -- History --
 "
+" preferences for location of swap files
+set directory=${XDG_CACHE_HOME}/vim/swap,~/.cache/vim/swap,~/.vim/swap,.
+"
 " size of the command history 
-set history=1000
+set history=1024
 "
-" maximum number of characters allowed between swapfile updates
-set updatecount=160
-"
-" directory preferences for location of swap files
-set directory=${XDG_CACHE_HOME}/vim/swap,~/.vim/swap,.,${XDG_RUNTIME_DIR}/vim
-"
-" save undo history to a file
+" save undo history in a file
 set undofile
 "
-" number of changes that can be undone
-set undolevels=3000
-"
 " directory for location of undo files
-set undodir=${XDG_DATA_HOME}/vim/undo,~/.vim/undo,.
+set undodir=${XDG_DATA_HOME}/vim/undo,~/.local/share/vim/undo,~/.vim/undo
+"
+" number of changes that can be undone
+set undolevels=2048
+"
+" number of characters that may be typed before the swapfile is updated
+set updatecount=160
+
 
 
 " -- Buffers --
@@ -153,6 +158,7 @@ set splitbelow
 set splitright
 
 
+
 " -- Completion --
 "
 " settings for insert-mode completion
@@ -164,8 +170,9 @@ set wildmenu
 " ignore filename case for completions
 set wildignorecase
 "
-" complete common prefix & list options, then cycle through options
+" complete common prefix and list completions, then cycle
 set wildmode=list:longest,full
+
 
 
 " -- Terminal --
@@ -177,6 +184,7 @@ set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 set mouse=a
 
 
+
 " -- Colors --
 "
 " set editor colorscheme
@@ -185,33 +193,46 @@ if &g:t_Co == 256
 endif
 
 
-" -- Python --
+
+" -- Plugins --
 "
-set pyxversion=3                " Set preferred version of Python
+runtime ftplugin/man.vim
+
+
+
+" -- python --
 "
-let python_highlight_all  = 1   " enable all available highlighting for Python
+set pyxversion=3                " set preferred Python version
+let python_highlight_all  = 1   " enable all highlighting
 
 
 " -- C / C++ --
 "
-let c_comment_strings     = 1   " allow strings & numbers inside C comments
+let c_comment_strings     = 1   " allow strings & numbers inside comments
+let c_gnu                 = 1   " highlight GNU specific items
 
 
-" -- Shells --
-"
-let g:is_posix            = 1   " set posix as default syntax for .sh files
-let g:sh_fold_enabled     = 3   " if/do/for=4 here-docs=2 functions=1
-let g:sh_no_error         = 1   " relax error detection when editing .sh files
-"
+" -- readline ---
 let readline_has_bash     = 1   " highlight additions available through bash
+
+
+" -- sh --
 "
+let is_posix              = 1   " POSIX syntax by default for *.sh files
+let sh_fold_enabled       = 3   " folding mode
+let sh_no_error           = 1   " relax error detection\
+
+
+" -- sed --
 let highlight_sedtabs     = 1   " highlight real tab characters in sed scripts
 
 
-" -- Mappings --
 
+" -- Mappings --
+"
 " Split to a new terminal window
 map <F4> :ter <CR>
+"
 "
 " Toggle syntax highlighting on/off
 map <F7> :if exists("g:syntax_on") <Bar>

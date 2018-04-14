@@ -1,13 +1,9 @@
-## ~/.bash_logout : sourced upon exiting a login shell
+#
+## ~/.bash_logout
+#
 
-## Update the history file
-shopt -q histappend && {
-  history -n
-  history -w
-  history -c
-}
-
-tput -S << @EOF
+## clear and reset the terminal
+tput -S <<\@EOF
 clear
 reset
 @EOF

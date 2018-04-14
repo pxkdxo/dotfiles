@@ -7,12 +7,12 @@ tput init
 umask 027
 
 ## Append default command paths
-for _ in "${HOME}/bin" "${HOME}/.bin" "${HOME}/.local/bin"; do
+for _ in "${HOME}/bin" "${HOME}/.local/bin"; do
   case ":${PATH}:" in
     *:"$_":*)
       ;;
     *)
-      PATH="${PATH:+${PATH}:}$_"
+      PATH="${PATH:+"${PATH}:"}$_"
   esac
 done
 export PATH

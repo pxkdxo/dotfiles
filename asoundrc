@@ -33,28 +33,31 @@ pcm.rec
   slave.pcm $PCM;
 }
 
-##          2/4/6 CHANNEL SW SHARING
-##          ########################
 
-pcm.dmix-20
+## -- 2 Channel Software Sharing --
+
+pcm.dmix20
 {
   @args [ KEY PCM RATE PSIZE BSIZE PTIME BTIME ]
   @args.KEY { type integer; }
   @args.PCM { type string; }
-  @args.RATE  { type integer; default 48000; }
-  @args.PSIZE { type integer; default 4096; }
-  @args.BSIZE { type integer; default 40960; }
-  @args.PTIME { type integer; default 84000; }
-  @args.BTIME { type integer; default 840000; }
+  @args.RATE  { type integer; default  48000; }
+  @args.PSIZE { type integer; default   4096; }
+  @args.BSIZE { type integer; default  16384; }
+  @args.PTIME { type integer; default  84000; }
+  @args.BTIME { type integer; default 340000; }
 
-  type    dmix;
+  type      dmix;
   ipc_key   $KEY;
 
   slave
   {
-    pcm   $PCM; rate    $RATE;
-    period_time $PTIME; buffer_time $BTIME;
-    period_size $PSIZE; buffer_size $BSIZE;
+    pcm         $PCM;
+    rate        $RATE;
+    period_time $PTIME;
+    buffer_time $BTIME;
+    period_size $PSIZE;
+    buffer_size $BSIZE;
 
     channels  2;
   }
@@ -63,15 +66,61 @@ pcm.dmix-20
   bindings.1  1;
 }
 
-########################################################################
 
-ctl.!default    = ctl.dsp0;
-pcm.!default    = pcm.dsp0;
+## -- 4 Channel Software Sharing --
 
-ctl.pulse     { type  pulse; }
-pcm.pulse     { type  pulse; }
+pcm.dmix40
+{
+  @args [ KEY PCM RATE PSIZE BSIZE PTIME BTIME ]
+  @args.KEY { type integer; }
+  @args.PCM { type string; }
+  @args.RATE  { type integer; default  48000; }
+  @args.PSIZE { type integer; default   4096; }
+  @args.BSIZE { type integer; default  16384; }
+  @args.PTIME { type integer; default  84000; }
+  @args.BTIME { type integer; default 340000; }
 
-########################################################################
+  type      dmix;
+  ipc_key   $KEY;
+
+  slave
+  {
+    pcm         $PCM;
+    rate        $RATE;
+    period_time $PTIME;
+    buffer_time $BTIME;
+    period_size $PSIZE;
+    buffer_size $BSIZE;
+
+    channels  4;
+  }
+
+  bindings.0  0;
+  bindings.1  1;
+  bindings.2  2;
+  bindings.3  3;
+}
+
+
+
+# 5.1 Speakers
+pcm.ch51dup {
+         slave.pcm surround51
+         slave.channels 6
+         type route
+         ttable.0.0 1
+         ttable.1.1 1
+         ttable.0.2 1
+         ttable.1.3 1
+         ttable.0.4 0.5
+         ttable.1.4 0.5
+         ttable.0.5 0.5
+         ttable.1.5 0.5
+}
+
+
+
+## -- Card 0 Devices --
 
 ctl.dmixer { type hw; card 0 }
 pcm.dmixer {
@@ -87,19 +136,78 @@ pcm.dmixer {
   bindings { 0 0 1 1 }
 }
 
-#             CARD 0 DEVICES
-#             ##############
-
 ctl.card0   { type hw; card 0; }
 pcm.card0   { type hw; card 0; }
 
-pcm.dsnoop0   = "rec:23760,card0";
 
+pcm.monoduplex {
+    type asym
+    playback.pcm "mono_playback"
+    capture.pcm "rec"
+}
+
+## Set the default device to environment variable ALSA_DEFAULT_PCM if set,
+## else fallback to card0
+pcm.!default {
+    @func refer
+    name { @func concat 
+           strings [ "pcm."
+                     { @func getenv
+                       vars [ ALSA_DEFAULT_PCM ]
+                       default "mainvol"
+                     }
+           ]
+         }
+}
+
+
+## Set the default device to environment variable ALSA_DEFAULT_PCM if set,
+## else fallback to card0
+ctl.!default {
+    @func refer
+    name { @func concat 
+           strings [ "ctl."
+                     { @func getenv
+                       vars [ ALSA_DEFAULT_CTL
+                              ALSA_DEFAULT_PCM
+                       ]
+                       default "card0"
+                     }
+           ]
+         }
+}
+
+pcm.dsnoop0   = "rec:13758,card0";
+
+pcm.dmix0     = "dmix-20:13759,card0,48000";
 ctl.dmix0     = ctl.card0;
-pcm.dmix0     = "dmix-20:13760,card0,44100";
 
 ctl.mixer0    = ctl.card0;
-ctl.dsp0      = ctl.card0;
+
 pcm.dsp0      = "dsp:dsnoop0,dmix0";
+ctl.dsp0      = ctl.card0;
+
+pcm.pulse     { type  pulse; }
+ctl.pulse     { type  pulse; }
 
 ########################################################################
+## Default Devices
+########################################################################
+
+ctl.mono        = ctl.card0
+pcm.a2chplug {
+    type plug
+    slave.pcm = pcm.dsp0
+}
+
+pcm.mono {
+    type route
+    slave.pcm  pcm.dsp0
+    slave.channels 2
+    # Send Skype channel 0 to the L and R speakers at full volume
+    ttable.0.6    1
+    ttable.0.7    1
+}
+ctl.!default    = ctl.mono;
+pcm.!default    = pcm.mono;
+

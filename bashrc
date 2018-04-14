@@ -1,178 +1,225 @@
-## ~/.bashrc : bash config for interactive shells
-## Patrick DeYoreo
-## Make sure this doesn't display anything or bad things will happen!
+#
+## ~/.bashrc : initialization file for interactive (non-login) shells
+#
 
 
-## Confirm that this is an interactive shell
+## Is this actually an interactive shell? If not, stop.
 [[ $- != *i* ]] && return
 
-## If {DISPLAY} is set update {LINES} and {COLUMNS} after each command
-[[ ${DISPLAY} ]] && shopt -s checkwinsize
 
 
-## Set GPG_TTY output of `tty' to and put GPG_TTY in the environment
-wait $! && {
-  read -r 'GPG_TTY'
-  export GPG_TTY
-} < <(command -p tty) 2> /dev/null
+## If {DISPLAY} is non-null and {TERM} is not an xterm, enable `checkwinsize'
+[[ -n ${DISPLAY} && ${TERM} != ?(*.)xterm?(@(-|.)*) ]] && shopt -s checkwinsize
 
 
-## Functions, command substitutions, and subshells inherit traps on `ERR' 
+
+## Set GPG_TTY to the current output of tty
+GPG_TTY=$(builtin command -p tty) && export GPG_TTY
+
+## Refresh gpg-agent tty in case user switches into an X session
+builtin command -p gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
+
+
+
+## Functions, command substitutions, and subshells inherit traps on 'ERR' 
 set -o errtrace
+
 ## Require the `>|' operator to overwrite existing files via redirection
 set -o noclobber
 
-## Pass directory names entered as commands as arguments to `cd'
+
+
+## If the name of a directory is given as a command, pass it to cd
 shopt -s autocd
-## Correct minor spelling mistakes in directory names passed to `cd'
-shopt -s cdspell
-## Verify existence of commands in the hashtable before executing them
-shopt -s checkhash
-## Print jobs upon exit and if any are running defer until second attempt
-shopt -s checkjobs
-## Attempt to save multiline commands as a single history entry
+
+## Attempt to save each multiline command as a single history entry
 shopt -s cmdhist
-## Expand directory names upon performing filename completion
+
+## Expand the name of a directory upon performing filename completion
 shopt -s direxpand
+
 ## Attempt to correct mispelled directory names during word completion
 shopt -s dirspell
+
+## Check that a command found in the hashtable exists before running it
+shopt -s checkhash
+
+## Show jobs before exiting and require confirmation if any are running
+shopt -s checkjobs
+
 ## Enable extended pattern matching features
 shopt -s extglob
-## Match bracketed range expressions using the traditional C locale
+
+## Range expressions used in bracket expressions behave as in the C locale 
 shopt -s globasciiranges
+
 ## Let '**' match all files and 0 or more directories and subdirectories
 shopt -s globstar
+
+## Send SIGHUP(1) to all jobs when an interactive login shell exits
+shopt -s huponexit
+
 ## Append to the history file instead of overwriting it
 shopt -s histappend
+
 ## If using readline, allow user to re-edit a failed history substitution
 shopt -s histreedit
-## If using readline, load history substitution results into the editing buffer
-shopt -s histverify
-## Send SIGHUP to all jobs when an interactive login shell exits
-shopt -s huponexit
+
 ## Command substitutions inherit the value of the `errexit' option
 shopt -s inherit_errexit
+
 ## If job control is off, run the last cmd of a pipeline in the current shell
 shopt -s lastpipe
-## When `cmdhist' is enabled, save multiline commands with embedded newlines
+
+## With `cmdhist' enabled, save multiline commands with embedded newlines
 shopt -s lithist
 
 
-## Set GLOBIGNORE to match all instances of `.' and `..'
+
+## Set the location of the history file
+HISTFILE="${XDG_DATA_HOME:-"${HOME}/.local/share"}/bash/history"
+
+## Set max number of entries to store on disk
+HISTFILESIZE=10000
+
+## Set max number of entries to store in memory
+HISTSIZE=-1
+
+## Ignore duplicates of the previous history item
+HISTCONTROL='ignoredups'
+
+## When `extglob' is enabled ignore dups regardless of surrounding blanks
+HISTIGNORE='*([[:blank:]])&*([[:blank:]])'
+
+
+
+## Set {EXECIGNORE} to match shared object libraries
+EXECIGNORE='?(?(+(/)usr)+(/))lib?(32|64))+(/)**/*.@(so*(.+( , ,[[:digit:]]))|dll)'
+
+
+
+## Define {GLOBIGNORE} to match all instances of '.' and '..'
 GLOBIGNORE='*(?(.)?(.|*)/).?(.)'
-## Setting GLOBIGNORE enables `dotglob', so disable for original behavior
+
+## Setting {GLOBIGNORE} enables `dotglob' so disable for default behavior
 shopt -u dotglob
 
 
-## Set the location of the history file
-HISTFILE="${XDG_DATA_HOME:-"${HOME}"}/.bash_history"
-## Set max number of entries to store on disk
-HISTFILESIZE=10000
-## Set max number of entries to store in memory
-HISTSIZE=-1
-## Erase duplicates before adding an entry
-HISTCONTROL='ignorespace'
-## Ignore immediate dups disregarding additional whitespace
-HISTIGNORE='&*([[:blank:]])?(;)*([[:blank:]])'
-## Set a timestamp format (1999-12-31 23:59:59 +0000)
-HISTTIMEFORMAT='[%F %T %z] '
 
+## Create an array to store terminal info
+declare -A ti=( )
 
-## Create an array to store terminal escape sequences
-declare -A ti=(
-  [bold]="$(tput bold)"    [dim]="$(tput dim)"
-  [sitm]="$(tput sitm)"   [ritm]="$(tput ritm)"
-  [smso]="$(tput rmso)"   [rmso]="$(tput rmso)"
-  [smul]="$(tput smul)"   [rmul]="$(tput rmul)"
-  [sgr0]="$(tput sgr0)"
-)
-
-
-## Limit depth of path generated by '\w' during prompt expansion
+## Limit depth of paths generated by '\w' during prompt expansion
 PROMPT_DIRTRIM=4
 
-## Function to set the Primary Prompt
-PS1() {
-PS1=\
+
+
+## Define function to set the primary prompt
+function PS1() {
+  eval 'printf -v PS1 '"'"'%.s~'"'"' {1..'"$(("${COLUMNS:="$(tput cols)"}"))"'}'
+  PS1=\
 '\['\
-"${ti[sgr0]:=$(tput sgr0)}${ti[dim]:=$(tput dim)}"\
-"$( (($1)) && tput setaf "$(($(($1))%$((${ti[colors]:=$(tput colors)}))))")"\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+"${ti['dim']:="$(tput dim)"}"\
+"$1"\
 '\]'\
-'$(eval '"'"'printf \%.s\~ {1..'"'"'"$(("$(tput cols)"))"'"'"'}'"'"')'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]\n'\
-'\['"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"'\]\u'\
-'\['"${ti[dim]:=$(tput dim)}"'\]@'\
-'\['"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"'\]\h'\
-'\['"${ti[dim]:=$(tput dim)}"'\]:'\
-'\['"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"'\]\w'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]\n'\
-'\['"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"'\]\D{%A %d %B %Y}'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\] '\
-'\['"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"'\]\D{%I:%M %p}'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]\n'\
+"${PS1}"\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\n'\
 '\['\
-"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"\
-"$( (($1)) && tput setaf "$(($(($1))%$((${ti[colors]:=$(tput colors)}))))")"\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+'\]'\
+'\u'\
+'\['"${ti['dim']:="$(tput dim)"}"'\]'\
+'@'\
+'\['\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+'\]'\
+'\h'\
+'\['"${ti['dim']:="$(tput dim)"}"'\]'\
+':'\
+'\['\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+'\]'\
+'\w'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\n'\
+'\['\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+'\]'\
+'\D{%A %d %B %Y %I:%M %p}'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\n'\
+'\['\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+"${ti['dim']:="$(tput dim)"}"\
+"$1"\
 '\]'\
 '\$λ'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 ' '
 }
 
 
-## Function to set the Secondary Prompt
-PS2() {
-PS2=\
+
+## Define function to set the secondary prompt
+function PS2() {
+  PS2=\
 '\['\
-"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}"\
-"$( (($1)) && tput setaf "$(($(($1))%$((${ti[colors]:=$(tput colors)}))))")"\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+"${ti['dim']:="$(tput dim)"}"\
+"$1"\
 '\]'\
 '$(( (LINENO - '"$(("${BASH_LINENO[-1]}"))"') / 10 ))'\
 '$(( (LINENO - '"$(("${BASH_LINENO[-1]}"))"') % 10 ))'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\] '
-} 
-
-
-## Function to set the Select Prompt (does not undergo expansion)
-PS3() {
-PS3='•◆ '
-}
-
-
-## Function to set the Exec-Trace Prompt
-PS4() {
-PS4=\
-'\['\
-"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}"\
-"$( (($1)) && tput setaf "$(($(($1))%$((${ti[colors]:=$(tput colors)}))))")"\
-'\]'\
-'•'\
-'\['"${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}"'\]'\
-'◆'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 ' '
 }
 
-## Function to update all the prompts
-PS_Update() {
-  PS1 "$1"
-  PS2 "$1"
-  PS3 "$1"
-  PS4 "$1"
-  kill -28 $$
+
+
+## Define function to set the execution trace prompt
+function PS4() {
+  PS4='\['\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+"${ti['dim']:="$(tput dim)"}"\
+"$1"\
+'\]'\
+'•'\
+'\['\
+"${ti['sgr0']:="$(tput sgr0)"}"\
+"${ti['bold']:="$(tput bold)"}"\
+'\]'\
+'◆'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+' '
 }
 
-## Update prompt strings before each primary prompt
-case "${PROMPT_COMMAND};" in
-  'PS_Update $?;'*)
-    ;;
-  *)
-    PROMPT_COMMAND='PS_Update $?'"${PROMPT_COMMAND:+; "${PROMPT_COMMAND}"}"
-esac
 
+## Define function to set the prompts (must be the first cmd of PROMPT_COMMAND)
+function SetPS() {
+  set -- "$( (( _ = $? )) && tput setaf "$(( ($_ - 1) % 6 + 1 ))")"
+  PS0='$(kill -28 $$)'
+  PS1 "$1"
+  PS2 "$1"
+  PS3='•◆ '
+  PS4 "$1"
+}
 
-## Load any additional config
+## Update prompt strings before printing the primary prompt
+[[ ${PROMPT_COMMAND}\; != *([[:space:]])SetPS*([[:blank:]])[$';\n']* ]] \
+  && PROMPT_COMMAND='SetPS'"${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
+
+## Load any additional config in ~/.bashrc.d
 [[ -d ~/.bashrc.d ]] &&
-  for _ in ~/.bashrc.d/?*; do
-    [[ -r "$_" ]] && . "$_"
+  for _ in ~/.bashrc.d/*; do
+    [[ -r $_ ]] && . "$_"
   done

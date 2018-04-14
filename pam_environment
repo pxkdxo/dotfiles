@@ -2,15 +2,40 @@
 ## ~/.pam_environment
 #
 
-XDG_CACHE_HOME  DEFAULT=@{HOME}/.cache
-XDG_CONFIG_HOME DEFAULT=@{HOME}/.config
-XDG_DATA_HOME   DEFAULT=@{HOME}/.local/share
 
-PKGDEST         DEFAULT=@{HOME}/.local/pkg
-SRCDEST         DEFAULT=@{HOME}/.local/src
-LOGDEST         DEFAULT=${XDG_DATA_HOME}/makepkg
-BUILDDIR        DEFAULT=${XDG_RUNTIME_DIR}/makepkg
+## xdg
+XDG_CACHE_HOME    DEFAULT="@{HOME}/.cache"
+XDG_CONFIG_HOME   DEFAULT="@{HOME}/.config"
+XDG_DATA_HOME     DEFAULT="@{HOME}/.local/share"
 
-GNUPGHOME       DEFAULT=${XDG_CONFIG_HOME}/gnupg
 
-TIME_STYLE      DEFAULT="+%a %F %I:%M %p"
+## gnupg
+GNUPGHOME         DEFAULT="@{HOME}/.gnupg"
+SSH_AGENT_PID	    DEFAULT=
+SSH_AUTH_SOCK	    DEFAULT="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+
+
+## makepkg
+BUILDDIR          DEFAULT="${XDG_RUNTIME_DIR}/makepkg"
+LOGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/log"
+PKGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/pkg"
+SRCDEST           DEFAULT="${XDG_DATA_HOME}/pacman/src"
+SRCPKGDEST        DEFAULT="${XDG_DATA_HOME}/pacman/srcpkg"
+
+
+## locale
+BLOCK_SIZE        DEFAULT="'human-readable"
+LANG              DEFAULT="en_US.UTF-8"
+LANGUAGE          DEFAULT="en_US"
+LC_ALL            DEFAULT=
+QUOTING_STYLE     DEFAULT="shell-escape"
+TIME_STYLE        DEFAULT="+%a %d %b %Y %I:%M %p"
+TZ                DEFAULT="America/Los_Angeles"     OVERRIDE="${TZ}"
+
+
+## backups
+VERSION_CONTROL   DEFAULT="numbered"
+
+
+## tmpfiles
+TMPDIR            DEFAULT="${XDG_RUNTIME_DIR}"

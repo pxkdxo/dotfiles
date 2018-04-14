@@ -1,65 +1,102 @@
 #!/bin/env bash
+#
+## Library to help configure the environment
 
-## Functions to help configure the environment
 
-
-## If given arguments, configure corresponding variables.
+## If given arguments, configure those variables.
 ## Otherwise, configure all variables.
-autoenv::main() {
-  local -A __autoenv__=( 
-    [EDITOR]='autoenv::EDITOR'
-    [GCC_COLORS]='autoenv::GCC_COLORS'
-    [LS_COLORS]='autoenv::LS_COLORS'
-  )
-
-  (( $# == 0 )) && set -- "${!__autoenv__[@]}"
-
-  while (( $# )); do
-    ${__autoenv__[$1]-:}
-    shift
-  done
-}
-
-
-
-## Sets default text editor
-autoenv::EDITOR() {
-  unset -v EDITOR && {
-    local -a EDITOR=(vim vi nano)
-    for EDITOR in "$@" "${EDITOR[@]}"; do
-      command -pv "${EDITOR}" > /dev/null && {
-        declare -gx EDITOR="${EDITOR}"
-        break
-      }
-    done
-  }
-}
-
-
-
-## Sets GCC output formatting
-autoenv::GCC_COLORS() {
-  local IFS=$': \t\n' && unset -v GCC_COLORS && {
-    local -A GCC_COLORS=( [caret]='caret=01;32' [error]='error=01;31'
-                          [locus]='locus=01;36' [note]='note=01;35'      
-                          [quote]='quote=01;34' [warning]='warning=01;33' )
+function autoenv::main() {
+  if (( $# )) || set -- BROWSER EDITOR GCC_COLORS LS_COLORS MANPAGER; then
     while (( $# )); do
-      GCC_COLORS[${1%%=*}]="${1%%=*}"'='"${1#*=}"
+      autoenv::"$1"
       shift
     done
-    declare -gx GCC_COLORS="${GCC_COLORS[*]}"
+  fi
+}
+
+
+## Set default browser
+function autoenv::BROWSER() {
+  local BROWSER && {
+    case $# in
+      1)
+        declare -gx BROWSER="$1"
+        ;;
+      0)
+        if [[ ${DISPLAY} ]]; then
+          set -- google-chrome firefox chromium
+        else
+          set -- elinks w3m lynx links
+        fi
+        ;&
+      *)
+        while (( $# )); do
+          command -v "$1" && {
+            declare -gx BROWSER="$1"
+            break
+          }
+          shift
+        done >/dev/null
+    esac
   }
 }
 
 
+## Set default text editor
+function autoenv::EDITOR() {
+  local EDITOR && {
+    case $# in
+      1)
+        declare -gx EDITOR="$1"
+        ;;
+      0)
+        set -- vim vi nano
+        ;&
+      *)
+        while (( $# )); do
+          command -v "$1" && {
+            declare -gx EDITOR="$1"
+            break
+          }
+          shift
+        done >/dev/null
+    esac
+  }
+}
 
-## Sets command output colors
-autoenv::LS_COLORS() {
-  command -pv dircolors > /dev/null && unset -v LS_COLORS && {
-    local LS_COLORS='LS_COLORS='"'"'([^'"'"']*)'"'"';'
-    [[ $# -eq 0 && -f ~/.dircolors ]] && set -- ~/.dircolors
-    [[ "$(command -p dircolors -b "$@")" =~ ${LS_COLORS} ]]
-    declare -gx LS_COLORS="${BASH_REMATCH[1]}"
+
+## Set GCC output formatting
+function autoenv::GCC_COLORS() {
+  local GCC_COLORS IFS=: && declare -gx GCC_COLORS=\
+"${*-note=01;35:quote=01;34:error=01;31:warning=01;33:caret=01;32:locus=01;36}"
+}
+
+
+## Set command output colors
+function autoenv::LS_COLORS() {
+  local LS_COLORS && {
+    if (( $# )); then
+      local IFS=: && declare -gx LS_COLORS="$*"
+    elif command -v dircolors >/dev/null; then
+      [[ -f ~/.dircolors ]] && set -- ~/.dircolors
+      eval 'declare -gx '"$(command dircolors -b "$@")"
+    else
+      return 1
+    fi
+  }
+}
+
+
+## Set the pager command used by man
+function autoenv::MANPAGER() {
+  local MANPAGER && {
+    if (( $# )); then
+      declare -gx MANPAGER="$@"
+    elif read -r  MANPAGER < <(command -v vim); then
+      declare -gx MANPAGER="${MANPAGER@Q}"' -M "+set nonu tw=0" +MANPAGER -'
+    else
+      return 1
+    fi
   }
 }
 
