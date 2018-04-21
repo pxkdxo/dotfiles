@@ -87,7 +87,7 @@ HISTIGNORE='*([[:blank:]])&*([[:blank:]])'
 EXECIGNORE='?(?(+(/)usr)+(/))lib?(32|64))+(/)**/*.@(so*(.+( , ,[[:digit:]]))|dll)'
 
 ## Define {GLOBIGNORE} to match all instances of '.' and '..'
-GLOBIGNORE='*(?(.)?(.|*)/).?(.)'
+GLOBIGNORE='*(?(.)?(.|*)/).?(.)*(/)'
 
 ## Setting {GLOBIGNORE} enables `dotglob' so disable for default behavior
 shopt -u dotglob

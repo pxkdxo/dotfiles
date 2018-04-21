@@ -1,28 +1,47 @@
-## gitignore
+#
+## .gitignore
+#
 
-## EXCLUDE EVERYTHING
-**/*
 
-## now include files one-by-one
+## Blacklist
+
+/**
+
+
+## Whitelist
+
 !/asoundrc
 
+!/awesome/
+!/awesome/rc.lua
+
 !/bash_logout
+
 !/bash_profile
+
 !/bashrc
+
 !/bashrc.d/**
 
-!/bin/**
-
 !/compton.conf
+
+!/cower/
+!/cower/config
 
 !/devilspie2/**
 
 !/dircolors
 
+!/elinks/
+!/elinks/elinks.conf
+
 !/gnupg/
 !/gnupg/dirmngr.conf
 !/gnupg/gpg-agent.conf
 !/gnupg/gpg.conf
+
+!/gpick/
+!/gpick/colordict00
 
 !/inputrc
 
@@ -38,11 +57,15 @@
 !/ncmpcpp/
 !/ncmpcpp/config
 
-!/pacman/**
+!/pacaur/conf
 
 !/pam_environment
 
+!/pam_mount.conf.xml
+
 !/profile
+
+!/ranger/**
 
 !/README.md
 
@@ -51,6 +74,11 @@
 !/surfraw/**
 
 !/tmux.conf
+
+!user-dirs.dirs
+!user-dirs.locale
+
+!/user-tmpfiles.d
 
 !/vim/**
 

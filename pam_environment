@@ -52,6 +52,10 @@ __GL_LOG_MAX_ANISO            DEFAULT="4"       OVERRIDE="${__GL_LOG_MAX_ANISO}"
 __GL_FSAA_MODE                DEFAULT="11"      OVERRIDE="${__GL_FSAA_MODE}"
 
 
+## luarocks
+#
+LUAROCKS_CONFIG               DEFAULT="${XDG_CONFIG_HOME}/luarocks/config-5.3.lua"
+
 ## backups
 #
 VERSION_CONTROL   DEFAULT="numbered"
