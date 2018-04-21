@@ -11,7 +11,8 @@
 GPG_TTY=$(builtin command -p tty) && export GPG_TTY
 
 ## Refresh gpg-agent tty in case user switches into an X session
-builtin command -p gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
+command -p gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
+
 
 
 ## Functions, command substitutions, and subshells inherit traps on 'ERR' 
