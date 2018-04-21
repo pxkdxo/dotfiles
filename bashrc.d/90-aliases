@@ -141,6 +141,28 @@ alias gpg-sign-sym='gpg --sign --symmetric'
 
 
 #
+## -- Docker --
+#
+
+alias docker.jupyter=\
+'docker run                                                           \
+  --detach                                                            \
+  --tty                                                               \
+  --publish 8888:8888                                                 \
+  --volume ~/Documents/jupyter/datascience-notebook:/home/jovyan/work \
+  jupyter/datascience-notebook'
+
+alias docker.stopall='docker stop $(docker ps -q) 2>/dev/null'
+
+alias docker.killall='docker kill $(docker ps -q) 2>/dev/null'
+
+alias docker.rmdead='docker rm $(docker ps -aq) 2>/dev/null'
+
+alias docker.rmall=\
+'{ docker kill $(docker ps -q); docker rm $(docker ps -aq); } 2>/dev/null'
+
+
+#
 ## Poor-Man's Functions
 #
 
@@ -149,7 +171,8 @@ alias findcwd='find . -maxdepth 1'
 
 
 ## Print groups in member/non-member columns each sorted by gid
-alias usergroups='column \
+alias usergroups=\
+'column \
   --separator=$'"'"'\t'"'"' \
   --table \
   --output-separator=$'"'"'\t'"'"' \

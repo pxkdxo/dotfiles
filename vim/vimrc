@@ -1,256 +1,352 @@
-" ~/.vimrc : vim configuration
-" ViM version 8.0
+"" ~/.vimrc : vim startup file
+"" ViM version 8.0
 
 
-" use vim defaults (instead of Vi)
+"" Use vim defaults (instead of Vi)
 set nocompatible
-"
-" always encode in utf-8
+
+"" Always encode in utf-8
 set encoding=utf-8
 
 
 
-" -- Filetype Detection --
-"
-" detect, load plugins, & apply indent style
+"" -- Filetype Detection --
+""
+"" Detect, load plugins, & apply indent style
 filetype plugin indent on
-"
-" perform syntax highlighting
+
+"" Perform syntax highlighting
 syntax enable
 
 
 
-" -- Formatting --
-"
-" insert spaces insted of tab characters
+"" -- Formatting --
+""
+"" Insert spaces insted of tab characters
 set expandtab
-"
-" number of spaces to use for each indent
+
+"" Number of spaces to use for each indent
 set shiftwidth=2
-"
-" number of spaces to insert as a tab
+
+"" Number of spaces to insert as a tab
 set softtabstop=2
-"
-" visual width of a tab character
-set tabstop=2
-"
-" length beyond which insertion will cause a linebreak
+
+"" Visual width of a tab character
+set tabstop=8
+
+"" Length beyond which insertion will cause a linebreak
 set textwidth=80
 
 
 
-" -- Searching & Patterns --
-"
-" do not highlight search results
+"" -- Searching & Patterns --
+""
+"" Do not highlight search results
 set nohlsearch
-"
-" search forward as a pattern is being typed
+
+"" Search forward as a pattern is being typed
 set incsearch
-"
-" ignore case when pattern matching
+
+"" Ignore case when pattern matching
 set ignorecase
-"
-" respect case if pattern contains uppercase characters
+
+"" Respect case if pattern contains uppercase characters
 set smartcase
-"
-" briefly jump to match upon completing a pair in 'matchpairs'
+
+"" Briefly jump to match upon completing a pair in 'matchpairs'
 set showmatch
 
 
 
-" -- Display & Verbosity --
-"
-" display line numbers
+"" -- Display & Verbosity --
+""
+"" Display line numbers
 set number
-"
-" display cursor coordinates (e.g. LINE,COLUMN)
+
+"" Display line numbers relative to current line
+set relativenumber
+
+"" Display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
-"
-" display the most recent command below buffer windows
+
+"" Display the most recent command below buffer windows
 set showcmd
-"
-"set name of file in current buffer as window title
+
+"" Set name of file in current buffer as window title
 set title
-"
-" highlight columns relative to 'textwidth'
-set colorcolumn=+1,+2,+3,+5
-"
-" handling of non-printable characters and lines too large for window
+
+"" Minimum number of columns reserved for line numbers
+set numberwidth=3
+
+"" Highlight columns relative to 'textwidth'
+set colorcolumn=+1,+3,+4
+
+"" Handling of non-printable characters and lines too large for window
 set display=truncate,uhex
-"
-" always show the status line
+
+"" Always show the status line
 set laststatus=2
 
 
 
-" -- Cursor & Scrolling --
-"
-" attempt to preserve cursor position when moving linewise
+"" -- Cursor & Scrolling --
+""
+"" Attempt to preserve cursor position when moving linewise
 set nostartofline
-"
-" allow a way to backspace over each additional item
+
+"" Allow backspace over these objects
 set backspace=indent,eol,start
-"
-" allow visual-block selection of text-free columns
+
+"" Allow visual-block selection of empty columns
 set virtualedit=block
-"
-" lines of padding in between the cursor and window boundary
+
+"" Number of lines of padding from edge of window
 set scrolloff=4
-"
-" columns of padding between cursor and window boundary (when 'wrap' is off)
+
+"" If 'nowrap' is set, number of cols of padding from edge of window
 set sidescrolloff=4
-"
-" minimum number of columns to scroll horizontally (when 'wrap' is off)
+
+"" If 'nowrap' is set, minimum number of cols to scroll at a time
 set sidescroll=1
 
 
 
-" -- Key Timeouts --
-"
-" time out on mappings and keycodes
-set timeout
-"
-" time in milliseconds to wait for completion of a mapping
-set timeoutlen=2250
-"
-" time out on mappings and keycodes
-set ttimeout
-"
-" time in milliseconds to wait for completion of a key code
-set ttimeoutlen=115
-
-
-
-" -- History --
-"
-" preferences for location of swap files
-set directory=${XDG_CACHE_HOME}/vim/swap,~/.cache/vim/swap,~/.vim/swap,.
-"
-" size of the command history 
-set history=1024
-"
-" save undo history in a file
-set undofile
-"
-" directory for location of undo files
-set undodir=${XDG_DATA_HOME}/vim/undo,~/.local/share/vim/undo,~/.vim/undo
-"
-" number of changes that can be undone
-set undolevels=2048
-"
-" number of characters that may be typed before the swapfile is updated
-set updatecount=160
-
-
-
-" -- Buffers --
-"
-" re-read open file if it was changed elsewhere
+"" -- Buffers --
+""
+"" Re-read open file if it was changed by another program
 set autoread
-"
-" hide buffers rather than unloading them
+
+"" Hide closed buffers rather than unloading them
 set hidden
-"
-" place new window below the current
+
+"" Split off new windows below the current
 set splitbelow
-"
-" place new window right of the current
+
+"" Split off new windows to the right of the current
 set splitright
 
 
 
-" -- Completion --
-"
-" settings for insert-mode completion
+"" -- Completion --
+""
+"" Insert-mode completion behavior
 set completeopt=menu,preview,longest,noselect
-"
-" enable the command-completion menu
+
+"" Enable command-completion
 set wildmenu
-"
-" ignore filename case for completions
+
+"" Ignore case for filename completions
 set wildignorecase
-"
-" complete common prefix and list completions, then cycle
+
+"" Complete common prefix and show possible completions, then cycle
 set wildmode=list:longest,full
 
 
+"" -- Key Timeout --
+""
+"" Time out on mappings and keycodes
+set timeout
 
-" -- Terminal --
-"
-" fuck terminal bells
+"" Time in milliseconds to wait for completion of a mapping
+set timeoutlen=2250
+
+"" Time out on mappings and keycodes
+set ttimeout
+
+"" Time in milliseconds to wait for completion of a key code
+set ttimeoutlen=115
+
+
+
+"" -- History & Backups --
+""
+"" Size of the command history 
+set history=1000
+
+"" Size of a file's undo history
+set undolevels=2500
+
+"" Save each file's undo history
+set undofile
+
+"" Update the swap file after typing this many characters
+set updatecount=160
+
+"" Update the swap file after this many milliseconds of no typing
+set updatetime=6000
+
+"" Location of swap files
+set directory=
+      \${XDG_DATA_HOME}/vim/swap,
+      \~/.local/share/vim/swap,
+      \~/.vim/swap,
+      \${TMPDIR}/vim/swap,
+      \~/tmp/vim/swap,
+      \${XDG_RUNTIME_DIR}/vim/swap,
+      \.,
+      \${TMPDIR},
+      \~/tmp,
+      \${XDG_RUNTIME_DIR}
+
+"" Location of undo files
+set undodir=
+      \${XDG_DATA_HOME}/vim/undo,
+      \~/.local/share/vim/undo,
+      \~/.vim/undo,
+      \${TMPDIR}/vim/undo,
+      \~/tmp/vim/undo,
+      \${XDG_RUNTIME_DIR}/vim/undo,
+      \.,
+      \${TMPDIR},
+      \~/tmp,
+      \${XDG_RUNTIME_DIR}
+
+"" Location of backups
+set backupdir=
+      \${XDG_DATA_HOME}/vim/backup,
+      \~/.local/share/vim/backup,
+      \~/.vim/backup,
+      \${TMPDIR}/vim/backup,
+      \~/tmp/vim/backup,
+      \${XDG_RUNTIME_DIR}/vim/backup,
+      \.,
+      \${TMPDIR},
+      \~/tmp,
+      \${XDG_RUNTIME_DIR}
+
+
+
+"" -- Terminal --
+""
+"" Fuck terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
-"
-" enable mouse functionality in all modes
+
+"" Enable mouse functionality in all modes
 set mouse=a
 
 
 
-" -- Colors --
-"
-" set editor colorscheme
+"" -- Colors --
+""
+"" Set editor colorscheme
 if &g:t_Co == 256
-  colorscheme desertExP
+  colorscheme calmar256-darkP
 endif
 
 
 
-" -- Plugins --
-"
+"" -- Man --
+""
 runtime ftplugin/man.vim
 
 
 
-" -- python --
-"
-set pyxversion=3                " set preferred Python version
-let python_highlight_all  = 1   " enable all highlighting
+"" -- Python --
+""
+let python_highlight_all = 1  " Enable all available syntax highlighting
 
-
-" -- C / C++ --
-"
-let c_comment_strings     = 1   " allow strings & numbers inside comments
-let c_gnu                 = 1   " highlight GNU specific items
-
-
-" -- readline ---
-let readline_has_bash     = 1   " highlight additions available through bash
-
-
-" -- sh --
-"
-let is_posix              = 1   " POSIX syntax by default for *.sh files
-let sh_fold_enabled       = 3   " folding mode
-let sh_no_error           = 1   " relax error detection\
-
-
-" -- sed --
-let highlight_sedtabs     = 1   " highlight real tab characters in sed scripts
+if &g:pyxversion == 0         " Set default version
+  if has('python3')
+    set pyxversion=3          " Choose 3 if available
+  elseif has('python2')
+    set pyxversion=2          " Fallback to 2
+  endif
+endif
 
 
 
-" -- Mappings --
-"
-" Split to a new terminal window
-map <F4> :ter <CR>
-"
-"
-" Toggle syntax highlighting on/off
-map <F7> :if exists("g:syntax_on") <Bar>
-  \   syntax off <Bar>
-  \ else <Bar>
-  \   syntax enable <Bar>
-  \ endif <CR>
-"
-" Search for selected text ('*'/'#' := forward/backward, 'n'/'N' := next/prev)
-vnoremap <silent> * :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy/<C-R><C-R>=substitute(
-  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+"" -- C / C++ --
+""
+let c_comment_strings = 1     " Allow strings & numbers inside comments
+let c_gnu             = 1     " Highlight GNU specific items
+
+
+
+"" -- readline --
+""
+let readline_has_bash = 1     " Highlight additions available through bash
+
+
+
+"" -- sh --
+""
+let is_posix        = 1       " POSIX highlighting for ambiguous *.sh files
+let sh_fold_enabled = 3       " Folding mode b'0110'
+let sh_no_error     = 1       " Relax error detection
+
+
+
+"" -- sed --
+""
+let highlight_sedtabs = 1     " Highlight real tab characters in sed scripts
+
+
+
+"" -- Mappings --
+""
+
+let mapleader = ","           " Define a key to act as <leader> in mappings
+
+
+"" Quote word under or before the cursor (see :help word)
+"" Note: Requires that 'selection' be set to "inclusive" or "exclusive"
+""
+nnoremap <leader>' vl<esc>bi'<esc>ea'<esc>l
+nnoremap <leader>" vl<esc>bi"<esc>ea"<esc>l
+nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
+nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
+nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
+
+
+"" Quote WORD under or before the cursor (see :help WORD)
+"" Note: Requires that 'selection' be set to "inclusive" or "exclusive"
+""
+nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
+nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
+nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
+nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
+nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
+
+
+"" Toggle syntax highlighting
+"" Note: Does not override current colorscheme
+""
+nnoremap <silent><F7> 
+  \
+  \:if exists("g:syntax_on")
+  \<Bar> syntax off <Bar>
+  \else <Bar>
+  \  syntax enable <Bar>
+  \endif <CR>
+
+
+"" Search forward for the current visual selection
+"" Note: Jumping to a tag does not set the current search pattern
+""  
+vnoremap <silent> *
+  \
+  \:<C-U>
+  \let old_reg=getreg('"')<Bar>
+  \let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-"
-vnoremap <silent> # :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy?<C-R><C-R>=substitute(
-  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+
+
+"" Search backward for the current visual selection
+"" Note: Jumping to a tag does not set the current search pattern
+""  
+vnoremap <silent> #
+  \
+  \:<C-U>
+  \let old_reg=getreg('"')<Bar>
+  \let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
+
+
+
+"" -- Encryption & Security --
+""
+set cryptmethod=blowfish2     " Cipher for encrypting files written to disk
+set secure                    " Apply restrictions if vimrc is not owned by me

@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 
 ###          freetype2-infinality-ultimate settings          ###
 ###              rev. 0.5, for freetype2 v.2.6.3             ###

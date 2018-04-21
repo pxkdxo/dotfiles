@@ -1,73 +1,13 @@
-! ~/.Xresources : X server resources
-! Patrick DeYoreo
+! ~/.Xresources
+! resources to be loaded by xrdb (e.g. using "xrdb --load" or "xrdb --merge")
 
+#include ".Xresources.d/Xcursor"
 #include ".Xresources.d/Xft"
+#include ".Xresources.d/XTerm"
 #include ".Xresources.d/colors/gruvbox_black"
+
 
 *locale                       : true
 *customization                : -color
 
-Xcursor*theme                 : Vanilla-DMZ
-
-XTerm.termName                : xterm-256color
-
-XTerm.ttyModes                : erase ^?
-
-XTerm.disallowedWindowOps     : 20,21,SetXprop
-
-XTerm.on3Clicks               : regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
-
-XTerm*vt100.altSendsEscape    : true
-XTerm*vt100.backarrowKey      : false
-XTerm*vt100.metaSendsEscape   : true
-
-XTerm*vt100.charClass         : 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
-
-XTerm*vt100.trimSelection     : true
-
-XTerm*vt100.renderFont        : true
-
-!XTerm*vt100.faceName          : Source Code Pro
-!XTerm*vt100.faceName          : SauceCodePro Nerd Font Mono
-XTerm*vt100.faceName          : CodeNewRoman Nerd Font Mono
-XTerm*vt100.faceSize          : 14
-XTerm*vt100.faceSize1         : 11
-XTerm*vt100.faceSize2         : 13
-XTerm*vt100.faceSize3         : 15
-XTerm*vt100.faceSize4         : 16
-XTerm*vt100.faceSize5         : 17
-XTerm*vt100.faceSize6         : 19
-
-XTerm*vt100.font              : -*-terminus-bold-*-*-*-22-*-*-*-*-*-*-1
-XTerm*vt100.font1             : -*-terminus-medium-*-*-*-16-*-*-*-*-*-*-1
-XTerm*vt100.font2             : -*-terminus-medium-*-*-*-18-*-*-*-*-*-*-1
-XTerm*vt100.font3             : -*-terminus-bold-*-*-*-20-*-*-*-*-*-*-1
-XTerm*vt100.font4             : -*-terminus-bold-*-*-*-24-*-*-*-*-*-*-1
-XTerm*vt100.font5             : -*-terminus-medium-*-*-*-28-*-*-*-*-*-*-1
-XTerm*vt100.font6             : -*-terminus-medium-*-*-*-32-*-*-*-*-*-*-1
-
-XTerm*vt100.colorMode         : true
-XTerm*vt100.colorAttrMode     : true
-XTerm*vt100.dynamicColors     : true
-XTerm*vt100.veryBoldColors    : 6
-XTerm*vt100.cursorBlink       : true
-
-XTerm*vt100.fastScroll        : true
-XTerm*vt100.jumpScroll        : true
-XTerm*vt100.multiScroll       : true
-
-!XTerm*vt100.scrollbar         : true
-!*xterm*rightScrollBar         : true
-
-XTerm*vt100.scrollKey         : true
-XTerm*vt100.scrollTtyOutput   : false
-XTerm*vt100.saveLines         : 16384
-
-XTerm*vt100.visualBell        : true
-XTerm*vt100.visualBellDelay   : 0
-
-XTerm*vt100.translations      : #override                   \n\
-   Ctrl Shift <Key> C         : copy-selection(CLIPBOARD)   \n\
-   Ctrl Shift <Key> V         : insert-selection(CLIPBOARD) \n\
-   Ctrl Shift <Key> P         : dabbrev-expand()            \n\
-   Ctrl Shift <Key> S         : secure()
+vim: set ft=xdefaults

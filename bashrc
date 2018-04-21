@@ -1,16 +1,10 @@
-#
-## ~/.bashrc : initialization file for interactive (non-login) shells
-#
-
+## ~/.bashrc : initialization file for interactive shells
 
 ## Is this actually an interactive shell? If not, stop.
 [[ $- != *i* ]] && return
 
-
-
 ## If {DISPLAY} is non-null and {TERM} is not an xterm, enable `checkwinsize'
 [[ -n ${DISPLAY} && ${TERM} != ?(*.)xterm?(@(-|.)*) ]] && shopt -s checkwinsize
-
 
 
 ## Set GPG_TTY to the current output of tty
@@ -20,14 +14,11 @@ GPG_TTY=$(builtin command -p tty) && export GPG_TTY
 builtin command -p gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
 
 
-
 ## Functions, command substitutions, and subshells inherit traps on 'ERR' 
 set -o errtrace
 
 ## Require the `>|' operator to overwrite existing files via redirection
 set -o noclobber
-
-
 
 ## If the name of a directory is given as a command, pass it to cd
 shopt -s autocd
@@ -75,7 +66,6 @@ shopt -s lastpipe
 shopt -s lithist
 
 
-
 ## Set the location of the history file
 HISTFILE="${XDG_DATA_HOME:-"${HOME}/.local/share"}/bash/history"
 
@@ -92,18 +82,14 @@ HISTCONTROL='ignoredups'
 HISTIGNORE='*([[:blank:]])&*([[:blank:]])'
 
 
-
 ## Set {EXECIGNORE} to match shared object libraries
 EXECIGNORE='?(?(+(/)usr)+(/))lib?(32|64))+(/)**/*.@(so*(.+( , ,[[:digit:]]))|dll)'
-
-
 
 ## Define {GLOBIGNORE} to match all instances of '.' and '..'
 GLOBIGNORE='*(?(.)?(.|*)/).?(.)'
 
 ## Setting {GLOBIGNORE} enables `dotglob' so disable for default behavior
 shopt -u dotglob
-
 
 
 ## Create an array to store terminal info
@@ -113,110 +99,102 @@ declare -A ti=( )
 PROMPT_DIRTRIM=4
 
 
+## Define function to set pre-execution prompt
+function PS0() {
+  declare -g PS0='\[$(kill -28 $$ 1>/dev/null 2>&1)\]'
+} 2>/dev/null
+
 
 ## Define function to set the primary prompt
 function PS1() {
-  eval 'printf -v PS1 '"'"'%.s~'"'"' {1..'"$(("${COLUMNS:="$(tput cols)"}"))"'}'
-  PS1=\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-"${ti['dim']:="$(tput dim)"}"\
-"$1"\
-'\]'\
-"${PS1}"\
+  declare -g PS1=\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
+'\['"${ti['dim']:="$(tput dim)"}"'\]'\
+'\['"$1"'\]'\
+'$(printf '"'"'%.s~'"'"' {1..'"$(( COLUMNS ? COLUMNS : "$(tput cols)" ))"'})'\
 '\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 '\n'\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
 '\u'\
 '\['"${ti['dim']:="$(tput dim)"}"'\]'\
 '@'\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
 '\h'\
 '\['"${ti['dim']:="$(tput dim)"}"'\]'\
 ':'\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
 '\w'\
 '\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 '\n'\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
 '\D{%A %d %B %Y %I:%M %p}'\
 '\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 '\n'\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-"${ti['dim']:="$(tput dim)"}"\
-"$1"\
-'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
+'\['"${ti['dim']:="$(tput dim)"}"'\]'\
+'\['"$1"'\]'\
 '\$λ'\
 '\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 ' '
-}
-
+} 2>/dev/null
 
 
 ## Define function to set the secondary prompt
 function PS2() {
-  PS2=\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-"${ti['dim']:="$(tput dim)"}"\
-"$1"\
-'\]'\
-'$(( (LINENO - '"$(("${BASH_LINENO[-1]}"))"') / 10 ))'\
-'$(( (LINENO - '"$(("${BASH_LINENO[-1]}"))"') % 10 ))'\
+  declare -g PS2=\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
+'\['"${ti['dim']:="$(tput dim)"}"'\]'\
+'\['"$1"'\]'\
+'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'\
+'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'\
 '\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 ' '
-}
+} 2>/dev/null
 
 
+## Define function to set the select prompt
+function PS3() {
+  declare -g PS3='•◆ '
+} 2>/dev/null
 
-## Define function to set the execution trace prompt
+
+## Define function to set the execution-trace prompt
 function PS4() {
-  PS4='\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-"${ti['dim']:="$(tput dim)"}"\
-"$1"\
-'\]'\
+  declare -g PS4=\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
+'\['"${ti['dim']:="$(tput dim)"}"'\]'\
 '•'\
-'\['\
-"${ti['sgr0']:="$(tput sgr0)"}"\
-"${ti['bold']:="$(tput bold)"}"\
-'\]'\
+'\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
+'\['"${ti['bold']:="$(tput bold)"}"'\]'\
 '◆'\
 '\['"${ti['sgr0']:="$(tput sgr0)"}"'\]'\
 ' '
-}
+} 2>/dev/null
 
 
 ## Define function to set the prompts (must be the first cmd of PROMPT_COMMAND)
 function SetPS() {
-  set -- "$( (( _ = $? )) && tput setaf "$(( ($_ - 1) % 6 + 1 ))")"
-  PS0='$(kill -28 $$)'
+  set -- "$( (( _ = $? )) && tput setaf "$(( ($_ - 1) % 6 + 1 ))" )"
+  PS0
   PS1 "$1"
   PS2 "$1"
-  PS3='•◆ '
+  PS3
   PS4 "$1"
-}
+} 2>/dev/null
+
 
 ## Update prompt strings before printing the primary prompt
 [[ ${PROMPT_COMMAND}\; != *([[:space:]])SetPS*([[:blank:]])[$';\n']* ]] \
   && PROMPT_COMMAND='SetPS'"${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
+
 
 ## Load any additional config in ~/.bashrc.d
 [[ -d ~/.bashrc.d ]] &&

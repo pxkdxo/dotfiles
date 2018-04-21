@@ -4,38 +4,83 @@
 
 
 ## xdg
+#
 XDG_CACHE_HOME    DEFAULT="@{HOME}/.cache"
 XDG_CONFIG_HOME   DEFAULT="@{HOME}/.config"
 XDG_DATA_HOME     DEFAULT="@{HOME}/.local/share"
 
 
 ## gnupg
+#
 GNUPGHOME         DEFAULT="@{HOME}/.gnupg"
-SSH_AGENT_PID	    DEFAULT=
-SSH_AUTH_SOCK	    DEFAULT="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+SSH_AGENT_PID     DEFAULT=
+SSH_AUTH_SOCK     DEFAULT="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 
 
 ## makepkg
+#
+AURDEST           DEFAULT="${XDG_DATA_HOME}/pacman/aur"
 BUILDDIR          DEFAULT="${XDG_RUNTIME_DIR}/makepkg"
-LOGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/log"
-PKGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/pkg"
-SRCDEST           DEFAULT="${XDG_DATA_HOME}/pacman/src"
-SRCPKGDEST        DEFAULT="${XDG_DATA_HOME}/pacman/srcpkg"
+LOGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/log"
+PKGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/pkg"
+SRCDEST           DEFAULT=
+SRCPKGDEST        DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/srcpkg"
 
 
-## locale
-BLOCK_SIZE        DEFAULT="'human-readable"
-LANG              DEFAULT="en_US.UTF-8"
-LANGUAGE          DEFAULT="en_US"
-LC_ALL            DEFAULT=
-QUOTING_STYLE     DEFAULT="shell-escape"
-TIME_STYLE        DEFAULT="+%a %d %b %Y %I:%M %p"
-TZ                DEFAULT="America/Los_Angeles"     OVERRIDE="${TZ}"
+## elinks
+#
+ELINKS_CONFDIR    DEFAULT="${XDG_CONFIG_HOME}/elinks"
+
+
+## ghostscript
+#
+GS_OPTIONS        DEFAULT="-sPAPERSIZE=a4 -dOptimize=true -dEmbedAllFonts=true"
+
+
+## wine
+#
+WINEARCH          DEFAULT="win64"
+WINEDEBUG         DEFAULT="warn+dll,+heap"
+WINEDLLPATH       DEFAULT="/usr/local/lib/wine:/usr/lib/wine:@{HOME}/.local/lib/wine:/users/@{PAM_USER}/lib/wine"
+WINEPREFIX        DEFAULT="${XDG_DATA_HOME}/wine"
+
+
+## nvidia
+#
+__GL_THREADED_OPTIMIZATIONS   DEFAULT="1"       OVERRIDE="${__GL_THREADED_OPTIMIZATIONS}"
+__GL_LOG_MAX_ANISO            DEFAULT="4"       OVERRIDE="${__GL_LOG_MAX_ANISO}"
+__GL_FSAA_MODE                DEFAULT="11"      OVERRIDE="${__GL_FSAA_MODE}"
 
 
 ## backups
+#
 VERSION_CONTROL   DEFAULT="numbered"
 
 
+## locale
+#
+LANG              DEFAULT="en_US.UTF-8"
+LANGUAGE          DEFAULT="en_US"
+LC_ALL            DEFAULT=
+TZ                DEFAULT="America/Los_Angeles" OVERRIDE="${TZ}"
+
+
+## posix
+#
+#_POSIX2_VERSION   DEFAULT="200809"
+POSIXLY_CORRECT   DEFAULT=
+
+
+## style
+#
+BLOCK_SIZE        DEFAULT="human-readable"
+QUOTING_STYLE     DEFAULT="shell-escape"
+TIME_STYLE        DEFAULT="+%a %d %b %Y %H:%M"
+
+
 ## tmpfiles
+#
 TMPDIR            DEFAULT="${XDG_RUNTIME_DIR}"
+
+
+# vim: tw=0
