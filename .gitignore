@@ -1,3 +1,5 @@
+
+!/pam_mount.conf.xml
 #
 ## .gitignore
 #
@@ -57,11 +59,7 @@
 !/ncmpcpp/
 !/ncmpcpp/config
 
-!/pacaur/conf
-
 !/pam_environment
-
-!/pam_mount.conf.xml
 
 !/profile
 
@@ -78,9 +76,11 @@
 !user-dirs.dirs
 !user-dirs.locale
 
-!/user-tmpfiles.d
+!/user-tmpfiles.d/**
 
-!/vim/**
+!/vim/
+!/vim/vimrc
+!/vim/colors/**
 
 !/xinitrc
 !/xinitrc.d/**
@@ -90,5 +90,4 @@
 
 !/xserverrc
 
-!/zlogin
 !/zshrc
