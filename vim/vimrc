@@ -235,7 +235,6 @@ if &g:t_Co == 256 || has('gui_running')
   colorscheme calmar256-darkP
 elseif &g:t_Co == 88
   colorscheme inkpotP
-elseif 
 endif
 
 
