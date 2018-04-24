@@ -40,8 +40,8 @@ GS_OPTIONS        DEFAULT="-sPAPERSIZE=a4 -dOptimize=true -dEmbedAllFonts=true"
 ## wine
 #
 WINEARCH          DEFAULT="win64"
-WINEDEBUG         DEFAULT="warn+dll,+heap"
-WINEDLLPATH       DEFAULT="/usr/local/lib/wine:/usr/lib/wine:@{HOME}/.local/lib/wine:/users/@{PAM_USER}/lib/wine"
+WINEDEBUG         DEFAULT="warn+all"
+WINEDLLPATH       DEFAULT="/usr/local/lib/wine:/usr/lib/wine:/lib/wine:@{HOME}/.local/lib/wine:/users/@{PAM_USER}/lib/wine"
 WINEPREFIX        DEFAULT="${XDG_DATA_HOME}/wine"
 
 
@@ -54,11 +54,7 @@ __GL_FSAA_MODE                DEFAULT="11"      OVERRIDE="${__GL_FSAA_MODE}"
 
 ## luarocks
 #
-LUAROCKS_CONFIG               DEFAULT="${XDG_CONFIG_HOME}/luarocks/config-5.3.lua"
-
-## backups
-#
-VERSION_CONTROL   DEFAULT="numbered"
+LUAROCKS_CONFIG   DEFAULT="${XDG_CONFIG_HOME}/luarocks/config-5.3.lua"
 
 
 ## locale
@@ -71,7 +67,7 @@ TZ                DEFAULT="America/Los_Angeles" OVERRIDE="${TZ}"
 
 ## posix
 #
-#_POSIX2_VERSION   DEFAULT="200809"
+_POSIX2_VERSION   DEFAULT="200809"
 POSIXLY_CORRECT   DEFAULT=
 
 
@@ -80,6 +76,11 @@ POSIXLY_CORRECT   DEFAULT=
 BLOCK_SIZE        DEFAULT="human-readable"
 QUOTING_STYLE     DEFAULT="shell-escape"
 TIME_STYLE        DEFAULT="+%a %d %b %Y %H:%M"
+
+
+## file backups
+#
+VERSION_CONTROL   DEFAULT="simple"
 
 
 ## tmpfiles
