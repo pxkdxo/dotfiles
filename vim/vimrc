@@ -13,12 +13,12 @@ set encoding=utf-8
 "" -- Filetype & Syntax --
 
 "" Detect, load plugins, & apply indent style
-if has("autocmd")
+if has('autocmd')
   filetype plugin indent on
 endif
 
 "" Turn on syntax highlighting (do not override colorscheme)
-if &t_Co > 2 || has("gui_running")
+if &t_Co > 2 || has('gui_running')
   syntax enable
 endif
 
@@ -39,7 +39,7 @@ set softtabstop=2
 set tabstop=8
 
 "" Length beyond which insertion will cause a linebreak
-if &filetype =~? "^(conf|man)$"
+if &filetype =~? '^(conf|man)$'
   set textwidth=78
 endif
 
@@ -231,7 +231,7 @@ endif
 "" -- Colors --
 ""
 "" Set editor colorscheme
-if &g:t_Co == 256 || has("gui_running")
+if &g:t_Co == 256 || has('gui_running')
   colorscheme calmar256-darkP
 elseif &g:t_Co == 88
   colorscheme inkpotP
@@ -243,7 +243,7 @@ endif
 "" -- Man --
 ""
 runtime ftplugin/man.vim        " Load the 'Man' plugin
-let g:ft_man_open_mode = 'vert'
+let g:ft_man_open_mode = 'vert' " Split man windows off to the side
 
 
 
@@ -290,8 +290,7 @@ let highlight_sedtabs = 1       " Highlight real tabs in sed scripts
 
 "" -- Mappings --
 ""
-
-let mapleader = ","             " Define key to act as <leader> in mappings
+let mapleader = ','             " Define key to act as <leader> in mappings
 
 
 "" Quote word under or before the cursor (see :help word)
@@ -319,7 +318,7 @@ nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 ""
 nnoremap <silent><F7> 
   \
-  \:if exists("g:syntax_on")
+  \:if exists('g:syntax_on')
   \<Bar> syntax off <Bar>
   \else <Bar>
   \  syntax enable <Bar>
@@ -350,7 +349,6 @@ vnoremap <silent> #
   \gvy?<C-R><C-R>
   \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-
 
 
 
