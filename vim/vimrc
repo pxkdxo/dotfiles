@@ -2,7 +2,7 @@
 "" ViM version 8.0
 
 
-"" Use vim defaults (instead of Vi)
+"" Use Vim defaults (rather than Vi)
 set nocompatible
 
 "" Always encode in utf-8
@@ -10,17 +10,21 @@ set encoding=utf-8
 
 
 
-"" -- Filetype Detection --
-""
+"" -- Filetype & Syntax --
+
 "" Detect, load plugins, & apply indent style
-filetype plugin indent on
+if has("autocmd")
+  filetype plugin indent on
+endif
 
-"" Perform syntax highlighting
-syntax enable
+"" Turn on syntax highlighting (do not override colorscheme)
+if &t_Co > 2 || has("gui_running")
+  syntax enable
+endif
 
 
 
-"" -- Formatting --
+"" -- Tabs & Formatting --
 ""
 "" Insert spaces insted of tab characters
 set expandtab
@@ -35,30 +39,29 @@ set softtabstop=2
 set tabstop=8
 
 "" Length beyond which insertion will cause a linebreak
-set textwidth=80
+if &filetype =~? "^(conf|man)$"
+  set textwidth=78
+endif
 
 
 
-"" -- Searching & Patterns --
+"" -- Patterns & Searching --
 ""
 "" Do not highlight search results
 set nohlsearch
 
-"" Search forward as a pattern is being typed
+"" Search forward as pattern is typed
 set incsearch
 
-"" Ignore case when pattern matching
+"" Ignore case by default
 set ignorecase
 
-"" Respect case if pattern contains uppercase characters
+"" Respect case if pattern contains uppercase
 set smartcase
 
-"" Briefly jump to match upon completing a pair in 'matchpairs'
-set showmatch
 
 
-
-"" -- Display & Verbosity --
+"" -- Editor Info --
 ""
 "" Display line numbers
 set number
@@ -69,45 +72,48 @@ set relativenumber
 "" Display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
 
-"" Display the most recent command below buffer windows
+"" Display most recent command below window
 set showcmd
 
-"" Set name of file in current buffer as window title
-set title
-
-"" Minimum number of columns reserved for line numbers
-set numberwidth=3
+"" Briefly jump to match upon completing pair in 'matchpairs'
+set showmatch
 
 "" Highlight columns relative to 'textwidth'
-set colorcolumn=+1,+3,+4
+set colorcolumn=+1
 
-"" Handling of non-printable characters and lines too large for window
-set display=truncate,uhex
+"" Show last line as @@@ if truncated
+set display=truncate
 
-"" Always show the status line
+"" Always show status line
 set laststatus=2
 
+"" Number of columns reserved for line numbers
+set numberwidth=2
 
 
-"" -- Cursor & Scrolling --
+
+"" -- Scrolling & Editing --
 ""
 "" Attempt to preserve cursor position when moving linewise
 set nostartofline
 
-"" Allow backspace over these objects
+"" Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
+
+"" Additional bases for Ctrl-A (increment) / Ctrl-X (decrement)
+set nrformats=bin,hex
+
+"" Lines of padding between cursor and edge of window
+set scrolloff=4
+
+"" If 'nowrap' is set, minimum number of columnss to scroll at a time
+set sidescroll=1
+
+"" If 'nowrap' is set, columns of padding between cursor and edge of window
+set sidescrolloff=4
 
 "" Allow visual-block selection of empty columns
 set virtualedit=block
-
-"" Number of lines of padding from edge of window
-set scrolloff=4
-
-"" If 'nowrap' is set, number of cols of padding from edge of window
-set sidescrolloff=4
-
-"" If 'nowrap' is set, minimum number of cols to scroll at a time
-set sidescroll=1
 
 
 
@@ -129,51 +135,62 @@ set splitright
 
 "" -- Completion --
 ""
-"" Insert-mode completion behavior
-set completeopt=menu,preview,longest,noselect
-
-"" Enable command-completion
+"" Enable command completion
 set wildmenu
 
 "" Ignore case for filename completions
 set wildignorecase
 
-"" Complete common prefix and show possible completions, then cycle
+"" Insert-mode completion behavior
+set completeopt=menu,preview,noselect
+
+"" Cmdline-mode completion behavior
 set wildmode=list:longest,full
+
 
 
 "" -- Key Timeout --
 ""
-"" Time out on mappings and keycodes
+"" Time out for mappings
 set timeout
 
 "" Time in milliseconds to wait for completion of a mapping
-set timeoutlen=2250
+set timeoutlen=2000
 
-"" Time out on mappings and keycodes
+"" Time out for keycodes
 set ttimeout
 
 "" Time in milliseconds to wait for completion of a key code
-set ttimeoutlen=115
+set ttimeoutlen=120
 
 
 
 "" -- History & Backups --
 ""
-"" Size of the command history 
-set history=1000
-
-"" Size of a file's undo history
-set undolevels=2500
-
 "" Save each file's undo history
 set undofile
+
+"" Size of the command history 
+set history=500
+
+"" Size of a file's undo history
+set undolevels=1500
 
 "" Update the swap file after typing this many characters
 set updatecount=160
 
-"" Update the swap file after this many milliseconds of no typing
-set updatetime=6000
+"" Location of backups
+set backupdir=
+      \${XDG_DATA_HOME}/vim/backup,
+      \~/.local/share/vim/backup,
+      \~/.vim/backup,
+      \${TMPDIR}/vim/backup,
+      \~/tmp/vim/backup,
+      \${XDG_RUNTIME_DIR}/vim/backup,
+      \.,
+      \${TMPDIR},
+      \~/tmp,
+      \${XDG_RUNTIME_DIR}
 
 "" Location of swap files
 set directory=
@@ -195,24 +212,7 @@ set undodir=
       \~/.vim/undo,
       \${TMPDIR}/vim/undo,
       \~/tmp/vim/undo,
-      \${XDG_RUNTIME_DIR}/vim/undo,
-      \.,
-      \${TMPDIR},
-      \~/tmp,
-      \${XDG_RUNTIME_DIR}
-
-"" Location of backups
-set backupdir=
-      \${XDG_DATA_HOME}/vim/backup,
-      \~/.local/share/vim/backup,
-      \~/.vim/backup,
-      \${TMPDIR}/vim/backup,
-      \~/tmp/vim/backup,
-      \${XDG_RUNTIME_DIR}/vim/backup,
-      \.,
-      \${TMPDIR},
-      \~/tmp,
-      \${XDG_RUNTIME_DIR}
+      \${XDG_RUNTIME_DIR}/vim/undo
 
 
 
@@ -222,34 +222,40 @@ set backupdir=
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
 "" Enable mouse functionality in all modes
-set mouse=a
+if has('mouse')
+  set mouse=a
+endif
 
 
 
 "" -- Colors --
 ""
 "" Set editor colorscheme
-if &g:t_Co == 256
+if &g:t_Co == 256 || has("gui_running")
   colorscheme calmar256-darkP
+elseif &g:t_Co == 88
+  colorscheme inkpotP
+elseif 
 endif
 
 
 
 "" -- Man --
 ""
-runtime ftplugin/man.vim
+runtime ftplugin/man.vim        " Load the 'Man' plugin
+let g:ft_man_open_mode = 'vert'
 
 
 
 "" -- Python --
 ""
-let python_highlight_all = 1  " Enable all available syntax highlighting
+let python_highlight_all = 1    " Enable all available syntax highlighting
 
-if &g:pyxversion == 0         " Set default version
+if &g:pyxversion == 0           " Set default version if none has been set
   if has('python3')
-    set pyxversion=3          " Choose 3 if available
+    set pyxversion=3            " Choose 3 if available
   elseif has('python2')
-    set pyxversion=2          " Fallback to 2
+    set pyxversion=2            " Fallback to 2
   endif
 endif
 
@@ -257,35 +263,35 @@ endif
 
 "" -- C / C++ --
 ""
-let c_comment_strings = 1     " Allow strings & numbers inside comments
-let c_gnu             = 1     " Highlight GNU specific items
+let c_comment_strings = 1       " Allow strings & numbers inside comments
+let c_gnu             = 1       " Highlight GNU specific items
 
 
 
-"" -- readline --
+"" -- Readline --
 ""
-let readline_has_bash = 1     " Highlight additions available through bash
+let readline_has_bash = 1       " Highlight additions available through bash
 
 
 
-"" -- sh --
+"" -- Sh --
 ""
-let is_posix        = 1       " POSIX highlighting for ambiguous *.sh files
-let sh_fold_enabled = 3       " Folding mode b'0110'
-let sh_no_error     = 1       " Relax error detection
+let is_posix        = 1         " POSIX highlighting for ambiguous *.sh files
+let sh_fold_enabled = 3         " Folding mode b'0110'
+let sh_no_error     = 1         " Relax error detection
 
 
 
-"" -- sed --
+"" -- Sed --
 ""
-let highlight_sedtabs = 1     " Highlight real tab characters in sed scripts
+let highlight_sedtabs = 1       " Highlight real tabs in sed scripts
 
 
 
 "" -- Mappings --
 ""
 
-let mapleader = ","           " Define a key to act as <leader> in mappings
+let mapleader = ","             " Define key to act as <leader> in mappings
 
 
 "" Quote word under or before the cursor (see :help word)
@@ -328,7 +334,8 @@ vnoremap <silent> *
   \:<C-U>
   \let old_reg=getreg('"')<Bar>
   \let old_regtype=getregtype('"')<CR>
-  \gvy/<C-R><C-R>=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+  \gvy/<C-R><C-R>
+  \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 
@@ -340,13 +347,14 @@ vnoremap <silent> #
   \:<C-U>
   \let old_reg=getreg('"')<Bar>
   \let old_regtype=getregtype('"')<CR>
-  \gvy?<C-R><C-R>=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+  \gvy?<C-R><C-R>
+  \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 
 
 
-"" -- Encryption & Security --
+"" -- Security --
 ""
-set cryptmethod=blowfish2     " Cipher for encrypting files written to disk
-set secure                    " Apply restrictions if vimrc is not owned by me
+set cryptmethod=blowfish2       " Cipher for files written to disk
+set secure                      " Used if vimrc or exrc is not owned by me
