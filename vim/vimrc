@@ -29,6 +29,9 @@ endif
 "" Insert spaces insted of tab characters
 set expandtab
 
+"" Number of columns reserved for line numbers
+set numberwidth=2
+
 "" Number of spaces to use for each indent
 set shiftwidth=2
 
@@ -61,7 +64,7 @@ set smartcase
 
 
 
-"" -- Editor Info --
+"" -- Verbosity & Info Visibility --
 ""
 "" Display line numbers
 set number
@@ -87,12 +90,9 @@ set display=truncate
 "" Always show status line
 set laststatus=2
 
-"" Number of columns reserved for line numbers
-set numberwidth=2
 
 
-
-"" -- Scrolling & Editing --
+"" -- Editing --
 ""
 "" Attempt to preserve cursor position when moving linewise
 set nostartofline
@@ -221,7 +221,7 @@ set undodir=
 "" Fuck terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
-"" Enable mouse functionality in all modes
+"" Enable mouse functionality
 if has('mouse')
   set mouse=a
 endif
@@ -241,7 +241,7 @@ endif
 
 "" -- Man --
 ""
-runtime ftplugin/man.vim        " Load the 'Man' plugin
+runtime ftplugin/man.vim        " Load the man plugin
 let g:ft_man_open_mode = 'vert' " Split man windows off to the side
 
 
