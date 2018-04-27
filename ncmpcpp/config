@@ -1,33 +1,32 @@
-## ~/.ncmpcpp/config
-## Patrick DeYoreo
+## ncmpcpp/config : configuration file for ncmpcpp
+
+##### system encoding #####
+system_encoding           = UTF-8
 
 ##### directories ######
+mpd_music_dir             = ~/Music
 ncmpcpp_directory         = ~/.local/share/ncmpcpp
 lyrics_directory          = ~/.local/share/ncmpcpp/lyrics
 
-##### connection settings #####
+##### mpd connection #####
 mpd_host                  = ~/.mpd/mpd.socket
 mpd_port                  = 6602
-mpd_music_dir             = ~/Music
 mpd_connection_timeout    = 5
 mpd_crossfade_time        = 1
 
-##### music visualizer #####
-visualizer_fifo_path     = ~/.mpd/output-stereo
-visualizer_output_name   = "fifo (stereo)"
-visualizer_sync_interval = 20
-visualizer_in_stereo     = yes
-visualizer_type          = spectrum
-visualizer_color         = 52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22
-visualizer_look          = ╬♥
-
-##### system encoding #####
-system_encoding = UTF-8
+##### music visualizer ####
+visualizer_fifo_path      = ~/.mpd/output-stereo
+visualizer_output_name    = fifo (stereo)
+visualizer_sync_interval  = 20
+visualizer_in_stereo      = yes
+visualizer_type           = spectrum
+visualizer_color          = 52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22
+visualizer_look           = ╬♥
 
 ##### delays #####
 ## Time of inactivity (in seconds) after playlist highlighting will be disabled
 ## (0 = always on).
-playlist_disable_highlight_delay = 15
+playlist_disable_highlight_delay = 0
 ## Defines how long messages are supposed to be visible.
 message_delay_time = 4
 
