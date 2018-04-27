@@ -2,9 +2,17 @@
 ## ~/.asoundrc : ALSA sound configuration
 #
 
+
+# Override default resampling quality
+# ------------------------------------------------------
 defaults.pcm.rate_converter "speexrate_best"
 
 
+# Define some usefule device templates
+# ------------------------------------------------------
+
+# duplex device
+# ------------------------------------------------------
 pcm.dsp {
   @args [ SNOOP MIX ]
 
@@ -17,7 +25,8 @@ pcm.dsp {
   playback.pcm  $MIX
 }
 
-
+# capture device
+# ------------------------------------------------------
 pcm.rec {
   @args [ KEY PCM ]
 
@@ -30,7 +39,8 @@ pcm.rec {
   slave.pcm     $PCM
 }
 
-
+# playback device
+# ------------------------------------------------------
 pcm.dmix20 {
   @args [ KEY PCM RATE PSIZE BSIZE PTIME BTIME ]
 
@@ -59,9 +69,9 @@ pcm.dmix20 {
 }
 
 
-ctl.!default    ctl.dsp0
-pcm.!default    pcm.dsp0
-
+# ------------------------------------------------------
+# Create some references to the the devices themselves
+# ------------------------------------------------------
 
 ctl.pulse     { type pulse }
 pcm.pulse     { type pulse }
@@ -73,12 +83,162 @@ ctl.nvidia    { type hw card NVidia }
 pcm.nvidia    { type hw card NVidia }
 
 
-pcm.dsnoop0     "rec:20020,pch"
+# ------------------------------------------------------
+# The following devices are more than adequate for the
+# vast majority of use cases
+# ------------------------------------------------------
+
+ctl.!default    ctl.dsp0
+pcm.!default    pcm.dsp0
+
+pcm.dsnoop0     "rec:2020,pch"
 
 ctl.dmix0       ctl.pch
-pcm.dmix0       "dmix20:10020,pch"
+pcm.dmix0       "dmix20:1020,pch"
 
 ctl.dsp0        ctl.pch
 pcm.dsp0        "dsp:dsnoop0,dmix0"
 
 ctl.mixer0      ctl.pch
+
+
+# ------------------------------------------------------
+# The following are for use with snd-aloop and jack
+#
+# For example... 
+# env JACK_SAMPLE_RATE=44100 JACK_PERIOD_SIZE=1024 alsa_in (...)
+#
+# ------------------------------------------------------
+
+
+# playback device
+pcm.aloopPlayback {
+  @args [ KEY PCM RATE PSIZE BSIZE ]
+
+  @args.KEY   { type integer }
+  @args.PCM   { type string  }
+  @args.RATE  { type integer default 48000 }
+  @args.PSIZE { type integer default  4096 }
+  @args.BSIZE { type integer default 32768 }
+
+  type          dmix
+  ipc_key       $KEY
+
+  slave {
+    pcm         $PCM
+#   pcm         "hw:Loopback,0,0"
+
+    format      S32_LE
+
+    rate {
+      @func igetenv
+      vars  [ JACK_SAMPLE_RATE ]
+      default   $RATE
+#     default   44100
+    }
+
+    period_size {
+      @func igetenv
+      vars  [ JACK_PERIOD_SIZE ]
+      default   $PSIZE
+#     default   1024
+    }
+
+    buffer_size $BSIZE
+#   buffer_size 4096
+  }
+}
+
+
+# capture device
+pcm.aloopCapture {
+  @args [ KEY PCM RATE PSIZE BSIZE ]
+
+  @args.KEY   { type integer }
+  @args.PCM   { type string  }
+  @args.RATE  { type integer default 48000 }
+  @args.PSIZE { type integer default  4096 }
+  @args.BSIZE { type integer default 32768 }
+
+  type          dsnoop
+  ipc_key       $KEY
+
+  slave {
+    pcm         $PCM
+#   pcm         "hw:Loopback,0,1"
+
+    format      S32_LE
+
+    rate {
+      @func igetenv
+      vars  [ JACK_SAMPLE_RATE ]
+      default   $RATE
+#     default   44100
+    }
+
+    period_size {
+      @func igetenv
+      vars  [ JACK_PERIOD_SIZE ]
+      default   $PSIZE
+#     default   1024
+    }
+
+    buffer_size $BSIZE
+#   buffer_size 4096
+  }
+}
+
+# duplex device
+pcm.aloopDuplex {
+
+  type asym
+  playback.pcm "aloopPlayback"
+  capture.pcm "aloopCapture"
+}
+
+ 
+# ------------------------------------------------------
+# default device
+#pcm.!default {
+#  type plug
+#  slave.pcm "aloopDuplex"
+#}
+
+
+# ------------------------------------------------------
+# alsa_in -j alsa_in -dcloop -q 1
+# ------------------------------------------------------
+pcm.cloop {
+  type dsnoop
+  ipc_key 3
+  ipc_key_add_uid true
+  slave {
+    pcm "hw:Loopback,1,0"
+    channels 2
+    format S32_LE
+    rate {
+      @func igetenv
+      vars [ JACK_SAMPLE_RATE ]
+      default 44100
+    }
+    period_size {
+      @func igetenv
+      vars [ JACK_PERIOD_SIZE ]
+      default 1024
+    }
+    buffer_size 32768
+  }
+}
+
+
+# ------------------------------------------------------
+# alsa_out -j alsa_out -dploop -q 1
+# ------------------------------------------------------
+pcm.ploop {
+  type plug
+  slave.pcm "hw:Loopback,1,1"
+}
+
+
+
+# vim: set ft=alsaconf
