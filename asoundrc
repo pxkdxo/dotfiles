@@ -1,76 +1,60 @@
 #
-## ~/.asoundrc : ALSA configuration
+## ~/.asoundrc : ALSA sound configuration
 #
 
+defaults.pcm.rate_converter "speexrate_best"
 
-pcm.duplex {
+
+pcm.dsp {
   @args [ SNOOP MIX ]
 
-  @args.SNOOP { type string; }
-  @args.MIX   { type string; }
+  @args.SNOOP { type string }
+  @args.MIX   { type string }
 
-  type asym
+  type          asym
 
-  capture.pcm  $SNOOP
-  playback.pcm $MIX
-}
-
-
-pcm.record {
-  @args [ PCM KEY ]
-
-  @args.PCM { type string ; }
-  @args.KEY { type integer; }
-
-  type dsnoop
-
-  ipc_key   $KEY
-  slave.pcm $PCM
+  capture.pcm   $SNOOP
+  playback.pcm  $MIX
 }
 
 
 pcm.iec {
   @args [ PCM ]
 
-  @args.PCM { type string; }
+  @args.PCM   { type string }
 
-  type iec958
+  type          iec958
 
-  slave.pcm $PCM
+  slave.pcm     $PCM
 }
 
 
-pcm.mono {
-  @args [ PCM ]
+pcm.rec {
+  @args [ KEY PCM ]
 
-  @args.PCM { type string; }
+  @args.KEY   { type integer }
+  @args.PCM   { type string  }
 
-  type route
+  type          dsnoop
+  ipc_key       $KEY
 
-  slave.pcm $PCM
-
-  ttable {
-    0.0 1
-    1.0 1
-  }
+  slave.pcm     $PCM
 }
 
 
 pcm.dmix20 {
   @args [ KEY PCM RATE PSIZE BSIZE PTIME BTIME ]
 
-  @args.PCM { type string ; }
-  @args.KEY { type integer; }
+  @args.KEY   { type integer }
+  @args.PCM   { type string  }
+  @args.RATE  { type integer default  48000 }
+  @args.PSIZE { type integer default   4096 }
+  @args.BSIZE { type integer default  32768 }
+  @args.PTIME { type integer default  83968 }
+  @args.BTIME { type integer default 671744 }
 
-  @args.RATE  { type integer; default  48000; }
-  @args.PSIZE { type integer; default   4096; }
-  @args.BSIZE { type integer; default  32768; }
-  @args.PTIME { type integer; default  85000; }
-  @args.BTIME { type integer; default 680000; }
-
-  type dmix
-
-  ipc_key $KEY
+  type          dmix
+  ipc_key       $KEY
 
   slave {
     pcm         $PCM
@@ -79,36 +63,44 @@ pcm.dmix20 {
     buffer_size $BSIZE
     period_time $PTIME
     buffer_time $BTIME
-    channels 2
+    channels    2
   }
-  bindings.0 0
-  bindings.1 1
+
+  bindings    { 0 0 1 1 }
 }
 
 
-ctl.card0   { type hw; card 0; }
-pcm.card0   { type hw; card 0; }
 
-pcm.dsnoop0 = "record:card0,23760"
-
-ctl.dmix0   = ctl.card0
-pcm.dmix0   = "dmix20:card0,13760"
-
-ctl.mixer0  = ctl.card0
-ctl.dsp0    = ctl.card0
-pcm.dsp0    = "duplex:dsnoop0,dmix0"
-
-ctl.mono0   = ctl.card0
-pcm.mono0   = "mono:dsp0"
+ctl.!default    ctl.dsp0
+pcm.!default    pcm.dsp0
 
 
-ctl.card1 { type hw; card 1; }
-pcm.card1 { type hw; card 1; }
+ctl.pulse     { type pulse }
+pcm.pulse     { type pulse }
+
+ctl.pch       { type hw card PCH }
+pcm.pch       { type hw card PCH }
+
+ctl.pch0      { type hw card PCH device 0 }
+pcm.pch0      { type hw card PCH device 0 }
+
+ctl.pch1      { type hw card PCH device 1 }
+pcm.pch1      { type hw card PCH device 1 }
+
+ctl.nvidia    { type hw card NVidia }
+pcm.nvidia    { type hw card NVidia }
 
 
-ctl.pulse { type pulse; }
-pcm.pulse { type pulse; }
 
+pcm.dsnoop0     "rec:20020,pch0"
 
-ctl.!default ctl.dsp0
-pcm.!default pcm.dsp0
+ctl.dmix0       ctl.pch
+pcm.dmix0       "dmix20:10020,pch0"
+
+ctl.mixer0      ctl.pch
+
+ctl.dsp0        ctl.pch
+pcm.dsp0        "dsp:dsnoop0,dmix0"
+
+ctl.digi0       ctl.pch
+pcm.digi0       "iec:pch1"

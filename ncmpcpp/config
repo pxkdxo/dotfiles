@@ -2,19 +2,19 @@
 ## Patrick DeYoreo
 
 ##### directories ######
-ncmpcpp_directory = ~/.local/share/ncmpcpp
-lyrics_directory  = ~/.local/share/ncmpcpp/lyrics
+ncmpcpp_directory         = ~/.local/share/ncmpcpp
+lyrics_directory          = ~/.local/share/ncmpcpp/lyrics
 
 ##### connection settings #####
-mpd_host               = ~/.mpd/mpd.socket
-mpd_port               = 6602
-mpd_music_dir          = ~/Music
-mpd_connection_timeout = 5
-mpd_crossfade_time     = 0
+mpd_host                  = ~/.mpd/mpd.socket
+mpd_port                  = 6602
+mpd_music_dir             = ~/Music
+mpd_connection_timeout    = 5
+mpd_crossfade_time        = 1
 
 ##### music visualizer #####
 visualizer_fifo_path     = ~/.mpd/output-stereo
-visualizer_output_name   = FIFO (Stereo)
+visualizer_output_name   = "fifo (stereo)"
 visualizer_sync_interval = 20
 visualizer_in_stereo     = yes
 visualizer_type          = spectrum

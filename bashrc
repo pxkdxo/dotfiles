@@ -54,8 +54,11 @@ shopt -s huponexit
 ## Append to the history file instead of overwriting it
 shopt -s histappend
 
-## If using readline, allow user to re-edit a failed history substitution
+## If using rl, allow user to re-edit a failed history substitution
 shopt -s histreedit
+
+## If using rl, history substitutions will be loaded into the editing buffer
+shopt -s histverify
 
 ## Command substitutions inherit the value of the `errexit' option
 shopt -s inherit_errexit

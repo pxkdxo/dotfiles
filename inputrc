@@ -4,7 +4,7 @@
 $include /etc/inputrc
 
 set input-meta on
-set convert-meta off
+set convert-meta on
 set output-meta on
 
 set completion-ignore-case on
