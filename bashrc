@@ -8,11 +8,10 @@
 
 
 ## Set GPG_TTY to the current output of tty
-GPG_TTY=$(builtin command -p tty) && export GPG_TTY
+GPG_TTY=$(command -p tty) && export GPG_TTY
 
 ## Refresh gpg-agent tty in case user switches into an X session
 command -p gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
-
 
 
 ## Functions, command substitutions, and subshells inherit traps on 'ERR' 
