@@ -3,19 +3,16 @@
 #
 
 # ------------------------------------------------------
-# Override the default rate convereter used by alsa
+# default rate convereter
 # ------------------------------------------------------
 defaults.pcm.rate_converter "speexrate_medium"
 
 
-# Create some device templates use as they are needed
+# ------------------------------------------------------
+# duplex template
 # ------------------------------------------------------
 
-# ------------------------------------------------------
-# duplex device
-# ------------------------------------------------------
-
-pcm.dsp {
+pcm.duplex {
   @args [ SNOOP MIX ]
 
   @args.SNOOP { type string }
@@ -27,11 +24,12 @@ pcm.dsp {
   playback.pcm  $MIX
 }
 
+
 # ------------------------------------------------------
-# capture device
+# capture template
 # ------------------------------------------------------
 
-pcm.rec {
+pcm.snoop {
   @args [ KEY PCM ]
 
   @args.KEY   { type integer }
@@ -43,10 +41,11 @@ pcm.rec {
   slave.pcm     $PCM
 }
 
+
 # ------------------------------------------------------
-# playback device
+# playback template
 # ------------------------------------------------------
-pcm.dmix20 {
+pcm.mix {
   @args [ KEY PCM RATE PSIZE BSIZE PTIME BTIME ]
 
   @args.KEY   { type integer }
@@ -67,19 +66,19 @@ pcm.dmix20 {
     buffer_size $BSIZE
     period_time $PTIME
     buffer_time $BTIME
-    channels    2
   }
-
-  bindings    { 0 0 1 1 }
 }
 
 
 # ------------------------------------------------------
-# Create some references to the the devices themselves
+# cards
 # ------------------------------------------------------
 
 ctl.pulse     { type pulse }
 pcm.pulse     { type pulse }
+
+ctl.loop      { type hw card Loop }
+ctl.loop      { type hw card Loop }
 
 ctl.pch       { type hw card PCH }
 pcm.pch       { type hw card PCH }
@@ -89,76 +88,37 @@ pcm.nvidia    { type hw card NVidia }
 
 
 # ------------------------------------------------------
-# The following devices are more than adequate for the
-# vast majority of use cases
+# PCH (card1) devices
 # ------------------------------------------------------
 
-pcm.dsnoop0     "rec:2020,pch"
+ctl.card1       ctl.pch
+pcm.card1       pcm.pch
 
-ctl.dmix0       ctl.pch
-pcm.dmix0       "dmix20:1020,pch"
+pcm.dsnoop1     "snoop:20120,pch"
 
-ctl.mixer0      ctl.pch
-ctl.dsp0        ctl.pch
-pcm.dsp0        "dsp:dsnoop0,dmix0"
+ctl.dmix1       ctl.pch
+pcm.dmix1       "mix:10120,pch"
 
-ctl.!default    ctl.dsp0
-pcm.!default    pcm.dsp0
+ctl.duplex1     ctl.pch
+pcm.duplex1     "duplex:dsnoop1,dmix1"
+
+ctl.dsp1        ctl.pch
+pcm.dsp1        pcm.duplex1
+
+ctl.mixer1      ctl.pch
+
+ctl.!default    ctl.dsp1
+pcm.!default    pcm.dsp1
+
 
 # ------------------------------------------------------
-# The following are for use with snd-aloop and jack
-#
-# For example... 
-# env JACK_SAMPLE_RATE=44100 JACK_PERIOD_SIZE=1024 alsa_in (...)
-#
+# snd-aloop capture template
 # ------------------------------------------------------
 
-
-# playback device
-pcm.aloopPlayback {
-  @args [ KEY PCM RATE PSIZE BSIZE ]
+pcm.asnoop {
+  @args [ KEY RATE PSIZE BSIZE ]
 
   @args.KEY   { type integer }
-  @args.PCM   { type string  }
-  @args.RATE  { type integer default 48000 }
-  @args.PSIZE { type integer default  4096 }
-  @args.BSIZE { type integer default 32768 }
-
-  type          dmix
-  ipc_key       $KEY
-
-  slave {
-    pcm         $PCM
-#   pcm         "hw:Loopback,0,0"
-
-    format      S32_LE
-
-    rate {
-      @func igetenv
-      vars  [ JACK_SAMPLE_RATE ]
-      default   $RATE
-#     default   44100
-    }
-
-    period_size {
-      @func igetenv
-      vars  [ JACK_PERIOD_SIZE ]
-      default   $PSIZE
-#     default   1024
-    }
-
-    buffer_size $BSIZE
-#   buffer_size 4096
-  }
-}
-
-
-# capture device
-pcm.aloopCapture {
-  @args [ KEY PCM RATE PSIZE BSIZE ]
-
-  @args.KEY   { type integer }
-  @args.PCM   { type string  }
   @args.RATE  { type integer default 48000 }
   @args.PSIZE { type integer default  4096 }
   @args.BSIZE { type integer default 32768 }
@@ -167,45 +127,77 @@ pcm.aloopCapture {
   ipc_key       $KEY
 
   slave {
-    pcm         $PCM
-#   pcm         "hw:Loopback,0,1"
-
+    pcm         "hw:Loop,0,1"
     format      S32_LE
 
     rate {
-      @func igetenv
-      vars  [ JACK_SAMPLE_RATE ]
+      @func igetenv vars [ JACK_SAMPLE_RATE ]
       default   $RATE
-#     default   44100
     }
 
     period_size {
-      @func igetenv
-      vars  [ JACK_PERIOD_SIZE ]
+      @func igetenv vars [ JACK_PERIOD_SIZE ]
       default   $PSIZE
-#     default   1024
     }
 
     buffer_size $BSIZE
-#   buffer_size 4096
   }
 }
 
-# duplex device
-pcm.aloopDuplex {
 
-  type asym
-  playback.pcm "aloopPlayback"
-  capture.pcm "aloopCapture"
-}
-
- 
 # ------------------------------------------------------
-# default device
-#pcm.!default {
-#  type plug
-#  slave.pcm "aloopDuplex"
-#}
+# snd-aloop playback template
+# ------------------------------------------------------
+
+pcm.amix {
+  @args [ KEY RATE PSIZE BSIZE ]
+
+  @args.KEY   { type integer }
+  @args.RATE  { type integer default 48000 }
+  @args.PSIZE { type integer default  4096 }
+  @args.BSIZE { type integer default 32768 }
+
+  type          dmix
+  ipc_key       $KEY
+
+  slave {
+    pcm         "hw:Loop,0,0"
+    format      S32_LE
+
+    rate {
+      @func igetenv vars [ JACK_SAMPLE_RATE ]
+      default   $RATE
+    }
+
+    period_size {
+      @func igetenv vars [ JACK_PERIOD_SIZE ]
+      default   $PSIZE
+    }
+
+    buffer_size $BSIZE
+  }
+}
+ 
+
+# ------------------------------------------------------
+# Loop (card0) devices
+# ------------------------------------------------------
+
+ctl.card0       ctl.loop
+pcm.card0       pcm.loop
+
+pcm.dsnoop0     "asnoop:20020"
+
+ctl.dmix0       ctl.loop
+pcm.dmix0       "amix:10020"
+
+ctl.duplex0     ctl.loop
+pcm.duplex0     "duplex:dsnoop0,dmix0"
+
+ctl.dsp0        ctl.loop
+pcm.dsp0        pcm.duplex0
+
+ctl.mixer0      ctl.loop
 
 
 # ------------------------------------------------------
@@ -213,24 +205,8 @@ pcm.aloopDuplex {
 # ------------------------------------------------------
 pcm.cloop {
   type dsnoop
-  ipc_key 3
-  ipc_key_add_uid true
-  slave {
-    pcm "hw:Loopback,1,0"
-    channels 2
-    format S32_LE
-    rate {
-      @func igetenv
-      vars [ JACK_SAMPLE_RATE ]
-      default 44100
-    }
-    period_size {
-      @func igetenv
-      vars [ JACK_PERIOD_SIZE ]
-      default 1024
-    }
-    buffer_size 32768
-  }
+  ipc_key 21020
+  slave.pcm   "hw:Loop,1,0"
 }
 
 
@@ -238,10 +214,8 @@ pcm.cloop {
 # alsa_out -j alsa_out -dploop -q 1
 # ------------------------------------------------------
 pcm.ploop {
-  type plug
-  slave.pcm "hw:Loopback,1,1"
+  type plug 
+  slave.pcm "hw:Loop,1,1"
 }
-
-
 
 # vim: set ft=alsaconf

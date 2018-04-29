@@ -17,7 +17,6 @@ XTerm*vt100.titleModes     : 3
 
 ! -- Keys --
 
-
 XTerm*vt100.altSendsEscape  : true
 XTerm*vt100.metaSendsEscape : true
 

@@ -41,9 +41,11 @@ set softtabstop=2
 "" Visual width of a tab character
 set tabstop=4
 
-"" Length beyond which insertion will cause a linebreak
-if &filetype =~? '^(conf|man)$'
+"" Length beyond which insertion will trigger a linebreak
+if &modifiable
   set textwidth=78
+else
+  set textwidth=0
 endif
 
 
