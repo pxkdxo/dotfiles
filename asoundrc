@@ -1,18 +1,20 @@
 #
-## ~/.asoundrc : ALSA sound configuration
+## ~/.asoundrc : alsa sound configuration
 #
 
-
-# Override default resampling quality
 # ------------------------------------------------------
-defaults.pcm.rate_converter "speexrate_best"
+# Override the default rate convereter used by alsa
+# ------------------------------------------------------
+defaults.pcm.rate_converter "speexrate_medium"
 
 
-# Define some usefule device templates
+# Create some device templates use as they are needed
 # ------------------------------------------------------
 
+# ------------------------------------------------------
 # duplex device
 # ------------------------------------------------------
+
 pcm.dsp {
   @args [ SNOOP MIX ]
 
@@ -25,8 +27,10 @@ pcm.dsp {
   playback.pcm  $MIX
 }
 
+# ------------------------------------------------------
 # capture device
 # ------------------------------------------------------
+
 pcm.rec {
   @args [ KEY PCM ]
 
@@ -39,6 +43,7 @@ pcm.rec {
   slave.pcm     $PCM
 }
 
+# ------------------------------------------------------
 # playback device
 # ------------------------------------------------------
 pcm.dmix20 {
@@ -88,19 +93,17 @@ pcm.nvidia    { type hw card NVidia }
 # vast majority of use cases
 # ------------------------------------------------------
 
-ctl.!default    ctl.dsp0
-pcm.!default    pcm.dsp0
-
 pcm.dsnoop0     "rec:2020,pch"
 
 ctl.dmix0       ctl.pch
 pcm.dmix0       "dmix20:1020,pch"
 
+ctl.mixer0      ctl.pch
 ctl.dsp0        ctl.pch
 pcm.dsp0        "dsp:dsnoop0,dmix0"
 
-ctl.mixer0      ctl.pch
-
+ctl.!default    ctl.dsp0
+pcm.!default    pcm.dsp0
 
 # ------------------------------------------------------
 # The following are for use with snd-aloop and jack

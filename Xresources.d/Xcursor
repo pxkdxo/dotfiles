@@ -1,0 +1,8 @@
+! ~/.Xresources.d/Xcursor
+! Xcursor resources to include in Xresources file (e.g. using "#include")
+
+
+Xcursor*theme                 : Vanilla-DMZ
+
+
+vim: ft=xdefaults

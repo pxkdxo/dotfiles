@@ -1,18 +1,15 @@
-#
 ## .gitignore
-#
 
-
-## Blacklist
+## blacklist
 
 /**
 
 
-## Whitelist
+## whitelist
 
 !/asoundrc
 
-!/awesome/
+!/awesome
 !/awesome/rc.lua
 
 !/bash_logout
@@ -21,52 +18,53 @@
 
 !/bashrc
 
+!/bashrc.d
 !/bashrc.d/**
 
 !/compton.conf
 
-!/cower/
+!/cower
 !/cower/config
 
+!/devilspie2
 !/devilspie2/**
 
 !/dircolors
 
-!/elinks/
+!/elinks
 !/elinks/elinks.conf
 
-!/gnupg/
+!/gnupg
 !/gnupg/dirmngr.conf
 !/gnupg/gpg-agent.conf
 !/gnupg/gpg.conf
 
-!/gpick/
-!/gpick/colordict00
-
 !/inputrc
 
-!/mpd/
+!/mpd
 !/mpd/mpd.conf
 
-!/mpv/
+!/mpv
 
-!/mutt/
+!/mutt
 
 !/nanorc
 
-!/ncmpcpp/
+!/ncmpcpp
 !/ncmpcpp/config
 
 !/pam_environment
 
 !/profile
 
+!/ranger
 !/ranger/**
 
 !/README.md
 
 !/screenrc
 
+!/surfraw
 !/surfraw/**
 
 !/tmux.conf
@@ -74,16 +72,20 @@
 !user-dirs.dirs
 !user-dirs.locale
 
+!/user-tmpfiles.d
 !/user-tmpfiles.d/**
 
-!/vim/
+!/vim
 !/vim/vimrc
+!/vim/colors
 !/vim/colors/**
 
 !/xinitrc
+!/xinitrc.d
 !/xinitrc.d/**
 
 !/Xresources
+!/Xresources.d
 !/Xresources.d/**
 
 !/xserverrc
