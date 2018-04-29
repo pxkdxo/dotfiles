@@ -3,105 +3,70 @@
 #
 
 
-## XDG directories
-
+# Default Directories
 XDG_CACHE_HOME    DEFAULT="@{HOME}/.cache"
-
 XDG_CONFIG_HOME   DEFAULT="@{HOME}/.config"
-
 XDG_DATA_HOME     DEFAULT="@{HOME}/.local/share"
-
-
-
-## General
-
-BLOCK_SIZE        DEFAULT="human-readable"
-
-LANG              DEFAULT="en_US.UTF-8"
-LANGUAGE          DEFAULT="en_US"
-
-LC_ALL            DEFAULT=
-
-QUOTING_STYLE     DEFAULT="shell-escape"
-
-TIME_STYLE        DEFAULT="+%a %d %b %Y %H:%M"
-
 TMPDIR            DEFAULT="${XDG_RUNTIME_DIR}"
 
+
+# Locale
+LANG              DEFAULT="en_US.UTF-8"
+LANGUAGE          DEFAULT="en_US"
+LC_ALL            DEFAULT=
 TZ                DEFAULT="America/Los_Angeles" 
 
-VERSION_CONTROL   DEFAULT="simple"
+
+# Output Style
+BLOCK_SIZE        DEFAULT="human-readable"
+QUOTING_STYLE     DEFAULT="shell-escape"
+TIME_STYLE        DEFAULT="+%a %d %b %Y %R"
 
 
-
-## POSIX
-
+# POSIX Compat
 POSIXLY_CORRECT   DEFAULT=
-
 _POSIX2_VERSION   DEFAULT="200809"
 
 
-
-## GnuPG
-
+# GnuPG
 GNUPGHOME         DEFAULT="@{HOME}/.gnupg"
-
 SSH_AGENT_PID     DEFAULT=
 SSH_AUTH_SOCK     DEFAULT="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 
 
-
-## Elinks
-
+# Elinks
 ELINKS_CONFDIR    DEFAULT="${XDG_CONFIG_HOME}/elinks"
 
 
-
-## Ghostscript
-
+# Ghostscript
 GS_OPTIONS        DEFAULT="-sPAPERSIZE=a4 -dOptimize=true -dEmbedAllFonts=true"
 
 
-
-## Wine
-
+# Wine
 WINEARCH          DEFAULT="win64"
-
 WINEDEBUG         DEFAULT="warn+all"
-
 WINEDLLPATH       DEFAULT="/usr/local/lib/wine:/usr/lib/wine:/lib/wine:@{HOME}/.local/lib/wine"
-
 WINEPREFIX        DEFAULT="${XDG_DATA_HOME}/wine"
 
 
-
-## Arch Build System
-
+# Pacman
 AURDEST           DEFAULT="${XDG_DATA_HOME}/pacman/aur"
-
 BUILDDIR          DEFAULT="${TMPDIR}/makepkg"
-
 LOGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/log"
 PKGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/pkg"
 SRCDEST           DEFAULT=
 SRCPKGDEST        DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/pkg/src"
 
 
-
-## Lua
-
-LUAROCKS_CONFIG   DEFAULT="${XDG_CONFIG_HOME}/luarocks/config-5.3.lua"
+# Lua
+LUAROCKS_CONFIG   DEFAULT="${XDG_CONFIG_HOME}/luarocks/config.lua"
 
 
-
-## Python
-
+# Python
 PYTHONSTARTUP     DEFAULT="${XDG_CONFIG_HOME}/pythonrc"
 
 
-
-## NVidia
-
+# NVidia
 __GL_FSAA_MODE                DEFAULT="11"
 __GL_LOG_MAX_ANISO            DEFAULT="4"
 __GL_SHADER_DISK_CACHE        DEFAULT="1"

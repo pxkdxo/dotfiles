@@ -16,3 +16,7 @@ case :${PATH}: in
 esac
 command -p export PATH
 
+## Load additional config
+for _ in "${HOME}"/.profile/?*; do
+  test -f "$_" && test -r "$_" && . "$_"
+done

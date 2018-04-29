@@ -122,130 +122,130 @@ alias xc2r='xclip -sel sec -r'
 
 ## -- pacman abbrevs --
 
-alias pac-d=\
+alias pacd=\
 'pacman --database'
-alias pac-dk=\
+alias pacdk=\
 'pacman --database -k'
-alias pac-dkk=\
+alias pacdkk=\
 'pacman --database -kk'
 
-alias pac-f=\
+alias pacf=\
 'pacman --files'
-alias pac-fl=\
+alias pacfl=\
 'pacman --files -l'
-alias pac-fo=\
+alias pacfo=\
 'pacman --files -o'
-alias pac-fs=\
+alias pacfs=\
 'pacman --files -sx'
-alias pac-fy=\
+alias pacfy=\
 'sudo pacman --files -y'
-alias pac-fyy=\
+alias pacfyy=\
 'sudo pacman --files -yy'
 
-alias pac-q=\
+alias pacq=\
 'pacman --query'
-alias pac-qd=\
+alias pacqd=\
 'pacman --query -d'
-alias pac-qdms=\
+alias pacqdms=\
 'pacman --query -dms'
-alias pac-qdmt=\
+alias pacqdmt=\
 'pacman --query -dmt'
-alias pac-qdmtt=\
+alias pacqdmtt=\
 'pacman --query -dmtt'
-alias pac-qdt=\
+alias pacqdt=\
 'pacman --query -dt'
-alias pac-qdtt=\
+alias pacqdtt=\
 'pacman --query -dtt'
-alias pac-qe=\
+alias pacqe=\
 'pacman --query -e'
-alias pac-qems=\
+alias pacqems=\
 'pacman --query -ems'
-alias pac-qemt=\
+alias pacqemt=\
 'pacman --query -emt'
-alias pac-qemtt=\
+alias pacqemtt=\
 'pacman --query -emtt'
-alias pac-qet=\
+alias pacqet=\
 'pacman --query -et'
-alias pac-qett=\
+alias pacqett=\
 'pacman --query -ett'
-alias pac-qg=\
+alias pacqg=\
 'pacman --query -g'
-alias pac-qgs=\
+alias pacqgs=\
 'pacman --query -gs'
-alias pac-qi=\
+alias pacqi=\
 'pacman --query -i'
-alias pac-qk=\
+alias pacqk=\
 'pacman --query -k'
-alias pac-qkk=\
+alias pacqkk=\
 'pacman --query -kk'
-alias pac-ql=\
+alias pacql=\
 'pacman --query -l'
-alias pac-qm=\
+alias pacqm=\
 'pacman --query -m'
-alias pac-qms=\
+alias pacqms=\
 'pacman --query -ms'
-alias pac-qmt=\
+alias pacqmt=\
 'pacman --query -mt'
-alias pac-qmtt=\
+alias pacqmtt=\
 'pacman --query -mtt'
-alias pac-qn=\
+alias pacqn=\
 'pacman --query -n'
-alias pac-qns=\
+alias pacqns=\
 'pacman --query -ns'
-alias pac-qnt=\
+alias pacqnt=\
 'pacman --query -nt'
-alias pac-qntt=\
+alias pacqntt=\
 'pacman --query -ntt'
-alias pac-qo=\
+alias pacqo=\
 'pacman --query -o'
-alias pac-qs=\
+alias pacqs=\
 'pacman --query -s'
-alias pac-qt=\
+alias pacqt=\
 'pacman --query -t'
-alias pac-qtt=\
+alias pacqtt=\
 'pacman --query -tt'
-alias pac-qu=\
+alias pacqu=\
 'pacman --query -u'
 
-alias pac-r=\
+alias pacr=\
 'pacman --remove -du'
-alias pac-rcs=\
+alias pacrcs=\
 'pacman --remove -dcsu'
-alias pac-rcss=\
+alias pacrcss=\
 'pacman --remove -dcssu'
-alias pac-rs=\
+alias pacrs=\
 'pacman --remove -dsu'
-alias pac-rss=\
+alias pacrss=\
 'pacman --remove -dssu'
 
-alias pac-s=\
+alias pacs=\
 'sudo pacman --sync'
-alias pac-sc=\
+alias pacsc=\
 'sudo pacman --sync -c'
-alias pac-scc=\
+alias pacscc=\
 'sudo pacman --sync -cc'
-alias pac-sg=\
+alias pacsg=\
 'pacman --sync -g'
-alias pac-sgs=\
+alias pacsgs=\
 'pacman --sync -gs'
-alias pac-si=\
+alias pacsi=\
 'pacman --sync -i'
-alias pac-sl=\
+alias pacsl=\
 'pacman --sync -l'
-alias pac-ss=\
+alias pacss=\
 'pacman --sync -s'
-alias pac-su=\
+alias pacsu=\
 'sudo pacman --sync -u'
-alias pac-suy=\
+alias pacsuy=\
 'sudo pacman --sync -uy'
-alias pac-suyy=\
+alias pacsuyy=\
 'sudo pacman --sync -uyy'
-alias pac-sy=\
+alias pacsy=\
 'sudo pacman --sync -y'
-alias pac-syy=\
+alias pacsyy=\
 'sudo pacman --sync -yy'
 
-alias pac-u=\
+alias pacu=\
 'sudo pacman --upgrade'
 
 
