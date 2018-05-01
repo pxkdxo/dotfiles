@@ -1,13 +1,15 @@
 ## ~/.profile : login shell init file
 
 ## Initialize terminal
-tput init
+command -p tput init
+
 
 ## Set file creation mode mask
 umask 027
 
+
 ## Prepend my executable paths
-for _ in "${HOME}/bin" "${HOME}/.local/bin"; do
+for _ in "${HOME}"/bin "${HOME}"/.local/bin; do
   if test -d "$_"; then
     case ":${PATH}:" in
       *":$_:"*)
@@ -20,7 +22,10 @@ for _ in "${HOME}/bin" "${HOME}/.local/bin"; do
 done
 export PATH
 
+
 ## Load additional profile config
-for _ in "${HOME}"/.profile/?*; do
-  test -f "$_" && test -r "$_" && . "$_"
-done
+if test -d "${HOME}"/.profile.d && test -r "${HOME}"/.profile.d; then
+  for _ in "${HOME}"/.profile.d/*; do
+    test -f "$_" && test -r "$_" && . "$_"
+  done
+fi

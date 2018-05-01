@@ -9,7 +9,7 @@ XTerm.termName             : xterm-256color
 XTerm.ttyModes             : erase ^?
 
 XTerm*vt100.allowWindowOps : true
-!XTerm.disallowedWindowOps  : GetIconTitle,GetWinTitle,SetXprop
+XTerm.disallowedWindowOps  : GetIconTitle,GetWinTitle,SetXprop
 
 XTerm*vt100.titleModes     : 3
 
@@ -102,4 +102,4 @@ XTerm*vt100.translations : #override                   \n\
    Ctrl Shift <Key> S    : secure()
 
 
-vim: ft=xdefaults
+! vim:ft=xdefaults:tw=0

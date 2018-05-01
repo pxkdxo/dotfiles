@@ -11,8 +11,8 @@ lyrics_directory          = ~/.local/share/ncmpcpp/lyrics
 ##### mpd connection #####
 mpd_host                  = ~/.mpd/mpd.socket
 mpd_port                  = 6602
-mpd_connection_timeout    = 5
-mpd_crossfade_time        = 1
+mpd_connection_timeout    = 6
+mpd_crossfade_time        = 0
 
 ##### music visualizer ####
 visualizer_fifo_path      = ~/.mpd/output-stereo
@@ -21,7 +21,8 @@ visualizer_sync_interval  = 20
 visualizer_in_stereo      = yes
 visualizer_type           = spectrum
 visualizer_color          = 52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22
-visualizer_look           = ╬♥
+#visualizer_look           = ╬♥
+visualizer_look           = ╬o
 
 ##### delays #####
 ## Time of inactivity (in seconds) after playlist highlighting will be disabled

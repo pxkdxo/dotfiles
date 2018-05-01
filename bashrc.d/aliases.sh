@@ -226,8 +226,6 @@ alias pacscc=\
 'sudo pacman --sync -cc'
 alias pacsg=\
 'pacman --sync -g'
-alias pacsgs=\
-'pacman --sync -gs'
 alias pacsi=\
 'pacman --sync -i'
 alias pacsl=\

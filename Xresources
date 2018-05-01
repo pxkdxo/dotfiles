@@ -10,4 +10,4 @@
 *locale                       : true
 *customization                : -color
 
-vim: set ft=xdefaults
+! vim:ft=xdefaults:tw=0

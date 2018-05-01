@@ -12,25 +12,21 @@ set encoding=utf-8
 
 "" -- Filetype & Syntax --
 
-"" Detect, load plugins, & apply indent style
-if has('autocmd')
-  filetype plugin indent on
-endif
+"" Detect filetype, load plugins, and apply indentation style
+filetype plugin indent on
 
-"" Turn on syntax highlighting (do not override colorscheme)
-if &t_Co > 2 || has('gui_running')
-  syntax enable
-endif
+"" Perform syntax highlighting
+syntax enable
 
 
 
-"" -- Tabs & Formatting --
-""
+"" -- Tabs & Textwidth --
+
 "" Insert spaces insted of tab characters
 set expandtab
 
 "" Number of columns reserved for line numbers
-set numberwidth=2
+set numberwidth=3
 
 "" Number of spaces to use for each indent
 set shiftwidth=2
@@ -38,20 +34,19 @@ set shiftwidth=2
 "" Number of spaces to insert as a tab
 set softtabstop=2
 
-"" Visual width of a tab character
+"" Visual width of a real tab '\t' character
 set tabstop=4
 
-"" Length beyond which insertion will trigger a linebreak
-if &modifiable
+"" Length beyond which lines will be broken
+if &modifiable == 1
   set textwidth=78
 else
   set textwidth=0
 endif
 
 
-
 "" -- Patterns & Searching --
-""
+
 "" Do not highlight search results
 set nohlsearch
 
@@ -66,8 +61,8 @@ set smartcase
 
 
 
-"" -- Verbosity & Info Visibility --
-""
+"" -- Verbosity & Editor Info --
+
 "" Display line numbers
 set number
 
@@ -95,7 +90,7 @@ set laststatus=2
 
 
 "" -- Editing --
-""
+
 "" Attempt to preserve cursor position when moving linewise
 set nostartofline
 
@@ -120,7 +115,7 @@ set virtualedit=block
 
 
 "" -- Buffers --
-""
+
 "" Re-read open file if it was changed by another program
 set autoread
 
@@ -136,7 +131,7 @@ set splitright
 
 
 "" -- Completion --
-""
+
 "" Enable command completion
 set wildmenu
 
@@ -152,7 +147,7 @@ set wildmode=list:longest,full
 
 
 "" -- Key Timeout --
-""
+
 "" Time out for mappings
 set timeout
 
@@ -167,10 +162,7 @@ set ttimeoutlen=120
 
 
 
-"" -- History & Backups --
-""
-"" Save each file's undo history
-set undofile
+"" -- History & Swapfiles --
 
 "" Size of the command history 
 set history=500
@@ -178,48 +170,43 @@ set history=500
 "" Size of a file's undo history
 set undolevels=1500
 
-"" Update the swap file after typing this many characters
-set updatecount=160
+"" Configure swapfile paths
 
-"" Location of backups
-set backupdir=
-      \${XDG_DATA_HOME}/vim/backup,
-      \~/.local/share/vim/backup,
-      \~/.vim/backup,
-      \${TMPDIR}/vim/backup,
-      \~/tmp/vim/backup,
-      \${XDG_RUNTIME_DIR}/vim/backup,
-      \.,
-      \${TMPDIR},
-      \~/tmp,
-      \${XDG_RUNTIME_DIR}
+if $XDG_DATA_HOME != ''
+  if ! isdirectory(expand('$XDG_DATA_HOME/vim/swap/'))
+    silent! call system('install -dm 700 "$XDG_DATA_HOME/vim/swap"')
+  endif
+  set directory=$XDG_DATA_HOME/vim/swap/
 
-"" Location of swap files
-set directory=
-      \${XDG_DATA_HOME}/vim/swap,
-      \~/.local/share/vim/swap,
-      \~/.vim/swap,
-      \${TMPDIR}/vim/swap,
-      \~/tmp/vim/swap,
-      \${XDG_RUNTIME_DIR}/vim/swap,
-      \.,
-      \${TMPDIR},
-      \~/tmp,
-      \${XDG_RUNTIME_DIR}
+  if $HOME != ''
+    if ! isdirectory(expand('$HOME/.vim/swap/'))
+      silent! call system('install -dm 700 "$HOME/.vim/swap"')
+    endif
+    set directory+=$HOME/.vim/swap/
+  endif
 
-"" Location of undo files
-set undodir=
-      \${XDG_DATA_HOME}/vim/undo,
-      \~/.local/share/vim/undo,
-      \~/.vim/undo,
-      \${TMPDIR}/vim/undo,
-      \~/tmp/vim/undo,
-      \${XDG_RUNTIME_DIR}/vim/undo
+elseif $HOME != ''
+  if ! isdirectory(expand('$HOME/.local/share/vim/swap/'))
+    silent! call system('install -dm 700 "$HOME/.local/share/vim/swap"')
+  endif
+  set directory=$HOME/.local/share/vim/swap/
+
+  if ! isdirectory(expand('$HOME/.vim/swap/'))
+    silent! call system('install -dm 700 "$HOME/.vim/swap"')
+  endif
+  set directory+=$HOME/.vim/swap/
+
+else
+  directory=./
+
+endif
+
+set directory+=/var/tmp/,/tmp/
 
 
 
 "" -- Terminal --
-""
+
 "" Fuck terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
@@ -228,12 +215,8 @@ if has('mouse')
   set mouse=a
 endif
 
-
-
-"" -- Colors --
-""
-"" Set editor colorscheme
-if &g:t_Co == 256 || has('gui_running')
+"" Set terminal colorscheme
+if &g:t_Co == 256
   colorscheme calmar256-darkP
 elseif &g:t_Co == 88
   colorscheme inkpotP
@@ -241,62 +224,69 @@ endif
 
 
 
-"" -- Man --
-""
-runtime ftplugin/man.vim        " Load the man plugin
-let g:ft_man_open_mode = 'vert' " Split man windows off to the side
+"" -- GUI --
 
+if has('gui_running')
 
+" Make shift-insert work like in xterm
+  map  <S-Insert> <MiddleMouse>
+  map! <S-Insert> <MiddleMouse>
 
-"" -- Python --
-""
-let python_highlight_all = 1    " Enable all available syntax highlighting
-
-if &g:pyxversion == 0           " Set default version if none has been set
-  if has('python3')
-    set pyxversion=3            " Choose 3 if available
-  elseif has('python2')
-    set pyxversion=2            " Fallback to 2
-  endif
+" Set gui colorscheme
+  colorscheme candyP
 endif
 
 
 
-"" -- C / C++ --
-""
-let c_comment_strings = 1       " Allow strings & numbers inside comments
-let c_gnu             = 1       " Highlight GNU specific items
+"" -- Man --
 
+runtime ftplugin/man.vim      " Load the man plugin
+let g:ft_man_open_mode = 'vert' " Split manpages off to the side
+
+
+"" -- Python --
+
+let g:python_highlight_all = 1  " Enable all Python highlighting
+
+if has('python3')             " Prefer Python 3
+  set pyxversion=3
+elseif has('python2')         " Fallback to Python 2
+  set pyxversion=2
+endif
+
+
+"" -- C / C++ --
+
+let g:c_comment_strings = 1     " Allow strings & numbers inside comments
+let g:c_gnu             = 1     " Highlight GNU specific items
 
 
 "" -- Readline --
-""
-let readline_has_bash = 1       " Highlight additions available through bash
 
+let g:readline_has_bash = 1     " Highlight additions available through bash
 
 
 "" -- Sh --
-""
-let is_posix        = 1         " POSIX highlighting for ambiguous *.sh files
-let sh_fold_enabled = 3         " Folding mode b'0110'
-let sh_no_error     = 1         " Relax error detection
 
+let g:is_posix        = 1       " POSIX highlighting for ambiguous *.sh files
+let g:sh_fold_enabled = 3       " Folding mode
+let g:sh_no_error     = 1       " Relax error detection
 
 
 "" -- Sed --
-""
-let highlight_sedtabs = 1       " Highlight real tabs in sed scripts
+
+let g:highlight_sedtabs = 1     " Highlight real tabs in sed scripts
 
 
 
 "" -- Mappings --
-""
-let mapleader = ','             " Define key to act as <leader> in mappings
+
+let g:mapleader = ','           " Define key to act as <leader> in mappings
 
 
 "" Quote word under or before the cursor (see :help word)
 "" Note: Requires that 'selection' be set to "inclusive" or "exclusive"
-""
+
 nnoremap <leader>' vl<esc>bi'<esc>ea'<esc>l
 nnoremap <leader>" vl<esc>bi"<esc>ea"<esc>l
 nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
@@ -306,7 +296,7 @@ nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
 
 "" Quote WORD under or before the cursor (see :help WORD)
 "" Note: Requires that 'selection' be set to "inclusive" or "exclusive"
-""
+
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
 nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
 nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
@@ -316,7 +306,7 @@ nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 
 "" Toggle syntax highlighting
 "" Note: Does not override current colorscheme
-""
+
 nnoremap <silent><F7> 
   \
   \:if exists('g:syntax_on')
@@ -328,7 +318,7 @@ nnoremap <silent><F7>
 
 "" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
-""  
+
 vnoremap <silent> *
   \
   \:<C-U>
@@ -341,7 +331,7 @@ vnoremap <silent> *
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
-""  
+
 vnoremap <silent> #
   \
   \:<C-U>
@@ -354,6 +344,6 @@ vnoremap <silent> #
 
 
 "" -- Security --
-""
+
 set cryptmethod=blowfish2       " Cipher for files written to disk
-set secure                      " Used if vimrc or exrc is not owned by me
+set secure                      " Precaution in case someone else owns this

@@ -6,7 +6,7 @@
 ## If given arguments, configure those variables.
 ## Otherwise, configure all variables.
 function autoenv::main() {
-  if (( $# )) || set -- BROWSER EDITOR GCC_COLORS LS_COLORS MANPAGER; then
+  if (( $# )) || set -- BROWSER EDITOR GCC_COLORS LS_COLORS; then
     while (( $# )); do
       autoenv::"$1"
       shift
@@ -27,7 +27,7 @@ function autoenv::BROWSER() {
         if [[ ${DISPLAY} ]]; then
           set -- google-chrome firefox chromium
         else
-          set -- elinks w3m lynx
+          set -- w3m elinks lynx
         fi
         ;&
 
@@ -78,30 +78,37 @@ function autoenv::GCC_COLORS() {
 
 ## Set command output colors
 function autoenv::LS_COLORS() {
-  local LS_COLORS IFS && {
-    if (( $# )); then
-      IFS=:; declare -gx LS_COLORS="$*"
-    elif command -v dircolors >/dev/null; then
-      [[ -f ~/.dircolors ]] && set -- ~/.dircolors
-      eval 'declare -gx '"$(command dircolors -b "$@")"
-    else
-      return 1
-    fi
-  }
-}
-
-
-## Set the pager command used by man
-function autoenv::MANPAGER() {
-  local MANPAGER && {
-    if (( $# )); then
-      declare -gx MANPAGER="$@"
-    elif read -r  MANPAGER < <(command -v vim); then
-      declare -gx MANPAGER="${MANPAGER@Q}"' -M +"set nonu nornu tw=0" +MANPAGER -'
-    else
-      return 1
-    fi
-  }
+  if local IFS LS_COLORS='' \
+    && \command -v dircolors
+  then
+    case "$(($#))" in
+      0)
+        if [[ -f ~/.dircolors ]]; then
+          IFS=\' read -r _ LS_COLORS _ < <(\command dircolors -b ~/.dircolors)
+          declare -gx LS_COLORS=${LS_COLORS}
+          return $?
+        else
+          IFS=\' read -r _ LS_COLORS _ < <(\command dircolors -b)
+          declare -gx LS_COLORS=${LS_COLORS}
+          return $?
+        fi
+        ;;
+      1)
+        if [[ -f $1 ]]; then
+          IFS=\' read -r _ LS_COLORS _ < <(\command dircolors -b "$1")
+          declare -gx LS_COLORS=${LS_COLORS}
+          return $?
+        else
+          return $?
+        fi
+        ;;
+      *)
+        IFS=:
+        declare -gx LS_COLORS="$*"
+        return $?
+        ;;
+    esac
+  fi >/dev/null
 }
 
 

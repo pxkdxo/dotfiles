@@ -1,21 +1,18 @@
 #!/usr/bin/env sh
 
-## configure the keymap under X
+## Set the X keymap layout and unset any options
+setxkbmap -layout us,us -variant mac,dvp -option
 
-
-/usr/bin/setxkbmap                \
-  -layout us,us -variant mac,dvp  \
-  -option                         \
-  -option altwin:prtsc_rwin       \
-  -option caps:escape             \
-  -option grp:sclk_toggle         \
-  -option grp_led:caps            \
-  -option keypad:future_wang      \
-  -option kpdl:dotoss             \
-  -option kpdl:semi               \
-  -option lv3:ralt_alt            \
-  -option lv3:menu_switch         \
-  -option nbsp:level3             \
-  -option numpad:shift3           \
-  -option shift:both_shiftlock    \
-  -option terminate:ctrl_alt_bksp
+## Set preferred X keymap options
+setxkbmap -option altwin:prtsc_rwin \
+          -option caps:shiftlock \
+          -option grp:sclk_toggle \
+          -option keypad:future_wang \
+          -option kpdl:dotoss \
+          -option kpdl:semi \
+          -option lv3:ralt_alt \
+          -option lv3:menu_switch \
+          -option nbsp:level3 \
+          -option numpad:shift3 \
+          -option shift:breaks_caps \
+          -option terminate:ctrl_alt_bksp
