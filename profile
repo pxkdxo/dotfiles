@@ -1,22 +1,26 @@
 ## ~/.profile : login shell init file
 
 ## Initialize terminal
-command -p tput init
+tput init
 
-## Set file mode mask
-command -p umask 027
+## Set file creation mode mask
+umask 027
 
-## Append my path
-case :${PATH}: in
-  *:"${HOME}"/.local/bin:*)
-    ;;
-  *)
-    PATH=${PATH:+${PATH}:}${HOME}/.local/bin
-    ;;
-esac
-command -p export PATH
+## Prepend my executable paths
+for _ in "${HOME}/bin" "${HOME}/.local/bin"; do
+  if test -d "$_"; then
+    case ":${PATH}:" in
+      *":$_:"*)
+        ;;
+      *)
+        PATH="$_${PATH:+":${PATH}"}"
+        ;;
+    esac
+  fi
+done
+export PATH
 
-## Load additional config
+## Load additional profile config
 for _ in "${HOME}"/.profile/?*; do
   test -f "$_" && test -r "$_" && . "$_"
 done

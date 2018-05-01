@@ -78,34 +78,37 @@ ctl.pulse     { type pulse }
 pcm.pulse     { type pulse }
 
 ctl.loop      { type hw card Loop }
-ctl.loop      { type hw card Loop }
+pcm.loop      { type hw card Loop }
+ctl.card0       ctl.loop
+pcm.card0       pcm.loop
 
 ctl.pch       { type hw card PCH }
 pcm.pch       { type hw card PCH }
+ctl.card1       ctl.pch
+pcm.card1       pcm.pch
 
 ctl.nvidia    { type hw card NVidia }
 pcm.nvidia    { type hw card NVidia }
+ctl.card2       ctl.nvidia
+pcm.card2       pcm.nvidia
 
 
 # ------------------------------------------------------
 # PCH (card1) devices
 # ------------------------------------------------------
 
-ctl.card1       ctl.pch
-pcm.card1       pcm.pch
+pcm.dsnoop1     "snoop:20120,card1"
 
-pcm.dsnoop1     "snoop:20120,pch"
+ctl.dmix1       ctl.card1
+pcm.dmix1       "mix:10120,card1"
 
-ctl.dmix1       ctl.pch
-pcm.dmix1       "mix:10120,pch"
-
-ctl.duplex1     ctl.pch
+ctl.duplex1     ctl.dmix1
 pcm.duplex1     "duplex:dsnoop1,dmix1"
 
-ctl.dsp1        ctl.pch
-pcm.dsp1        pcm.duplex1
+ctl.mixer1      ctl.duplex1
 
-ctl.mixer1      ctl.pch
+ctl.dsp1        ctl.mixer1
+pcm.dsp1        pcm.duplex1
 
 ctl.!default    ctl.dsp1
 pcm.!default    pcm.dsp1
@@ -188,34 +191,34 @@ pcm.card0       pcm.loop
 
 pcm.dsnoop0     "asnoop:20020"
 
-ctl.dmix0       ctl.loop
+ctl.dmix0       ctl.card0
 pcm.dmix0       "amix:10020"
 
-ctl.duplex0     ctl.loop
+ctl.duplex0     ctl.dmix0
 pcm.duplex0     "duplex:dsnoop0,dmix0"
 
-ctl.dsp0        ctl.loop
-pcm.dsp0        pcm.duplex0
+ctl.mixer0      ctl.duplex0
 
-ctl.mixer0      ctl.loop
+ctl.dsp0        ctl.mixer0
+pcm.dsp0        pcm.duplex0
 
 
 # ------------------------------------------------------
-# alsa_in -j alsa_in -dcloop -q 1
+# alsa_in -j cloop -dcloop -q 1
 # ------------------------------------------------------
 pcm.cloop {
   type dsnoop
-  ipc_key 21020
-  slave.pcm   "hw:Loop,1,0"
+  ipc_key     21020
+  slave.pcm   "hw:Loop,1,1"
 }
 
 
 # ------------------------------------------------------
-# alsa_out -j alsa_out -dploop -q 1
+# alsa_out -j ploop -dploop -q 1
 # ------------------------------------------------------
 pcm.ploop {
   type plug 
-  slave.pcm "hw:Loop,1,1"
+  slave.pcm   "hw:Loop,1,0"
 }
 
 # vim: set ft=alsaconf

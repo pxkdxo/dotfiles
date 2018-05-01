@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 
-## setxkbmap.sh
-## configure the X11 keyboard map
+## configure the keymap under X
 
 
 /usr/bin/setxkbmap                \
