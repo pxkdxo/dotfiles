@@ -2,36 +2,30 @@
 ! XTerm resources to include in Xresources file (e.g. using "#include")
 
 
-! -- XTerm --
+! -- Terminal --
 
 XTerm.termName             : xterm-256color
-
+!XTerm.termName             : xterm-direct
 XTerm.ttyModes             : erase ^?
-
 XTerm*vt100.allowWindowOps : true
-XTerm.disallowedWindowOps  : GetIconTitle,GetWinTitle,SetXprop
-
 XTerm*vt100.titleModes     : 3
+!XTerm*vt100.utf8Title      : true
 
 
-
-! -- Keys --
-
-XTerm*vt100.altSendsEscape  : true
-XTerm*vt100.metaSendsEscape : true
+! -- Input --
 
 XTerm*vt100.backarrowKey    : false
-
+XTerm*vt100.altSendsEscape  : true
+XTerm*vt100.metaSendsEscape : true
+!XTerm*vt100.eightBitControl : true
 
 
 ! -- Selections --
 
 XTerm.on3Clicks           : regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
-
 XTerm*vt100.charClass     : 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
-
+XTerm*vt100.cutNewline    : false
 XTerm*vt100.trimSelection : true
-
 
 
 ! -- Colors & Attributes --
@@ -42,14 +36,15 @@ XTerm*vt100.dynamicColors   : true
 XTerm*vt100.showBlinkAsBold : true
 XTerm*vt100.veryBoldColors  : 6
 
-XTerm*vt100.cursorBlink     : true
 
+! -- Cursor --
+XTerm*vt100.cursorUnderline: true
+XTerm*vt100.cursorBlink     : true
 
 
 ! -- Fonts --
 
 XTerm*vt100.renderFont : true
-
 XTerm*vt100.faceName   : Source Code Pro
 XTerm*vt100.faceSize   : 13
 XTerm*vt100.faceSize1  : 10
@@ -67,6 +62,7 @@ XTerm*vt100.font4 : -*-terminus-bold-*-*-*-24-*-*-*-*-*-*-1
 XTerm*vt100.font5 : -*-terminus-medium-*-*-*-28-*-*-*-*-*-*-1
 XTerm*vt100.font6 : -*-terminus-medium-*-*-*-32-*-*-*-*-*-*-1
 
+!XTerm*vt100.showMissingGlyphs : true
 
 
 ! -- Scrolling -- 
@@ -74,23 +70,18 @@ XTerm*vt100.font6 : -*-terminus-medium-*-*-*-32-*-*-*-*-*-*-1
 XTerm*vt100.fastScroll      : true
 XTerm*vt100.jumpScroll      : true
 XTerm*vt100.multiScroll     : true
-
 XTerm*vt100.scrollbar       : false
 XTerm*vt100.rightScrollBar  : true
-
 XTerm*vt100.scrollKey       : true
 XTerm*vt100.scrollTtyOutput : false
-
 XTerm*vt100.saveLines       : 10000
-
 
 
 ! -- Bell --
 
 XTerm*vt100.visualBell      : true
-XTerm*vt100.visualBellDelay : 80
+XTerm*vt100.visualBellDelay : 70
 XTerm*vt100.visualBellLine  : true
-
 
 
 ! -- Mappings --

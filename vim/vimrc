@@ -162,7 +162,7 @@ set ttimeoutlen=120
 
 
 
-"" -- History & Swapfiles --
+"" -- History  --
 
 "" Size of the command history 
 set history=500
@@ -170,37 +170,49 @@ set history=500
 "" Size of a file's undo history
 set undolevels=1500
 
-"" Configure swapfile paths
 
+
+" -- Swapfiles --
+
+" Check for XDG_DATA_HOME
 if $XDG_DATA_HOME != ''
+
+  " Non-null so check if the target exists, and if not, make it
   if ! isdirectory(expand('$XDG_DATA_HOME/vim/swap/'))
     silent! call system('install -dm 700 "$XDG_DATA_HOME/vim/swap"')
   endif
+  " Overwrite any existing pathnames
   set directory=$XDG_DATA_HOME/vim/swap/
 
-  if $HOME != ''
+" No XDG_DATA_HOME, so check for HOME
+elseif $HOME != ''
+
+  " Non-null so check for the target; if it doesn't exist make it
+  if isdirectory(expand('$HOME/.vim/'))
+
+    " HOME/.vim exists so thats the target; find it or create it
     if ! isdirectory(expand('$HOME/.vim/swap/'))
       silent! call system('install -dm 700 "$HOME/.vim/swap"')
     endif
-    set directory+=$HOME/.vim/swap/
+    " Overwrite any existing pathnames
+    set directory=$HOME/.vim/swap/
+
+  " No such directory, so fallback to the XDG_DATA_HOME default
+  else
+    " Check if the target exists, and make it if it doesn't
+    if ! isdirectory(expand('$HOME/.local/share/vim/swap/'))
+      silent! call system('install -dm 700 "$HOME/.local/share/vim/swap"')
+    endif
+    " Overwrite any existing pathnames
+    set directory=$HOME/.local/share/vim/swap/
   endif
 
-elseif $HOME != ''
-  if ! isdirectory(expand('$HOME/.local/share/vim/swap/'))
-    silent! call system('install -dm 700 "$HOME/.local/share/vim/swap"')
-  endif
-  set directory=$HOME/.local/share/vim/swap/
-
-  if ! isdirectory(expand('$HOME/.vim/swap/'))
-    silent! call system('install -dm 700 "$HOME/.vim/swap"')
-  endif
-  set directory+=$HOME/.vim/swap/
-
+" Fallback to the directory of the file
 else
-  directory=./
-
+  set directory=./
 endif
 
+" Append paths to fallback to
 set directory+=/var/tmp/,/tmp/
 
 
@@ -220,6 +232,11 @@ if &g:t_Co == 256
   colorscheme calmar256-darkP
 elseif &g:t_Co == 88
   colorscheme inkpotP
+endif
+
+"" Enable true colors if appropriate
+if &term == 'xterm-direct'
+  set termguicolors
 endif
 
 
