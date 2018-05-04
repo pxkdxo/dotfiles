@@ -10,4 +10,4 @@ Xft.antialias : 1
 Xft.rgba      : rgb
 
 
-vim: ft=xdefaults
+! vim: ft=xdefaults

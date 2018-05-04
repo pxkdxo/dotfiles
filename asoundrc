@@ -29,7 +29,7 @@ pcm.duplex {
 # capture template
 # ------------------------------------------------------
 
-pcm.snoop {
+pcm.rec {
   @args [ KEY PCM ]
 
   @args.KEY   { type integer }
@@ -71,16 +71,11 @@ pcm.mix {
 
 
 # ------------------------------------------------------
-# cards
+# Cards
 # ------------------------------------------------------
 
 ctl.pulse     { type pulse }
 pcm.pulse     { type pulse }
-
-#ctl.loop      { type hw card Loop }
-#pcm.loop      { type hw card Loop }
-#ctl.card0       ctl.loop
-#pcm.card0       pcm.loop
 
 ctl.pch       { type hw card PCH }
 pcm.pch       { type hw card PCH }
@@ -92,12 +87,17 @@ pcm.nvidia    { type hw card NVidia }
 ctl.card1       ctl.nvidia
 pcm.card1       pcm.nvidia
 
+#ctl.loop      { type hw card Loop }
+#pcm.loop      { type hw card Loop }
+#ctl.card2       ctl.loop
+#pcm.card2       pcm.loop
+
 
 # ------------------------------------------------------
-# PCH (card1) devices
+# card0 (PCH) devices
 # ------------------------------------------------------
 
-pcm.dsnoop0     "snoop:20120,card0"
+pcm.dsnoop0     "rec:20120,card0"
 
 ctl.dmix0       ctl.card0
 pcm.dmix0       "mix:10120,card0"

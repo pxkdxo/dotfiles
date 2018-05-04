@@ -4,7 +4,7 @@
 #include ".Xresources.d/Xcursor"
 #include ".Xresources.d/Xft"
 #include ".Xresources.d/XTerm"
-#include ".Xresources.d/colors/gruvbox_black"
+#include ".Xresources.d/colors/copland"
 
 
 *locale                       : true

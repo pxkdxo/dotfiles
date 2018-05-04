@@ -1,9 +1,9 @@
 ## ~/.inputrc : readline config
 ## Patrick DeYoreo
 
-#$include /etc/inputrc
+$include /etc/inputrc
 
-set bell-style none
+set bell-style visible
 set bind-tty-special-chars on
 set blink-matching-paren on
 set colored-completion-prefix on
@@ -11,14 +11,14 @@ set colored-stats on
 set comment-begin #
 set completion-display-width -1
 set completion-ignore-case on
-set completion-query-items 200
+set completion-query-items 180
 set convert-meta on
 set echo-control-characters on
 set history-preserve-point on
 set history-size -1
 set input-meta on
-set isearch-terminators C-[C-J
-set keyseq-timeout 120
+set isearch-terminators "C-[C-J"
+set keyseq-timeout -1
 set mark-directories on
 set mark-symlinked-directories on
 set match-hidden-files on
@@ -31,10 +31,14 @@ set show-mode-in-prompt on
 set skip-completed-text on
 
 set editing-mode vi
-set vi-ins-mode-string \1\e[0m\2
-set vi-cmd-mode-string \1\e[0;1;2m\2:\1\e[0m\2
+set vi-ins-mode-string "\1\e[0;1;2m\2|\1\e[0m\2"
+set vi-cmd-mode-string "\1\e[0;1;2m\2:\1\e[0m\2"
 
 set keymap      vi-insert
+
+"\C-[":     vi-movement-mode
+
+"\M-[":         skip-csi-sequence
 
 "\M-\"":        "\"\"\M-[D"
 "\M-\'":        "\'\'\M-[D"
@@ -42,23 +46,20 @@ set keymap      vi-insert
 "\C-j":         "\\\C-m"
 "\M-\C-j":      "\C-v\n"
 
-"\C-[\C-[":     vi-movement-mode
-"\M-[":         skip-csi-sequence
 "\C-i":         menu-complete
 "\M-\C-i":      menu-complete-backward
-#"\M-\C-i":      dynamic-complete-history
+"\M-[Z":        dynamic-complete-history
 "\M-[5~":       reverse-search-history
 "\M-[6~":       forward-search-history
 "\C-@":         magic-space
-"\C-g":         abort
-"\M-\C-g":      abort
 "\C-m":         accept-line
 "\M-OD":        backward-char
 "\M-[D":        backward-char
+"\M-\C-OD":     backward-char
+"\M-\C-[D":     backward-char
 "\C-b":         backward-char
 "\C-h":         backward-delete-char
-#"\C-?":         backward-delete-char
-"\C-x\C-?":     backward-kill-line
+"\C-?":         backward-delete-char
 "\M-\C-h":      backward-kill-word
 "\M-\C-?":      backward-kill-word
 "\M-\M-[D":     shell-backward-word
@@ -83,7 +84,9 @@ set keymap      vi-insert
 "\M-{":         complete-into-braces
 "\M-~":         complete-username
 "\M-$":         complete-variable
-#"\C-d":         delete-char
+"\M-<":         copy-backward-word
+"\M->":         copy-forward-word
+"\C-d":         delete-char
 "\M-[3~":       delete-char
 "\M-\\":        delete-horizontal-space
 "\M--":         digit-argument
@@ -110,6 +113,8 @@ set keymap      vi-insert
 "\C-x\C-x":     exchange-point-and-mark
 "\M-OC":        forward-char
 "\M-[C":        forward-char
+"\M-\C-OC":     forward-char
+"\M-\C-[C":     forward-char
 "\C-f":         forward-char
 "\M-\M-[C":     shell-forward-word
 "\M-[1;5C":     shell-forward-word
@@ -125,8 +130,11 @@ set keymap      vi-insert
 "\M-_":         insert-last-argument
 "\C-k":         kill-line
 "\M-d":         kill-word
+"\C-\\":        kill-whole-line
 "\M-OB":        next-history
 "\M-[B":        next-history
+"\M-\C-OB":     next-history
+"\M-\C-[B":     next-history
 "\M-\M-[B":     history-search-forward
 "\M-[1;5B":     history-search-forward
 "\M-[5B":       history-search-forward
@@ -142,6 +150,8 @@ set keymap      vi-insert
 "\C-x$":        possible-variable-completions
 "\M-OA":        previous-history
 "\M-[A":        previous-history
+"\M-\C-OA":     previous-history
+"\M-\C-[A":     previous-history
 "\M-\M-[A":     history-search-backward
 "\M-[1;5A":     history-search-backward
 "\M-[5A":       history-search-backward
@@ -160,7 +170,6 @@ set keymap      vi-insert
 "\C-_":         undo
 "\C-u":         unix-line-discard
 "\M-u":         upcase-word
-"\C-\\":        kill-whole-line
 "\C-w":         vi-unix-word-rubout
 "\C-y":         yank
 "\M-.":         yank-last-arg
@@ -175,7 +184,8 @@ set keymap vi-command
 "\M-[":         skip-csi-sequence
 "\C-i":         menu-complete
 "\C-\M-i":      menu-complete-backward
-#"\M-\C-i":      dynamic-complete-history
+"\M-\C-i":      menu-complete-backward
+"\M-[Z":        dynamic-complete-history
 "\C-@":         magic-space
 "v":            set-mark
 "\C-g":         abort
@@ -185,10 +195,11 @@ set keymap vi-command
 "\C-h":         backward-char
 "\M-OD":        backward-char
 "\M-[D":        backward-char
+"\M-\C-OD":     backward-char
+"\M-\C-[D":     backward-char
 "h":            backward-char
 "\C-b":         backward-char
-#"\C-?":         backward-delete-char
-"\C-x\C-?":     backward-kill-line
+"\C-?":         backward-delete-char
 "\M-\C-h":      backward-kill-word
 "\M-\C-?":      backward-kill-word
 "\M-\M-[D":     shell-backward-word
@@ -209,6 +220,8 @@ set keymap vi-command
 "\C-]":         character-search
 "\M-\C-]":      character-search-backward
 "\C-l":         clear-screen
+"\M-<":         copy-backward-word
+"\M->":         copy-forward-word
 "\M-!":         complete-command
 "\M-/":         complete-filename
 "\M-@":         complete-hostname
@@ -243,6 +256,8 @@ set keymap vi-command
 "\C-x\C-x":     exchange-point-and-mark
 "\M-OC":        forward-char
 "\M-[C":        forward-char
+"\M-\C-OC":     forward-char
+"\M-\C-[C":     forward-char
 " ":            forward-char
 "l":            forward-char
 "\C-f":         forward-char
@@ -261,8 +276,11 @@ set keymap vi-command
 "\M-_":         insert-last-argument
 "\C-k":         kill-line
 "\M-d":         kill-word
+"\C-\\":        kill-whole-line
 "\M-OB":        next-history
 "\M-[B":        next-history
+"\M-\C-OB":     next-history
+"\M-\C-[B":     next-history
 "+":            next-history
 "j":            next-history
 "\M-n":         non-incremental-forward-search-history
@@ -277,6 +295,8 @@ set keymap vi-command
 "\C-x$":        possible-variable-completions
 "\M-OA":        previous-history
 "\M-[A":        previous-history
+"\M-\C-OA":     previous-history
+"\M-\C-[A":     previous-history
 "-":            previous-history
 "k":            previous-history
 "\C-q":         quoted-insert
@@ -323,14 +343,13 @@ set keymap vi-command
 "d":            vi-delete-to
 "E":            vi-end-word
 "e":            vi-end-word
-"\C-d":         vi-eof-maybe
+#"\C-d":         vi-eof-maybe
 "G":            vi-fetch-history
 "^":            vi-first-print
 "`":            vi-goto-mark
 "I":            vi-insert-beg
 "i":            vi-insertion-mode
 "%":            vi-match
-"\M-":          vi-movement-mode
 "W":            vi-next-word
 "w":            vi-next-word
 "B":            vi-prev-word

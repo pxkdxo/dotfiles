@@ -47,6 +47,7 @@ hi Folded       gui=NONE guifg=#40f0f0 guibg=#005080
 hi FoldColumn   gui=NONE guifg=#40c0ff guibg=#00305c
 
 " Other
+hi ColorColumn  gui=NONE guifg=#40f0f0 guibg=#005080
 hi Directory    gui=NONE guifg=#40f0d0 guibg=NONE
 hi LineNr       gui=NONE guifg=#9090a0 guibg=NONE
 hi NonText      gui=BOLD guifg=#4080ff guibg=NONE

@@ -3,17 +3,20 @@
 #
 
 ## source profile config
-test -f ~/.profile && test -r ~/.profile &&
+if test -f ~/.profile && test -r ~/.profile; then
   . ~/.profile
+fi
 
 ## source config for interactive shells
-test -f ~/.bashrc && test -r ~/.bashrc &&
+if test -f ~/.bashrc && test -r ~/.bashrc; then
   . ~/.bashrc
+fi
 
 ## autostart X at login
-test -z "${DISPLAY}" && test "${XDG_VTNR}" -eq 1 &&
+if test -z "${DISPLAY}" && test "${XDG_VTNR}" -eq 1; then
   if test -f ~/.xinitrc && test -r ~/.xinitrc; then
     exec /usr/bin/env startx ~/.xinitrc
   else
     exec /usr/bin/env startx
   fi
+fi

@@ -42,6 +42,11 @@ ELINKS_CONFDIR    DEFAULT="${XDG_CONFIG_HOME}/elinks"
 GS_OPTIONS        DEFAULT="-sPAPERSIZE=a4 -dOptimize=true -dEmbedAllFonts=true"
 
 
+# Less
+LESSBINFMT        DEFAULT="*d<%x>"
+LESSUBINFMT       DEFAULT="<U+%04lx>"
+
+
 # Wine
 WINEARCH          DEFAULT="win64"
 WINEDEBUG         DEFAULT="warn+all"

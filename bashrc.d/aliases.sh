@@ -48,40 +48,37 @@ alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
 
-alias pu='pushd'
-alias po='popd'
-
 alias pf='printf'
-alias pf-d='printf '"'"'%d'"'"
-alias pf-i='printf '"'"'%i'"'"
-alias pf-o='printf '"'"'%o'"'"
-alias pf-u='printf '"'"'%u'"'"
-alias pf-x='printf '"'"'%x'"'"
-alias pf-X='printf '"'"'%X'"'"
-alias pf-f='printf '"'"'%f'"'"
-alias pf-e='printf '"'"'%e'"'"
-alias pf-E='printf '"'"'%E'"'"
-alias pf-g='printf '"'"'%g'"'"
-alias pf-G='printf '"'"'%G'"'"
-alias pf-c='printf '"'"'%c'"'"
-alias pf-s='printf '"'"'%s'"'"
-alias pf-b='printf '"'"'%b'"'"
-alias pf-q='printf '"'"'%q'"'"
-alias pf-dn='printf '"'"'%d\n'"'"
-alias pf-in='printf '"'"'%i\n'"'"
-alias pf-on='printf '"'"'%o\n'"'"
-alias pf-un='printf '"'"'%u\n'"'"
-alias pf-xn='printf '"'"'%x\n'"'"
-alias pf-Xn='printf '"'"'%X\n'"'"
-alias pf-fn='printf '"'"'%f\n'"'"
-alias pf-en='printf '"'"'%e\n'"'"
-alias pf-En='printf '"'"'%E\n'"'"
-alias pf-gn='printf '"'"'%g\n'"'"
-alias pf-Gn='printf '"'"'%G\n'"'"
-alias pf-cn='printf '"'"'%c\n'"'"
-alias pf-sn='printf '"'"'%s\n'"'"
-alias pf-bn='printf '"'"'%b\n'"'"
-alias pf-qn='printf '"'"'%q\n'"'"
+alias pf.d='printf '"'"'%d'"'"
+alias pf.i='printf '"'"'%i'"'"
+alias pf.o='printf '"'"'%o'"'"
+alias pf.u='printf '"'"'%u'"'"
+alias pf.x='printf '"'"'%x'"'"
+alias pf.X='printf '"'"'%X'"'"
+alias pf.f='printf '"'"'%f'"'"
+alias pf.e='printf '"'"'%e'"'"
+alias pf.E='printf '"'"'%E'"'"
+alias pf.g='printf '"'"'%g'"'"
+alias pf.G='printf '"'"'%G'"'"
+alias pf.c='printf '"'"'%c'"'"
+alias pf.s='printf '"'"'%s'"'"
+alias pf.b='printf '"'"'%b'"'"
+alias pf.q='printf '"'"'%q'"'"
+alias pf.dn='printf '"'"'%d\n'"'"
+alias pf.in='printf '"'"'%i\n'"'"
+alias pf.on='printf '"'"'%o\n'"'"
+alias pf.un='printf '"'"'%u\n'"'"
+alias pf.xn='printf '"'"'%x\n'"'"
+alias pf.Xn='printf '"'"'%X\n'"'"
+alias pf.fn='printf '"'"'%f\n'"'"
+alias pf.en='printf '"'"'%e\n'"'"
+alias pf.En='printf '"'"'%E\n'"'"
+alias pf.gn='printf '"'"'%g\n'"'"
+alias pf.Gn='printf '"'"'%G\n'"'"
+alias pf.cn='printf '"'"'%c\n'"'"
+alias pf.sn='printf '"'"'%s\n'"'"
+alias pf.bn='printf '"'"'%b\n'"'"
+alias pf.qn='printf '"'"'%q\n'"'"
 
 
 ## -- External Cmd Shortcuts --
@@ -98,8 +95,13 @@ alias rmvenv='rmvirtualenv'
 alias pcre='pcre2grep'
 
 alias p='python'
+alias py='python'
+
 alias p2='python2'
+alias py2='python2'
+
 alias p3='python3'
+alias py3='python3' 
 
 alias xc0='xclip -sel clip'
 alias xc0i='xclip -sel clip -i'
