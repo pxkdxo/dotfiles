@@ -1,22 +1,29 @@
-#
+##
 ## Library to help configure the environment
-#
+##
 
 
 ## If given arguments, configure those variables.
 ## Otherwise, configure all variables.
-function autoenv::main() {
-  if (( $# )) || set -- BROWSER EDITOR GCC_COLORS LS_COLORS; then
-    while (( $# )); do
+autoenv::main() {
+
+  [[ $# -eq 0 ]] && set -- BROWSER EDITOR GCC_COLORS LS_COLORS
+
+  while [[ $# -gt 0 ]]; do
+    if command -v autoenv::"$1" 1>/dev/null; then
       autoenv::"$1"
-      shift
-    done
-  fi
+    else
+      printf '%q: autoenv: %q: No such function\n' "${0##*/}" "$1" 1>&2
+    fi
+    shift
+  done
+
+  return 0
 }
 
 
 ## Set default browser
-function autoenv::BROWSER() {
+autoenv::BROWSER() {
   local BROWSER='' && {
     case $# in
       1)
@@ -45,7 +52,7 @@ function autoenv::BROWSER() {
 
 
 ## Set default text editor
-function autoenv::EDITOR() {
+autoenv::EDITOR() {
   local EDITOR && {
     case $# in
       1)
@@ -70,17 +77,15 @@ function autoenv::EDITOR() {
 
 
 ## Set GCC output formatting
-function autoenv::GCC_COLORS() {
-  declare -gx GCC_COLORS=\
-"${*-"caret=01;34:error=01;31:locus=01;36:note=01;33:quote=01;32:warning=01;35"}"
+autoenv::GCC_COLORS() {
+  local IFS=';' && declare -gx GCC_COLORS=\
+"${*-caret=01;34:error=01;31:locus=01:note=33:quote=01;32:warning=01;35}"
 }
 
 
 ## Set command output colors
-function autoenv::LS_COLORS() {
-  if local IFS LS_COLORS='' \
-    && \command -v dircolors
-  then
+autoenv::LS_COLORS() {
+  if local IFS LS_COLORS='' && command -v dircolors; then
     case "$(($#))" in
       0)
         if [[ -f ~/.dircolors ]]; then
@@ -108,7 +113,7 @@ function autoenv::LS_COLORS() {
         return $?
         ;;
     esac
-  fi >/dev/null
+  fi 1>/dev/null
 }
 
 

@@ -2,13 +2,13 @@
 ## ~/.asoundrc : alsa sound configuration
 #
 
-# ------------------------------------------------------
+
 # default rate convereter
 # ------------------------------------------------------
 defaults.pcm.rate_converter "speexrate_medium"
 
 
-# ------------------------------------------------------
+
 # duplex template
 # ------------------------------------------------------
 
@@ -25,8 +25,7 @@ pcm.duplex {
 }
 
 
-# ------------------------------------------------------
-# capture template
+# dsnoop capture template
 # ------------------------------------------------------
 
 pcm.rec {
@@ -42,19 +41,17 @@ pcm.rec {
 }
 
 
+# dmix two-channel playback template
 # ------------------------------------------------------
-# playback template
-# ------------------------------------------------------
-pcm.mix {
-  @args [ KEY PCM RATE PSIZE BSIZE PTIME BTIME ]
+pcm.mix20 {
+  @args [ KEY PCM RATE PSIZE BSIZE PTIME ]
 
   @args.KEY   { type integer }
   @args.PCM   { type string  }
-  @args.RATE  { type integer default  48000 }
-  @args.PSIZE { type integer default   4096 }
-  @args.BSIZE { type integer default  32768 }
-  @args.PTIME { type integer default  85000 }
-  @args.BTIME { type integer default 680000 }
+  @args.RATE  { type integer , default 48000 }
+  @args.PSIZE { type integer , default  1024 }
+  @args.BSIZE { type integer , default  4096 }
+  @args.PTIME { type integer , default     0 }
 
   type          dmix
   ipc_key       $KEY
@@ -66,11 +63,15 @@ pcm.mix {
     buffer_size $BSIZE
     period_time $PTIME
     buffer_time $BTIME
+
+    channels    2
   }
+
+  bindings    { 0 0 , 1 1 }
 }
 
 
-# ------------------------------------------------------
+
 # Cards
 # ------------------------------------------------------
 
@@ -79,146 +80,37 @@ pcm.pulse     { type pulse }
 
 ctl.pch       { type hw card PCH }
 pcm.pch       { type hw card PCH }
-ctl.card0       ctl.pch
-pcm.card0       pcm.pch
 
 ctl.nvidia    { type hw card NVidia }
 pcm.nvidia    { type hw card NVidia }
-ctl.card1       ctl.nvidia
-pcm.card1       pcm.nvidia
 
 #ctl.loop      { type hw card Loop }
 #pcm.loop      { type hw card Loop }
-#ctl.card2       ctl.loop
-#pcm.card2       pcm.loop
 
 
-# ------------------------------------------------------
+
 # card0 (PCH) devices
 # ------------------------------------------------------
 
-pcm.dsnoop0     "rec:20120,card0"
+ctl.card0       ctl.pch
+pcm.card0       pcm.pch
 
-ctl.dmix0       ctl.card0
-pcm.dmix0       "mix:10120,card0"
+pcm.dsnoop0     "rec:20120,pch"
 
-ctl.duplex0     ctl.dmix0
+ctl.dmix0       ctl.pch
+pcm.dmix0       "mix20:10120,pch"
+
+ctl.duplex0     ctl.pch
 pcm.duplex0     "duplex:dsnoop0,dmix0"
 
-ctl.mixer0      ctl.duplex0
+ctl.mixer0      ctl.pch
 
-ctl.dsp0        ctl.mixer0
+ctl.dsp0        ctl.pch
 pcm.dsp0        pcm.duplex0
 
-ctl.!default    ctl.dsp0
-pcm.!default    pcm.dsp0
+ctl.!default    ctl.pch
+pcm.!default    pcm.duplex0
 
 
-## ------------------------------------------------------
-## snd-aloop capture template
-## ------------------------------------------------------
-#
-#pcm.asnoop {
-#  @args [ KEY RATE PSIZE BSIZE ]
-#
-#  @args.KEY   { type integer }
-#  @args.RATE  { type integer default 48000 }
-#  @args.PSIZE { type integer default  4096 }
-#  @args.BSIZE { type integer default 32768 }
-#
-#  type          dsnoop
-#  ipc_key       $KEY
-#
-#  slave {
-#    pcm         "hw:Loop,0,1"
-#    format      S32_LE
-#
-#    rate {
-#      @func igetenv vars [ JACK_SAMPLE_RATE ]
-#      default   $RATE
-#    }
-#
-#    period_size {
-#      @func igetenv vars [ JACK_PERIOD_SIZE ]
-#      default   $PSIZE
-#    }
-#
-#    buffer_size $BSIZE
-#  }
-#}
-#
-#
-## ------------------------------------------------------
-## snd-aloop playback template
-## ------------------------------------------------------
-#
-#pcm.amix {
-#  @args [ KEY RATE PSIZE BSIZE ]
-#
-#  @args.KEY   { type integer }
-#  @args.RATE  { type integer default 48000 }
-#  @args.PSIZE { type integer default  4096 }
-#  @args.BSIZE { type integer default 32768 }
-#
-#  type          dmix
-#  ipc_key       $KEY
-#
-#  slave {
-#    pcm         "hw:Loop,0,0"
-#    format      S32_LE
-#
-#    rate {
-#      @func igetenv vars [ JACK_SAMPLE_RATE ]
-#      default   $RATE
-#    }
-#
-#    period_size {
-#      @func igetenv vars [ JACK_PERIOD_SIZE ]
-#      default   $PSIZE
-#    }
-#
-#    buffer_size $BSIZE
-#  }
-#}
-# 
-#
-## ------------------------------------------------------
-## Loop (card0) devices
-## ------------------------------------------------------
-#
-#ctl.card0       ctl.loop
-#pcm.card0       pcm.loop
-#
-#pcm.dsnoop0     "asnoop:20020"
-#
-#ctl.dmix0       ctl.card0
-#pcm.dmix0       "amix:10020"
-#
-#ctl.duplex0     ctl.dmix0
-#pcm.duplex0     "duplex:dsnoop0,dmix0"
-#
-#ctl.mixer0      ctl.duplex0
-#
-#ctl.dsp0        ctl.mixer0
-#pcm.dsp0        pcm.duplex0
-#
-#
-## ------------------------------------------------------
-## alsa_in -j cloop -dcloop -q 1
-## ------------------------------------------------------
-#pcm.cloop {
-#  type dsnoop
-#  ipc_key     21020
-#  slave.pcm   "hw:Loop,1,1"
-#}
-#
-#
-## ------------------------------------------------------
-## alsa_out -j ploop -dploop -q 1
-## ------------------------------------------------------
-#pcm.ploop {
-#  type plug 
-#  slave.pcm   "hw:Loop,1,0"
-#}
-#
+
 ## vim: set ft=alsaconf

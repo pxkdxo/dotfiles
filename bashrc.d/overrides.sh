@@ -21,12 +21,12 @@ alias: alias [-p] [name[=value] ... ]
     set -- "${@/%/=$2}" "$1"
     shift
     shift
-    while (( $# > 1 )); do
-      set -- "${1%%=*}" "${1#*=}" "${@:2}"
+    while (( $## > 1 )); do
+      set -- "${1%%=*}" "${1##*=}" "${@:2}"
       : "$( { { alias "$1" 2>/dev/null || printf '%s' "$1" 1>&2
             } | sed 's/^[^=]*='"'"'\(.*\)'"'"'$/\1/' 2>/dev/null
           } 2>&1)"
-      builtin alias "$1"="${2//"${!#}"/$_}"
+      builtin alias "$1"="${2//"${!##}"/$_}"
       shift
       shift
     done
@@ -50,7 +50,7 @@ mkcd: mkcd [options] directory ...
 @HELP' ERR
 
   mkdir "$@"
-  cd -- "${!#}"
+  cd -- "${!##}"
 } && declare -ft mkcd
 
 
@@ -74,20 +74,20 @@ cdls: cdls [options] directory
 ## cd upward by "height" (or to root directory, whichever comes first)
 ## up [options] [height]
 up() {
-  if (($# == 0)); then
+  if (($## == 0)); then
     cd ..
   elif [[ ${@/%!(--help)/} = *-* ]]; then
     printf 'up: up [options] [height]\n'
-  elif [[ ${!#} = -* ]]; then
+  elif [[ ${!##} = -* ]]; then
     cd "$@" ..
   elif set -- "${PWD//'/'+([^'/'])/../}" "$@"   \
     && [[ "$1" =~ ${1//'/'//(}${1//'../'/)} ]]  \
     && shift                                    \
-    && ((_ = ${!#},  ++_ > 0)) 2> /dev/null
+    && ((_ = ${!##},  ++_ > 0)) 2> /dev/null
   then
-    cd "${@:1:$# ? ($# - 1) : 0}" "${BASH_REMATCH[(-_ % ${#BASH_REMATCH[@]})]}"
+    cd "${@:1:$## ? ($# - 1) : 0}" "${BASH_REMATCH[(-_ % ${#BASH_REMATCH[@]})]}"
   else
-    printf 'up: %s: invalid expression\n' "${!#@Q}" >&2
+    printf 'up: %s: invalid expression\n' "${!##@Q}" >&2
     return 2
   fi
 } && declare -ft up

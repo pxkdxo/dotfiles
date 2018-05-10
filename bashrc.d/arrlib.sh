@@ -1,10 +1,10 @@
-#
+##
 ## 20-arrlib : Library of functions to manipulate bash arrays
-#
+##
 
 
 function arr::join() {
-  [[ $# -eq 2 && $1 = [[:alpha:]_]*([[:alnum:]_]) ]] || return 2
+  [[ $## -eq 2 && $1 = [[:alpha:]_]*([[:alnum:]_]) ]] || return 2
   trap 'printf '"'"'%s\n'"'"' "${'"${1%%:*}[*]${1##"${1%%:*}"}"'}";'"$(
   if [[ $(trap -p RETURN) ]]; then
     printf '%s' "$(trap -p RETURN)"
@@ -17,7 +17,7 @@ function arr::join() {
 
 
 function arr::ifsjoin() {
-  [[ $# -eq 1 && $1 = [[:alpha:]_]*([[:alnum:]_]) ]] || return 2
+  [[ $## -eq 1 && $1 = [[:alpha:]_]*([[:alnum:]_]) ]] || return 2
   trap 'printf '"'"'%s\n'"'"' "${'"${1%%:*}[*]${1##"${1%%:*}"}"'}";'"$(
   if [[ $(trap -p RETURN) ]]; then
     printf '%s' "$(trap -p RETURN)"

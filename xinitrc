@@ -1,24 +1,39 @@
-#!/bin/env bash
+#!/usr/bin/env bash
+
+#
+## Initialize a new Xsession
+#
+
+
+## Clear resource database
+xrdb -load /dev/null
+
 
 ## merge in system resources
-[[ -r '/etc/X11/xinit/Xresources' ]] &&
+test -r '/etc/X11/xinit/Xresources' &&
   xrdb -merge '/etc/X11/xinit/Xresources'
 
 ## run system scripts
-[[ -d '/etc/X11/xinit/xinitrc.d' ]] &&
+test -d '/etc/X11/xinit/xinitrc.d' &&
   for _ in '/etc/X11/xinit/xinitrc.d'/*.sh; do
-    [[ -r "$_" ]] && . "$_"
+    if test -f "$_" && test -r "$_"; then
+      -. "$_"
+    fi
   done
 
+
 ## merge in user resources
-[[ -r "${HOME}/.Xresources" ]] &&
+test -r "${HOME}/.Xresources" &&
   xrdb -merge "${HOME}/.Xresources"
 
 ## run user scripts
-[[ -d "${HOME}/.xinitrc.d" ]] &&
+test -d "${HOME}/.xinitrc.d" &&
   for _ in "${HOME}/.xinitrc.d"/*.sh; do
-    [[ -r "$_" ]] && . "$_"
+    if test -f "$_" && test -r "$_"; then
+      -. "$_"
+    fi
   done
 
-## pass control to window manager
+
+## pass control to a window manager
 exec awesome

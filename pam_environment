@@ -1,82 +1,167 @@
 #
-## ~/.pam_environment
+## ~/.pam_environment : login environment
 #
 
 
-# Default Directories
-XDG_CACHE_HOME    DEFAULT="@{HOME}/.cache"
-XDG_CONFIG_HOME   DEFAULT="@{HOME}/.config"
-XDG_DATA_HOME     DEFAULT="@{HOME}/.local/share"
-TMPDIR            DEFAULT="${XDG_RUNTIME_DIR}"
+
+## Default Directories
+
+TMPDIR            DEFAULT=@{HOME}/.tmp
+
+XDG_CACHE_HOME    DEFAULT=@{HOME}/.cache
+
+XDG_CONFIG_HOME   DEFAULT=@{HOME}/.local/etc
+
+XDG_DATA_HOME     DEFAULT=@{HOME}/.local/share
 
 
-# Locale
-LANG              DEFAULT="en_US.UTF-8"
-LANGUAGE          DEFAULT="en_US"
+
+## Locale
+
+IFS               DEFAULT=
+
+LANG              DEFAULT=en_US.utf8
+
+LANGUAGE          DEFAULT=en_US
+
 LC_ALL            DEFAULT=
-TZ                DEFAULT="America/Los_Angeles" 
+
+LC_COLLATE        DEFAULT=en_US.iso88591
+
+TZ                DEFAULT=America/Los_Angeles 
 
 
-# Output Style
-BLOCK_SIZE        DEFAULT="human-readable"
-QUOTING_STYLE     DEFAULT="shell-escape"
-TIME_STYLE        DEFAULT="+%a %d %b %Y %R"
+
+## Style
+
+BLOCK_SIZE        DEFAULT=human-readable
+
+QUOTING_STYLE     DEFAULT=shell-escape
+
+TIME_STYLE        DEFAULT="+ %a %d %b %Y %_I%P "
+
+VERSION_CONTROL   DEFAULT=existing
 
 
-# POSIX_ME_HARDER
+
+## POSIX
+
 POSIXLY_CORRECT   DEFAULT=
-_POSIX2_VERSION   DEFAULT="200809"
+
+_POSIX2_VERSION   DEFAULT=200809
 
 
-# GnuPG
-GNUPGHOME         DEFAULT="@{HOME}/.gnupg"
+
+## Shell History
+
+HISTFILE          DEFAULT=${XDG_DATA_HOME}/@{SHELL}/history
+
+HISTSIZE          DEFAULT=17711
+
+
+
+## GnuPG
+
+GPG_TTY           DEFAULT=
+
+GNUPGHOME         DEFAULT=@{HOME}/.gnupg
+
 SSH_AGENT_PID     DEFAULT=
-SSH_AUTH_SOCK     DEFAULT="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+
+SSH_AUTH_SOCK     DEFAULT=${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh
 
 
-# Elinks
-ELINKS_CONFDIR    DEFAULT="${XDG_CONFIG_HOME}/elinks"
+
+## Xinit
+
+XINITRC           DEFAULT=${XDG_CONFIG_HOME}/xinitrc
 
 
-# Ghostscript
+
+## Elinks
+
+ELINKS_CONFDIR    DEFAULT=${XDG_CONFIG_HOME}/elinks
+
+
+
+## Ghostscript
+
 GS_OPTIONS        DEFAULT="-sPAPERSIZE=a4 -dOptimize=true -dEmbedAllFonts=true"
 
 
-# Less
-LESSBINFMT        DEFAULT="*d<%x>"
-LESSUBINFMT       DEFAULT="<U+%04lx>"
+
+## Less
+
+LESS              DEFAULT="-FgiKMqRX --window=-2 --rscroll=*n^@"
+
+LESSBINFMT        DEFAULT=*d<%02x>
+
+LESSUBINFMT       DEFAULT=<U+%04lx>
 
 
-# Wine
-WINEARCH          DEFAULT="win64"
-WINEDEBUG         DEFAULT="warn+all"
-WINEDLLPATH       DEFAULT="/usr/local/lib/wine:/usr/lib/wine:/lib/wine:@{HOME}/.local/lib/wine"
-WINEPREFIX        DEFAULT="${XDG_DATA_HOME}/wine"
+
+## Wine
+
+WINEARCH          DEFAULT=win64
+
+WINEDLLPATH       DEFAULT=\
+@{HOME}/.local/lib/wine:@{HOME}/.local/lib64/wine:@{HOME}/.local/lib32/wine:\
+/usr/local/lib/wine:/usr/local/lib64/wine:/usr/local/lib32/wine:\
+/usr/lib/wine:/usr/lib64/wine:/usr/lib32/wine:\
+/lib/wine:/lib64/wine:/lib32/wine
+
+WINEPREFIX        DEFAULT=${XDG_DATA_HOME}/wine
 
 
-# Pacman
-AURDEST           DEFAULT="${XDG_DATA_HOME}/pacman/aur"
-BUILDDIR          DEFAULT="${TMPDIR}/makepkg"
-LOGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/log"
-PKGDEST           DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/pkg"
+
+## Pacman
+
+AURDEST           DEFAULT=${XDG_DATA_HOME}/pacman/aur
+
+BUILDDIR          DEFAULT=${TMPDIR}/makepkg/build
+
+LOGDEST           DEFAULT=${XDG_DATA_HOME}/makepkg/log
+
+PKGDEST           DEFAULT=${XDG_DATA_HOME}/makepkg/pkg
+
 SRCDEST           DEFAULT=
-SRCPKGDEST        DEFAULT="${XDG_DATA_HOME}/pacman/makepkg/pkg/src"
+
+SRCPKGDEST        DEFAULT=${XDG_DATA_HOME}/makepkg/srcpkg
 
 
-# Lua
-LUAROCKS_CONFIG   DEFAULT="${XDG_CONFIG_HOME}/luarocks/config.lua"
+
+## Readline
+
+INPUTRC           DEFAULT=${XDG_CONFIG_HOME}/inputrc
+
+RLWRAP_HOME       DEFAULT=${XDG_DATA_HOME}/rlwrap
 
 
-# Python
-PYTHONSTARTUP     DEFAULT="${XDG_CONFIG_HOME}/pythonrc"
+## Lua
+
+LUAROCKS_CONFIG   DEFAULT=${XDG_CONFIG_HOME}/luarocks/config.lua
 
 
-# NVidia
-__GL_FSAA_MODE                DEFAULT="11"
-__GL_LOG_MAX_ANISO            DEFAULT="4"
-__GL_SHADER_DISK_CACHE        DEFAULT="1"
-__GL_SHADER_DISK_CACHE_PATH   DEFAULT="${XDG_CACHE_HOME}/nv/GLCache"
-__GL_THREADED_OPTIMIZATIONS   DEFAULT="1"
+
+## Python
+
+PYTHONSTARTUP     DEFAULT=${XDG_CONFIG_HOME}/python/rc.py
 
 
-# vim::ft=conf:tw=0
+
+## NVidia
+
+__GL_FSAA_MODE                DEFAULT=10
+
+__GL_LOG_MAX_ANISO            DEFAULT=4
+
+__GL_SHADER_DISK_CACHE        DEFAULT=1
+
+__GL_SHADER_DISK_CACHE_PATH   DEFAULT=${XDG_CACHE_HOME}/nv/GLCache
+
+__GL_THREADED_OPTIMIZATIONS   DEFAULT=1
+
+
+
+
+# vim::ft=conf

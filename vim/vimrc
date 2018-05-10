@@ -150,29 +150,29 @@ set wildmode=list:longest,full
 " -- Key Timeout --
 
 " Time out on mappings and keycodes
-set timeout
+set timeout ttimeout
 
 " Time in milliseconds to wait for completion of a mapping
-set timeoutlen=1360
+set timeoutlen=1597
 
 " Time in milliseconds to wait for completion of a key code
-set ttimeoutlen=136
+set ttimeoutlen=144
 
 
 
 " -- History  --
 
 " Size of the command history 
-set history=500
+set history=610
 
 " Size of a file's undo history
-set undolevels=1500
+set undolevels=1597
 
 
 
-" -- Swapfile Directory --
+" -- Swapfile --
 
-" Initialize directory preference list
+" Clear directory list
 set directory=
 
 " Check for XDG_DATA_HOME
@@ -185,6 +185,7 @@ if $XDG_DATA_HOME != ''
 
   " Append to the directory list
   set directory+=$XDG_DATA_HOME/vim/swap/
+
 
 " XDG_DATA_HOME is null, so check HOME
 elseif $HOME != ''
@@ -200,7 +201,15 @@ elseif $HOME != ''
 endif
 
 " Fallback to the directory of the given file
-set directory+=./,/var/tmp/,/tmp/
+set directory+=./
+
+" Fallback to value of TMPDIR if it's non-null
+if $TMPDIR != ''
+  set directory+=$TMPDIR/
+endif
+
+" Last resort...
+set directory+=/var/tmp/,/tmp/
 
 
 

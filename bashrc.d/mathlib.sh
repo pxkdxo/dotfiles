@@ -1,6 +1,6 @@
-#
+##
 ## 20-mathlib: Collection of functions to do math in bash
-#
+##
 
 
 function math::__accumulate() { 

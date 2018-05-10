@@ -27,7 +27,7 @@ _cower() {
 
   local sortfields=(firstsubmitted lastmodified license maintainer name outofdate version votes)
 
-  # maybe mangle the arguments in case we're looking at a --longopt=$val
+  ## maybe mangle the arguments in case we're looking at a --longopt=$val
   [[ $cur = '=' ]] && cur=
   if [[ $prev = '=' ]] && __inarray "$prevprev" "${allopts[@]}"; then
     prev=$prevprev
@@ -80,15 +80,15 @@ _cower() {
       return 0
       ;;
     *)
-      # completion based on mode -- always take the last specified
+      ## completion based on mode -- always take the last specified
       local i j w mode
-      for (( i = 1; i < ${#COMP_WORDS[*]}; i++ )); do
+      for (( i = 1; i < ${##COMP_WORDS[*]}; i++ )); do
         w=${COMP_WORDS[i]}
         if (( i == 1 )) || [[ ${COMP_WORDS[i-1]} != -* ]]; then
           case $w in
-            # mode from shortopt (possibly a bunch mushed together)
+            ## mode from shortopt (possibly a bunch mushed together)
             -[^-]*)
-              for (( j = 0; j < ${#w}; j++ )); do
+              for (( j = 0; j < ${##w}; j++ )); do
                 case ${w:j:1} in
                   d|i|m|s|u)
                     mode=${w:j:1}
@@ -96,17 +96,17 @@ _cower() {
                 esac
               done
               ;;
-            # mode from long opt
+            ## mode from long opt
             --@(download|info|?(m)search|update))
-              mode=${w#--}
+              mode=${w##--}
               ;;
           esac
         fi
       done
       case $mode in
         d|download|i|info)
-          # complete based on AUR matches
-          if (( ${#cur} > 2 )); then
+          ## complete based on AUR matches
+          if (( ${##cur} > 2 )); then
             COMPREPLY=($(compgen -W "$("$argv0" -sq -- "$cur" 2>/dev/null)" -- "$cur"))
             return 0
           fi

@@ -3,48 +3,82 @@
 
 $include /etc/inputrc
 
-set bell-style visible
-set bind-tty-special-chars on
-set blink-matching-paren on
-set colored-completion-prefix on
-set colored-stats on
-set comment-begin #
-set completion-display-width -1
-set completion-ignore-case on
-set completion-query-items 180
-set convert-meta on
-set echo-control-characters on
-set history-preserve-point on
-set history-size -1
-set input-meta on
-set isearch-terminators "C-[C-J"
-set keyseq-timeout -1
-set mark-directories on
-set mark-symlinked-directories on
-set match-hidden-files on
-set menu-complete-display-prefix on
-set output-meta on
-set revert-all-at-newline on
-set show-all-if-ambiguous on
-set show-all-if-unmodified on
-set show-mode-in-prompt on
-set skip-completed-text on
 
-set editing-mode vi
-set vi-ins-mode-string "\1\e[0;1;2m\2|\1\e[0m\2"
-set vi-cmd-mode-string "\1\e[0;1;2m\2:\1\e[0m\2"
+## Eight-Bit
+
+set convert-meta                      off
+set input-meta                        on
+set output-meta                       on
+
+
+## Terminal
+
+set bell-style                        none
+set bind-tty-special-chars            on
+set enable-keypad                     off
+set enable-meta-key                   on
+
+
+## History
+
+set history-preserve-point            on
+set history-size                      -1
+set mark-modified-lines               off
+set revert-all-at-newline             on
+
+
+## Completion
+
+set completion-ignore-case            on
+set completion-map-case               off
+set completion-query-items            233
+set disable-completion                off
+set expand-tilde                      off
+set match-hidden-files                on
+set menu-complete-display-prefix      on
+set page-completions                  on
+set show-all-if-ambiguous             on
+set show-all-if-unmodified            on
+set skip-completed-text               on
+
+
+## Appearance
+
+set blink-matching-paren              on
+set colored-completion-prefix         on
+set colored-stats                     on
+set completion-display-width          -1
+set completion-prefix-display-length   0
+set echo-control-characters           on
+set mark-directories                  on
+set mark-symlinked-directories        on
+set print-completions-horizontally    off
+set show-mode-in-prompt               on
+set visible-stats                     off
+set vi-ins-mode-string                \1\e[0;1;2m\2|\1\e[0m\2
+set vi-cmd-mode-string                \1\e[0;1;2m\2:\1\e[0m\2
+
+
+## Editing
+
+set comment-begin                     #
+set editing-mode                      vi
+set horizontal-scroll-mode            off
+set keyseq-timeout                    0
+
+
+## Keymaps
 
 set keymap      vi-insert
 
-"\C-[":     vi-movement-mode
+"\C-[":         vi-movement-mode
 
 "\M-[":         skip-csi-sequence
 
-"\M-\"":        "\"\"\M-[D"
-"\M-\'":        "\'\'\M-[D"
-
 "\C-j":         "\\\C-m"
-"\M-\C-j":      "\C-v\n"
+
+"\M-\"":        \"\"\M-[D"
+"\M-\'":        \'\'\M-[D"
 
 "\C-i":         menu-complete
 "\M-\C-i":      menu-complete-backward
