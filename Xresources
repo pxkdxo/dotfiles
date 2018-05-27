@@ -1,13 +1,14 @@
 ! ~/.Xresources
-! resources to be loaded by xrdb (e.g. using "xrdb --load" or "xrdb --merge")
+! resources to be loaded by xrdb (e.g. using "xrdb -load" or "xrdb -merge")
 
-#include ".Xresources.d/Xcursor"
-#include ".Xresources.d/Xft"
-#include ".Xresources.d/XTerm"
-#include ".Xresources.d/colors/copland"
+#include "Xresources.d/Xcursor"
+#include "Xresources.d/Xft"
+#include "Xresources.d/XTerm"
+#include "Xresources.d/colors/gruvbox_black"
 
 
 *locale                       : true
 *customization                : -color
+
 
 ! vim:ft=xdefaults:tw=0

@@ -1,10 +1,11 @@
 #
-## ~/.asoundrc : alsa sound configuration
+## ~/.asoundrc : alsa configuration
 #
 
 
-# default rate convereter
+# default rate converter
 # ------------------------------------------------------
+
 defaults.pcm.rate_converter "speexrate_medium"
 
 
@@ -43,6 +44,7 @@ pcm.rec {
 
 # dmix two-channel playback template
 # ------------------------------------------------------
+
 pcm.mix20 {
   @args [ KEY PCM RATE PSIZE BSIZE PTIME ]
 
@@ -64,32 +66,32 @@ pcm.mix20 {
     period_time $PTIME
     buffer_time $BTIME
 
-    channels    2
+#    channels    2
   }
 
-  bindings    { 0 0 , 1 1 }
+#  bindings    { 0 0 , 1 1 }
 }
 
 
 
-# Cards
+# sound card definitions
 # ------------------------------------------------------
 
-ctl.pulse     { type pulse }
-pcm.pulse     { type pulse }
+ctl.loop      { type hw card Loopback }
+pcm.loop      { type hw card Loopback }
 
 ctl.pch       { type hw card PCH }
 pcm.pch       { type hw card PCH }
 
-ctl.nvidia    { type hw card NVidia }
-pcm.nvidia    { type hw card NVidia }
+ctl.gpu       { type hw card GPU }
+pcm.gpu       { type hw card GPU }
 
-#ctl.loop      { type hw card Loop }
-#pcm.loop      { type hw card Loop }
+ctl.pulse     { type pulse }
+pcm.pulse     { type pulse }
 
 
 
-# card0 (PCH) devices
+# card PCH devices
 # ------------------------------------------------------
 
 ctl.card0       ctl.pch
@@ -100,17 +102,19 @@ pcm.dsnoop0     "rec:20120,pch"
 ctl.dmix0       ctl.pch
 pcm.dmix0       "mix20:10120,pch"
 
-ctl.duplex0     ctl.pch
+ctl.duplex0     ctl.dmix0
 pcm.duplex0     "duplex:dsnoop0,dmix0"
 
-ctl.mixer0      ctl.pch
+ctl.mixer0      ctl.duplex0
 
-ctl.dsp0        ctl.pch
+ctl.dsp0        ctl.duplex0
 pcm.dsp0        pcm.duplex0
 
-ctl.!default    ctl.pch
+ctl.!default    ctl.duplex0
 pcm.!default    pcm.duplex0
 
 
 
-## vim: set ft=alsaconf
+
+# ------------------------------------------------------
+# vim:ft=alsaconf

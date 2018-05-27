@@ -1,319 +1,398 @@
-" ~/.vimrc : vim startup file
-" Vim version 8.0
+"" .vimrc : vim startup file
+"" Vim version 8.0
 
 
-" Use Vim defaults (rather than Vi)
+"" Use Vim defaults (rather than Vi)
 set nocompatible
 
-" Always encode in utf-8
+"" Always encode in utf-8
 set encoding=utf-8
 
 
 
-" -- Filetype & Syntax --
+"" -- Filetype & Syntax --
 
-" Detect filetype, load plugins, and apply indentation style
+"" Detect filetype, load plugins, and apply indentation style
 filetype plugin indent on
 
-" Perform syntax highlighting
+"" Perform syntax highlighting
 syntax enable
 
 
 
-" -- Tabs & Textwidth --
+"" -- Tabs & Textwidth --
 
-" Insert spaces insted of tab characters
+"" Insert spaces insted of tab characters
 set expandtab
 
-" Number of columns reserved for line numbers
+"" Number of columns reserved for line numbers
 set numberwidth=3
 
-" Number of spaces to use for each indent
+"" Number of spaces to use for each indent
 set shiftwidth=2
 
-" Number of spaces to insert as a tab
+"" Number of spaces to insert as a tab
 set softtabstop=2
 
-" Visual width of a real tab '\t' character
+"" Visual width of a real tab '\t' character
 set tabstop=8
 
-" Length beyond which insertion forces a linebreak
-if &modifiable == 1
-  set textwidth=78
-else
-  set textwidth=0
-endif
+"" Length beyond which insertion triggers a linebreak
+set textwidth=78
 
 
 
-" -- Patterns & Searching --
+"" -- Patterns & Searching --
 
-" Do not highlight search results
+"" Do not highlight search results
 set nohlsearch
 
-" Search forward as pattern is typed
+"" Search forward as pattern is typed
 set incsearch
 
-" Ignore case by default
+"" Ignore case by default
 set ignorecase
 
-" Respect case if pattern contains uppercase
+"" Respect case if pattern contains uppercase
 set smartcase
 
 
 
-" -- Verbosity & Info --
+"" -- Verbosity & Info --
 
-" Display line numbers
+"" Display line numbers
 set number
 
-" Display line numbers relative to current line
+"" Display line numbers relative to current line
 set relativenumber
 
-" Display cursor coordinates (e.g. LINE,COLUMN)
+"" Display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
 
-" Display most recent command below window
+"" Display most recent command below window
 set showcmd
 
-" Briefly jump to match upon completing pair in 'matchpairs'
+"" Briefly jump to match upon completing pair in 'matchpairs'
 set showmatch
 
-" Highlight columns relative to 'textwidth'
+"" Highlight columns relative to 'textwidth'
 set colorcolumn=+1
 
-" Show last line as @@@ if truncated
+"" Show last line as @@@ if truncated
 set display=truncate
 
-" Always show status line
+"" Always show status line
 set laststatus=2
 
 
 
-" -- Editing --
+"" -- Editing --
 
-" Attempt to preserve cursor position when moving linewise
+"" Attempt to preserve cursor position when moving linewise
 set nostartofline
 
-" Allow backspacing over everything in insert mode
+"" Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-" Additional bases for Ctrl-A (increment) / Ctrl-X (decrement)
+"" Additional bases for Ctrl-A (increment) / Ctrl-X (decrement)
 set nrformats=bin,hex
 
-" Lines of padding between cursor and edge of window
-set scrolloff=4
+"" Lines of padding between cursor and edge of window
+set scrolloff=3
 
-" If 'nowrap' is set, minimum number of columnss to scroll at a time
+"" If 'nowrap' is set, minimum number of columnss to scroll at a time
 set sidescroll=1
 
-" If 'nowrap' is set, columns of padding between cursor and edge of window
+"" If 'nowrap' is set, columns of padding between cursor and edge of window
 set sidescrolloff=4
 
-" Allow visual-block selection of empty columns
+"" Allow visual-block selection of empty columns
 set virtualedit=block
 
 
 
-" -- Buffers --
+"" -- Buffers --
 
-" Re-read open file if it was changed by another program
+"" Re-read open file if it was changed by another program
 set autoread
 
-" Hide closed buffers rather than unloading them
+"" Hide closed buffers rather than unloading them
 set hidden
 
-" Split off new windows below the current
+"" Split off new windows below the current
 set splitbelow
 
-" Split off new windows to the right of the current
+"" Split off new windows to the right of the current
 set splitright
 
 
 
-" -- Completion --
+"" -- Completion --
 
-" Enable command completion
+"" Enable command completion
 set wildmenu
 
-" Ignore case for filename completions
+"" Ignore case for filename completions
 set wildignorecase
 
-" Insert-mode completion behavior
+"" Insert-mode completion behavior
 set completeopt=menu,preview,noselect
 
-" Cmdline-mode completion behavior
+"" Cmdline-mode completion behavior
 set wildmode=list:longest,full
 
 
 
-" -- Key Timeout --
+"" -- Key Timeout --
 
-" Time out on mappings and keycodes
+"" Time out on mappings and keycodes
 set timeout ttimeout
 
-" Time in milliseconds to wait for completion of a mapping
+"" Time in milliseconds to wait for completion of a mapping
 set timeoutlen=1597
 
-" Time in milliseconds to wait for completion of a key code
+"" Time in milliseconds to wait for completion of a key code
 set ttimeoutlen=144
 
 
 
-" -- History  --
+"" -- History  --
 
-" Size of the command history 
-set history=610
+"" Number of search patterns and ``:'' commands to remember
+""
+set history=987
 
-" Size of a file's undo history
+
+"" Number of modifications to remember for any given file
+""
 set undolevels=1597
 
 
+"" Always save the whole buffer for undo when reloading it
+""
+set undoreload=-1
 
-" -- Swapfile --
 
-" Clear directory list
+"" Max characters that may be typed between swapfile syncs
+""
+set updatecount=144
+
+
+"" Max milliseconds of input silence between swapfile syncs
+""
+set updatetime=4181
+
+
+
+
+"" -- Swap Directory --
+""
+"" The idea is to configure the list of swapfile directory preferences in
+"" compliance with behavior defined by the the XDG Base Directory Spec.
+""
+"" We will examine the environ and configure a sensible list of preferences.
+
+
+"" Clear the list of swap directory preferences
 set directory=
 
-" Check for XDG_DATA_HOME
+
+" Is XDG_DATA_HOME non-null?
 if $XDG_DATA_HOME != ''
 
-  " Non-null so check if the target exists; if not, make it
+  "" Does the target directory exist?
   if ! isdirectory(expand('$XDG_DATA_HOME/vim/swap/'))
+
+    "" Make the target directory
     silent! call system('install -dm 700 "$XDG_DATA_HOME/vim/swap"')
   endif
 
-  " Append to the directory list
-  set directory+=$XDG_DATA_HOME/vim/swap/
+  "" Append to the directory list
+  set directory=$XDG_DATA_HOME/vim/swap/
 
 
-" XDG_DATA_HOME is null, so check HOME
+"" Otherwise, is HOME non-null?
 elseif $HOME != ''
 
-  " Home is non-null so check if the target exists; if not, make it
-  if ! isdirectory(expand('$HOME/.local/share/vim/swap/'))
-    silent! call system('install -dm 700 "$HOME/.local/share/vim/swap"')
+  "" Does the target directory exist?
+  if ! isdirectory(expand('$XDG_DATA_HOME/vim/swap/'))
+
+    "" Make the target directory
+    silent! call system('install -dm 700 "$XDG_DATA_HOME/vim/swap"')
   endif
 
-  " Append to the directory list
-  set directory+=$HOME/.local/share/vim/swap/
-
+  "" Append to the directory list
+  set directory=$HOME/.local/share/vim/swap/
+    
 endif
 
-" Fallback to the directory of the given file
+
+"" Fallback to the directory of the given file
 set directory+=./
 
-" Fallback to value of TMPDIR if it's non-null
+
+"" Is TMPDIR non-null?
 if $TMPDIR != ''
-  set directory+=$TMPDIR/
+
+  "" Does the target directory exist?
+  if ! isdirectory(expand('$TMPDIR/vim/swap/'))
+
+    "" Make the target directory
+    silent! call system('install -dm 700 "$TMPDIR/vim/swap"')
+  endif
+
+  "" Fallback to TMPDIR
+  set directory+=$TMPDIR/vim/swap/
+
+
+"" Otherwise, is XDG_RUNTIME_DIR non-null?
+elseif $XDG_RUNTIME_DIR != ''
+
+  "" Does the target directory exist?
+  if ! isdirectory(expand('$XDG_RUNTIME_DIR/vim/swap/'))
+
+    "" Make the target directory
+    silent! call system('install -dm 700 "$XDG_RUNTIME_DIR/vim/swap"')
+  endif
+
+  "" Fallback to XDG_RUNTIME_DIR
+  set directory+=$XDG_RUNTIME_DIR/vim/swap/
+
 endif
 
-" Last resort...
-set directory+=/var/tmp/,/tmp/
 
 
+"" -- Terminal --
 
-" -- Terminal --
+"" Key that starts a CTRL-W command in a terminal window
+set termwinkey=<C-^>
 
-" F*** terminal bells
+"" F**k terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
-" Enable mouse functionality
+"" Search system termcaps before vim builtin termcaps
+""set ttybuiltin term=$TERM
+
+
+
+"" -- Mouse --
+
+"" Is the mouse feature available?
 if has('mouse')
+
+"" Enable the mouse
   set mouse=a
-endif
-
-" Set terminal colorscheme
-if &g:t_Co >= 256
-  colorscheme calmar256-darkP
-elseif &g:t_Co >= 88
-  colorscheme inkpotP
+  
 endif
 
 
 
-" -- GUI --
+"" -- Colors --
 
-if has('gui_running')
-
-" Make shift-insert work like in xterm
-  map  <S-Insert> <MiddleMouse>
-  map! <S-Insert> <MiddleMouse>
-
-" Set gui colorscheme
+"" Set terminal colorscheme
+if &t_Co > 256
+  set termguicolors
   colorscheme candyP
+elseif &t_Co > 16
+  colorscheme desertP
 endif
 
 
 
-" -- Man --
+"" -- Man --
 
-runtime ftplugin/man.vim        " Load the man plugin
+runtime ftplugin/man.vim      " Load the Man plugin
 
-set keywordprg=:Man             " Make the K cmd split off new windows
+set keywordprg=:Man           " Make "K" open man pages in a vim window
 
-let g:ft_man_open_mode = 'vert' " Open man pages off to the side
- 
-" Set options upon detecting a man file
-autocmd FileType man setlocal colorcolumn= nomodifiable
+autocmd FileType man setlocal noswapfile  " No swap files for manpages
+
+"" Change how man pages are opened
+nmap <leader><leader>manopenh :let g:ft_man_open_mode = 'horiz'<CR>
+nmap <leader><leader>manopenv :let g:ft_man_open_mode = 'vert'<CR>
+nmap <leader><leader>manopent :let g:ft_man_open_mode = 'tab'<CR>
+
+let ft_man_open_mode = 'vert' " Open man pages beside the current window
 
 
 
-" -- Python --
+"" -- Python --
 
 let python_highlight_all= 1 " Enable all available Python highlighting
 
 if has('python3')           " Prefer Python 3
   set pyxversion=3
+
 elseif has('python2')       " Fallback to Python 2
   set pyxversion=2
+
 endif
 
 
-" -- C / C++ --
+
+"" -- C / C++ --
 
 let c_comment_strings   = 1 " Allow strings & numbers inside comments
 let c_gnu               = 1 " Highlight GNU specific items
 let c_space_errors      = 1
 
 
-" -- Readline --
+
+"" -- Readline --
 
 let readline_has_bash   = 1 " Highlight additions available through bash
 
 
-" -- Sh --
 
-let g:is_posix          = 1 " POSIX highlighting for ambiguous *.sh files
-let g:sh_fold_enabled   = 3 " Folding mode (function + if/do/for)
-let g:sh_no_error       = 1 " Relax error detection
+"" -- Sh --
+
+let is_posix          = 1 " POSIX highlighting for ambiguous *.sh files
+let sh_fold_enabled   = 3 " Folding mode (function + if/do/for)
+let sh_no_error       = 1 " Relax error detection
 
 
-" -- Sed --
+
+"" -- Sed --
 
 let highlight_sedtabs   = 1 " Highlight real tabs in sed scripts
 
 
 
-" -- Mappings--
 
-" Define key to act as <leader> in mappings
+"" -- Mappings--
+
+"" Key to act as <leader> in mappings
 let mapleader = ','         
 
 
-" Quote word under or before the cursor (see :help word)
-" Note: Requires that 'selection' be set to "inclusive" or "exclusive"
+"" -- Toggle Search Highlighting
+""
+nnoremap <silent><F3>
+  \:set hlsearch!<CR>
 
-nnoremap <leader>' vl<esc>bi'<esc>ea'<esc>l
-nnoremap <leader>" vl<esc>bi"<esc>ea"<esc>l
+
+"" -- Toggle Syntax Highlighting
+""
+nnoremap <silent><F7>
+  \:if exists('g:syntax_on')
+  \<Bar>syntax off<Bar>
+  \else
+  \<Bar>syntax enable<Bar>
+  \endif<CR>
+
+
+
+"" -- Quote word in Pair of '',"",(),{},[]
+"" Note: 'selection' must be set to "inclusive" or "exclusive"
+""
+"" word before or at the cursor (see :help word)
+nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
+nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
 nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
 nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
 nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
 
-
-" Quote WORD under or before the cursor (see :help WORD)
-" Note: Requires that 'selection' be set to "inclusive" or "exclusive"
-
+"" WORD before or at the cursor (see :help WORD)
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
 nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
 nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
@@ -321,38 +400,28 @@ nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
 nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 
 
-" Toggle syntax highlighting
-" Note: Does not override current colorscheme
 
-nnoremap <silent><F7> 
-  \:if exists('g:syntax_on')
-  \<Bar> syntax off <Bar>
-  \else <Bar>
-  \  syntax enable <Bar>
-  \endif <CR>
-
-
-" Search forward for the current visual selection
-" Note: Jumping to a tag does not set the current search pattern
-
-vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
-  \let old_regtype=getregtype('"')<CR>gvy/<C-R><C-R>
+"" -- Search forward/backward for the current visual selection
+"" Note: Jumping to a tag does not set the current search pattern
+""
+vnoremap <silent> *
+  \:<C-U>let old_reg=getreg('"')<Bar>
+  \let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>
   \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \gV:call setreg('"', old_reg, old_regtype)<CR>
+  \gV:call setreg('"',old_reg,old_regtype)<CR>
 
-
-" Search backward for the current visual selection
-" Note: Jumping to a tag does not set the current search pattern
-
-vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
-  \let old_regtype=getregtype('"')<CR>\gvy?<C-R><C-R>
+vnoremap <silent> #
+  \:<C-U>let old_reg=getreg('"')<Bar>
+  \let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>
   \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \gV:call setreg('"', old_reg, old_regtype)<CR>
+  \gV:call setreg('"',old_reg,old_regtype)<CR>
 
 
 
-" -- Security --
-
+"" -- Security --
+""
 set key=                        " Key used for encrypting the current buffer
 set cryptmethod=blowfish2       " Cipher for files written to disk
 set secure                      " Careful in case someone else owns this file

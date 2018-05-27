@@ -9,27 +9,27 @@ ncmpcpp_directory         = ~/.local/share/ncmpcpp
 lyrics_directory          = ~/.local/share/ncmpcpp/lyrics
 
 ##### mpd connection #####
-mpd_host                  = ~/.mpd/mpd.socket
+mpd_host                  = ~/.tmp/mpd.socket
 mpd_port                  = 6602
 mpd_connection_timeout    = 6
 mpd_crossfade_time        = 0
 
 ##### music visualizer ####
-visualizer_fifo_path      = ~/.mpd/output-stereo
-visualizer_output_name    = fifo (stereo)
-visualizer_sync_interval  = 20
-visualizer_in_stereo      = yes
-visualizer_type           = spectrum
+visualizer_fifo_path      = ~/.tmp/mpd-playback-mono.fifo
+visualizer_output_name    = MPD Playback Mono
+visualizer_sync_interval  = 30
+visualizer_in_stereo      = no
+visualizer_type           = wave_filled
 visualizer_color          = 52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22
-#visualizer_look           = ╬♥
 visualizer_look           = ╬o
 
 ##### delays #####
 ## Time of inactivity (in seconds) after playlist highlighting will be disabled
 ## (0 = always on).
 playlist_disable_highlight_delay = 0
+
 ## Defines how long messages are supposed to be visible.
-message_delay_time = 4
+message_delay_time = 3
 
 ##### song format #####
 ## For a song format you can use:
@@ -169,14 +169,14 @@ execute_on_song_change = ""
 execute_on_player_state_change = ""
 playlist_show_mpd_host         = no
 playlist_show_remaining_time   = yes
-playlist_shorten_total_times   = no
+playlist_shorten_total_times   = yes
 playlist_separate_albums       = no
 
 ## Note: Possible display modes: classic, columns.
 playlist_display_mode        = classic
-browser_display_mode         = classic
-search_engine_display_mode   = classic
-playlist_editor_display_mode = classic
+browser_display_mode         = columns
+search_engine_display_mode   = columns
+playlist_editor_display_mode = columns
 
 discard_colors_if_item_is_selected = yes
 show_duplicate_tags                = yes
@@ -187,7 +187,7 @@ autocenter_mode                    = yes
 centered_cursor                    = yes
 
 ## Optional third character will be used to build 'empty' part of progressbar.
-progressbar_look = ~>~
+progressbar_look = •|•
 
 ## Available values: database, playlist.
 default_place_to_search_in = database
@@ -224,10 +224,11 @@ allow_for_physical_item_deletion = yes
 ##
 ## Note: Language has to be expressed as an ISO 639 alpha-2 code.
 ##
-lastfm_preferred_language = en
+#lastfm_preferred_language = en
+
 space_add_mode = add_remove
 show_hidden_files_in_local_browser = no
-##
+
 ## How shall screen switcher work?
 ##
 ## - "previous" - switch between the current and previous screen.
@@ -237,7 +238,7 @@ show_hidden_files_in_local_browser = no
 ## media_library, playlist_editor, tag_editor, outputs, visualizer, clock,
 ## lyrics, last_fm.
 ##
-screen_switcher_mode = playlist, media_library, search_engine, browser
+screen_switcher_mode = media_library, browser, search_engine, playlist, playlist_editor
 ##
 ## Note: You can define startup screen by choosing screen from the list above.
 ##
@@ -247,11 +248,10 @@ startup_screen = media_library
 ## above or an empty value for no slave screen.
 ##
 #startup_slave_screen_focus = no
-#startup_slave_screen = search_engine
+#startup_slave_screen = playlist
 ##
 ## Default width of locked screen (in %).  Acceptable values are from 20 to 80.
-##
-#
+
 locked_screen_width_part = 62
 ask_for_locked_screen_width_part = no
 jump_to_now_playing_song_at_start = no
@@ -261,25 +261,30 @@ display_volume_level = yes
 display_bitrate = yes
 display_remaining_time = yes
 
+
 ## Available values: none, basic, extended, perl.
 regular_expressions = perl
+
 
 ## Note: if below is enabled, ncmpcpp will ignore leading "The" word while
 ## sorting items in browser, tags in media library, etc.
 ignore_leading_the = yes
 
+
 ## Note: if below is enabled, ncmpcpp will ignore diacritics while searching and
 ## filtering lists. This takes an effect only if boost was compiled with ICU
 ## support.
-ignore_diacritics = no
+
+ignore_diacritics = yes
 block_search_constraints_change_if_items_found = yes
 mouse_support = yes
 mouse_list_scroll_whole_page = yes
-empty_tag_marker = <none>
-tags_separator = " :: "
+empty_tag_marker = <n/a>
+tags_separator = :
 tag_editor_extended_numeration = yes
 media_library_sort_by_mtime = no
 enable_window_title = yes
+
 
 ## Note: You can choose default search mode for search engine. Available modes
 ## are:
@@ -292,10 +297,10 @@ enable_window_title = yes
 ##
 ## - 3 - match only exact values (this mode uses mpd function for searching in
 ##       database and local one for searching in current playlist)
-##
+
 search_engine_default_search_mode = 2
-external_editor = vim
-use_console_editor = yes
+#external_editor = vim
+#use_console_editor = yes
 
 ##### colors definitions #####
 ##
@@ -344,3 +349,7 @@ player_state_color = default:b
 alternative_ui_separator_color = 46
 window_border_color = default
 active_window_border = 46
+
+
+
+## vi:ft=conf:tw=0

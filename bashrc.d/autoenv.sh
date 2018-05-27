@@ -4,7 +4,7 @@
 
 
 ## If given arguments, configure those variables.
-## Otherwise, configure all variables.
+## Otherwise, configure known variables.
 autoenv::main() {
 
   [[ $# -eq 0 ]] && set -- BROWSER EDITOR GCC_COLORS LS_COLORS
@@ -20,6 +20,7 @@ autoenv::main() {
 
   return 0
 }
+
 
 
 ## Set default browser

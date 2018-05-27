@@ -1,12 +1,12 @@
 ! Dremora 2.0
 
-*background:  #0A0A0A
-*foreground:  #f2f1f0
-*cursorColor: #e15441
+*background:  #1f2422
+*foreground:  #f4f2ef
+*cursorColor: #72e44c
 
 !black
-*color0:      #222222
-*color8:      #666666
+*color0:      #2a2f2d
+*color8:      #696f6c
 
 !red
 *color1:      #d65050
@@ -17,8 +17,8 @@
 *color10:     #bde077
 
 !yellow
-*color3:      #e36e5e
-*color11:     #e36352
+*color3:      #e36352
+*color11:     #e36e5e
 
 !blue
 *color4:      #a4d3dd
@@ -33,5 +33,5 @@
 *color14:     #7a92a2
 
 !white
-*color7:      #f2f1f0
-*color15:     #f2f1f0
+*color7:      #cfcdca
+*color15:     #f4f2ef

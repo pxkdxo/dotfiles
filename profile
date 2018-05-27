@@ -9,7 +9,7 @@ umask 027
 
 
 ## Prepend my executable paths
-for _ in "${HOME}"/bin "${HOME}"/.local/bin; do
+for _ in "${HOME}"/bin "${HOME}"/.bin "${HOME}"/.local/bin; do
   if test -d "$_"; then
     case ":${PATH}:" in
       *":$_:"*)

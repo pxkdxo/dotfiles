@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
 <pam_mount>
-
-<volume path="/users/%(USER)/lib" mountpoint="~/.local/lib" options="rbind" />
-
-<volume path="/users/%(USER)/share" mountpoint="~/.local/share" options="rbind" />
-
+  <volume path="/run/user/%(UID)/lib" mountpoint="~/.run" options="bind" />
 </pam_mount>

@@ -7,11 +7,8 @@
 ## Default Directories
 
 TMPDIR            DEFAULT=@{HOME}/.tmp
-
 XDG_CACHE_HOME    DEFAULT=@{HOME}/.cache
-
 XDG_CONFIG_HOME   DEFAULT=@{HOME}/.local/etc
-
 XDG_DATA_HOME     DEFAULT=@{HOME}/.local/share
 
 
@@ -19,15 +16,10 @@ XDG_DATA_HOME     DEFAULT=@{HOME}/.local/share
 ## Locale
 
 IFS               DEFAULT=
-
-LANG              DEFAULT=en_US.utf8
-
+LANG              DEFAULT=en_US.UTF-8
 LANGUAGE          DEFAULT=en_US
-
 LC_ALL            DEFAULT=
-
-LC_COLLATE        DEFAULT=en_US.iso88591
-
+LC_COLLATE        DEFAULT=en_US.ISO-8859-1
 TZ                DEFAULT=America/Los_Angeles 
 
 
@@ -35,11 +27,8 @@ TZ                DEFAULT=America/Los_Angeles
 ## Style
 
 BLOCK_SIZE        DEFAULT=human-readable
-
-QUOTING_STYLE     DEFAULT=shell-escape
-
-TIME_STYLE        DEFAULT="+ %a %d %b %Y %_I%P "
-
+QUOTING_STYLE     DEFAULT=shell-escape-always
+TIME_STYLE        DEFAULT="+ %a %_d %b %Y %_I%P "
 VERSION_CONTROL   DEFAULT=existing
 
 
@@ -47,28 +36,22 @@ VERSION_CONTROL   DEFAULT=existing
 ## POSIX
 
 POSIXLY_CORRECT   DEFAULT=
-
 _POSIX2_VERSION   DEFAULT=200809
-
-
-
-## Shell History
-
-HISTFILE          DEFAULT=${XDG_DATA_HOME}/@{SHELL}/history
-
-HISTSIZE          DEFAULT=17711
 
 
 
 ## GnuPG
 
 GPG_TTY           DEFAULT=
-
 GNUPGHOME         DEFAULT=@{HOME}/.gnupg
-
 SSH_AGENT_PID     DEFAULT=
-
 SSH_AUTH_SOCK     DEFAULT=${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh
+
+
+
+## Zsh
+
+ZDOTDIR           DEFAULT=${XDG_CONFIG_HOME}/zsh
 
 
 
@@ -84,18 +67,10 @@ ELINKS_CONFDIR    DEFAULT=${XDG_CONFIG_HOME}/elinks
 
 
 
-## Ghostscript
-
-GS_OPTIONS        DEFAULT="-sPAPERSIZE=a4 -dOptimize=true -dEmbedAllFonts=true"
-
-
-
 ## Less
 
-LESS              DEFAULT="-FgiKMqRX --window=-2 --rscroll=*n^@"
-
+LESS              DEFAULT="-FgiMqRX --window=-2 --rscroll=*n^\@"
 LESSBINFMT        DEFAULT=*d<%02x>
-
 LESSUBINFMT       DEFAULT=<U+%04lx>
 
 
@@ -104,13 +79,13 @@ LESSUBINFMT       DEFAULT=<U+%04lx>
 
 WINEARCH          DEFAULT=win64
 
+WINEPREFIX        DEFAULT=${XDG_DATA_HOME}/wine
+
 WINEDLLPATH       DEFAULT=\
 @{HOME}/.local/lib/wine:@{HOME}/.local/lib64/wine:@{HOME}/.local/lib32/wine:\
 /usr/local/lib/wine:/usr/local/lib64/wine:/usr/local/lib32/wine:\
 /usr/lib/wine:/usr/lib64/wine:/usr/lib32/wine:\
 /lib/wine:/lib64/wine:/lib32/wine
-
-WINEPREFIX        DEFAULT=${XDG_DATA_HOME}/wine
 
 
 
@@ -121,11 +96,8 @@ AURDEST           DEFAULT=${XDG_DATA_HOME}/pacman/aur
 BUILDDIR          DEFAULT=${TMPDIR}/makepkg/build
 
 LOGDEST           DEFAULT=${XDG_DATA_HOME}/makepkg/log
-
 PKGDEST           DEFAULT=${XDG_DATA_HOME}/makepkg/pkg
-
 SRCDEST           DEFAULT=
-
 SRCPKGDEST        DEFAULT=${XDG_DATA_HOME}/makepkg/srcpkg
 
 
@@ -133,11 +105,11 @@ SRCPKGDEST        DEFAULT=${XDG_DATA_HOME}/makepkg/srcpkg
 ## Readline
 
 INPUTRC           DEFAULT=${XDG_CONFIG_HOME}/inputrc
-
 RLWRAP_HOME       DEFAULT=${XDG_DATA_HOME}/rlwrap
 
 
-## Lua
+
+## Luarocks
 
 LUAROCKS_CONFIG   DEFAULT=${XDG_CONFIG_HOME}/luarocks/config.lua
 
@@ -152,13 +124,9 @@ PYTHONSTARTUP     DEFAULT=${XDG_CONFIG_HOME}/python/rc.py
 ## NVidia
 
 __GL_FSAA_MODE                DEFAULT=10
-
 __GL_LOG_MAX_ANISO            DEFAULT=4
-
 __GL_SHADER_DISK_CACHE        DEFAULT=1
-
 __GL_SHADER_DISK_CACHE_PATH   DEFAULT=${XDG_CACHE_HOME}/nv/GLCache
-
 __GL_THREADED_OPTIMIZATIONS   DEFAULT=1
 
 

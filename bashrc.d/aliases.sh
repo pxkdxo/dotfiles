@@ -1,36 +1,66 @@
-#
-## bash_aliases : alias definitions
-#
+## bash_aliases : alias definitions for interactive shells
 
 
-## -- expand aliases in 2nd word --
+## Function for defining multiple aliases from a template
+aliasfmt() {
+  
+  if test "$#" -lt 2; then
+    printf 'usage: %q sub fmt [name ...]\n' "${FUNCNAME[@]::1}" >&2
+    return 2
+  fi
 
-alias sudo='sudo '
-alias nohup='nohup '
-alias rlwrap='rlwrap '
-alias unbuffer='unbuffer '
+  set -- "${@/%/=$2}" "$1"
+  shift 2
+  while test "$#" -gt 1; do
+    set -- "${1%%=*}" "${1#*=}" "${@:2}"
+    alias $1=${2//"${!#}"/"${BASH_ALIASES["$1"]:-"$1"}"}
+    shift 2
+  done
+}
+
+
+
+## -- expand 2nd word --
+
+alias sudo="'sudo' "
+alias nohup="'nohup' "
+alias rlwrap="'rlwrap' "
+alias unbuffer="'unbuffer' "
 
 
 
 ## -- default options --
 
-alias ls='ls --color=always'
-alias dir='dir --color=always'
-alias vdir='vdir --color=always'
-alias grep='grep --color=always'
-alias egrep='egrep --color=always'
-alias fgrep='fgrep --color=always'
-alias pcre2grep='pcre2grep --color=always'
+alias ls="'ls' --color"
+alias dir="'dir' --color"
+alias vdir="'vdir' --color"
 
-alias shred='shred --random-source=/dev/random'
-alias shuf='shuf --random-source=/dev/urandom'
-alias sort='sort --random-source=/dev/urandom'
+alias grep="'grep' --color"
+alias egrep="'egrep' --color"
+alias fgrep="'fgrep' --color"
 
-alias jobs='jobs -l'
-alias mv='mv -biv'
-alias rm='rm -Idv'
-alias mkdir='mkdir -pv'
-alias rename='rename -ov'
+alias jobs="'jobs' -l"
+
+alias mkdir="'mkdir' -pv"
+
+alias mv="'mv' -biv"
+
+alias rm="'rm' -Idv"
+
+case " $(command rename --version) " in
+  (*\ 2.32[.\ ]*)
+    alias rename="'rename' -ov"
+    ;;
+  (*)
+    alias rename="'rename' -v"
+    ;;
+esac
+
+alias rsync="'rsync' --human-readable --progress"
+
+alias shred="'shred' --random-source=/dev/random"
+alias shuf="'shuf' --random-source=/dev/urandom"
+alias sort="'sort' --random-source=/dev/urandom"
 
 
 
@@ -52,46 +82,28 @@ alias l='ls'
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
+alias lr='ls -R'
 
 alias pf='printf'
-
-alias pf.d='printf '"'"'%d'"'"
-alias pf.i='printf '"'"'%i'"'"
-alias pf.o='printf '"'"'%o'"'"
-alias pf.u='printf '"'"'%u'"'"
-alias pf.x='printf '"'"'%x'"'"
-alias pf.X='printf '"'"'%X'"'"
-alias pf.f='printf '"'"'%f'"'"
-alias pf.e='printf '"'"'%e'"'"
-alias pf.E='printf '"'"'%E'"'"
-alias pf.g='printf '"'"'%g'"'"
-alias pf.G='printf '"'"'%G'"'"
-alias pf.c='printf '"'"'%c'"'"
-alias pf.s='printf '"'"'%s'"'"
-alias pf.b='printf '"'"'%b'"'"
-alias pf.q='printf '"'"'%q'"'"
-
-alias pf.dn='printf '"'"'%d\n'"'"
-alias pf.in='printf '"'"'%i\n'"'"
-alias pf.on='printf '"'"'%o\n'"'"
-alias pf.un='printf '"'"'%u\n'"'"
-alias pf.xn='printf '"'"'%x\n'"'"
-alias pf.Xn='printf '"'"'%X\n'"'"
-alias pf.fn='printf '"'"'%f\n'"'"
-alias pf.en='printf '"'"'%e\n'"'"
-alias pf.En='printf '"'"'%E\n'"'"
-alias pf.gn='printf '"'"'%g\n'"'"
-alias pf.Gn='printf '"'"'%G\n'"'"
-alias pf.cn='printf '"'"'%c\n'"'"
-alias pf.sn='printf '"'"'%s\n'"'"
-alias pf.bn='printf '"'"'%b\n'"'"
-alias pf.qn='printf '"'"'%q\n'"'"
+alias pf.d='printf '"'"'%d\n'"'"
+alias pf.i='printf '"'"'%i\n'"'"
+alias pf.o='printf '"'"'%o\n'"'"
+alias pf.u='printf '"'"'%u\n'"'"
+alias pf.x='printf '"'"'%x\n'"'"
+alias pf.X='printf '"'"'%X\n'"'"
+alias pf.f='printf '"'"'%f\n'"'"
+alias pf.e='printf '"'"'%e\n'"'"
+alias pf.E='printf '"'"'%E\n'"'"
+alias pf.g='printf '"'"'%g\n'"'"
+alias pf.G='printf '"'"'%G\n'"'"
+alias pf.c='printf '"'"'%c\n'"'"
+alias pf.s='printf '"'"'%s\n'"'"
+alias pf.b='printf '"'"'%b\n'"'"
+alias pf.q='printf '"'"'%q\n'"'"
 
 
 
 ## -- external command shortcuts --
-
-alias pcre='pcre2grep'
 
 alias mkvenv='mkvirtualenv'
 alias cdvenv='cdvirtualenv'
@@ -107,17 +119,17 @@ alias py2='python2'
 alias p3='python3'
 alias py3='python3' 
 
-alias xc0='xclip -sel clipboard'
+alias xc0i='xclip -sel clipboard -i'
 alias xc0o='xclip -sel clipboard -o'
 alias xc0f='xclip -sel clipboard -f'
 alias xc0r='xclip -sel clipboard -r'
 
-alias xc1='xclip -sel primary'
+alias xc1i='xclip -sel primary -i'
 alias xc1o='xclip -sel primary -o'
 alias xc1f='xclip -sel primary -f'
 alias xc1r='xclip -sel primary -r'
 
-alias xc2='xclip -sel secondary'       
+alias xc2i='xclip -sel secondary -i'       
 alias xc2o='xclip -sel secondary -o'      
 alias xc2f='xclip -sel secondary -f'   
 alias xc2r='xclip -sel secondary -r' 
@@ -284,8 +296,7 @@ docker rm $(docker ps -aq)
 } 2>/dev/null'
 
 alias doc.jupyter='
-docker run --detach --tty --publish 8888:8888 --volume ~:/home/jovyan/work \
-  jupyter/datascience-notebook'
+docker run --detach --tty --publish 8888:8888 --volume ~:/home/jovyan/work jupyter/datascience-notebook'
 
 
 
