@@ -8,6 +8,7 @@
 
 # Whitelist
 !/asoundrc
+!/automated_script.sh
 !/awesome
 !/awesome/rc.lua
 !/bash_logout
