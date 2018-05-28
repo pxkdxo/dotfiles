@@ -10,8 +10,8 @@ autoenv::main() {
   [[ $# -eq 0 ]] && set -- BROWSER EDITOR GCC_COLORS LS_COLORS
 
   while [[ $# -gt 0 ]]; do
-    if command -v autoenv::"$1" 1>/dev/null; then
-      autoenv::"$1"
+    if command -v "autoenv::$1" 1>/dev/null; then
+      "autoenv::$1"
     else
       printf '%q: autoenv: %q: No such function\n' "${0##*/}" "$1" 1>&2
     fi
@@ -35,7 +35,7 @@ autoenv::BROWSER() {
         if [[ ${DISPLAY} ]]; then
           set -- google-chrome firefox chromium
         else
-          set -- w3m elinks lynx
+          set -- elinks w3m lynx
         fi
         ;&
 
@@ -120,4 +120,4 @@ autoenv::LS_COLORS() {
 
 
 ## Apply configuration
-autoenv::main "$@"
+'autoenv::main'

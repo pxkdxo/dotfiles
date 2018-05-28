@@ -59,32 +59,28 @@ set revert-all-at-newline         on
 
 set editing-mode                  vi
 
-set keyseq-timeout                0
+set keyseq-timeout                89
 
-set vi-ins-mode-string            "\1\e[0;1;2m\2¦\1\e[0m\2"
+set vi-ins-mode-string            "\1\e[0;1;2m\2+\1\e[0m\2"
 
 set vi-cmd-mode-string            "\1\e[0;1;2m\2:\1\e[0m\2"
 
 
 
+## Mapping for the vi-insert keymap
 set keymap      vi-insert
 
 ## Enter vi-movement mode with 'Ctl-Alt-[' or 'Alt-Esc'
-"\M-\C-[":      vi-movement-mode
-
-## Remap 'Esc' to do perform a insert of itself 'Esc'
-"\C-[":         "\C-v\C-["
-
-## Read enough chars to consume a multibyte control sequence
-"\e[":          skip-csi-sequence
+"\e":           vi-movement-mode
 
 ## Insert a newline (022)
 "\C-j":         "\C-v\C-j"
 
-## Cycle through completions with Tab (next) and Alt-Tab (prev)
+## Read enough chars to consume a multibyte control sequence
+"\e[":          skip-csi-sequence
+"\eOP"         "${READLINE_LINE} --help\C-m"
 "\C-i":         menu-complete
 "\M-\C-i":      menu-complete-backward
-
 "\M-[Z":        dynamic-complete-history
 "\M-[5~":       reverse-search-history
 "\M-[6~":       forward-search-history
@@ -214,12 +210,14 @@ set keymap      vi-insert
 "\M-y":          yank-pop
 
 
-## Vi Command-Mode bindings
+
+## Mapping for the vi-command keymap
 set keymap vi-command
 
+"\e[":          skip-csi-sequence
 "\C-i":         menu-complete
 "\M-\C-i":      menu-complete-backward
-#"\M-[Z":        dynamic-complete-history
+"\M-[Z":        dynamic-complete-history
 "\M- ":         magic-space
 "v":            set-mark
 "\C-m":         accept-line

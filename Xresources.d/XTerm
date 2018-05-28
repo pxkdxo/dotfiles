@@ -22,8 +22,8 @@ XTerm*vt100.metaSendsEscape   : false
 ! -- Eight-Bit --
 
 XTerm*vt100.eightBitControl   : false
-!XTerm*vt100.eightBitInput     : true
-!XTerm*vt100.eightBitOutput    : true
+XTerm*vt100.eightBitInput     : true
+XTerm*vt100.eightBitOutput    : true
 
 
 ! -- Selections --

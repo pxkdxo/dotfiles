@@ -27,7 +27,7 @@ kill -s 28 "$$" 2>/dev/null
   ## Refresh gpg-agent in case user switched to an Xsession
   command -p gpg-connect-agent updatestartuptty /bye
 
-} 2>/dev/null
+} 1>/dev/null 2>&1
 
 
 
@@ -154,7 +154,7 @@ $(printf '"'"'%.s─'"'"' {1..'"$(( $((COLUMNS))?$((COLUMNS)):$(tput cols) ))"'}
 \n\
 \[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}\]\
 \['"$1"'\]\
-\$√:\
+\$ƒ•\
 \[${ti[sgr0]:=$(tput sgr0)}\] '
 }
 
@@ -162,13 +162,14 @@ $(printf '"'"'%.s─'"'"' {1..'"$(( $((COLUMNS))?$((COLUMNS)):$(tput cols) ))"'}
 
 ## Function to set the secondary prompt
 PS2() {
-  PS2='\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}\]\
-\['"$1"'\]\
+  PS2='\[\
+${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}'"$1"'\
+\]\
 $(( (LINENO - '"$((BASH_LINENO[-1]))"') / 10 ))\
 $(( (LINENO - '"$((BASH_LINENO[-1]))"') % 10 ))\
-…\
-\[${ti[sgr0]:=$(tput sgr0)}\] '
+•\[\
+${ti[sgr0]:=$(tput sgr0)}\
+\] '
 }
 
 
@@ -176,13 +177,8 @@ $(( (LINENO - '"$((BASH_LINENO[-1]))"') % 10 ))\
 ## Function to set the select prompt
 PS3() {
   PS3='\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
-*\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
-\['"$1"'\]\
-◆\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
-*\
+\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}\]\
+¿?•\
 \[${ti[sgr0]:=$(tput sgr0)}\] '
   PS3=${PS3@P}
 }
@@ -191,26 +187,20 @@ PS3() {
 
 ## Function to set the execution-trace prompt
 PS4() {
-  PS4='\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
+  PS4='¬\
+\[${ti[sgr0]:=$(tput sgr0)}\]\
+|\
+\[${ti[bold]:=$(tput bold)}\]\
 •\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
-\['"$1"'\]\
-◆\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
-:\
-\[${ti[sgr0]:=$(tput sgr0)}\] '
+\[${ti[sgr0]:=$(tput sgr0)}\]\
+ '
 }
 
 
 
 ## Function to update the prompt strings 
 SetPS() {
-
-  local -
-
-  set - "$([[ $1 -gt 0 ]] && tput setaf "$(( ($1 - 1) % 6 + 1 ))")"
-
+  set -- "$([[ $1 -gt 0 ]] && tput setaf "$(( ($1 - 1) % 6 + 1 ))")"
   PS1 "$1"
   PS2 "$1"
   PS3 "$1"
@@ -219,9 +209,13 @@ SetPS() {
 
 
 
-## Execute each command in ``prompt_command'' before each primary prompt
-declare -r PROMPT_COMMAND='for _ in "${prompt_command[@]}"; do eval "$_"; done'
+## Declare an array to store a list of commands to execute from PROMPT_COMMAND
 declare -a prompt_command=( )
+
+## Execute each command in ``prompt_command'' before printing a primary prompt
+if [[ ${PROMPT_COMMAND@a} != *r* ]]; then
+  declare -r PROMPT_COMMAND='for _ in "${prompt_command[@]}"; do eval "$_"; done'
+fi
 
 ## Update prompt strings
 prompt_command[0]='SetPS "$?"'
@@ -230,7 +224,7 @@ prompt_command[0]='SetPS "$?"'
 case ${TERM} in
   xterm*|vte*)
     prompt_command+=( 
-  'printf "\e]0;%s@%s:%s\a" "${USER}" "${HOSTNAME%%.*}}" "${PWD/#"${HOME}"/\~}"'
+  'printf "\e]0;%s@%s:%s\a" "${USER}" "${HOSTNAME%%.*}" "${PWD/#"${HOME}"/\~}"'
 )
     ;;
   screen*|tmux*)
@@ -265,7 +259,7 @@ load_bash_completion
 source() {
   if [[ -d $1 ]]; then
     for _ in "$1"/*; do
-      if [[ -f $_ || -d $_ && $_ != */.?(.) ]]; then
+      if [[ -d $_ && $_ != */.?(.) || -f $_ ]]; then
         source "$_" "${@:2}"
       fi
     done

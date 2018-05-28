@@ -3,9 +3,8 @@
 ## Initialize terminal
 tput init
 
-
 ## Set file creation mode mask
-umask 027
+umask 002
 
 
 ## Prepend my executable paths

@@ -1,71 +1,70 @@
 ## .zshrc : zsh 5.4.1 interactive shell initialization file
 
 
-## Load plugins from my default directories
+## Load plugins from my app data dir
 () { repeat $# do { source "$1"; shift } done
-} "${XDG_DATA_HOME:-~/.local/share}"/zsh/plugins/*/*.zsh(N.)
+} ${XDG_DATA_HOME:-~/.local/share}/zsh/plugins/*/*.zsh(.N)
 
 
-zstyle :completion:\* add-space true
-zstyle :completion:\* completer _expand _complete _ignored _match _approximate _prefix
-zstyle :completion:\* completions 1
-zstyle :completion:\* condition 0
+zstyle ':completion:*' add-space true
+zstyle ':completion:*' completer _expand _complete _ignored _match _approximate _prefix
+zstyle ':completion:*' completions 1
+zstyle ':completion:*' condition 0
 
 
-zstyle :completion:\* format "%B%S%U%5F|| %d ||%b%s%u%f"
+zstyle ':completion:*' format "%U%B## %d%u%b"
 
-zstyle :completion:\* glob 1
+zstyle ':completion:*' glob 1
 
-#zstyle :completion:\* group-name ''
+#zstyle ':completion:*' group-name ''
 
-zstyle :completion:\* ignore-parents parent pwd directory
+zstyle ':completion:*' ignore-parents parent pwd directory
 
-zstyle :completion:\* insert-unambiguous true
+zstyle ':completion:*' insert-unambiguous true
 
-zstyle :completion:\* list-colors \
+zstyle ':completion:*' list-colors \
   ${(s.:.)${LS_COLORS:=${${(s.\'.)$(
     dircolors -b (${XDG_CONFIG_HOME:-~/.config}/|~/.)dircolors(#q.N)
   )}[2]}}}
 
-zstyle :completion:\* list-prompt \
+zstyle ':completion:*' list-prompt \
   '%SShowing %l (%p), Tab/Space:PgDn, Enter:LnDn%s'
 
-zstyle :completion:\* list-suffixes true
+zstyle ':completion:*' list-suffixes true
 
-zstyle :completion:\* matcher-list \
+zstyle ':completion:*' matcher-list \
   '+m:{[:lower:]}={[:upper:]} r:|[._-:]=* r:|=*' '' '' 'l:|=* r:|=*'
 
-zstyle :completion:\* match-original both
+zstyle ':completion:*' match-original both
 
-zstyle :completion:\* max-errors 3 numeric
+zstyle ':completion:*' max-errors 3 numeric
 
-zstyle :completion:\* menu select=2
+zstyle ':completion:*' menu select=2
 
-zstyle :completion:\* original false
+zstyle ':completion:*' original false
 
-zstyle :completion:\* preserve-prefix '//[^/]##/'
+zstyle ':completion:*' preserve-prefix \
+  '//[^/]##/'
 
-zstyle :completion:\* select-prompt \
+zstyle ':completion:*' select-prompt \
   '%SScrolling %l (%p)%s'
 
-zstyle :completion:\* squeeze-slashes true
+zstyle ':completion:*' squeeze-slashes true
 
-zstyle :completion:\* substitute 1
+zstyle ':completion:*' substitute 1
 
-zstyle :completion:\* word true
+zstyle ':completion:*' word true
 
-zstyle :compinstall  filename ~/.zshrc
+zstyle ':compinstall'  filename ~/.zshrc
 
 autoload -Uz compinit
 compinit
 
-
-bindkey -v
-
-HISTFILE=~/.zsh_history
+HISTFILE=${XDG_DATA_HOME:-~/.local/share}/zsh/history
 HISTSIZE=32767
 SAVEHIST=30000
 
+bindkey -v
 
 setopt AlwaysToEnd
 setopt AutoCd

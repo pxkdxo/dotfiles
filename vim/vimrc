@@ -5,12 +5,15 @@
 "" Use Vim defaults (rather than Vi)
 set nocompatible
 
-"" Always encode in utf-8
+"" Always utf-8
 set encoding=utf-8
 
 
 
-"" -- Filetype & Syntax --
+"" -- Plugins & Syntax --
+
+"" Load it all...?
+runtime! plugin/*.vim
 
 "" Detect filetype, load plugins, and apply indentation style
 filetype plugin indent on
@@ -78,8 +81,8 @@ set showmatch
 "" Highlight columns relative to 'textwidth'
 set colorcolumn=+1
 
-"" Show last line as @@@ if truncated
-set display=truncate
+"" Show truncated last line as ``@@@'' and nonprinting chars as ``<%02x>''
+set display=truncate,uhex
 
 "" Always show status line
 set laststatus=2
@@ -159,29 +162,19 @@ set ttimeoutlen=144
 "" -- History  --
 
 "" Number of search patterns and ``:'' commands to remember
-""
-set history=987
-
+set history=1500
 
 "" Number of modifications to remember for any given file
-""
-set undolevels=1597
-
+set undolevels=1500
 
 "" Always save the whole buffer for undo when reloading it
-""
 set undoreload=-1
 
-
 "" Max characters that may be typed between swapfile syncs
-""
 set updatecount=144
 
-
 "" Max milliseconds of input silence between swapfile syncs
-""
 set updatetime=4181
-
 
 
 
@@ -193,9 +186,8 @@ set updatetime=4181
 "" We will examine the environ and configure a sensible list of preferences.
 
 
-"" Clear the list of swap directory preferences
+"" Clear existing directory preferences
 set directory=
-
 
 " Is XDG_DATA_HOME non-null?
 if $XDG_DATA_HOME != ''
@@ -277,12 +269,9 @@ set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
 "" -- Mouse --
 
-"" Is the mouse feature available?
-if has('mouse')
-
 "" Enable the mouse
+if has('mouse')
   set mouse=a
-  
 endif
 
 
@@ -293,7 +282,8 @@ endif
 if &t_Co > 256
   set termguicolors
   colorscheme candyP
-elseif &t_Co > 16
+else
+  set t_Co=256
   colorscheme desertP
 endif
 
@@ -301,18 +291,17 @@ endif
 
 "" -- Man --
 
-runtime ftplugin/man.vim      " Load the Man plugin
+"" Load the Man plugin
+runtime ftplugin/man.vim
 
-set keywordprg=:Man           " Make "K" open man pages in a vim window
+"" K opens man pages inside vim
+set keywordprg=:Man
 
-autocmd FileType man setlocal noswapfile  " No swap files for manpages
+"" No swap files for manpages
+autocmd FileType man setlocal swf
 
-"" Change how man pages are opened
-nmap <leader><leader>manopenh :let g:ft_man_open_mode = 'horiz'<CR>
-nmap <leader><leader>manopenv :let g:ft_man_open_mode = 'vert'<CR>
-nmap <leader><leader>manopent :let g:ft_man_open_mode = 'tab'<CR>
-
-let ft_man_open_mode = 'vert' " Open man pages beside the current window
+" Open man pages beside the current window
+let ft_man_open_mode = 'vert'
 
 
 
@@ -322,10 +311,8 @@ let python_highlight_all= 1 " Enable all available Python highlighting
 
 if has('python3')           " Prefer Python 3
   set pyxversion=3
-
 elseif has('python2')       " Fallback to Python 2
   set pyxversion=2
-
 endif
 
 
@@ -365,13 +352,13 @@ let highlight_sedtabs   = 1 " Highlight real tabs in sed scripts
 let mapleader = ','         
 
 
-"" -- Toggle Search Highlighting
+"" Toggle Search Highlighting
 ""
 nnoremap <silent><F3>
   \:set hlsearch!<CR>
 
 
-"" -- Toggle Syntax Highlighting
+"" Toggle Syntax Highlighting
 ""
 nnoremap <silent><F7>
   \:if exists('g:syntax_on')
@@ -381,8 +368,14 @@ nnoremap <silent><F7>
   \endif<CR>
 
 
+"" Change how man pages are opened
+""
+nmap <leader><leader>manopenh :let g:ft_man_open_mode = 'horiz'<CR>
+nmap <leader><leader>manopenv :let g:ft_man_open_mode = 'vert'<CR>
+nmap <leader><leader>manopent :let g:ft_man_open_mode = 'tab'<CR>
 
-"" -- Quote word in Pair of '',"",(),{},[]
+
+"" Quote word in Pair of '',"",(),{},[]
 "" Note: 'selection' must be set to "inclusive" or "exclusive"
 ""
 "" word before or at the cursor (see :help word)
@@ -400,8 +393,7 @@ nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
 nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 
 
-
-"" -- Search forward/backward for the current visual selection
+"" Search forward/backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
 ""
 vnoremap <silent> *
