@@ -2,6 +2,7 @@
 
 ## bash
 command_not_found_handle() {
+  local - && set +e
   { command -v cnf-lookup 1>/dev/null &&
     if test -t 1; then
       cnf-lookup --colors -- "$1"
@@ -15,6 +16,7 @@ command_not_found_handle() {
 
 ## zsh
 command_not_found_handler() { 
+  local - && set +e
   { command -v cnf-lookup 1>/dev/null &&
     if test -t 1; then
       cnf-lookup --colors -- "$1"

@@ -3,12 +3,11 @@
 
 ## Function for defining multiple aliases from a template
 aliasfmt() {
-  
   if test "$#" -lt 2; then
     printf 'usage: %q sub fmt [name ...]\n' "${FUNCNAME[@]::1}" >&2
     return 2
   fi
-
+  
   set -- "${@/%/=$2}" "$1"
   shift 2
   while test "$#" -gt 1; do
@@ -307,11 +306,12 @@ alias findcwd='find . -maxdepth 1'
 
 
 ## Print groups in member/non-member columns each sorted by gid
-alias usergroups='column \
-  --table \
-  --separator=$'"'"'\t'"'"' \
-  --output-separator=$'"'"'\t'"'"' \
-  <(paste --delimiters=$'"'"'\t'"'"' \
+usergroups() {
+  column \
+    --table \
+    --output-separator=$'\t' \
+    --separator=$'\t' \
+  <(paste --delimiters=$'\t' \
     <(grep "${USER}" /etc/group \
       | sort \
         --field-separator=: \
@@ -320,9 +320,8 @@ alias usergroups='column \
         --separator=: \
         --table \
         --table-columns=GROUP,X,GID,USERS \
-        --table-hide=X
-    ) \
-    <(grep --invert-match "${USER}" /etc/group \
+        --table-hide=X) \
+    <(grep -v "${USER}" /etc/group \
       | sort \
         --field-separator=: \
         --key=3g \
@@ -330,18 +329,20 @@ alias usergroups='column \
         --separator=: \
         --table \
         --table-columns=GROUP,X,GID,USERS \
-        --table-hide=X
-    ) | sed -E '"'"'s/^\s+/-\t/'"'"'
-  ) | expand'
+        --table-hide=X) \
+    | sed -E 's/^\s+/-\t/') \
+  | expand
+}
 
 
 ## download audio from youtube into ~/Music with available metadata
-alias ydla='youtube-dl \
+ydla() {
+  youtube-dl \
   --extract-audio \
   --audio-quality 0 \
   --console-title \
-  --format "bestaudio/best" \
-  --output "${HOME}/Music/%(title)s.%(ext)s" \
+  --format bestaudio/best \
+  --output "${XDG_MUSIC_DIR:-"${HOME}/Music"}/%(title)s.%(ext)s" \
   --geo-bypass \
   --ignore-errors \
   --playlist-random \
@@ -349,4 +350,6 @@ alias ydla='youtube-dl \
   --max-sleep-interval 7 \
   --add-metadata \
   --metadata-from-title \
-    '"'"'^((?P<artist>.+?)\s+-\s+((?P<album>.+)\s+-\s+)?)?(?P<title>.+?)$'"'"
+    '^((?P<artist>.+?)\s+-\s+((?P<album>.+)\s+-\s+)?)?(?P<title>.+?)$' \
+  "$@"
+  }

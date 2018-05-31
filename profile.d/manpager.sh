@@ -4,6 +4,6 @@
 if command -v vim; then
 
   ## Use Vim to view manual pages
-  export MANPAGER="vim -M -c 'setlocal cc= nonu nornu' -c MANPAGER -"
+  export MANPAGER='vim -M -n -c MANPAGER -'
 
 fi 1>/dev/null 2>&1

@@ -1,5 +1,5 @@
 #
-## GNU readline 7.0 initialization
+## readline 7.0 initialization
 #
 
 
@@ -59,7 +59,7 @@ set revert-all-at-newline         on
 
 set editing-mode                  vi
 
-set keyseq-timeout                89
+set keyseq-timeout                144
 
 set vi-ins-mode-string            "\1\e[0;1;2m\2+\1\e[0m\2"
 
@@ -67,18 +67,20 @@ set vi-cmd-mode-string            "\1\e[0;1;2m\2:\1\e[0m\2"
 
 
 
-## Mapping for the vi-insert keymap
+## mapping for the vi-insert keymap
 set keymap      vi-insert
 
-## Enter vi-movement mode with 'Ctl-Alt-[' or 'Alt-Esc'
+## enter vi-movement mode
 "\e":           vi-movement-mode
 
-## Insert a newline (022)
+## newline quoted-insert
 "\C-j":         "\C-v\C-j"
 
+## enter ``--help''
+"\M-OP"          " --help \ed$\r"
+
 ## Read enough chars to consume a multibyte control sequence
-"\e[":          skip-csi-sequence
-"\eOP"         "${READLINE_LINE} --help\C-m"
+#"\e[":          skip-csi-sequence
 "\C-i":         menu-complete
 "\M-\C-i":      menu-complete-backward
 "\M-[Z":        dynamic-complete-history
@@ -90,14 +92,12 @@ set keymap      vi-insert
 "\M-[D":         backward-char
 "\M-\C-OD":     backward-char
 "\M-\C-[D":     backward-char
-"\C-b":         backward-char
 "\C-h":         backward-delete-char
 "\C-?":         backward-delete-char
-"\M-\C-h":      backward-kill-word
-"\M-\C-?":      backward-kill-word
 "\M-\M-[D":      shell-backward-word
 "\M-[1;5D":      shell-backward-word
 "\M-[5D":        shell-backward-word
+"\C-k":         kill-line
 "\M-b":          backward-word
 "\M-<":          beginning-of-history
 "\M-OH":         beginning-of-line
@@ -135,7 +135,6 @@ set keymap      vi-insert
 "\M-9":          digit-argument
 "\C-x\C-v":     display-shell-version
 "\M-l":          downcase-word
-"\C-^":         edit-and-execute-command
 "\M-q":         end-kbd-macro
 "\M->":          end-of-history
 "\M-OF":         end-of-line
@@ -148,7 +147,6 @@ set keymap      vi-insert
 "\M-[C":         forward-char
 "\M-\C-OC":     forward-char
 "\M-\C-[C":     forward-char
-"\C-f":         forward-char
 "\M-\M-[C":      shell-forward-word
 "\M-[1;5C":      shell-forward-word
 "\M-[5C":        shell-forward-word
@@ -157,12 +155,9 @@ set keymap      vi-insert
 "\M-*":        glob-expand-word
 "\C-g":        glob-list-expansions
 "\M-!":          history-expand-line
-"\M-*\M-a":          insert-completions
+"\M-*\M-a":      insert-completions
 "\M-.":          insert-last-argument
 "\M-_":          insert-last-argument
-"\C-k":         kill-line
-"\M-d":          kill-word
-"\C-\\":        kill-whole-line
 "\M-OB":         next-history
 "\M-[B":         next-history
 "\M-\C-OB":     next-history
@@ -189,10 +184,8 @@ set keymap      vi-insert
 "\M-[5A":        history-search-backward
 "\C-v":         quoted-insert
 "\M-[2~":        quoted-insert
-"\C-x\C-r":     re-read-init-file
+"\C-b\C-r":     re-read-init-file
 "\C-r":         reverse-search-history
-"\M-\C-r":      revert-line
-"\M-r":          revert-line
 "\C-@":         set-mark
 "\M-\C-e":      shell-expand-line
 "\M-q":        start-kbd-macro
@@ -214,24 +207,22 @@ set keymap      vi-insert
 ## Mapping for the vi-command keymap
 set keymap vi-command
 
-"\e[":          skip-csi-sequence
+#"\e[":          skip-csi-sequence
 "\C-i":         menu-complete
 "\M-\C-i":      menu-complete-backward
 "\M-[Z":        dynamic-complete-history
 "\M- ":         magic-space
 "v":            set-mark
 "\C-m":         accept-line
-"\M-OD":         backward-char
-"\M-[D":         backward-char
+"\M-OD":        backward-char
+"\M-[D":        backward-char
 "\M-\C-OD":     backward-char
 "\M-\C-[D":     backward-char
 "h":            backward-char
 "\C-?":         backward-delete-char
-"\M-\C-h":      backward-kill-word
-"\M-\C-?":      backward-kill-word
-"\M-\M-[D":      shell-backward-word
-"\M-[1;5D":      shell-backward-word
-"\M-[5D":        shell-backward-word
+"\M-\M-[D":     shell-backward-word
+"\M-[1;5D":     shell-backward-word
+"\M-[5D":       shell-backward-word
 "\M-[5~":        beginning-of-history
 "\M-OH":         beginning-of-line
 "\M-[H":         beginning-of-line
@@ -262,7 +253,7 @@ set keymap vi-command
 "\M-7":          digit-argument
 "\M-8":          digit-argument
 "\M-9":          digit-argument
-"\C-^":     edit-and-execute-command
+"\C-bv":     edit-and-execute-command
 "\M-q":        end-kbd-macro
 "\M-[6~":        end-of-history
 "\M-OF":         end-of-line
@@ -306,7 +297,7 @@ set keymap vi-command
 "k":            previous-history
 "\C-v":         quoted-insert
 "\M-[2~":        quoted-insert
-"\C-x\C-r":     re-read-init-file
+"\C-b\C-r":     re-read-init-file
 "U":            revert-line
 "\M-`":        shell-expand-line
 "q":            start-kbd-macro

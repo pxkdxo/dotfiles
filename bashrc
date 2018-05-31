@@ -14,15 +14,15 @@ kill -s 28 "$$" 2>/dev/null
 
 
 
-{ ## Configure the environment for gpg-agent
+{ ## Set GPG_TTY to the device connected on stdin
+  { wait "$!" && read -r -d '' GPG_TTY || GPG_TTY=/dev/null; } < <( 
+    command -p tty ||
+    command -p realpath "/proc/$$/fd/0" &&
+    printf '\x00'
+  )
 
-  { ## Set GPG_TTY to the file connected to stdin
-    wait "$!"  && read -r -d '' GPG_TTY || GPG_TTY=/dev/null
-
-    ## Mark GPG_TTY for export to subsequent commands
-    export GPG_TTY
-
-  } < <(command -p realpath -qz "/proc/$$/fd/0")
+  ## Mark GPG_TTY for export to subsequent commands
+  export GPG_TTY
 
   ## Refresh gpg-agent in case user switched to an Xsession
   command -p gpg-connect-agent updatestartuptty /bye

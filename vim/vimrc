@@ -12,8 +12,8 @@ set encoding=utf-8
 
 "" -- Plugins & Syntax --
 
-"" Load it all...?
-runtime! plugin/*.vim
+""" Load it all...?
+"runtime! plugin/*.vim
 
 "" Detect filetype, load plugins, and apply indentation style
 filetype plugin indent on
@@ -257,7 +257,7 @@ endif
 "" -- Terminal --
 
 "" Key that starts a CTRL-W command in a terminal window
-set termwinkey=<C-^>
+set termwinkey=<C-b>
 
 "" F**k terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
@@ -283,7 +283,6 @@ if &t_Co > 256
   set termguicolors
   colorscheme candyP
 else
-  set t_Co=256
   colorscheme desertP
 endif
 
@@ -297,11 +296,11 @@ runtime ftplugin/man.vim
 "" K opens man pages inside vim
 set keywordprg=:Man
 
-"" No swap files for manpages
-autocmd FileType man setlocal swf
-
-" Open man pages beside the current window
+"" Open man pages beside the current window
 let ft_man_open_mode = 'vert'
+
+"" Set local options when opening a manpage
+autocmd FileType man setlocal cc= noma nonu nornu noswf
 
 
 
@@ -348,8 +347,10 @@ let highlight_sedtabs   = 1 " Highlight real tabs in sed scripts
 
 "" -- Mappings--
 
+
 "" Key to act as <leader> in mappings
 let mapleader = ','         
+
 
 
 "" Toggle Search Highlighting
@@ -368,11 +369,14 @@ nnoremap <silent><F7>
   \endif<CR>
 
 
+"" <Leader>K      vb Displays the manual page for the word under the cursor
+
 "" Change how man pages are opened
 ""
 nmap <leader><leader>manopenh :let g:ft_man_open_mode = 'horiz'<CR>
 nmap <leader><leader>manopenv :let g:ft_man_open_mode = 'vert'<CR>
 nmap <leader><leader>manopent :let g:ft_man_open_mode = 'tab'<CR>
+
 
 
 "" Quote word in Pair of '',"",(),{},[]
@@ -391,6 +395,7 @@ nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
 nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
 nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
 nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
+
 
 
 "" Search forward/backward for the current visual selection
