@@ -4,7 +4,8 @@
 
 ! -- Term --
 
-XTerm.termName                  : xterm-direct
+!XTerm.termName                  : xterm-24
+XTerm.termName                  : xterm-256color
 XTerm.ttyModes                  : erase ^?
 XTerm*vt100.loginShell          : true
 

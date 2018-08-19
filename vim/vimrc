@@ -181,31 +181,53 @@ set updatecount=144
 
 
 
-"" -- Swapfile / Undofile --
+"" -- Swap / Undo --
 
 "" Check undofile capability
 if has('persistent_undo')
 
-  "" Use undofile if using swapfile
+  "" Use undofile only if using swapfile
   let &undofile = &swapfile
-
 endif
 
-"" Set swap directory preferences
-let &directory = substitute($MYVIMRUNTIME, '..*', '&/swap/', '')
-    \ . substitute($XDG_DATA_HOME, '..*', ',&/vim/swap/', '')
-    \ . substitute($XDG_CACHE_HOME, '..*',  ',&/vim/swap/', '')
-    \ . substitute(split(&runtimepath, ',')[0], '..*', ',&/swap/', '')
-    \ . substitute($TMPDIR, '..*',  ',&/', '')
-    \ . ',/var/tmp/,/tmp/'
+"" Clear directory preferences
+set directory=
+set   undodir=
 
-"" Set undo directory preferences
-let &undodir = substitute($MYVIMRUNTIME, '..*', '&/undo/', '')
-    \ . substitute($XDG_DATA_HOME, '..*', ',&/vim/undo/', '')
-    \ . substitute($XDG_CACHE_HOME, '..*',  ',&/vim/undo/', '')
-    \ . substitute(split(&runtimepath, ',')[0], '..*', ',&/undo/', '')
-    \ . substitute($TMPDIR, '..*',  ',&/', '')
-    \ . ',/var/tmp/,/tmp/'
+"" Append MYVIMRUNTIME if non-null
+if $MYVIMRUNTIME != ''
+  set directory+=$MYVIMRUNTIME/swap/
+  set   undodir+=$MYVIMRUNTIME/undo/
+endif
+
+"" Append XDG_DATA_HOME if non-null
+if $XDG_DATA_HOME != ''
+  set directory+=$XDG_DATA_HOME/vim/swap/
+  set   undodir+=$XDG_DATA_HOME/vim/undo/
+endif
+
+"" Append XDG_CACHE_HOME if non-null
+if $XDG_CACHE_HOME != ''
+  set directory+=$XDG_CACHE_HOME/vim/swap/
+  set   undodir+=$XDG_CACHE_HOME/vim/undo/
+endif
+
+"" Append first element of 'runtimepath'
+if ! empty(split(&runtimepath, ','))
+  let &directory = &directory . ',' . split(&runtimepath, ',')[0] . '/swap/'
+  let   &undodir =   &undodir . ',' . split(&runtimepath, ',')[0] . '/undo/'
+endif
+
+"" Append TMPDIR if non-null
+if $TMPDIR != ''
+  set directory+=$TMPDIR/
+  set   undodir+=$TMPDIR/
+endif
+
+"" Append default tmp directories
+set directory+=~/tmp,/var/tmp/,/tmp/
+set   undodir+=~/tmp,/var/tmp/,/tmp/
+
 
 "" Make the primary swap directory
 if ! isdirectory(split(&directory, ',')[0])
