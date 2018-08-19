@@ -15,11 +15,12 @@ kill -s 28 "$$" 2>/dev/null
 
 
 { ## Set GPG_TTY to the device connected on stdin
-  { wait "$!" && read -r -d '' GPG_TTY || GPG_TTY=/dev/null; } < <( 
-    command -p tty ||
-    command -p realpath "/proc/$$/fd/0" &&
-    printf '\x00'
-  )
+  { wait "$!" &&
+    read -r -d '' GPG_TTY ||
+    GPG_TTY='/dev/null'
+  } < <(command -p tty ||
+        command -p realpath "/proc/$$/fd/0" &&
+        printf '\x00')
 
   ## Mark GPG_TTY for export to subsequent commands
   export GPG_TTY
@@ -104,10 +105,10 @@ shopt -u dotglob
 HISTFILE="${XDG_DATA_HOME:-"${HOME}/.local/share"}/bash/history"
 
 ## Number of entries that may be kept on disk
-HISTFILESIZE=30000
+HISTFILESIZE=7500
 
 ## Number of entries that may be kept in memory
-HISTSIZE=32767
+HISTSIZE=10000
 
 ## Keep duplicates out of the command history
 HISTCONTROL='ignoredups:erasedups'
@@ -224,12 +225,12 @@ prompt_command[0]='SetPS "$?"'
 case ${TERM} in
   xterm*|vte*)
     prompt_command+=( 
-  'printf "\e]0;%s@%s:%s\a" "${USER}" "${HOSTNAME%%.*}" "${PWD/#"${HOME}"/\~}"'
+  'printf "\e]0;%s@%s:%s\a" "${USER}" "${HOSTNAME%%.*}" "${PWD/#"${HOME}"/~}"'
 )
     ;;
   screen*|tmux*)
     prompt_command+=( 
-  'printf "\ek%s@%s:%s\e\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#"${HOME}"/\~}"'
+  'printf "\ek%s@%s:%s\e\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#"${HOME}"/~}"'
 )
     ;;
 esac

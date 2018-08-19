@@ -33,7 +33,7 @@ SURFRAW_text_browser="elinks"
 
 # name/path of browser executable
 # e.g mozilla, netscape etc. Default to $BROWSER if no listed ones found
-SURFRAW_graphical_browser="${BROWSER:-}"
+SURFRAW_graphical_browser="${BROWSER:-firefox}"
 
 # text browser arguments, or "none"
 SURFRAW_text_browser_args="none"
@@ -67,7 +67,7 @@ SURFRAW_quote_args="no"
 SURFRAW_quote_ifs="yes"
 
 # default number of results to return
-SURFRAW_results="25"
+SURFRAW_results="32"
 
 # escape [% "@$%&+,/:;<=>?@@[\^{|}~'] characters in command line arguments
 # subsequently used to construct a url

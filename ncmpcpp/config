@@ -1,32 +1,32 @@
 ## ncmpcpp/config : configuration file for ncmpcpp
 
 ##### system encoding #####
-system_encoding           = UTF-8
+system_encoding           = "UTF-8"
 
 ##### directories ######
-mpd_music_dir             = ~/Music
-ncmpcpp_directory         = ~/.local/share/ncmpcpp
-lyrics_directory          = ~/.local/share/ncmpcpp/lyrics
+mpd_music_dir             = "~/Music"
+ncmpcpp_directory         = "~/.local/share/ncmpcpp"
+lyrics_directory          = "~/.local/share/ncmpcpp/lyrics"
 
 ##### mpd connection #####
-mpd_host                  = ~/.tmp/mpd.socket
-mpd_port                  = 6602
-mpd_connection_timeout    = 6
-mpd_crossfade_time        = 0
+mpd_host                  = "~/.cache/mpd/mpd.socket"
+mpd_port                  = "6599"
+mpd_connection_timeout    = "6"
+mpd_crossfade_time        = "0"
 
 ##### music visualizer ####
-visualizer_fifo_path      = ~/.tmp/mpd-playback-mono.fifo
-visualizer_output_name    = MPD Playback Mono
-visualizer_sync_interval  = 30
-visualizer_in_stereo      = no
-visualizer_type           = wave_filled
-visualizer_color          = 52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22
-visualizer_look           = ╬o
+visualizer_fifo_path      = "~/.cache/mpd/playback-mono.fifo"
+visualizer_output_name    = "MPD Playback Mono"
+visualizer_in_stereo      = "no"
+visualizer_sync_interval  = "30"
+visualizer_type           = "wave_filled"
+visualizer_color          = "52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22"
+visualizer_look           = "╬o"
 
 ##### delays #####
 ## Time of inactivity (in seconds) after playlist highlighting will be disabled
-## (0 = always on).
-playlist_disable_highlight_delay = 0
+## (0 = "always on)."
+playlist_disable_highlight_delay = "0"
 
 ## Defines how long messages are supposed to be visible.
 message_delay_time = 3

@@ -1,7 +1,7 @@
 " Vim color file
 " Name:       inkpotP.vim
-" Maintainer: Ciaran McCreesh <ciaran.mccreesh@googlemail.com>
-" Homepage:   http://github.com/ciaranm/inkpot/
+" Maintainer: Patrick DeYoreo <pdeyoreo at gmail dot com>
+" Homepage:   https://github.com/patrickdeyoreo
 "
 " This should work in the GUI, rxvt-unicode (88 colour mode) and xterm (256
 " colour mode). It won't work in 8/16 colour terminals.
@@ -214,4 +214,6 @@ else
     endif
 endif
 
-" vim: set et :
+
+
+" vi:et:ft=vim:sts=4:sw=4:ts=8

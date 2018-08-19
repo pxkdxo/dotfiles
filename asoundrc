@@ -26,6 +26,7 @@ pcm.duplex {
 }
 
 
+
 # dsnoop capture template
 # ------------------------------------------------------
 
@@ -40,6 +41,7 @@ pcm.rec {
 
   slave.pcm     $PCM
 }
+
 
 
 # dmix two-channel playback template
@@ -64,7 +66,6 @@ pcm.mix20 {
     period_size $PSIZE
     buffer_size $BSIZE
     period_time $PTIME
-    buffer_time $BTIME
 
 #    channels    2
   }
@@ -77,42 +78,43 @@ pcm.mix20 {
 # sound card definitions
 # ------------------------------------------------------
 
-ctl.loop      { type hw card Loopback }
-pcm.loop      { type hw card Loopback }
+#ctl.loop      { type hw card Loopback }
+#pcm.loop      { type hw card Loopback }
 
 ctl.pch       { type hw card PCH }
 pcm.pch       { type hw card PCH }
 
-ctl.gpu       { type hw card GPU }
-pcm.gpu       { type hw card GPU }
+ctl.gpu       { type hw card NVidia }
+pcm.gpu       { type hw card NVidia }
 
 ctl.pulse     { type pulse }
 pcm.pulse     { type pulse }
+
+#ctl.!default  = ctl.pulse
+#pcm.!default  = pcm.pulse
 
 
 
 # card PCH devices
 # ------------------------------------------------------
 
-ctl.card0       ctl.pch
-pcm.card0       pcm.pch
+ctl.card0    { type hw card PCH }
+pcm.card0    { type hw card PCH }
 
-pcm.dsnoop0     "rec:20120,pch"
+pcm.dsnoop0  = "rec:20120,card0"
 
-ctl.dmix0       ctl.pch
-pcm.dmix0       "mix20:10120,pch"
+ctl.dmix0    = ctl.card0
+pcm.dmix0    = "mix20:10120,card0"
 
-ctl.duplex0     ctl.dmix0
-pcm.duplex0     "duplex:dsnoop0,dmix0"
+ctl.duplex0  = ctl.dmix0
+pcm.duplex0  = "duplex:dsnoop0,dmix0"
 
-ctl.mixer0      ctl.duplex0
+ctl.dsp0     = ctl.duplex0
+pcm.dsp0     = pcm.duplex0
+ctl.mixer0   = ctl.dsp0
 
-ctl.dsp0        ctl.duplex0
-pcm.dsp0        pcm.duplex0
-
-ctl.!default    ctl.duplex0
-pcm.!default    pcm.duplex0
-
+ctl.!default  = ctl.duplex0
+pcm.!default  = pcm.duplex0
 
 
 

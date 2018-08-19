@@ -1,14 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-##
-## Start devilspie2 running as a daemon
-##
+## Start devilspie2 in the background as a daemon
 
-
-if test -f "${XDG_RUNTIME_DIR}/devilspie2.pid"; then
-  kill -15 "$(< "${XDG_RUNTIME_DIR}/devilspie2.pid")"
+test -f "${XDG_RUNTIME_DIR}/devilspie2.pid" && \
+test -r "${XDG_RUNTIME_DIR}/devilspie2.pid" && {
+  kill -15 "$(cat "${XDG_RUNTIME_DIR}/devilspie2.pid")"
   rm "${XDG_RUNTIME_DIR}/devilspie2.pid"
-fi
+} 2>/dev/null
 
-devilspie2 &
-printf '%d\n' "$!" >| "${XDG_RUNTIME_DIR}/devilspie2.pid"
+devilspie2 & printf '%d\n' "$!" >| "${XDG_RUNTIME_DIR}/devilspie2.pid"
+
+#pkill -15 devilspie2
+#pgrep devilspie2 1>/dev/null && pkill -9 devilspie2
+#
+#devilspie2 &

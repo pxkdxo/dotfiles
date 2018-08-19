@@ -1,3 +1,3 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 
-exec /usr/bin/X -keeptty -verbose 2 -nolisten tcp "$@"
+exec /usr/bin/env X -keeptty -verbose 2 -nolisten tcp "$@" 2>&1

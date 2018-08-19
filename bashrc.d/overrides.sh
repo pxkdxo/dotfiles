@@ -8,7 +8,7 @@ mkcd() {
     printf 'usage: %s [options] directory\n' "${FUNCNAME[@]::1}" 1>&2
     return 2
   fi
-  mkdir "$@" && cd -- "${!#}"
+  'command' -p mkdir -- -pv "$@" && printf cd -- "${!#}"
 }
 
 

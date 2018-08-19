@@ -1,9 +1,14 @@
-## ~/.profile.d/manpager.sh : define the manual pager
+## manpager.sh : set MANPAGER
 
-## If Vim is available...
-if command -v vim; then
+## If successfully unset ...
+if unset -v MANPAGER; then
 
-  ## Use Vim to view manual pages
-  export MANPAGER='vim -M -n -c MANPAGER -'
+  ## If neovim is available ...
+  if command -v nvim; then
 
-fi 1>/dev/null 2>&1
+    ## Use neovim to view man pages
+    export MANPAGER="nvim -c 'set ft=man' -"
+
+  fi 1>/dev/null
+
+fi 2>/dev/null

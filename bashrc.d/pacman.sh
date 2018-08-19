@@ -1,0 +1,147 @@
+## Shortcuts for Arch's package manager
+## maintained by Patrick DeYoreo
+
+
+## -- pacman shortcuts --
+
+alias pac="\
+pacman"
+
+alias pac.d="\
+pacman --database"
+alias pac.dk="\
+pacman --database --check"
+alias pac.dkk="\
+pacman --database --check -k"
+
+alias pac.f="\
+pacman --files"
+alias pac.fl="\
+pacman --files --list"
+alias pac.fo="\
+pacman --files --owns"
+alias pac.fs="\
+pacman --files --search --regex"
+alias pac.fy="\
+sudo pacman --files --refresh"
+alias pac.fyy="\
+sudo pacman --files --refresh -y"
+
+alias pac.q="\
+pacman --query"
+alias pac.qd="\
+pacman --query --deps"
+alias pac.qdms="\
+pacman --query --deps --foreign --search"
+alias pac.qdmt="\
+pacman --query --deps --foreign --unrequired"
+alias pac.qdmtt="\
+pacman --query --deps --foreign --unrequired -t"
+alias pac.qdns="\
+pacman --query --deps --native --search"
+alias pac.qdnt="\
+pacman --query --deps --native --unrequired"
+alias pac.qdntt="\
+pacman --query --deps --native --unrequired -t"
+alias pac.qdt="\
+pacman --query --deps --unrequired"
+alias pac.qdtt="\
+pacman --query --deps --unrequired -t"
+alias pac.qe="\
+pacman --query --explicit"
+alias pac.qems="\
+pacman --query --explicit --foreign --search"
+alias pac.qemt="\
+pacman --query --explicit --foreign --unrequired"
+alias pac.qemtt="\
+pacman --query --explicit --foreign --unrequired -t"
+alias pac.qens="\
+pacman --query --explicit --native --search"
+alias pac.qent="\
+pacman --query --explicit --native --unrequired"
+alias pac.qentt="\
+pacman --query --explicit --native --unrequired -t"
+alias pac.qet="\
+pacman --query --explicit --unrequired"
+alias pac.qett="\
+pacman --query --explicit --unrequired -t"
+alias pac.qg="\
+pacman --query --groups"
+alias pac.qgs="\
+pacman --query --groups --search"
+alias pac.qi="\
+pacman --query --info"
+alias pac.qk="\
+pacman --query --check"
+alias pac.qkk="\
+pacman --query --check -k"
+alias pac.ql="\
+pacman --query --list"
+alias pac.qm="\
+pacman --query --foreign"
+alias pac.qms="\
+pacman --query --foreign --search"
+alias pac.qmt="\
+pacman --query --foreign --unrequired"
+alias pac.qmtt="\
+pacman --query --foreign --unrequired -t"
+alias pac.qn="\
+pacman --query --native"
+alias pac.qns="\
+pacman --query --native --search"
+alias pac.qnt="\
+pacman --query --native --unrequired"
+alias pac.qntt="\
+pacman --query --native --unrequired -t"
+alias pac.qo="\
+pacman --query --owns"
+alias pac.qs="\
+pacman --query --search"
+alias pac.qt="\
+pacman --query --unrequired"
+alias pac.qtt="\
+pacman --query --unrequired -t"
+alias pac.qu="\
+pacman --query --upgrades"
+
+
+alias pac.r="\
+sudo pacman --remove --nodeps --recursive --unneeded"
+alias pac.rcs="\
+sudo pacman --remove --nodeps --cascade --recursive --unneeded"
+alias pac.rcss="\
+sudo pacman --remove --nodeps --cascade --recursive -s --unneeded"
+alias pac.rss="\
+sudo pacman --remove --nodeps --recursive -s --unneeded"
+
+
+alias pac.s="\
+sudo pacman --sync"
+alias pac.sc="\
+sudo pacman --sync --clean"
+alias pac.scc="\
+sudo pacman --sync --clean -c"
+alias pac.sg="\
+pacman --sync --groups"
+alias pac.si="\
+pacman --sync --info"
+alias pac.sl="\
+pacman --sync --list"
+alias pac.ss="\
+pacman --sync --search"
+alias pac.su="\
+sudo pacman --sync --sysupgrade"
+alias pac.suy="\
+sudo pacman --sync --sysupgrade --refresh"
+alias pac.suyy="\
+sudo pacman --sync --sysupgrade --refresh -y"
+alias pac.sy="\
+sudo pacman --sync --refresh"
+alias pac.syy="\
+sudo pacman --sync --refresh -y"
+
+
+alias pac.u=\
+'sudo pacman --upgrade'
+
+

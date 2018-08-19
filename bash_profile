@@ -1,16 +1,15 @@
-#
-## ~/.bash_profile
-#
+## ~/.bash_profile : startup file for bash login-shells
 
-## source profile config
-if [[ -f ~/.profile ]]; then
-  . ~/.profile
+
+## Load profile config
+if [[ -f ~/.profile && -r ~/.profile ]]; then
+  source ~/.profile
 fi
 
 
 ## source config for interactive shells
-if [[ -f ~/.bashrc ]]; then
-  . ~/.bashrc
+if [[ -f ~/.bashrc && -r ~/.bashrc ]]; then
+  source ~/.bashrc
 fi
 
 
