@@ -6,16 +6,16 @@
 ## Term
 set bind-tty-special-chars              on
 set echo-control-characters             on
-set enable-bracketed-paste off
-set enable-keypad off
+set enable-bracketed-paste              off
+set enable-keypad                       off
 
 
 ## 8bit
 set bell-style                          visible
-set convert-meta                        off
+set convert-meta                        on
 set input-meta                          on
 set output-meta                         on
-set enable-meta-key on
+set enable-meta-key                     on
 
 
 ## Prompt
@@ -57,22 +57,24 @@ set mark-modified-lines                 off
 set revert-all-at-newline               on
 
 
-## Editing
+##  
 set comment-begin                       "#"
 set expand-tilde                        off
 set horizontal-scroll-mode              off
-set keyseq-timeout                      500
+set keyseq-timeout                      800
 
 
-## Vi Mode
+## Vi Editing Mode
 set editing-mode                        vi
 
+
+## Vi-Insert Keymap
 set keymap                              vi-insert
 
 
 ## <C-^> to enter vi-command mode
-"\C-^":                                 vi-movement-mode
-"\e":                                   self-insert
+"\C-[":                                 vi-movement-mode
+#"\e":                                   self-insert
 
 ## <F1> inserts '--help' then submits the line
 "\eOP":         " --help \r"
@@ -214,22 +216,22 @@ set keymap                              vi-insert
 ## -- vi-command keymap --
 set keymap vi-command
 
-#"\e[":          skip-csi-sequence
+#"\e[":                          skip-csi-sequence
 "\C-i":                         menu-complete
-"\e\C-i":      menu-complete-backward
-"\e[Z":        dynamic-complete-history
-"\e ":         magic-space
+"\e\C-i":                       menu-complete-backward
+"\e[Z":                         dynamic-complete-history
+"\e ":                          magic-space
 "v":                            set-mark
 "\C-m":                         accept-line
-"\eOD":        backward-char
-"\e[D":        backward-char
-"\e\C-OD":     backward-char
-"\e\C-[D":     backward-char
+"\eOD":                         backward-char
+"\e[D":                         backward-char
+"\e\C-OD":                      backward-char
+"\e\C-[D":                      backward-char
 "h":                            backward-char
 "\C-?":                         backward-delete-char
-"\e\e[D":     shell-backward-word
-"\e[1;5D":     shell-backward-word
-"\e[5D":       shell-backward-word
+"\e\e[D":                       shell-backward-word
+"\e[1;5D":                      shell-backward-word
+"\e[5D":                        shell-backward-word
 "\e[5~":                        beginning-of-history
 "\eOH":                         beginning-of-line
 "\e[H":                         beginning-of-line
@@ -237,9 +239,9 @@ set keymap vi-command
 "\e[1~":                        beginning-of-line
 "\e[7~":                        beginning-of-line
 "\e[200~":                      bracketed-paste-begin
-"@":        call-last-kbd-macro
+"@":                            call-last-kbd-macro
 "\C-]":                         character-search
-"\e\C-]":      character-search-backward
+"\e\C-]":                       character-search-backward
 "\C-l":                         clear-screen
 "\e!":                          complete-command
 "\e/":                          complete-filename
@@ -260,33 +262,33 @@ set keymap vi-command
 "\e7":                          digit-argument
 "\e8":                          digit-argument
 "\e9":                          digit-argument
-"\C-bv":     edit-and-execute-command
-"\eq":        end-kbd-macro
+"\C-bv":                        edit-and-execute-command
+"\eq":                          end-kbd-macro
 "\e[6~":                        end-of-history
 "\eOF":                         end-of-line
 "\e[F":                         end-of-line
 "$":                            end-of-line
 "\e[4~":                        end-of-line
 "\e[8~":                        end-of-line
-"%":     exchange-point-and-mark
+"%":                            exchange-point-and-mark
 "\eOC":                         forward-char
 "\e[C":                         forward-char
-"\e\C-OC":     forward-char
-"\e\C-[C":     forward-char
+"\e\C-OC":                      forward-char
+"\e\C-[C":                      forward-char
 " ":                            forward-char
 "l":                            forward-char
-"\e\e[C":      shell-forward-word
+"\e\e[C":                       shell-forward-word
 "\e[1;5C":                      shell-forward-word
 "\e[5C":                        shell-forward-word
-"\eg\M-.":        glob-complete-word
-"\eg\M-=":        glob-expand-word
-"\eg\M-?":        glob-list-expansions
+"\eg\M-.":                      glob-complete-word
+"\eg\M-=":                      glob-expand-word
+"\eg\M-?":                      glob-list-expansions
 "\e!":                          history-expand-line
 "\e*":                          insert-completions
 "\eOB":                         next-history
 "\e[B":                         next-history
-"\e\C-OB":     next-history
-"\e\C-[B":     next-history
+"\e\C-OB":                      next-history
+"\e\C-[B":                      next-history
 "+":                            next-history
 "j":                            next-history
 "\C-p":                         possible-completions
@@ -298,15 +300,15 @@ set keymap vi-command
 "\C-x$":                        possible-variable-completions
 "\eOA":                         previous-history
 "\e[A":                         previous-history
-"\e\C-OA":     previous-history
-"\e\C-[A":     previous-history
+"\e\C-OA":                      previous-history
+"\e\C-[A":                      previous-history
 "-":                            previous-history
 "k":                            previous-history
 "\C-v":                         quoted-insert
 "\e[2~":                        quoted-insert
 "\C-b\C-r":                     re-read-init-file
 "U":                            revert-line
-"\e`":        shell-expand-line
+"\e`":                          shell-expand-line
 "q":                            start-kbd-macro
 "A":                            vi-append-eol
 "a":                            vi-append-mode
@@ -363,5 +365,9 @@ set keymap vi-command
 "Y":                            vi-yank-to
 "y":                            copy-region-as-kill
 
+
+
+
+## Set default keymap to vi-insert
 
 set keymap vi-insert

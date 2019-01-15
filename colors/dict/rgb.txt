@@ -1,0 +1,1942 @@
+143 254   9 acidgreen
+189 108  72 adobe
+ 84 172 104 algae
+ 33 195 111 algaegreen
+240 248 255 aliceblue
+  7  13  13 almostblack
+254 179   8 amber
+155  95 192 amethyst
+250 235 215 antiquewhite
+255 239 219 antiquewhite0
+255 239 219 antiquewhite1
+238 223 204 antiquewhite1
+238 223 204 antiquewhite2
+205 192 176 antiquewhite2
+205 192 176 antiquewhite3
+139 131 120 antiquewhite3
+139 131 120 antiquewhite4
+110 203  60 apple
+118 205  38 applegreen
+255 177 109 apricot
+  0 255 255 aqua
+ 19 234 201 aqua0
+  2 216 233 aquablue
+ 18 225 147 aquagreen
+127 255 212 aquamarine
+  4 216 178 aquamarine0
+127 255 212 aquamarine1
+ 46 232 187 aquamarine1
+118 238 198 aquamarine2
+102 205 170 aquamarine3
+ 69 139 116 aquamarine4
+ 75  93  22 armygreen
+119 171  86 asparagus
+ 61   7  52 aubergine
+154  48   1 auburn
+144 177  52 avocado
+135 169  34 avocadogreen
+ 29  93 236 azul
+240 255 255 azure
+  6 154 243 azure0
+240 255 255 azure1
+224 238 238 azure1
+224 238 238 azure2
+193 205 205 azure2
+193 205 205 azure3
+131 139 139 azure3
+131 139 139 azure4
+162 207 254 babyblue
+140 255 158 babygreen
+255 183 206 babypink
+171 144   4 babypoo
+147 124   0 babypoop
+143 152   5 babypoopgreen
+182 196   6 babypukegreen
+202 155 247 babypurple
+173 144  13 babyshitbrown
+136 151  23 babyshitgreen
+255 255 126 banana
+250 254  75 bananayellow
+254  70 165 barbiepink
+148 172   2 barfgreen
+172  29 184 barney
+160   4 152 barneypurple
+107 124 133 battleshipgrey
+245 245 220 beige
+230 218 166 beige
+245 245 220 beige0
+153  15  75 berry
+181 195   6 bile
+255 228 196 bisque
+238 213 183 bisque0
+255 228 196 bisque1
+205 183 158 bisque1
+238 213 183 bisque2
+139 125 107 bisque2
+205 183 158 bisque3
+139 125 107 bisque4
+  0   0   0 black
+255 235 205 blanchedalmond
+175 168 139 bland
+119   0   1 blood
+254  75   3 bloodorange
+152   0   2 bloodred
+  0   0 255 blue
+  3  67 223 blue0
+  0   0 255 blue1
+  0   0 238 blue1
+  0   0 238 blue2
+  0   0 205 blue2
+  0   0 205 blue3
+  0   0 139 blue3
+  0   0 139 blue4
+ 70  65 150 blueberry
+ 34  66 199 blueblue
+  1 122 121 bluegreen
+ 15 155 142 bluegreen0
+ 19 126 109 bluegreen1
+117 141 163 bluegrey
+133 163 178 bluegrey0
+ 96 124 142 bluegrey1
+ 87  41 206 bluepurple
+ 90   6 239 bluepurple0
+138  43 226 blueviolet
+ 93   6 233 blueviolet0
+ 83  60 198 bluewithahintofpurple
+ 43 177 121 blueygreen
+137 160 176 blueygrey
+ 98  65 199 blueypurple
+ 41 118 187 bluish
+ 16 166 116 bluishgreen
+116 139 151 bluishgrey
+112  59 231 bluishpurple
+ 85  57 204 blurple
+242 158 142 blush
+254 130 140 blushpink
+155 181  60 booger
+150 180   3 boogergreen
+123   0  44 bordeaux
+ 99 179 101 boringgreen
+  4  74   5 bottlegreen
+160  54  35 brick
+193  74   9 brickorange
+143  20   2 brickred
+ 11 249 234 brightaqua
+  1 101 252 brightblue
+ 65 253 254 brightcyan
+  1 255   7 brightgreen
+199  96 255 brightlavender
+ 38 247 253 brightlightblue
+ 45 254  84 brightlightgreen
+201  94 251 brightlilac
+135 253   5 brightlime
+101 254   8 brightlimegreen
+255   8 232 brightmagenta
+156 187   4 brightolive
+255  91   0 brightorange
+254   1 177 brightpink
+190   3 253 brightpurple
+255   0  13 brightred
+  5 255 166 brightseagreen
+  2 204 254 brightskyblue
+  1 249 198 brightteal
+ 15 254 249 brightturquoise
+173  10 253 brightviolet
+255 253   1 brightyellow
+157 255   0 brightyellowgreen
+  5  72  13 britishracinggreen
+168 121   0 bronze
+165  42  42 brown
+101  55   0 brown
+165  42  42 brown0
+255  64	 64 brown1
+255  64  64 brown1
+238  59	 59 brown2
+238  59  59 brown2
+205  51	 51 brown3
+205  51  51 brown3
+139  35	 35 brown4
+139  35  35 brown4
+112 108  17 browngreen
+141 132 104 browngrey
+156 109  87 brownish
+106 110   9 brownishgreen
+134 119  95 brownishgrey
+203 119  35 brownishorange
+194 126 121 brownishpink
+118  66  78 brownishpurple
+158  54  35 brownishred
+201 176   3 brownishyellow
+185 105   2 brownorange
+146  43   5 brownred
+178 151   5 brownyellow
+111 108  10 brownygreen
+202 107   2 brownyorange
+126  64 113 bruise
+255 108 181 bubblegum
+254 131 204 bubblegumpink
+255 105 175 bubblegumpink0
+254 246 158 buff
+ 97   0  35 burgundy
+222 184 135 burlywood
+255 211 155 burlywood0
+255 211 155 burlywood1
+238 197 145 burlywood1
+238 197 145 burlywood2
+205 170 125 burlywood2
+205 170 125 burlywood3
+139 115  85 burlywood3
+139 115	 85 burlywood4
+192  78   1 burntorange
+159  35   5 burntred
+183  82   3 burntsiena
+176  78  15 burntsienna
+160  69  14 burntumber
+213 171   9 burntyellow
+104  50 227 burple
+255 255 129 butter
+253 177  71 butterscotch
+255 253 116 butteryellow
+ 95 158 160 cadetblue
+ 78 116 150 cadetblue
+ 95 158 160 cadetblue0
+152 245 255 cadetblue1
+142 229 238 cadetblue2
+122 197 205 cadetblue3
+ 83 134 139 cadetblue4
+198 159  89 camel
+127 143  78 camo
+ 82 101  37 camogreen
+ 75  97  19 camouflagegreen
+253 255  99 canary
+255 254  64 canaryyellow
+255  99 233 candypink
+175 111   9 caramel
+157   2  22 carmine
+253 121 143 carnation
+255 127 167 carnationpink
+138 184 254 carolinablue
+190 253 183 celadon
+193 253 149 celery
+165 163 145 cement
+222  12  98 cerise
+  4 133 209 cerulean
+  5 110 238 ceruleanblue
+ 52  56  55 charcoal
+ 60  65  66 charcoalgrey
+127 255   0 chartreuse
+193 248  10 chartreuse0
+127 255	  0 chartreuse1
+118 238   0 chartreuse1
+118 238	  0 chartreuse2
+102 205   0 chartreuse2
+102 205	  0 chartreuse3
+ 69 139   0 chartreuse3
+ 69 139	  0 chartreuse4
+207   2  52 cherry
+247   2  42 cherryred
+116  40   2 chestnut
+210 105  30 chocolate
+ 61  28   2 chocolate0
+255 127	 36 chocolate1
+255 127  36 chocolate1
+238 118	 33 chocolate2
+238 118  33 chocolate2
+205 102	 29 chocolate3
+205 102  29 chocolate3
+139  69	 19 chocolate4
+139  69  19 chocolate4
+ 65  25   0 chocolatebrown
+172  79   6 cinnamon
+104   0  24 claret
+182 106  80 clay
+178 113  61 claybrown
+ 36 122 253 clearblue
+172 194 217 cloudyblue
+ 30  72 143 cobalt
+  3  10 167 cobaltblue
+135  95  66 cocoa
+166 129  76 coffee
+ 73 132 184 coolblue
+ 51 184 100 coolgreen
+149 163 166 coolgrey
+182  99  37 copper
+255 127  80 coral
+252  90  80 coral
+255 127  80 coral0
+255 114	 86 coral1
+255 114  86 coral1
+238 106	 80 coral2
+238 106  80 coral2
+205  91	 69 coral3
+205  91  69 coral3
+139  62	 47 coral4
+139  62  47 coral4
+255  97  99 coralpink
+106 121 247 cornflower
+100 149 237 cornflowerblue
+ 81 112 215 cornflowerblue0
+255 248 220 cornsilk
+238 232 205 cornsilk0
+255 248 220 cornsilk1
+205 200 177 cornsilk1
+238 232 205 cornsilk2
+139 136 120 cornsilk2
+205 200 177 cornsilk3
+139 136 120 cornsilk4
+158   0  58 cranberry
+255 255 194 cream
+255 255 182 creme
+220  20  60 crimson
+140   0  15 crimson
+220  20  60 crimson0
+255 253 120 custard
+  0 255 255 cyan
+  0 238 238 cyan
+  0 205 205 cyan0
+  0 255 255 cyan1
+  0 139 139 cyan1
+  0 238 238 cyan2
+  0 205 205 cyan3
+  0 139 139 cyan4
+254 223   8 dandelion
+ 27  36  49 dark
+  5 105 107 darkaqua
+  1 115 113 darkaquamarine
+172 147  98 darkbeige
+0     0 139 darkblue
+  0   3  91 darkblue
+  3   7 100 darkblue0
+  0  82  73 darkbluegreen
+ 31  59  77 darkbluegrey
+ 52  28   2 darkbrown
+207  82  78 darkcoral
+255 243 154 darkcream
+0   139 139 darkcyan
+ 10 136 138 darkcyan
+  0  45   4 darkforestgreen
+157   7  89 darkfuchsia
+181 148  16 darkgold
+184 134  11 darkgoldenrod
+255 185  15 darkgoldenrod0
+255 185	 15 darkgoldenrod1
+238 173  14 darkgoldenrod1
+238 173	 14 darkgoldenrod2
+205 149  12 darkgoldenrod2
+205 149	 12 darkgoldenrod3
+139 101   8 darkgoldenrod3
+139 101	  8 darkgoldenrod4
+ 56 128   4 darkgrassgreen
+169 169 169 darkgray
+  0 100   0 darkgreen
+  3  53   0 darkgreen0
+  5  73   7 darkgreen1
+ 31  99  87 darkgreenblue
+169 169 169 darkgrey
+ 54  55  55 darkgrey0
+ 41  70  91 darkgreyblue
+217   1 102 darkhotpink
+ 31   9  84 darkindigo
+  1  65 130 darkishblue
+ 40 124  55 darkishgreen
+218  70 125 darkishpink
+117  25 115 darkishpurple
+169   3   8 darkishred
+189 183 107 darkkhaki
+155 143  85 darkkhaki
+189 183 107 darkkhaki0
+133 103 152 darklavender
+156 109 165 darklilac
+132 183   1 darklime
+126 189   1 darklimegreen
+139   0 139 darkmagenta
+150   0  86 darkmagenta0
+ 60   0   8 darkmaroon
+135  76  98 darkmauve
+ 72 192 114 darkmint
+ 32 192 115 darkmintgreen
+168 137   5 darkmustard
+  0   4  53 darknavy
+  0   2  46 darknavyblue
+ 55  62   2 darkolive
+ 85 107  47 darkolivegreen
+ 60  77   3 darkolivegreen
+ 85 107  47 darkolivegreen0
+202 255 112 darkolivegreen1
+188 238 104 darkolivegreen2
+162 205	 90 darkolivegreen3
+162 205  90 darkolivegreen3
+110 139	 61 darkolivegreen4
+110 139  61 darkolivegreen4
+255 140   0 darkorange
+198  81   2 darkorange
+255 140   0 darkorange0
+255 127	  0 darkorange1
+255 127   0 darkorange1
+238 118	  0 darkorange2
+238 118   0 darkorange2
+205 102	  0 darkorange3
+205 102   0 darkorange3
+139  69	  0 darkorange4
+139  69   0 darkorange4
+153  50 204 darkorchid
+191  62 255 darkorchid0
+191  62 255 darkorchid1
+178  58 238 darkorchid1
+178  58 238 darkorchid2
+154  50 205 darkorchid2
+154  50 205 darkorchid3
+104  34 139 darkorchid3
+104  34 139 darkorchid4
+ 86 174  87 darkpastelgreen
+222 126  93 darkpeach
+102  95 209 darkperiwinkle
+203  65 107 darkpink
+ 63   1  44 darkplum
+ 53   6  62 darkpurple
+139   0   0 darkred
+132   0   0 darkred
+139   0   0 darkred0
+181  72  93 darkrose
+  2   6 111 darkroyalblue
+ 89 133  86 darksage
+233 150 122 darksalmon
+200  90  83 darksalmon
+233 150 122 darksalmon0
+168 143  89 darksand
+ 31 181 122 darkseafoam
+ 62 175 118 darkseafoamgreen
+143 188 143 darkseagreen
+ 17 135  93 darkseagreen0
+193 255 193 darkseagreen1
+180 238 180 darkseagreen2
+155 205 155 darkseagreen3
+105 139 105 darkseagreen4
+ 68 142 228 darkskyblue
+ 72  61 139 darkslateblue
+ 33  71  97 darkslateblue
+ 72  61 139 darkslateblue0
+ 47  79  79 darkslategray
+151 255 255 darkslategray1
+141 238 238 darkslategray2
+121 205 205 darkslategray3
+ 82 139 139 darkslategray4
+ 47  79  79 darkslategrey
+151 255 255 darkslategrey0
+141 238 238 darkslategrey1
+121 205 205 darkslategrey2
+ 82 139 139 darkslategrey3
+175 136  74 darktan
+127 104  78 darktaupe
+  1  77  78 darkteal
+  0 206 209 darkturquoise
+  4  92  90 darkturquoise0
+148   0 211 darkviolet
+ 52   1  63 darkviolet0
+213 182  10 darkyellow
+114 143   2 darkyellowgreen
+  8 120 127 deepaqua
+  4   2 115 deepblue
+ 65   2   0 deepbrown
+  2  89  15 deepgreen
+141  94 183 deeplavender
+150 110 189 deeplilac
+160   2  92 deepmagenta
+220  77   1 deeporange
+255  20 147 deeppink
+203   1  98 deeppink
+255  20 147 deeppink0
+255  20 147 deeppink1
+238  18 137 deeppink1
+238  18 137 deeppink2
+205  16 118 deeppink2
+205  16 118 deeppink3
+139  10  80 deeppink3
+139  10	 80 deeppink4
+ 54   1  63 deeppurple
+154   2   0 deepred
+199  71 103 deeprose
+  1  84 130 deepseablue
+  0 191 255 deepskyblue
+ 13 117 248 deepskyblue0
+  0 191 255 deepskyblue1
+  0 178 238 deepskyblue1
+  0 178 238 deepskyblue2
+  0 154 205 deepskyblue2
+  0 154 205 deepskyblue3
+  0 104 139 deepskyblue3
+  0 104 139 deepskyblue4
+  0  85  90 deepteal
+  1 115 116 deepturquoise
+ 73   6  72 deepviolet
+ 59  99 140 denim
+ 59  91 146 denimblue
+204 173  96 desert
+159 131   3 diarrhea
+105 105 105 dimgray
+105 105 105 dimgrey
+138 110  69 dirt
+131 101  57 dirtbrown
+ 63 130 157 dirtyblue
+102 126  44 dirtygreen
+200 118   6 dirtyorange
+202 123 128 dirtypink
+115  74 101 dirtypurple
+205 197  10 dirtyyellow
+ 30 144 255 dodgerblue
+ 62 130 252 dodgerblue0
+ 30 144 255 dodgerblue1
+ 28 134 238 dodgerblue1
+ 28 134 238 dodgerblue2
+ 24 116 205 dodgerblue2
+ 24 116 205 dodgerblue3
+ 16  78 139 dodgerblue3
+ 16  78 139 dodgerblue4
+130 131  68 drab
+116 149  81 drabgreen
+ 75   1   1 driedblood
+195 251 244 duckeggblue
+ 73 117 156 dullblue
+135 110  75 dullbrown
+116 166  98 dullgreen
+216 134  59 dullorange
+213 134 157 dullpink
+132  89 126 dullpurple
+187  63  63 dullred
+ 95 158 143 dullteal
+238 220  91 dullyellow
+ 78  84 129 dusk
+ 38  83 141 duskblue
+ 71  95 148 duskyblue
+204 122 139 duskypink
+137  91 123 duskypurple
+186 104 115 duskyrose
+178 153 110 dust
+ 90 134 173 dustyblue
+118 169 115 dustygreen
+172 134 168 dustylavender
+240 131  58 dustyorange
+213 138 148 dustypink
+130  95 135 dustypurple
+185  72  78 dustyred
+192 115 122 dustyrose
+ 76 144 133 dustyteal
+162 101  62 earth
+140 253 126 eastergreen
+192 113 254 easterpurple
+254 255 202 ecru
+ 56   8  53 eggplant
+ 67   5  65 eggplantpurple
+255 252 196 eggshell
+255 255 212 eggshell0
+196 255 247 eggshellblue
+  6  82 255 electricblue
+ 33 252  13 electricgreen
+168 255   4 electriclime
+255   4 144 electricpink
+170  35 255 electricpurple
+  1 160  73 emerald
+  2 143  30 emeraldgreen
+  5  71  42 evergreen
+101 140 187 fadedblue
+123 178 116 fadedgreen
+240 148  77 fadedorange
+222 157 172 fadedpink
+145 110 153 fadedpurple
+211  73  78 fadedred
+254 255 127 fadedyellow
+207 175 123 fawn
+ 99 169  80 fern
+ 84 141  68 ferngreen
+178  34  34 firebrick
+255  48  48 firebrick0
+255  48	 48 firebrick1
+238  44  44 firebrick1
+238  44	 44 firebrick2
+205  38  38 firebrick2
+205  38	 38 firebrick3
+139  26  26 firebrick3
+139  26	 26 firebrick4
+254   0   2 fireenginered
+ 60 115 168 flatblue
+105 157  76 flatgreen
+255 250 240 floralwhite
+  8 255   8 fluorescentgreen
+ 10 255   2 flurogreen
+144 253 169 foamgreen
+ 11  85   9 forest
+ 34 139  34 forestgreen
+  6  71  12 forestgreen0
+ 21  68   6 forrestgreen
+ 67 107 173 frenchblue
+105 216  79 freshgreen
+ 88 188   8 froggreen
+255   0 255 fuchsia
+237  13 217 fuchsia
+255   0 255 fuchsia0
+220 220 220 gainsboro
+248 248 255 ghostwhite
+255 215   0 gold
+219 180  12 gold
+255 215   0 gold0
+255 215	  0 gold1
+238 201   0 gold1
+238 201	  0 gold2
+205 173   0 gold2
+205 173	  0 gold3
+139 117   0 gold3
+139 117	  0 gold4
+245 191   3 golden
+178 122   1 goldenbrown
+218 165  32 goldenrod
+249 188   8 goldenrod0
+255 193	 37 goldenrod1
+250 194   5 goldenrod1
+238 180	 34 goldenrod2
+255 193  37 goldenrod2
+205 155	 29 goldenrod3
+238 180  34 goldenrod3
+139 105	 20 goldenrod4
+205 155  29 goldenrod4
+139 105  20 goldenrod5
+254 198  21 goldenyellow
+108  52  97 grape
+253  89  86 grapefruit
+ 93  20  81 grapepurple
+ 92 172  45 grass
+ 63 155  11 grassgreen
+ 65 156   3 grassygreen
+190 190 190 gray
+  0   0   0 gray0
+  3   3   3 gray1
+ 26  26  26 gray10
+255 255 255 gray100
+ 28  28  28 gray11
+ 31  31  31 gray12
+ 33  33  33 gray13
+ 36  36  36 gray14
+ 38  38  38 gray15
+ 41  41  41 gray16
+ 43  43  43 gray17
+ 46  46  46 gray18
+ 48  48  48 gray19
+  5   5   5 gray2
+ 51  51  51 gray20
+ 54  54  54 gray21
+ 56  56  56 gray22
+ 59  59  59 gray23
+ 61  61  61 gray24
+ 64  64  64 gray25
+ 66  66  66 gray26
+ 69  69  69 gray27
+ 71  71  71 gray28
+ 74  74  74 gray29
+  8   8   8 gray3
+ 77  77  77 gray30
+ 79  79  79 gray31
+ 82  82  82 gray32
+ 84  84  84 gray33
+ 87  87  87 gray34
+ 89  89  89 gray35
+ 92  92  92 gray36
+ 94  94  94 gray37
+ 97  97  97 gray38
+ 99  99  99 gray39
+ 10  10  10 gray4
+102 102 102 gray40
+105 105 105 gray41
+107 107 107 gray42
+110 110 110 gray43
+112 112 112 gray44
+115 115 115 gray45
+117 117 117 gray46
+120 120 120 gray47
+122 122 122 gray48
+125 125 125 gray49
+ 13  13  13 gray5
+127 127 127 gray50
+130 130 130 gray51
+133 133 133 gray52
+135 135 135 gray53
+138 138 138 gray54
+140 140 140 gray55
+143 143 143 gray56
+145 145 145 gray57
+148 148 148 gray58
+150 150 150 gray59
+ 15  15  15 gray6
+153 153 153 gray60
+156 156 156 gray61
+158 158 158 gray62
+161 161 161 gray63
+163 163 163 gray64
+166 166 166 gray65
+168 168 168 gray66
+171 171 171 gray67
+173 173 173 gray68
+176 176 176 gray69
+ 18  18  18 gray7
+179 179 179 gray70
+181 181 181 gray71
+184 184 184 gray72
+186 186 186 gray73
+189 189 189 gray74
+191 191 191 gray75
+194 194 194 gray76
+196 196 196 gray77
+199 199 199 gray78
+201 201 201 gray79
+ 20  20  20 gray8
+204 204 204 gray80
+207 207 207 gray81
+209 209 209 gray82
+212 212 212 gray83
+214 214 214 gray84
+217 217 217 gray85
+219 219 219 gray86
+222 222 222 gray87
+224 224 224 gray88
+227 227 227 gray89
+ 23  23  23 gray9
+229 229 229 gray90
+232 232 232 gray91
+235 235 235 gray92
+237 237 237 gray93
+240 240 240 gray94
+242 242 242 gray95
+245 245 245 gray96
+247 247 247 gray97
+250 250 250 gray98
+252 252 252 gray99
+  0 255   0 green
+ 21 176  26 green0
+  0 255	  0 green1
+  0 238   0 green1
+  0 238	  0 green2
+  0 205   0 green2
+  0 205	  0 green3
+  0 139   0 green3
+  0 139	  0 green4
+ 94 220  31 greenapple
+  1 192 141 greenblue
+ 35 196 139 greenblue0
+  6 180 139 greenblue1
+ 84  78   3 greenbrown
+119 146 111 greengrey
+ 64 163 104 greenish
+201 209 121 greenishbeige
+ 11 139 135 greenishblue
+105  97  18 greenishbrown
+ 42 254 183 greenishcyan
+150 174 141 greenishgrey
+188 203 122 greenishtan
+ 50 191 132 greenishteal
+  0 251 176 greenishturquoise
+205 253   2 greenishyellow
+ 12 181 119 greenteal
+ 66 179 149 greenyblue
+105  96   6 greenybrown
+173 255  47 greenyellow
+181 206   8 greenyellow0
+201 255  39 greenyellow1
+126 160 122 greenygrey
+198 248   8 greenyyellow
+190 190 190 grey
+146 149 145 grey
+  0   0   0 grey0
+190 190 190 grey0
+  3   3   3 grey1
+ 26  26  26 grey10
+ 43  43  43 grey10
+255 255 255 grey100
+ 28  28  28 grey11
+ 46  46  46 grey11
+ 31  31  31 grey12
+ 48  48  48 grey12
+ 33  33  33 grey13
+  5   5   5 grey13
+ 36  36  36 grey14
+ 51  51  51 grey14
+ 38  38  38 grey15
+ 54  54  54 grey15
+ 41  41  41 grey16
+ 56  56  56 grey16
+ 43  43  43 grey17
+ 59  59  59 grey17
+ 46  46  46 grey18
+ 61  61  61 grey18
+ 48  48  48 grey19
+ 64  64  64 grey19
+  5   5   5 grey2
+ 26  26  26 grey2
+ 51  51  51 grey20
+ 66  66  66 grey20
+ 54  54  54 grey21
+ 69  69  69 grey21
+ 56  56  56 grey22
+ 71  71  71 grey22
+ 59  59  59 grey23
+ 74  74  74 grey23
+ 61  61  61 grey24
+  8   8   8 grey24
+ 64  64  64 grey25
+ 77  77  77 grey25
+ 66  66  66 grey26
+ 79  79  79 grey26
+ 69  69  69 grey27
+ 82  82  82 grey27
+ 71  71  71 grey28
+ 84  84  84 grey28
+ 74  74  74 grey29
+ 87  87  87 grey29
+  8   8   8 grey3
+255 255 255 grey3
+ 77  77  77 grey30
+ 89  89  89 grey30
+ 79  79  79 grey31
+ 92  92  92 grey31
+ 82  82  82 grey32
+ 94  94  94 grey32
+ 84  84  84 grey33
+ 97  97  97 grey33
+ 87  87  87 grey34
+ 99  99  99 grey34
+ 89  89  89 grey35
+ 10  10  10 grey35
+ 92  92  92 grey36
+102 102 102 grey36
+ 94  94  94 grey37
+107 107 107 grey37
+ 97  97  97 grey38
+110 110 110 grey38
+ 99  99  99 grey39
+112 112 112 grey39
+ 10  10  10 grey4
+ 28  28  28 grey4
+102 102 102 grey40
+115 115 115 grey40
+105 105 105 grey41
+117 117 117 grey41
+107 107 107 grey42
+120 120 120 grey42
+110 110 110 grey43
+122 122 122 grey43
+112 112 112 grey44
+125 125 125 grey44
+115 115 115 grey45
+ 13  13  13 grey45
+117 117 117 grey46
+127 127 127 grey46
+120 120 120 grey47
+130 130 130 grey47
+122 122 122 grey48
+133 133 133 grey48
+125 125 125 grey49
+135 135 135 grey49
+ 13  13  13 grey5
+ 31  31  31 grey5
+127 127 127 grey50
+138 138 138 grey50
+130 130 130 grey51
+140 140 140 grey51
+133 133 133 grey52
+143 143 143 grey52
+135 135 135 grey53
+145 145 145 grey53
+138 138 138 grey54
+148 148 148 grey54
+140 140 140 grey55
+150 150 150 grey55
+143 143 143 grey56
+ 15  15  15 grey56
+145 145 145 grey57
+153 153 153 grey57
+148 148 148 grey58
+156 156 156 grey58
+150 150 150 grey59
+158 158 158 grey59
+ 15  15  15 grey6
+ 33  33  33 grey6
+153 153 153 grey60
+161 161 161 grey60
+156 156 156 grey61
+163 163 163 grey61
+158 158 158 grey62
+166 166 166 grey62
+161 161 161 grey63
+168 168 168 grey63
+163 163 163 grey64
+171 171 171 grey64
+166 166 166 grey65
+173 173 173 grey65
+168 168 168 grey66
+176 176 176 grey66
+171 171 171 grey67
+ 18  18  18 grey67
+173 173 173 grey68
+179 179 179 grey68
+176 176 176 grey69
+181 181 181 grey69
+ 18  18  18 grey7
+ 36  36  36 grey7
+179 179 179 grey70
+184 184 184 grey70
+181 181 181 grey71
+186 186 186 grey71
+184 184 184 grey72
+189 189 189 grey72
+186 186 186 grey73
+191 191 191 grey73
+189 189 189 grey74
+194 194 194 grey74
+191 191 191 grey75
+196 196 196 grey75
+194 194 194 grey76
+199 199 199 grey76
+196 196 196 grey77
+201 201 201 grey77
+199 199 199 grey78
+ 20  20  20 grey78
+201 201 201 grey79
+204 204 204 grey79
+ 20  20  20 grey8
+ 38  38  38 grey8
+204 204 204 grey80
+207 207 207 grey80
+207 207 207 grey81
+209 209 209 grey81
+209 209 209 grey82
+212 212 212 grey82
+212 212 212 grey83
+214 214 214 grey83
+214 214 214 grey84
+217 217 217 grey84
+217 217 217 grey85
+219 219 219 grey85
+219 219 219 grey86
+222 222 222 grey86
+222 222 222 grey87
+224 224 224 grey87
+224 224 224 grey88
+227 227 227 grey88
+227 227 227 grey89
+ 23  23  23 grey89
+ 23  23  23 grey9
+ 41  41  41 grey9
+229 229 229 grey90
+232 232 232 grey91
+235 235 235 grey92
+237 237 237 grey93
+240 240 240 grey94
+242 242 242 grey95
+245 245 245 grey96
+247 247 247 grey97
+250 250 250 grey98
+252 252 252 grey99
+100 125 142 greyblue
+107 139 164 greyblue0
+119 161 181 greyblue1
+127 112  83 greybrown
+120 155 115 greygreen
+134 161 125 greygreen0
+168 164 149 greyish
+ 94 129 157 greyishblue
+122 106  79 greyishbrown
+130 166 125 greyishgreen
+200 141 148 greyishpink
+136 113 145 greyishpurple
+113 159 145 greyishteal
+195 144 155 greypink
+130 109 140 greypurple
+ 94 155 138 greyteal
+160 191  22 grossgreen
+ 83  98 103 gunmetal
+142 118  24 hazel
+164 132 172 heather
+217  79 245 heliotrope
+ 27 252   6 highlightergreen
+240 255 240 honeydew
+224 238 224 honeydew0
+240 255 240 honeydew1
+193 205 193 honeydew1
+224 238 224 honeydew2
+131 139 131 honeydew2
+193 205 193 honeydew3
+131 139 131 honeydew4
+155 229 170 hospitalgreen
+ 37 255  41 hotgreen
+245   4 201 hotmagenta
+255 105 180 hotpink
+255   2 141 hotpink0
+255 110 180 hotpink1
+238 106 167 hotpink2
+205  96 144 hotpink3
+139  58  98 hotpink4
+203   0 245 hotpurple
+ 11  64   8 huntergreen
+214 255 250 ice
+215 255 254 iceblue
+143 174  34 ickygreen
+205  92  92 indianred
+133  14   4 indianred
+205  92  92 indianred0
+255 106 106 indianred1
+238  99	 99 indianred2
+238  99  99 indianred2
+205  85	 85 indianred3
+205  85  85 indianred3
+139  58	 58 indianred4
+139  58  58 indianred4
+ 75   0 130 indigo
+ 56   2 130 indigo
+ 75   0 130 indigo0
+ 58  24 177 indigoblue
+ 98  88 196 iris
+  1 149  41 irishgreen
+255 255 240 ivory
+255 255 203 ivory
+255 255 240 ivory0
+255 255 240 ivory1
+238 238 224 ivory1
+238 238 224 ivory2
+205 205 193 ivory2
+205 205 193 ivory3
+139 139 131 ivory3
+139 139 131 ivory4
+ 31 167 116 jade
+ 43 175 106 jadegreen
+  4 130  67 junglegreen
+  0 147  55 kelleygreen
+  2 171  46 kellygreen
+ 92 178   0 kermitgreen
+174 255 110 keylime
+240 230 140 khaki
+170 166  98 khaki
+240 230 140 khaki0
+255 246 143 khaki1
+238 230 133 khaki2
+205 198 115 khaki3
+139 134	 78 khaki4
+139 134  78 khaki4
+114 134  57 khakigreen
+156 239  67 kiwi
+142 229  63 kiwigreen
+230 230 250 lavender
+199 159 239 lavender
+230 230 250 lavender0
+139 136 248 lavenderblue
+255 240 245 lavenderblush
+238 224 229 lavenderblush0
+255 240 245 lavenderblush1
+205 193 197 lavenderblush1
+238 224 229 lavenderblush2
+139 131 134 lavenderblush2
+205 193 197 lavenderblush3
+139 131 134 lavenderblush4
+221 133 215 lavenderpink
+124 252   0 lawngreen
+ 77 164   9 lawngreen0
+113 170  52 leaf
+ 92 169   4 leafgreen
+ 81 183  59 leafygreen
+172 116  52 leather
+253 255  82 lemon
+255 250 205 lemonchiffon
+238 233 191 lemonchiffon0
+255 250 205 lemonchiffon1
+205 201 165 lemonchiffon1
+238 233 191 lemonchiffon2
+139 137 112 lemonchiffon2
+205 201 165 lemonchiffon3
+139 137 112 lemonchiffon4
+173 248   2 lemongreen
+191 254  40 lemonlime
+253 255  56 lemonyellow
+143 182 123 lichen
+140 255 219 lightaqua
+123 253 199 lightaquamarine
+255 254 182 lightbeige
+173 216 230 lightblue
+123 200 246 lightblue
+149 208 252 lightblue0
+191 239 255 lightblue1
+173 216 230 lightblue1
+178 223 238 lightblue2
+191 239 255 lightblue2
+154 192 205 lightblue3
+178 223 238 lightblue3
+104 131 139 lightblue4
+154 192 205 lightblue4
+104 131 139 lightblue5
+126 251 179 lightbluegreen
+183 201 226 lightbluegrey
+118 253 168 lightbluishgreen
+ 83 254  92 lightbrightgreen
+173 129  80 lightbrown
+168  65  91 lightburgundy
+240 128 128 lightcoral
+224 255 255 lightcyan
+172 255 252 lightcyan
+224 255 255 lightcyan0
+224 255 255 lightcyan1
+209 238 238 lightcyan1
+209 238 238 lightcyan2
+180 205 205 lightcyan2
+180 205 205 lightcyan3
+122 139 139 lightcyan3
+122 139 139 lightcyan4
+137  69 133 lighteggplant
+117 253  99 lightergreen
+165  90 244 lighterpurple
+ 79 145  83 lightforestgreen
+253 220  92 lightgold
+238 221 130 lightgoldenrod
+255 236 139 lightgoldenrod0
+255 236 139 lightgoldenrod1
+238 220 130 lightgoldenrod1
+238 220 130 lightgoldenrod2
+205 190 112 lightgoldenrod2
+205 190 112 lightgoldenrod3
+139 129  76 lightgoldenrod3
+139 129	 76 lightgoldenrod4
+250 250 210 lightgoldenrodyellow
+154 247 100 lightgrassgreen
+211 211 211 lightgray
+144 238 144 lightgreen
+118 255 123 lightgreen
+144 238 144 lightgreen0
+150 249 123 lightgreen1
+ 86 252 162 lightgreenblue
+ 99 247 180 lightgreenishblue
+211 211 211 lightgrey
+216 220 214 lightgrey0
+157 188 212 lightgreyblue
+183 225 161 lightgreygreen
+109  90 207 lightindigo
+ 61 122 253 lightishblue
+ 97 225  96 lightishgreen
+165  82 230 lightishpurple
+254  47  74 lightishred
+230 242 162 lightkhaki
+239 192 254 lightlavendar
+223 197 254 lightlavender
+202 255 251 lightlightblue
+200 255 176 lightlightgreen
+237 200 255 lightlilac
+174 253 108 lightlime
+185 255 102 lightlimegreen
+250  95 247 lightmagenta
+162  72  87 lightmaroon
+194 146 161 lightmauve
+182 255 187 lightmint
+166 251 178 lightmintgreen
+166 200 117 lightmossgreen
+247 213  96 lightmustard
+ 21  80 132 lightnavy
+ 46  90 136 lightnavyblue
+ 78 253  84 lightneongreen
+172 191 105 lightolive
+164 190  92 lightolivegreen
+253 170  72 lightorange
+178 251 165 lightpastelgreen
+255 216 177 lightpeach
+196 254 130 lightpeagreen
+193 198 252 lightperiwinkle
+255 182 193 lightpink
+255 209 223 lightpink0
+255 174 185 lightpink1
+238 162 173 lightpink2
+205 140 149 lightpink3
+139  95 101 lightpink4
+157  87 131 lightplum
+191 119 246 lightpurple
+255  71  76 lightred
+255 197 203 lightrose
+ 58  46 254 lightroyalblue
+188 236 172 lightsage
+255 160 122 lightsalmon
+254 169 147 lightsalmon
+255 160 122 lightsalmon0
+255 160 122 lightsalmon1
+238 149 114 lightsalmon1
+238 149 114 lightsalmon2
+205 129  98 lightsalmon2
+205 129	 98 lightsalmon3
+139  87  66 lightsalmon3
+139  87	 66 lightsalmon4
+160 254 191 lightseafoam
+167 255 181 lightseafoamgreen
+ 32 178 170 lightseagreen
+152 246 176 lightseagreen
+ 32 178 170 lightseagreen0
+135 206 250 lightskyblue
+198 252 255 lightskyblue0
+176 226 255 lightskyblue1
+164 211 238 lightskyblue2
+141 182 205 lightskyblue3
+ 96 123 139 lightskyblue4
+132 112 255 lightslateblue
+119 136 153 lightslategray
+119 136 153 lightslategrey
+176 196 222 lightsteelblue
+202 225 255 lightsteelblue0
+202 225 255 lightsteelblue1
+188 210 238 lightsteelblue1
+188 210 238 lightsteelblue2
+162 181 205 lightsteelblue2
+162 181 205 lightsteelblue3
+110 123 139 lightsteelblue3
+110 123 139 lightsteelblue4
+251 238 172 lighttan
+144 228 193 lightteal
+126 244 204 lightturquoise
+179 111 246 lighturple
+214 180 252 lightviolet
+255 255 224 lightyellow
+255 254 122 lightyellow
+255 255 224 lightyellow0
+255 255 224 lightyellow1
+238 238 209 lightyellow1
+238 238 209 lightyellow2
+205 205 180 lightyellow2
+205 205 180 lightyellow3
+139 139 122 lightyellow3
+139 139 122 lightyellow4
+204 253 127 lightyellowgreen
+194 255 137 lightyellowishgreen
+206 162 253 lilac
+196 142 253 liliac
+  0 255   0 lime
+170 255  50 lime
+ 50 205  50 limegreen
+137 254   5 limegreen
+ 50 205  50 limegreen0
+208 254  29 limeyellow
+250 240 230 linen
+213  23  78 lipstick
+192   2  47 lipstickred
+239 180  53 macaroniandcheese
+255   0 255 magenta
+194   0 120 magenta
+238   0 238 magenta0
+255   0 255 magenta1
+205   0 205 magenta1
+238   0 238 magenta2
+205   0 205 magenta3
+139   0 139 magenta4
+ 74   1   0 mahogany
+244 208  84 maize
+255 166  43 mango
+255 250 134 manilla
+252 192   6 marigold
+  4  46  96 marine
+  1  56 106 marineblue
+176  48  96 maroon
+101   0  33 maroon
+176  48  96 maroon0
+255  52 179 maroon1
+238  48 167 maroon2
+205  41 144 maroon3
+139  28	 98 maroon4
+139  28  98 maroon4
+174 113 129 mauve
+102 205 170 mediumaquamarine
+  0   0 205 mediumblue
+ 44 111 187 mediumblue
+127  81  18 mediumbrown
+ 57 173  72 mediumgreen
+125 127 124 mediumgrey
+186  85 211 mediumorchid
+224 102 255 mediumorchid0
+224 102 255 mediumorchid1
+209  95 238 mediumorchid1
+209  95 238 mediumorchid2
+180  82 205 mediumorchid2
+180  82 205 mediumorchid3
+122  55 139 mediumorchid3
+122  55 139 mediumorchid4
+243  97 150 mediumpink
+147 112 219 mediumpurple
+158  67 162 mediumpurple0
+171 130 255 mediumpurple1
+159 121 238 mediumpurple2
+137 104 205 mediumpurple3
+ 93  71 139 mediumpurple4
+ 60 179 113 mediumseagreen
+123 104 238 mediumslateblue
+  0 250 154 mediumspringgreen
+ 72 209 204 mediumturquoise
+199  21 133 mediumvioletred
+255 120  85 melon
+115   0  57 merlot
+ 79 115 142 metallicblue
+ 39 106 179 midblue
+ 80 167  71 midgreen
+  3   1  45 midnight
+ 25  25 112 midnightblue
+  2   0  53 midnightblue
+ 25  25 112 midnightblue0
+ 40   1  55 midnightpurple
+102 124  62 militarygreen
+127  78  30 milkchocolate
+159 254 176 mint
+245 255 250 mintcream
+143 255 159 mintgreen
+ 11 247 125 mintygreen
+255 228 225 mistyrose
+238 213 210 mistyrose0
+255 228 225 mistyrose1
+205 183 181 mistyrose1
+238 213 210 mistyrose2
+139 125 123 mistyrose2
+205 183 181 mistyrose3
+139 125 123 mistyrose4
+255 228 181 moccasin
+157 118  81 mocha
+118 153  88 moss
+101 139  56 mossgreen
+ 99 139  39 mossygreen
+115  92  18 mud
+ 96  70  15 mudbrown
+136 104   6 muddybrown
+101 116  50 muddygreen
+191 172   5 muddyyellow
+ 96 102   2 mudgreen
+146  10  78 mulberry
+108 122  14 murkygreen
+186 158 136 mushroom
+206 179   1 mustard
+172 126   4 mustardbrown
+168 181   4 mustardgreen
+210 189  10 mustardyellow
+ 59 113 159 mutedblue
+ 95 160  82 mutedgreen
+209 118 143 mutedpink
+128  91 135 mutedpurple
+112 178  63 nastygreen
+255 222 173 navajowhite
+238 207 161 navajowhite0
+255 222 173 navajowhite1
+205 179 139 navajowhite1
+238 207 161 navajowhite2
+139 121  94 navajowhite2
+205 179 139 navajowhite3
+139 121	 94 navajowhite4
+  0   0 128 navy
+  1  21  62 navy0
+  0   0 128 navyblue
+  0  17  70 navyblue
+ 53  83  10 navygreen
+  4 217 255 neonblue
+ 12 255  12 neongreen
+254   1 154 neonpink
+188  19 254 neonpurple
+255   7  58 neonred
+207 255   4 neonyellow
+ 16 122 176 niceblue
+  4   3  72 nightblue
+  1 123 146 ocean
+  3 113 156 oceanblue
+ 61 153 115 oceangreen
+191 155  12 ocher
+191 144   5 ochre
+198 156   4 ocre
+ 86 132 174 offblue
+107 163  83 offgreen
+255 255 228 offwhite
+241 243  63 offyellow
+253 245 230 oldlace
+199 121 134 oldpink
+200 127 137 oldrose
+128 128   0 olive
+110 117  14 olive
+128 128   0 olive0
+100  84   3 olivebrown
+107 142  35 olivedrab
+111 118  50 olivedrab0
+192 255	 62 olivedrab1
+192 255  62 olivedrab1
+179 238	 58 olivedrab2
+179 238  58 olivedrab2
+154 205	 50 olivedrab3
+154 205  50 olivedrab3
+105 139	 34 olivedrab4
+105 139  34 olivedrab4
+103 122   4 olivegreen
+194 183   9 oliveyellow
+255 165   0 orange
+249 115   6 orange
+255 165   0 orange0
+255 165	  0 orange1
+238 154   0 orange1
+238 154	  0 orange2
+205 133   0 orange2
+205 133	  0 orange3
+139  90   0 orange3
+139  90	  0 orange4
+190 100   0 orangebrown
+253 141  73 orangeish
+255 111  82 orangepink
+255  69   0 orangered
+253  65  30 orangered
+254  66  15 orangered0
+255  69	  0 orangered1
+255  69   0 orangered1
+238  64	  0 orangered2
+238  64   0 orangered2
+205  55	  0 orangered3
+205  55   0 orangered3
+139  37	  0 orangered4
+139  37   0 orangered4
+177  96   2 orangeybrown
+255 173   1 orangeyellow
+250  66  36 orangeyred
+253 185  21 orangeyyellow
+252 130  74 orangish
+178  95   3 orangishbrown
+244  54   5 orangishred
+218 112 214 orchid
+200 117 196 orchid
+218 112 214 orchid0
+255 131 250 orchid1
+238 122 233 orchid2
+205 105 201 orchid3
+139  71 137 orchid4
+255 249 208 pale
+184 255 235 paleaqua
+208 254 254 paleblue
+177 145 110 palebrown
+183 255 250 palecyan
+253 222 108 palegold
+238 232 170 palegoldenrod
+152 251 152 palegreen
+199 253 181 palegreen0
+154 255 154 palegreen1
+144 238 144 palegreen2
+124 205 124 palegreen2
+124 205 124 palegreen3
+ 84 139  84 palegreen3
+ 84 139	 84 palegreen4
+253 253 254 palegrey
+238 207 254 palelavender
+177 252 153 palelightgreen
+228 203 255 palelilac
+190 253 115 palelime
+177 255 101 palelimegreen
+215 103 173 palemagenta
+254 208 252 palemauve
+185 204 129 paleolive
+177 210 123 paleolivegreen
+255 167  86 paleorange
+255 229 173 palepeach
+255 207 220 palepink
+183 144 212 palepurple
+217  84  77 palered
+253 193 197 palerose
+255 177 154 palesalmon
+189 246 254 paleskyblue
+130 203 178 paleteal
+175 238 238 paleturquoise
+165 251 213 paleturquoise
+175 238 238 paleturquoise0
+187 255 255 paleturquoise1
+174 238 238 paleturquoise2
+150 205 205 paleturquoise3
+102 139 139 paleturquoise4
+206 174 250 paleviolet
+219 112 147 palevioletred
+255 130 171 palevioletred0
+255 130 171 palevioletred1
+238 121 159 palevioletred1
+238 121 159 palevioletred2
+205 104 137 palevioletred2
+205 104 137 palevioletred3
+139  71  93 palevioletred3
+139  71	 93 palevioletred4
+255 255 132 paleyellow
+255 239 213 papayawhip
+254 252 175 parchment
+162 191 254 pastelblue
+176 255 157 pastelgreen
+255 150  79 pastelorange
+255 186 205 pastelpink
+202 160 255 pastelpurple
+219  88  86 pastelred
+255 254 113 pastelyellow
+164 191  32 pea
+255 176 124 peach
+255 218 185 peachpuff
+238 203 173 peachpuff0
+255 218 185 peachpuff1
+205 175 149 peachpuff1
+238 203 173 peachpuff2
+139 119 101 peachpuff2
+205 175 149 peachpuff3
+139 119 101 peachpuff4
+255 154 138 peachypink
+  1 103 149 peacockblue
+142 171  18 peagreen
+203 248  95 pear
+146 153   1 peasoup
+148 166  23 peasoupgreen
+142 130 254 periwinkle
+143 153 251 periwinkleblue
+143 140 231 perrywinkle
+205 133  63 peru
+  0  95 106 petrol
+231 142 165 pigpink
+ 43  93  52 pine
+ 10  72  30 pinegreen
+255 192 203 pink
+255 129 192 pink
+255 192 203 pink0
+255 181 197 pink1
+238 169 184 pink2
+205 145 158 pink3
+139  99 108 pink4
+212 106 126 pinkish
+177 114  97 pinkishbrown
+200 172 169 pinkishgrey
+255 114  76 pinkishorange
+214  72 215 pinkishpurple
+241  12  69 pinkishred
+217 155 130 pinkishtan
+219  75 218 pinkpurple
+239  29 231 pinkpurple0
+245   5  79 pinkred
+252 134 170 pinky
+201  76 190 pinkypurple
+252  38  71 pinkyred
+221 214  24 pissyellow
+192 250 139 pistachio
+221 160 221 plum
+ 88  15  65 plum0
+255 187 255 plum1
+238 174 238 plum2
+205 150 205 plum3
+139 102 139 plum4
+ 78   5  80 plumpurple
+ 64 253  20 poisongreen
+143 115   3 poo
+136  95   1 poobrown
+127  94   0 poop
+122  89   1 poopbrown
+111 124   0 poopgreen
+176 224 230 powderblue
+177 209 252 powderblue0
+255 178 208 powderpink
+  8   4 249 primaryblue
+  0  69 119 prussianblue
+165 126  82 puce
+165 165   2 puke
+148 119   6 pukebrown
+154 174   7 pukegreen
+194 190  14 pukeyellow
+225 119   1 pumpkin
+251 125   7 pumpkinorange
+  2   3 226 pureblue
+160  32 240 purple
+126  30 156 purple
+160  32 240 purple0
+155  48 255 purple1
+145  44 238 purple2
+125  38 205 purple3
+ 85  26 139 purple4
+ 93  33 208 purpleblue
+ 99  45 233 purpleblue0
+103  58  63 purplebrown
+134 111 133 purplegrey
+152  86 141 purpleish
+ 97  64 239 purpleishblue
+223  78 200 purpleishpink
+215  37 222 purplepink
+224  63 216 purplepink0
+153   1  71 purplered
+135  86 228 purpley
+ 95  52 231 purpleyblue
+148 126 148 purpleygrey
+200  60 185 purpleypink
+148  86 140 purplish
+ 96  30 249 purplishblue
+107  66  71 purplishbrown
+122 104 127 purplishgrey
+206  93 174 purplishpink
+176   5  75 purplishred
+152  63 178 purply
+102  26 238 purplyblue
+240 117 230 purplypink
+190 174 138 putty
+  1  70   0 racinggreen
+ 44 250  31 radioactivegreen
+176   1  73 raspberry
+154  98   0 rawsienna
+167  94   9 rawumber
+212 255 255 reallylightblue
+102  51 153 rebeccapurple
+255   0   0 red
+229   0   0 red
+255   0   0 red0
+255   0	  0 red1
+238   0   0 red1
+238   0	  0 red2
+205   0   0 red2
+205   0	  0 red3
+139   0	  0 red4
+139  46  22 redbrown
+196  66  64 reddish
+127  43  10 reddishbrown
+153 117 112 reddishgrey
+248  72  28 reddishorange
+254  44  84 reddishpink
+145   9  81 reddishpurple
+110  16   5 reddybrown
+253  60   6 redorange
+250  42  85 redpink
+130   7  71 redpurple
+158   1 104 redviolet
+140   0  52 redwine
+  2  27 249 richblue
+114   0  88 richpurple
+138 241 254 robineggblue
+109 237 253 robinsegg
+152 239 249 robinseggblue
+254 134 164 rosa
+207  98 117 rose
+247 135 154 rosepink
+190   1  60 rosered
+188 143 143 rosybrown
+255 193 193 rosybrown0
+255 193 193 rosybrown1
+238 180 180 rosybrown1
+238 180 180 rosybrown2
+205 155 155 rosybrown2
+205 155 155 rosybrown3
+139 105 105 rosybrown3
+139 105 105 rosybrown4
+246 104 142 rosypink
+171  18  57 rouge
+ 12  23 147 royal
+ 65 105 225 royalblue
+  5   4 170 royalblue
+ 65 105 225 royalblue0
+ 72 118 255 royalblue1
+ 67 110 238 royalblue2
+ 58  95 205 royalblue3
+ 39  64 139 royalblue4
+ 75   0 110 royalpurple
+202   1  71 ruby
+161  57   5 russet
+168  60   9 rust
+139  49   3 rustbrown
+196  85   8 rustorange
+170  39   4 rustred
+205  89   9 rustyorange
+175  47  13 rustyred
+139  69  19 saddlebrown
+254 178   9 saffron
+135 174 115 sage
+136 179 120 sagegreen
+250 128 114 salmon
+255 121 108 salmon0
+255 140 105 salmon1
+238 130	 98 salmon2
+238 130  98 salmon2
+205 112	 84 salmon3
+205 112  84 salmon3
+139  76	 57 salmon4
+139  76  57 salmon4
+254 123 124 salmonpink
+226 202 118 sand
+203 165  96 sandbrown
+201 174 116 sandstone
+241 218 122 sandy
+244 164  96 sandybrown
+196 166  97 sandybrown
+244 164  96 sandybrown0
+252 225 102 sandyellow
+253 238 115 sandyyellow
+ 92 139  21 sapgreen
+ 33  56 171 sapphire
+190   1  25 scarlet
+ 60 153 146 sea
+  4 116 149 seablue
+128 249 173 seafoam
+120 209 182 seafoamblue
+122 249 171 seafoamgreen
+ 46 139  87 seagreen
+ 83 252 161 seagreen0
+ 84 255 159 seagreen1
+ 78 238 148 seagreen2
+ 67 205 128 seagreen3
+ 46 139	 87 seagreen4
+255 245 238 seashell
+238 229 222 seashell0
+255 245 238 seashell1
+205 197 191 seashell1
+238 229 222 seashell2
+139 134 130 seashell2
+205 197 191 seashell3
+139 134 130 seashell4
+ 24 209 123 seaweed
+ 53 173 107 seaweedgreen
+152  94  43 sepia
+  1 180  76 shamrock
+  2 193  77 shamrockgreen
+127  95   0 shit
+123  88   4 shitbrown
+117 128   0 shitgreen
+254   2 162 shockingpink
+157 185  44 sickgreen
+148 178  28 sicklygreen
+208 228  41 sicklyyellow
+160  82  45 sienna
+169  86  30 sienna0
+255 130	 71 sienna1
+255 130  71 sienna1
+238 121	 66 sienna2
+238 121  66 sienna2
+205 104	 57 sienna3
+205 104  57 sienna3
+139  71	 38 sienna4
+139  71  38 sienna4
+192 192 192 silver
+197 201 199 silver0
+130 202 252 sky
+135 206 235 skyblue
+117 187 253 skyblue
+135 206 235 skyblue0
+135 206 255 skyblue1
+126 192 238 skyblue2
+108 166 205 skyblue3
+ 74 112 139 skyblue4
+ 81 101 114 slate
+106  90 205 slateblue
+ 91 124 153 slateblue0
+131 111 255 slateblue1
+122 103 238 slateblue2
+105  89 205 slateblue3
+ 71  60 139 slateblue4
+112 128 144 slategray
+198 226 255 slategray1
+185 211 238 slategray2
+159 182 205 slategray3
+108 123 139 slategray4
+101 141 109 slategreen
+112 128 144 slategrey
+ 89 101 109 slategrey0
+198 226 255 slategrey1
+185 211 238 slategrey2
+159 182 205 slategrey3
+108 123 139 slategrey4
+153 204   4 slimegreen
+172 187  13 snot
+157 193   0 snotgreen
+255 250 250 snow
+238 233 233 snow0
+255 250 250 snow1
+205 201 201 snow1
+238 233 233 snow2
+139 137 137 snow2
+205 201 201 snow3
+139 137 137 snow4
+100 136 234 softblue
+111 194 118 softgreen
+253 176 192 softpink
+166 111 181 softpurple
+ 30 248 118 spearmint
+  0 255 127 springgreen
+169 249 113 springgreen0
+  0 255 127 springgreen1
+  0 238 118 springgreen1
+  0 238 118 springgreen2
+  0 205 102 springgreen2
+  0 205 102 springgreen3
+  0 139  69 springgreen3
+  0 139	 69 springgreen4
+ 10  95  56 spruce
+242 171  21 squash
+115 133 149 steel
+ 70 130 180 steelblue
+ 90 125 154 steelblue0
+ 99 184 255 steelblue1
+ 92 172 238 steelblue2
+ 79 148 205 steelblue3
+ 54 100 139 steelblue4
+111 130 138 steelgrey
+173 165 135 stone
+ 80 123 156 stormyblue
+252 246 121 straw
+251  41  67 strawberry
+ 12   6 247 strongblue
+255   7 137 strongpink
+255 197  18 sunflower
+255 218   3 sunfloweryellow
+255 249  23 sunnyyellow
+255 253  55 sunshineyellow
+255 223  34 sunyellow
+105 131  57 swamp
+116 133   0 swampgreen
+210 180 140 tan
+209 178 111 tan
+210 180 140 tan0
+255 165	 79 tan1
+255 165  79 tan1
+238 154	 73 tan2
+238 154  73 tan2
+205 133	 63 tan3
+139  90  43 tan3
+139  90	 43 tan4
+171 126  76 tanbrown
+255 148   8 tangerine
+169 190 112 tangreen
+185 162 129 taupe
+101 171 124 tea
+189 248 163 teagreen
+  0 128 128 teal
+  2 147 134 teal0
+  1 136 159 tealblue
+ 37 163 111 tealgreen
+ 36 188 168 tealish
+ 12 220 115 tealishgreen
+203 104  67 terracota
+201 100  59 terracotta
+202 102  65 terracotta0
+216 191 216 thistle
+255 225 255 thistle0
+255 225 255 thistle1
+238 210 238 thistle1
+238 210 238 thistle2
+205 181 205 thistle2
+205 181 205 thistle3
+139 123 139 thistle3
+139 123 139 thistle4
+123 242 218 tiffanyblue
+255  99  71 tomato
+239  64  38 tomato
+255  99  71 tomato0
+255  99	 71 tomato1
+238  92  66 tomato1
+238  92	 66 tomato2
+205  79  57 tomato2
+205  79	 57 tomato3
+139  54  38 tomato3
+139  54	 38 tomato4
+236  45   1 tomatored
+ 19 187 175 topaz
+199 172 125 toupe
+ 97 222  42 toxicgreen
+ 42 126  25 treegreen
+  1  15 204 trueblue
+  8 148   4 truegreen
+ 64 224 208 turquoise
+  6 194 172 turquoise
+ 64 224 208 turquoise0
+  0 245 255 turquoise1
+  0 229 238 turquoise2
+  0 197 205 turquoise3
+  0 134 139 turquoise4
+  6 177 196 turquoiseblue
+  4 244 137 turquoisegreen
+117 184  79 turtlegreen
+ 78  81 139 twilight
+ 10  67 122 twilightblue
+ 49 102 138 uglyblue
+125 113   3 uglybrown
+122 151   3 uglygreen
+205 117 132 uglypink
+164  66 160 uglypurple
+208 193   1 uglyyellow
+ 32   0 177 ultramarine
+ 24   5 219 ultramarineblue
+178 100   0 umber
+117   8  81 velvet
+244  50  12 vermillion
+  0   1  51 verydarkblue
+ 29   2   0 verydarkbrown
+  6  46   3 verydarkgreen
+ 42   1  52 verydarkpurple
+213 255 255 verylightblue
+211 182 131 verylightbrown
+209 255 189 verylightgreen
+255 244 242 verylightpink
+246 206 252 verylightpurple
+214 255 254 verypaleblue
+207 253 188 verypalegreen
+  3  57 248 vibrantblue
+ 10 221   8 vibrantgreen
+173   3 222 vibrantpurple
+238 130 238 violet
+154  14 234 violet
+238 130 238 violet0
+ 81  10 201 violetblue
+251  95 252 violetpink
+208  32 144 violetred
+165   0  85 violetred
+208  32 144 violetred0
+255  62 150 violetred1
+238  58 140 violetred2
+205  50 120 violetred3
+139  34	 82 violetred4
+139  34  82 violetred4
+ 30 145 103 viridian
+ 21  46 255 vividblue
+ 47 239  16 vividgreen
+153   0 250 vividpurple
+162 164  21 vomit
+137 162   3 vomitgreen
+199 193  12 vomityellow
+ 75  87 219 warmblue
+150  78   2 warmbrown
+151 138 132 warmgrey
+251  85 129 warmpink
+149  46 143 warmpurple
+188 245 166 washedoutgreen
+ 14 135 204 waterblue
+253  70  89 watermelon
+128 128 128 webgray
+  0 128   0 webgreen
+128 128 128 webgrey
+128   0   0 webmaroon
+128   0 128 webpurple
+ 58 229 127 weirdgreen
+245 222 179 wheat
+251 221 126 wheat0
+255 231 186 wheat1
+238 216 174 wheat2
+205 186 150 wheat3
+139 126 102 wheat4
+255 255 255 white
+245 245 245 whitesmoke
+ 55 120 191 windowsblue
+128   1  63 wine
+123   3  35 winered
+ 32 249 134 wintergreen
+168 125 194 wisteria
+190 190 190 x11gray
+  0 255   0 x11green
+190 190 190 x11grey
+176  48  96 x11maroon
+160  32 240 x11purple
+255 255   0 yellow
+255 255  20 yellow0
+255 255	  0 yellow1
+238 238   0 yellow1
+238 238	  0 yellow2
+205 205   0 yellow2
+205 205	  0 yellow3
+139 139   0 yellow3
+139 139	  0 yellow4
+183 148   0 yellowbrown
+154 205  50 yellowgreen
+187 249  15 yellowgreen
+192 251  45 yellowgreen0
+200 253  61 yellowgreen1
+250 238 102 yellowish
+155 122   1 yellowishbrown
+176 221  22 yellowishgreen
+255 171  15 yellowishorange
+252 252 129 yellowishtan
+203 157   6 yellowochre
+252 176   1 yelloworange
+255 227 110 yellowtan
+174 139  12 yellowybrown

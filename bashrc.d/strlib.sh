@@ -3,19 +3,19 @@
 #
 
 ## print uppercase version of each arg
-str::case_up() { printf '%s\n' "${@^^}"; }
 str::ccase_up() { printf '%s\n' "${@^}"; }
+str::wcase_up() { printf '%s\n' "${@^^}"; }
 
 ## print lowercase version of each arg
-str::case_dn() { printf '%s\n' "${@,,}"; }
-str::ccase_dn() { printf '%s\n' "${@,}"; }
+str::ccase_down() { printf '%s\n' "${@,}"; }
+str::wcase_down() { printf '%s\n' "${@,,}"; }
 
-## print inversecase version of each arg
-str::case_in() { printf '%s\n' "${@~~}"; }
-str::ccase_in() { printf '%s\n' "${@~}"; }
+## print inverse-case version of each arg
+str::ccase_invert() { printf '%s\n' "${@~}"; }
+str::wcase_invert() { printf '%s\n' "${@~~}"; }
 
 
-## print values of given chars
+## print decimal values of given chars
 str::ord() {
   [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%d\\n' "${BASH_REMATCH[@]:1}"
 }
@@ -33,8 +33,21 @@ str::ord_x() {
 }
 
 
-## print the prompt expansion of each arg
-str::promptexpand() { printf '%s\n' "${@@P}"; }
+## print the prompt expansion of each arg (requires bash >= 4.4)
+str::promptexpand() {
+  printf '%s\n' "${@@P}"
+}
+
+
+## print the length of a string
+str::len() {
+  if test $# -eq 1; then
+    printf '%d\n' "${#1}"
+  else
+    printf '%s: usage: str::len string\n' "${0##*/}" 1>&2
+    return 2
+  fi
+}
 
 
 

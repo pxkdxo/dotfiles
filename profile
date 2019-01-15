@@ -1,17 +1,19 @@
 ## ~/.profile : login shell initialization script
-## Maintained by Patrick DeYoreo
+## see sh(1), bash(1)
 
 
-## Import environment from systemd
-eval export "$(command -p systemctl --user show-environment)"
+## Import user environment from systemd
+eval export $(systemctl --user show-environment)
 
 
 ## Initialize terminal
-tput init
+if test -t 0 && command -pv tput 1>/dev/null; then
+  command -p tput init
+fi
 
 
 ## Set file creation mode mask
-if test "$(( UID ))" -eq 0; then
+if test "$((UID))" -eq 0; then
   umask 002
 else
   umask 022
@@ -19,7 +21,7 @@ fi
 
 
 ## Prepend my executable paths
-for _ in "${HOME}/.bin" "${HOME}/.local/bin"; do
+for _ in  "${HOME}/.local/bin" "${HOME}/bin"; do
   case ":${PATH}:" in
     *":$_:"*)
       ;;
@@ -32,8 +34,8 @@ export PATH
 
 
 ## Load additional config
-if test -d "${HOME}/.profile.d"; then
-  for _ in "${HOME}/.profile.d"/*.sh; do
+if test -d "${1:-"${HOME}/.profile.d"}"/; then
+  for _ in "${1:-"${HOME}/.profile.d"}"/*.sh; do
     if test -f "$_" && test -r "$_"; then
       . "$_"
     fi
@@ -41,17 +43,13 @@ if test -d "${HOME}/.profile.d"; then
 fi
 
 
-## Set size of command history
-export HISTSIZE=10000
-
-
 ## Termcap should be dead; kill it
 unset -v TERMCAP
-
 
 ## Man is better at figuring this out than we are
 unset -v MANPATH
 
 
 
-## End of Script
+
+# vi:ft=sh:sts=2:sw=2:ts=8

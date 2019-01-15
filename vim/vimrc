@@ -1,6 +1,6 @@
 "" vimrc : startup script for Vim
-"" by Patrick DeYoreo
 "" ViM 8.1
+
 
 
 "" Resest 'compatible' to use Vim defaults, rather than Vi
@@ -183,16 +183,16 @@ set updatecount=144
 
 "" -- Swap / Undo --
 
-"" Check undofile capability
+"" Check undofile capability and use if using swapfile
 if has('persistent_undo')
-
-  "" Use undofile only if using swapfile
   let &undofile = &swapfile
 endif
 
-"" Clear directory preferences
+
+"" Clear swap / undo directory preferences
 set directory=
 set   undodir=
+
 
 "" Append MYVIMRUNTIME if non-null
 if $MYVIMRUNTIME != ''
@@ -200,11 +200,13 @@ if $MYVIMRUNTIME != ''
   set   undodir+=$MYVIMRUNTIME/undo/
 endif
 
+
 "" Append XDG_DATA_HOME if non-null
 if $XDG_DATA_HOME != ''
   set directory+=$XDG_DATA_HOME/vim/swap/
   set   undodir+=$XDG_DATA_HOME/vim/undo/
 endif
+
 
 "" Append XDG_CACHE_HOME if non-null
 if $XDG_CACHE_HOME != ''
@@ -212,10 +214,22 @@ if $XDG_CACHE_HOME != ''
   set   undodir+=$XDG_CACHE_HOME/vim/undo/
 endif
 
-"" Append first element of 'runtimepath'
+
+"" Append first element of 'runtimepath' (if it exists)
 if ! empty(split(&runtimepath, ','))
-  let &directory = &directory . ',' . split(&runtimepath, ',')[0] . '/swap/'
-  let   &undodir =   &undodir . ',' . split(&runtimepath, ',')[0] . '/undo/'
+
+  if empty(&directory)
+    let &directory = split(&runtimepath, ',')[0] . '/swap/'
+  else
+    let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
+  endif
+
+  if empty(&undodir)
+    let &undodir = split(&runtimepath, ',')[0] . '/undo/'
+  else
+    let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
+  endif
+
 endif
 
 "" Append TMPDIR if non-null
@@ -223,6 +237,7 @@ if $TMPDIR != ''
   set directory+=$TMPDIR/
   set   undodir+=$TMPDIR/
 endif
+
 
 "" Append default tmp directories
 set directory+=~/tmp,/var/tmp/,/tmp/
@@ -237,8 +252,7 @@ endif
 
 "" Make the primary undo directory
 if ! isdirectory(split(&undodir, ',')[0])
-  silent! call
-        \ system('/usr/bin/env mkdir -pm 700 '
+  silent! call system('/usr/bin/env mkdir -pm 700 '
         \ . shellescape(split(&undodir, ',')[0]))
 endif
 
@@ -278,22 +292,9 @@ endif
 
 
 
-"" -- Man --
-
-"" Set local options when opening a manpage
-autocmd FileType man setlocal cc= nohid noma nonu nornu noswf noudf
-
-"" Load the Man plugin
-runtime ftplugin/man.vim
-
-"" K command opens man pages in vim
-set keywordprg=:Man
-
-
-
 "" -- Python --
-let python_recommended_style = 1  " PEP8 compliance
-let python_highlight_all = 1      " Enable all available highlighting
+let g:python_recommended_style = 1  " PEP8 compliance
+let g:python_highlight_all = 1      " Enable all available highlighting
 
 "" Set the default version of Python
 if has('python3')
@@ -308,36 +309,70 @@ endif
 
 "" -- C / C++ --
 
-let c_comment_strings = 1 " Allow strings & numbers inside comments
-let c_gnu             = 1 " Highlight GNU specific items
-let c_space_errors    = 1 " Highlight space errors (?)
+let g:c_comment_strings = 1 " Allow strings & numbers inside comments
+let g:c_gnu             = 1 " Highlight GNU specific items
+let g:c_space_errors    = 1 " Highlight space errors (?)
 
 
 
 "" -- Readline --
 
-let readline_has_bash = 1 " Highlight additions available through bash
+let g:readline_has_bash = 1 " Highlight additions available through bash
 
 
 
 "" -- Sh --
 
-let is_posix          = 1 " Highlighting for ambiguous *.sh files
-let sh_fold_enabled   = 3 " Folding mode (function + if/do/for)
-let sh_no_error       = 1 " Relax error detection
+let g:is_posix          = 1 " Highlighting for ambiguous *.sh files
+let g:sh_fold_enabled   = 3 " Folding mode (functions, if/do/for)
+let g:sh_no_error       = 1 " Relax error detection
 
 
 
 "" -- Sed --
 
-let highlight_sedtabs   = 1 " Highlight real tabs in sed scripts
+let g:highlight_sedtabs = 1 " Highlight real tabs in sed scripts
+
+
+
+"" -- Man --
+
+"" Set local options when opening a manpage
+autocmd FileType man
+      \ setlocal colorcolumn= nohidden noswapfile noundofile
+
+"" Load the Man plugin
+runtime ftplugin/man.vim
+
+"" K command opens man pages in vim
+set keywordprg=:Man
+
+
+
+"" -- help --
+
+"" Set local options when opening a manpage
+autocmd FileType help
+      \ setlocal colorcolumn= nohidden noswapfile noundofile
+
+
+
+"" -- Powerline --
+
+if has('python3')
+  let g:powerline_pycmd = 'py3'
+elseif has('python')
+  let g:powerline_pycmd = 'py'
+else
+  let g:powerline_pycmd = ''
+endif
 
 
 
 "" -- Mappings--
 
 "" Key to act as <leader> in mappings
-let mapleader = ','         
+let g:mapleader = ','         
 
 
 "" Toggle Search Highlighting

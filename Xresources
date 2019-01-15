@@ -4,16 +4,12 @@
 #include ".Xresources.d/Xcursor"
 #include ".Xresources.d/Xft"
 #include ".Xresources.d/XTerm"
-#include ".Xresources.d/colors/iggy"
-!#include ".Xresources.d/colors/copland"
-!#include ".Xresources.d/colors/derelicte"
-!#include ".Xresources.d/colors/multicolor"
-!#include ".Xresources.d/colors/powerarrow"
-!#include ".Xresources.d/colors/steamburn"
+
+#include ".Xresources.d/colors/steamburn"
 
 
-*locale                       : true
-*customization                : -color
+*locale         : true
+*customization  : -color
 
 
 ! vim:ft=xdefaults

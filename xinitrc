@@ -1,17 +1,13 @@
 #!/usr/bin/env sh
 
 ## xinitrc : Initialize a new Xsession
-## maintained by Patrick DeYoreo
 
 
-## Clear resource database
-command -p xrdb -load '/dev/null'
+## Clear X resource database
+xrdb -load '/dev/null'
 
-
-## merge in system resources
-if test -f '/etc/X11/xinit/Xresources'; then
-  command -p xrdb -merge '/etc/X11/xinit/Xresources'
-fi
+## Merge in system resources
+xrdb -merge '/etc/X11/xinit/Xresources'
 
 
 ## run system scripts
@@ -24,11 +20,8 @@ if test -d '/etc/X11/xinit/xinitrc.d'; then
 fi
 
 
-## merge in user resources
-if test -f "${HOME}/.Xresources"; then
-  command -p xrdb -merge "${HOME}/.Xresources"
-fi
-
+## Merge in user resources
+xrdb -merge "${HOME}/.Xresources"
 
 ## run user scripts
 if test -d "${HOME}/.xinitrc.d"; then
@@ -40,9 +33,8 @@ if test -d "${HOME}/.xinitrc.d"; then
 fi
 
 
-## activate monitors
-command -p xrandr --auto
+## Activate monitors
+xrandr --auto
 
-
-## pass control to a window manager
+## Pass control to WM
 exec awesome

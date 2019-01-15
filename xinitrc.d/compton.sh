@@ -2,15 +2,13 @@
 
 ## Start compton in the background as a daemon
 
-test -f "${XDG_RUNTIME_DIR}/compton.pid" && \
-test -r "${XDG_RUNTIME_DIR}/compton.pid" && {
-  kill -15 "$(cat "${XDG_RUNTIME_DIR}/compton.pid")"
-  rm "${XDG_RUNTIME_DIR}/compton.pid"
-} 2>/dev/null
+if command -v compton 1>/dev/null; then
+  if test -f "${XDG_RUNTIME_DIR}/compton.pid"; then
+    if test -r "${XDG_RUNTIME_DIR}/compton.pid"; then
+      kill -15 "$(cat "${XDG_RUNTIME_DIR}/compton.pid")"
+    fi
+    rm "${XDG_RUNTIME_DIR}/compton.pid"
+  fi
 
-compton --daemon --dbus --write-pid-path "${XDG_RUNTIME_DIR}/compton.pid"
-
-#pkill -15 compton
-#pgrep compton 1>/dev/null && pkill -9 compton
-#
-#compton --daemon --dbus
+  compton --daemon --dbus --write-pid-path "${XDG_RUNTIME_DIR}/compton.pid"
+fi
