@@ -91,7 +91,9 @@ set showmatch
 set colorcolumn=+1,+2,+3,+4,+5,+6,+7,+8
 
 "" Show @@@ in-place of lines that do not fit entirely in window
-set display=truncate
+if v:version >= 800
+  set display=truncate
+endif
 
 "" Always show status line
 set laststatus=2
@@ -281,10 +283,11 @@ endif
 
 "" Set terminal colorscheme
 if &t_Co == 16777216 || $COLORTERM == 'truecolor' || $COLORTERM == '24bit'
-  set termguicolors
-  colorscheme candyP
+"  set termguicolors
+  colorscheme calmar256-darkP
 
 elseif $TERM =~ '^\(iterm\|linux\|rxvt\|st\|tmux\|xterm\)\([+-].*\)\?'
+  set notermguicolors
   let &t_Co = 256
   colorscheme desertP
 
@@ -297,12 +300,12 @@ let g:python_recommended_style = 1  " PEP8 compliance
 let g:python_highlight_all = 1      " Enable all available highlighting
 
 "" Set the default version of Python
-if has('python3')
-  set pyxversion=3 " Prefer Python3
-
-elseif has('python2')
-  set pyxversion=2 " Python2 will do
-
+if v:version >= 800
+  if has('python3')
+    set pyxversion=3 " Prefer Python3
+  elseif has('python2')
+    set pyxversion=2 " Python2 will do
+  endif
 endif
 
 

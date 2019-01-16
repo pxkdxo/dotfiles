@@ -35,7 +35,7 @@ test -n "${DISPLAY}" && shopt -s checkwinsize
 
 if unset -v GPG_TTY; then       # Set GPG_TTY to the tty or pty device on stdin
   if wait "$!"; then            # Check the proc sub on stdin succeeds...
-    read -r -d $'\x00' GPG_TTY  # Read the device path from stdin
+    read -r -d '' GPG_TTY  # Read the device path from stdin
   else                          # If the process substitution failed...
     GPG_TTY=''                  # Set GPG_TTY to null
   fi < <(tty || command -p realpath "/proc/$$/fd/0" && printf '\x00')
@@ -45,7 +45,9 @@ fi
 export GPG_TTY
 
 # Refresh gpg-agent (in case user switched to an Xsession)
-command -p gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
+if command -pv gpg-connect-agent; then
+  command -p gpg-connect-agent updatestartuptty /bye
+fi 1>/dev/null 2>&1
 
 
 
@@ -306,8 +308,9 @@ fi
 # -- Lessopen --
 
 # Make less more friendly for non-text input files, see lesspipe(1)
-test -x /usr/bin/lesspipe &&
+if test -x /usr/bin/lesspipe; then
   eval "$(SHELL=/usr/bin/sh lesspipe)"
+fi
 
 
 
