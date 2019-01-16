@@ -287,7 +287,6 @@ if &t_Co == 16777216 || $COLORTERM == 'truecolor' || $COLORTERM == '24bit'
   colorscheme calmar256-darkP
 
 elseif $TERM =~ '^\(iterm\|linux\|rxvt\|st\|tmux\|xterm\)\([+-].*\)\?'
-  set notermguicolors
   let &t_Co = 256
   colorscheme desertP
 
