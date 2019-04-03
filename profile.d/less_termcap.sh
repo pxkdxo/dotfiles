@@ -3,78 +3,80 @@
 
 
 ## Characters that are allowed to end a video escape sequence
-export LESSANSIENDCHARS='m'
+LESSANSIENDCHARS='m'
+export LESSANSIENDCHARS
 
 ## Characters that are allowed within a video escape sequence
-export LESSANSIMIDCHARS=';:!?'"'"'"()[*#%+ 0123456789B'
+LESSANSIMIDCHARS=';:!?'"'"'"()[*#%+ 0123456789B'
+export LESSANSIMIDCHARS
 
 
 ## Skip the rest if 'tput' is not available (requires ncurses) 
-if command -pv tput 1>/dev/null; then
+if command -v tput 1> /dev/null; then
 
   ## Enter blink mode
-  if LESS_TERMCAP_mb="$(command -p tput bold)"; then
+  if LESS_TERMCAP_mb="$(tput bold)" 2> /dev/null; then
     export LESS_TERMCAP_mb
   fi
   
   ## Enter bold mode
-  if LESS_TERMCAP_md="$(command -p tput blink)"; then
+  if LESS_TERMCAP_md="$(tput blink)" 2> /dev/null; then
     export LESS_TERMCAP_md
   fi
   
   ## End all video attributes
-  if LESS_TERMCAP_me="$(command -p tput sgr0)"; then
+  if LESS_TERMCAP_me="$(tput sgr0)" 2> /dev/null; then
     export LESS_TERMCAP_me
   fi
   
-  ## Enter standout mode (reverse-video + bold)
-  if LESS_TERMCAP_so="$(command -p tput smso)"; then
+  ## Enter standout mode
+  if LESS_TERMCAP_so="$(tput smso)" 2> /dev/null; then
     export LESS_TERMCAP_so
   fi
   
   ## End standout mode
-  if LESS_TERMCAP_se="$(command -p tput rmso)"; then
+  if LESS_TERMCAP_se="$(tput rmso)" 2> /dev/null; then
     export LESS_TERMCAP_se
   fi
   
   ## Enter underline mode
-  if LESS_TERMCAP_us="$(command -p tput smul)"; then
+  if LESS_TERMCAP_us="$(tput smul)" 2> /dev/null; then
     export LESS_TERMCAP_us
   fi
   
   ## End underline mode
-  if LESS_TERMCAP_ue="$(command -p tput rmul)"; then
+  if LESS_TERMCAP_ue="$(tput rmul)" 2> /dev/null; then
     export LESS_TERMCAP_ue
   fi
   
   ## Enter reverse-video mode
-  if LESS_TERMCAP_mr="$(command -p tput rev)"; then
+  if LESS_TERMCAP_mr="$(tput rev)" 2> /dev/null; then
     export LESS_TERMCAP_mr
   fi
   
   ## Enter dim mode
-  if LESS_TERMCAP_mh="$(command -p tput dim)"; then
+  if LESS_TERMCAP_mh="$(tput dim)" 2> /dev/null; then
     export LESS_TERMCAP_mh
   fi
   
   ## Enter subscript mode
-  if LESS_TERMCAP_ZN="$(command -p tput ssubm)"; then
+  if LESS_TERMCAP_ZN="$(tput ssubm)" 2> /dev/null; then
     export LESS_TERMCAP_ZN
   fi
   
   ## End subscript mode
-  if LESS_TERMCAP_ZV="$(command -p tput rsubm)"; then
+  if LESS_TERMCAP_ZV="$(tput rsubm)" 2> /dev/null; then
     export LESS_TERMCAP_ZV
   fi
   
   ## Enter superscript mode
-  if LESS_TERMCAP_ZO="$(command -p tput ssupm)"; then
+  if LESS_TERMCAP_ZO="$(tput ssupm)" 2> /dev/null; then
     export LESS_TERMCAP_ZO
   fi
   
   ## End superscript mode
-  if LESS_TERMCAP_ZW="$(command -p tput rsupm)"; then
+  if LESS_TERMCAP_ZW="$(tput rsupm)" 2> /dev/null; then
     export LESS_TERMCAP_ZW
   fi
 
-fi 2>/dev/null
+fi

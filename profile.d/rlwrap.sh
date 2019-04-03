@@ -3,25 +3,27 @@
 case "${EDITOR##*/}" in
 
   emacs)
-    export RLWRAP_EDITOR="${EDITOR} +%L:%C %F"
+    RLWRAP_EDITOR="${EDITOR} +%L:%C %F"
+    export RLWRAP_EDITOR
     ;;
 
   nvim|vim)
-    export RLWRAP_EDITOR="${EDITOR} -c 'call cursor(%L,%C)' %F"
+    RLWRAP_EDITOR="${EDITOR} -c 'call cursor(%L,%C)' %F"
+    export RLWRAP_EDITOR
     ;;
 
   vi)
-    export RLWRAP_EDITOR="${EDITOR} -c %L %F"
+    RLWRAP_EDITOR="${EDITOR} -c %L %F"
+    export RLWRAP_EDITOR
     ;;
 
   ?*)
-    export RLWRAP_EDITOR="${EDITOR} %F"
+    RLWRAP_EDITOR="${EDITOR} %F"
+    export RLWRAP_EDITOR
     ;;
 
   *)
     unset -v RLWRAP_EDITOR
     ;;
 
-esac 2>/dev/null
-
-
+esac

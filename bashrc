@@ -13,18 +13,18 @@ esac
 
 
 # Create a directory to store shell data files
-mkdir -p "${XDG_DATA_HOME:-"${HOME}/.local/share"}/bash"
+mkdir -p "${XDG_CACHE_HOME:-"${HOME}/.cache"}/bash"
 
 
 # Make an associative array to store terminfo entries
-declare -A ti=( )
+declare -A ti=()
 
 
 
 ## -- Display --
 
 # Send SIGWINCH to the current shell to initialize LINES and COLUMNS
-kill -s 28 "$$" 2>/dev/null
+kill -s WINCH "$$" 2>/dev/null
 
 # If DISPLAY is non-null, update LINES and COLUMNS after each command
 test -n "${DISPLAY}" && shopt -s checkwinsize
@@ -33,27 +33,26 @@ test -n "${DISPLAY}" && shopt -s checkwinsize
 
 ## -- GnuPG --
 
-if unset -v GPG_TTY; then       # Set GPG_TTY to the tty or pty device on stdin
-  if wait "$!"; then            # Check the proc sub on stdin succeeds...
-    read -r -d '' GPG_TTY  # Read the device path from stdin
-  else                          # If the process substitution failed...
-    GPG_TTY=''                  # Set GPG_TTY to null
-  fi < <(tty || command -p realpath "/proc/$$/fd/0" && printf '\x00')
+# Set GPG_TTY to the tty device on stdin
+if tty --silent; then
+  GPG_TTY="$(tty)"
+else
+  GPG_TTY=""
 fi
 
 # Add GPG_TTY to the environment
 export GPG_TTY
 
 # Refresh gpg-agent (in case user switched to an Xsession)
-if command -pv gpg-connect-agent; then
-  command -p gpg-connect-agent updatestartuptty /bye
+if command -v gpg-connect-agent; then
+  gpg-connect-agent updatestartuptty /bye
 fi 1>/dev/null 2>&1
 
 
 
 ## -- Shell Options --
 
-# Traps on ERR will be inherited by functions, cmd substs, and subshells
+# Traps on ERR will be inherited by functions, cmd subs, and subshells
 set -o errtrace
 
 # The >| operator is required to overwrite existing files via redirection
@@ -116,7 +115,7 @@ HISTSIZE=10000
 HISTFILESIZE=10000
 
 # Configure the location of the history file
-HISTFILE="${XDG_DATA_HOME:-"${HOME}/.local/share"}/bash/history"
+HISTFILE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/bash/history"
 
 # Keep duplicates out of the command history
 HISTCONTROL='ignoredups:erasedups'
@@ -127,6 +126,9 @@ HISTIGNORE='*([[:blank:]])&*([[:blank:]])'
 
 
 ## -- Globbing Options --
+
+# Use C locale when matching range-expressions
+shopt -s globasciiranges
 
 # Enable extended pattern matching features
 shopt -s extglob
@@ -210,7 +212,7 @@ color_prompt='yes'
 
 if test -n "${color_prompt}"; then
 
-  if command -pv tput && tput setaf 1; then
+  if command -v tput && tput setaf 1; then
     # We have color support; assume it's compliant with Ecma-48 (ISO/IEC-6429)
     color_prompt='yes'
 
@@ -218,7 +220,7 @@ if test -n "${color_prompt}"; then
     # No color support
     color_prompt=''
 
-  fi 1>/dev/null 2>&1
+  fi 1>/dev/null
 fi
 
 
@@ -245,29 +247,31 @@ SetPS() {
 
 
 
-## -- PROMPT_COMMAND --
+## -- Prompt --
 
-# Declare an array to store a list of commands to execute from PROMPT_COMMAND
-#declare -a prompt_command=( )
+## Test for bash-preexec
+if [[ "$(trap -p DEBUG)" == 'trap -- '"'"?(*@(;|$'\n'))*([[:space:]])__bp_preexec_invoke_exec*([[:space:]])?(@(;|$'\n')*)"'" ]]; then
 
-# Execute each command in ``prompt_command'' before printing a primary prompt
-#PROMPT_COMMAND='for _ in "${prompt_command[@]}"; do eval "$_"; done'
+  ## Add Pre-Cmd function
+  precmd_functions=( 'SetPS' "${precmd_functions[@]}" )
 
-# Set prompt_command to update the strings before each primary prompt
-#prompt_command=( 'SetPS "$?"' "${prompt_command[@]}" ) 
+else
+  # Declare an array to store a list of commands to execute from PROMPT_COMMAND
+  prompt_command=( )
 
+  # Execute each command in ``prompt_command'' before printing a primary prompt
+  PROMPT_COMMAND='for _ in "${prompt_command[@]}"; do eval "$_"; done'
 
-
-## -- Pre-Exec / Pre-Cmd --
-
-precmd_functions=( 'SetPS' "${precmd_functions[@]}" )
+  # Set prompt_command to update the strings before each primary prompt
+  prompt_command=( 'SetPS "$?"' "${prompt_command[@]}" ) 
+fi
 
 
 
 ## -- Window Title ---
 
 case "${TERM}" in
-  xterm*|vte*)
+  xterm*|rxvt*|vte*)
     prompt_command+=( 
   'printf "\e]0;%s@%s:%s\a" "${USER}" "${HOSTNAME%%.*}" "${PWD/#"${HOME}"/~}"'
 )
@@ -286,17 +290,14 @@ esac
 # Looks for bash-completion in XDG directories, falling back to sane defaults
 # Note: only sources first file found
 load_bash_completion() {
-  local IFS=':' &&
-    for _ in ${XDG_DATA_HOME:-~/.local/share} ${XDG_DATA_DIRS:-/usr/share}; do
-      [[ -f "$_/bash-completion/bash_completion"
-      && -r "$_/bash-completion/bash_completion"
-      ]] && {
-        source "$_/bash-completion/bash_completion"
-        return "$?"
-      }
-    done
+  local IFS=:
+  for _ in ${XDG_DATA_HOME:-~/.local/share} ${XDG_DATA_DIRS:-/usr/share}; do
+    if [[ -f "$_/bash-completion/bash_completion" ]]; then
+      source "$_/bash-completion/bash_completion"
+      return
+    fi
+  done
 }
-
 
 # Load bash_completion if available
 if ! shopt -oq posix; then
@@ -307,9 +308,9 @@ fi
 
 # -- Lessopen --
 
-# Make less more friendly for non-text input files, see lesspipe(1)
-if test -x /usr/bin/lesspipe; then
-  eval "$(SHELL=/usr/bin/sh lesspipe)"
+# Make less more friendly for non-text input files
+if command -v lesspipe 1> /dev/null; then
+  eval "$(SHELL="$(command -v sh)" lesspipe)"
 fi
 
 
@@ -357,4 +358,4 @@ sourcer ~/.bashrc.d
 
 
 
-# vi:et:sts=2:sw=2:ts=8:tw=80
+# vi:et:sts=2:sw=2:ts=8:tw=79

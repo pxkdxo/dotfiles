@@ -1,0 +1,46 @@
+## shell builtin extensions
+
+
+## Make the specified directory, then cd into it
+## mkcd [mkdir-options] directory
+mkcd() {
+  if test "$#" -le 0; then
+    printf 'usage: %s [mkdir-options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
+    return 2
+  fi
+
+  if mkdir -pv "$@"; then
+    printf 'cd -- %q\n' "${!#}"
+    cd -- "${!#}"
+  fi
+}
+
+
+
+## cd into a directory and print its contents
+## cdls [ls_options] directory
+cdls() {
+  if test "$#" -le 0; then
+    printf 'usage: %s [ls-options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
+    return 2
+  fi
+
+  printf 'cd -- %q\n' "${!#}"
+  if cd -- "${!#}"; then
+    ls "${@:1:($# - 1)}"
+  fi
+}
+
+
+## cd up (../) depth levels of the directory heirarchy
+up() {
+  cd ../
+}
+
+
+## details of files that would be executed for given commands
+lwhich() {
+  for _; do
+    ls -l $(type -ap "$_")
+  done
+}

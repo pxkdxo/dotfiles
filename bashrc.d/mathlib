@@ -1,0 +1,36 @@
+##
+## 20-mathlib: Collection of functions to do math in bash
+##
+
+
+function math::_accumulate() { 
+  printf '%d\n' "$(( "$*" ))"
+}
+
+function math::multiply() {
+    IFS='*' math::_accumulate "$@"
+}
+
+function math::divide() {
+    IFS='/' math::_accumulate "$@"
+}
+
+function math::add() {
+    IFS='+' math::_accumulate "$@"
+}
+
+function math::subtract() {
+    IFS='-' math::_accumulate "$@"
+}
+
+function math::xor() {
+    IFS='^' math::_accumulate "$@"
+}
+
+function math::and() {
+    IFS='&' math::_accumulate "$@"
+}
+
+function math::or() {
+    IFS='|' math::_accumulate "$@"
+}

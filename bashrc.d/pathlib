@@ -1,9 +1,8 @@
-## A library to manipulate the PATH
-## maintained by Patrick DeYoreo
+## bash library for manipulating the PATH variable
 
 
-PATH::append() {
-  PATH=":${PATH}:"
+path::append() {
+  PATH=":${PATH-}:"
   while test "$#" -gt 0; do
     if test -n "$1"; then
       case "${PATH}" in
@@ -21,8 +20,8 @@ PATH::append() {
 
 
 
-PATH::prepend() {
-  PATH=":${PATH}:"
+path::prepend() {
+  PATH=":${PATH-}:"
   while test "$#" -gt 0; do
     if test -n "$1"; then
       case "${PATH}" in
@@ -40,8 +39,8 @@ PATH::prepend() {
 
 
 
-PATH::remove() {
-  PATH=":${PATH}:"
+path::remove() {
+  PATH=":${PATH-}:"
   while test "$#" -gt 0; do
     if test -n "$1"; then
       while

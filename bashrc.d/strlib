@@ -17,19 +17,19 @@ str::wcase_invert() { printf '%s\n' "${@~~}"; }
 
 ## print decimal values of given chars
 str::ord() {
-  [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%d\\n' "${BASH_REMATCH[@]:1}"
+  [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%d\n' "${BASH_REMATCH[@]:1}"
 }
 
 
 ## print octal values of given chars
 str::ord_o() {
-  [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%o\\n' "${BASH_REMATCH[@]:1}"
+  [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%o\n' "${BASH_REMATCH[@]:1}"
 }
 
 
 ## print hexadecimal values of given chars
 str::ord_x() {
-  [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%x\\n' "${BASH_REMATCH[@]:1}"
+  [[ ${*//?( )/\'} =~ ${*//?/(\'.)} ]] && printf '%x\n' "${BASH_REMATCH[@]:1}"
 }
 
 

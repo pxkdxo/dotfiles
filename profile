@@ -1,28 +1,29 @@
 ## ~/.profile : login shell initialization script
-## see sh(1), bash(1)
+## see sh(1), bash(1), dash(1), ...
 
 
-## Import user environment from systemd
-eval export $(systemctl --user show-environment)
+## Import environment from systemd instance
+eval export $(systemctl --user show-environment 2>/dev/null)
+
 
 
 ## Initialize terminal
-if test -t 0 && command -pv tput 1>/dev/null; then
-  command -p tput init
+if test -t 0 && command -v tput 1>/dev/null; then
+  tput init
 fi
 
 
 ## Set file creation mode mask
 if test "$((UID))" -eq 0; then
-  umask 002
+  umask 0002
 else
-  umask 022
+  umask 0022
 fi
 
 
 ## Prepend my executable paths
-for _ in  "${HOME}/.local/bin" "${HOME}/bin"; do
-  case ":${PATH}:" in
+for _ in  "${HOME-}/.local/bin" "${HOME-}/.local/games"; do
+  case ":${PATH-}:" in
     *":$_:"*)
       ;;
     *)
@@ -34,8 +35,8 @@ export PATH
 
 
 ## Load additional config
-if test -d "${1:-"${HOME}/.profile.d"}"/; then
-  for _ in "${1:-"${HOME}/.profile.d"}"/*.sh; do
+if test -d "${1:-"${HOME-}/.profile.d"}"; then
+  for _ in "${1:-"${HOME-}/.profile.d"}"/*.sh; do
     if test -f "$_" && test -r "$_"; then
       . "$_"
     fi
@@ -46,10 +47,9 @@ fi
 ## Termcap should be dead; kill it
 unset -v TERMCAP
 
-## Man is better at figuring this out than we are
+## Man is much better at figuring this out than we are
 unset -v MANPATH
 
 
 
-
-# vi:ft=sh:sts=2:sw=2:ts=8
+# vi:ft=sh:sts=2:sw=2:ts=8:tw=80

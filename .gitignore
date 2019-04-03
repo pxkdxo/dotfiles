@@ -1,12 +1,13 @@
 #
-## .gitignore : file
+## .gitignore
 #
 
-# Blacklist
+
+# Blacklist Everything
 /**
 
 
-# Whitelist
+# Whitelist Specifics
 !/asoundrc
 !/automated_script.sh
 !/awesome

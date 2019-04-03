@@ -1,18 +1,15 @@
-"" vimrc : startup script for Vim
-"" ViM 8.1
+"" vimrc : initialization script for vim(1) 
 
 
-
-"" Resest 'compatible' to use Vim defaults, rather than Vi
+"" Unset 'compatible' to use vim defaults (instead of vi)
 if &compatible
   set nocompatible
 endif
 
-"" Reset 'compatible' when the +eval feature is missing
+"" If the +eval feature is missing, this unsets 'compatible'
 silent! while 0
   set nocompatible
 silent! endwhile
-
 
 "" Always use utf-8
 set encoding=utf-8
@@ -20,6 +17,9 @@ set encoding=utf-8
 
 
 "" -- Plugins & Syntax --
+
+"" Activate pathogen
+execute pathogen#infect()
 
 "" Detect filetype, load plugins, and apply indentation style
 filetype plugin indent on
@@ -47,7 +47,7 @@ set softtabstop=2
 set tabstop=8
 
 "" Line length past which lines are broken automatically 
-"set textwidth=78
+set textwidth=79
 
 
 
@@ -70,7 +70,7 @@ set nrformats=bin,hex
 
 
 
-"" -- Editor Info & Verbosity --
+"" -- Info & Verbosity --
 
 "" Display line numbers
 set number
@@ -157,12 +157,12 @@ set wildmode=list:longest,full
 "" -- Key Timeout --
 
 "" Time out on mappings and keycodes
-set timeout ttimeout
+set timeout
 
-"" Time in milliseconds to wait for completion of a mapping
+"" Time in ms to wait for completion of a mapping
 set timeoutlen=1597
 
-"" Time in milliseconds to wait for completion of a key code
+"" Time in ms to wait for completion of a key code
 set ttimeoutlen=144
 
 
@@ -193,7 +193,7 @@ endif
 
 "" Clear swap / undo directory preferences
 set directory=
-set   undodir=
+set undodir=
 
 
 "" Append MYVIMRUNTIME if non-null
@@ -217,22 +217,20 @@ if $XDG_CACHE_HOME != ''
 endif
 
 
-"" Append first element of 'runtimepath' (if it exists)
+"" Append first element of 'runtimepath'
 if ! empty(split(&runtimepath, ','))
-
   if empty(&directory)
     let &directory = split(&runtimepath, ',')[0] . '/swap/'
   else
     let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
   endif
-
   if empty(&undodir)
     let &undodir = split(&runtimepath, ',')[0] . '/undo/'
   else
     let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
   endif
-
 endif
+
 
 "" Append TMPDIR if non-null
 if $TMPDIR != ''
@@ -242,8 +240,8 @@ endif
 
 
 "" Append default tmp directories
-set directory+=~/tmp,/var/tmp/,/tmp/
-set   undodir+=~/tmp,/var/tmp/,/tmp/
+set directory+=/var/tmp/,/tmp/
+set   undodir+=/var/tmp/,/tmp/
 
 
 "" Make the primary swap directory
@@ -261,9 +259,6 @@ endif
 
 
 "" -- Terminal --
-
-"" Key that starts a CTRL-W command in a terminal window
-"set termwinkey=<C-b>
 
 "" F**k terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
@@ -283,22 +278,17 @@ endif
 
 "" Set terminal colorscheme
 if &t_Co == 16777216 || $COLORTERM == 'truecolor' || $COLORTERM == '24bit'
-"  set termguicolors
-  colorscheme calmar256-darkP
-
-elseif $TERM =~ '^\(iterm\|linux\|rxvt\|st\|tmux\|xterm\)\([+-].*\)\?'
+  colorscheme spacegray
+elseif $TERM =~ '\v^(iterm|linux|rxvt|st|tmux|vte|xterm)(-.*)?$'
   let &t_Co = 256
-  colorscheme desertP
-
+  colorscheme spacegray
 endif
 
 
 
 "" -- Python --
-let g:python_recommended_style = 1  " PEP8 compliance
-let g:python_highlight_all = 1      " Enable all available highlighting
 
-"" Set the default version of Python
+"" Set the default python version for pyx commands
 if v:version >= 800
   if has('python3')
     set pyxversion=3 " Prefer Python3
@@ -307,6 +297,9 @@ if v:version >= 800
   endif
 endif
 
+let g:python_recommended_style = 1  " PEP8 compliance
+let g:python_highlight_all = 1      " Enable all available highlighting
+
 
 
 "" -- C / C++ --
@@ -314,6 +307,9 @@ endif
 let g:c_comment_strings = 1 " Allow strings & numbers inside comments
 let g:c_gnu             = 1 " Highlight GNU specific items
 let g:c_space_errors    = 1 " Highlight space errors (?)
+
+"" Set local options when opening a C or C++ file
+autocmd FileType c,cpp setlocal sts=4 sw=4
 
 
 
@@ -340,8 +336,7 @@ let g:highlight_sedtabs = 1 " Highlight real tabs in sed scripts
 "" -- Man --
 
 "" Set local options when opening a manpage
-autocmd FileType man
-      \ setlocal colorcolumn= nohidden noswapfile noundofile
+autocmd FileType man setlocal colorcolumn= nohidden noswapfile noundofile
 
 "" Load the Man plugin
 runtime ftplugin/man.vim
@@ -355,7 +350,7 @@ set keywordprg=:Man
 
 "" Set local options when opening a manpage
 autocmd FileType help
-      \ setlocal colorcolumn= nohidden noswapfile noundofile
+  \ setlocal colorcolumn= nohidden noswapfile noundofile
 
 
 
@@ -377,47 +372,49 @@ endif
 let g:mapleader = ','         
 
 
-"" Toggle Search Highlighting
-""
-nnoremap <silent><F3>
-  \:set hlsearch!<CR>
+"" Toggle search highlighting
+nnoremap <silent><F3> :set hlsearch!<CR>
 
 
-"" Toggle Syntax Highlighting
-""
-nnoremap <silent><F7>
-  \:if exists('g:syntax_on')
-  \<Bar>syntax off<Bar>
-  \else
-  \<Bar>syntax enable<Bar>
-  \endif<CR>
+"" Toggle syntax highlighting
+nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
+  \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
 
 
-"" Quote word (or WORD)
-"" Note: 'selection' must be set to "inclusive" or "exclusive"
-""
-"" word before or at the cursor (see :help word)
+"" Add shell script modeline at end of file
+nnoremap <leader>ml/sh Go<CR># vi:ft=sh:et:sts=2:sw=2:ts=8<ESC><C-o>
+
+
+"" Quote word before or at the cursor (see :help word)
+"" Note: 'selection' must be inclusive or exclusive
 nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
 nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
-""
-"" WORD before or at the cursor (see :help WORD)
+nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
+nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
+nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
+nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
+
+"" Quote WORD before or at the cursor (see :help WORD)
+"" Note: 'selection' must be inclusive or exclusive
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
 nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
+nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
+nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
+nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
+nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
 
 
-
-"" Search forward/backward for the current visual selection
+"" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
-""
-vnoremap <silent> *
-  \:<C-U>let old_reg=getreg('"')<Bar>
+vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
   \let old_regtype=getregtype('"')<CR>
   \gvy/<C-R><C-R>
   \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"',old_reg,old_regtype)<CR>
 
-vnoremap <silent> #
-  \:<C-U>let old_reg=getreg('"')<Bar>
+"" Search backward for the current visual selection
+"" Note: Jumping to a tag does not set the current search pattern
+vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
   \let old_regtype=getregtype('"')<CR>
   \gvy?<C-R><C-R>
   \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
@@ -425,9 +422,10 @@ vnoremap <silent> #
 
 
 
+"" -- Misc --
 
-"" Restrict editor if SWIM owns this file
+"" Allow options to be set from a modeline
+set modeline
+
+"" Restrict editor if SWIM owns this file (this should be last)
 set secure
-
-
-"" -- End of Script --

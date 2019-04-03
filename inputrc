@@ -72,12 +72,21 @@ set editing-mode                        vi
 set keymap                              vi-insert
 
 
-## <C-^> to enter vi-command mode
-"\C-[":                                 vi-movement-mode
-#"\e":                                   self-insert
+## <ESC> to enter vi-command mode
+"\C-[":                         vi-movement-mode
 
-## <F1> inserts '--help' then submits the line
-"\eOP":         " --help \r"
+
+## <F1> puts line inside command substitution
+"\eOP":                         "\C-a$(\C-e)"
+
+## <F2> puts line inside double quotes
+"\eOQ":                         "\C-a"\C-e""
+
+## <F2> puts line inside double quotes
+"\eOR":                         "\C-a'\C-e'"
+
+## <F4> inserts '--help' then submits the line
+"\eOS":                         " --help\C-k\r"
 
 
 ## Up
@@ -178,7 +187,7 @@ set keymap                              vi-insert
 "\C-*":                         glob-expand-word
 "\C-g":                         glob-list-expansions
 "\e!":                          history-expand-line
-"\C-b*":                        insert-completions
+"\C-x*":                        insert-completions
 "\e.":                          insert-last-argument
 "\e_":                          insert-last-argument
 "\en":                          non-incremental-forward-search-history
@@ -193,7 +202,7 @@ set keymap                              vi-insert
 "\C-x$":                        possible-variable-completions
 "\C-v":                         quoted-insert
 "\e[2~":                        quoted-insert
-"\C-b\C-r":                     re-read-init-file
+"\C-x\C-r":                     re-read-init-file
 "\C-r":                         reverse-search-history
 "\C-@":                         set-mark
 "\e\C-e":                       shell-expand-line
@@ -262,7 +271,7 @@ set keymap vi-command
 "\e7":                          digit-argument
 "\e8":                          digit-argument
 "\e9":                          digit-argument
-"\C-bv":                        edit-and-execute-command
+"\C-xv":                        edit-and-execute-command
 "\eq":                          end-kbd-macro
 "\e[6~":                        end-of-history
 "\eOF":                         end-of-line
@@ -306,7 +315,7 @@ set keymap vi-command
 "k":                            previous-history
 "\C-v":                         quoted-insert
 "\e[2~":                        quoted-insert
-"\C-b\C-r":                     re-read-init-file
+"\C-x\C-r":                     re-read-init-file
 "U":                            revert-line
 "\e`":                          shell-expand-line
 "q":                            start-kbd-macro
