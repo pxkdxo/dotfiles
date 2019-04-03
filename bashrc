@@ -250,7 +250,7 @@ SetPS() {
 ## -- Prompt --
 
 ## Test for bash-preexec
-if [[ "$(trap -p DEBUG)" == 'trap -- '"'"?(*@(;|$'\n'))*([[:space:]])__bp_preexec_invoke_exec*([[:space:]])?(@(;|$'\n')*)"'" ]]; then
+if [[ "$(trap -p DEBUG)" == 'trap -- '"'"?(*@(;|$'\n'))*([[:space:]])__bp_preexec_invoke_exec*([[:space:]])?(@(;|$'\n')*)"' DEBUG" ]]; then
 
   ## Add Pre-Cmd function
   precmd_functions=( 'SetPS' "${precmd_functions[@]}" )
