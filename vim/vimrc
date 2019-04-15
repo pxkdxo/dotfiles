@@ -301,6 +301,11 @@ let g:python_recommended_style = 1  " PEP8 compliance
 let g:python_highlight_all = 1      " Enable all available highlighting
 
 
+"" Define mapping to set python modeline at end of file
+autocmd FileType python
+  \ nnoremap <leader>ml Go<CR># vi:ft=python:et:sts=4:sw=4:ts=8<ESC><C-o>
+
+
 
 "" -- C / C++ --
 
@@ -312,10 +317,24 @@ let g:c_space_errors    = 1 " Highlight space errors (?)
 autocmd FileType c,cpp setlocal sts=4 sw=4
 
 
+"" Define mapping to set C modeline at end of file
+autocmd FileType c
+  \ nnoremap <leader>ml Go<CR>// vi:ft=c:et:sts=4:sw=4:ts=8<ESC><C-o>
+
+"" Define mapping to set C++ modeline at end of file
+autocmd FileType cpp
+  \ nnoremap <leader>ml Go<CR>// vi:ft=cpp:et:sts=4:sw=4:ts=8<ESC><C-o>
+
+
 
 "" -- Readline --
 
 let g:readline_has_bash = 1 " Highlight additions available through bash
+
+
+"" Define mapping to set sed modeline at end of file
+autocmd FileType sed
+  \ nnoremap <leader>ml Go<CR># vi:ft=readline:et:sts=2:sw=2:ts=8<ESC><C-o>
 
 
 
@@ -326,10 +345,20 @@ let g:sh_fold_enabled   = 3 " Folding mode (functions, if/do/for)
 let g:sh_no_error       = 1 " Relax error detection
 
 
+"" Define mapping to set sh modeline at end of file
+autocmd FileType sh
+  \ nnoremap <leader>ml Go<CR># vi:ft=sh:et:sts=2:sw=2:ts=8<ESC><C-o>
+
+
 
 "" -- Sed --
 
 let g:highlight_sedtabs = 1 " Highlight real tabs in sed scripts
+
+
+"" Define mapping to set sed modeline at end of file
+autocmd FileType sed
+  \ nnoremap <leader>ml Go<CR># vi:ft=sed:et:sts=2:sw=2:ts=8<ESC><C-o>
 
 
 
@@ -379,10 +408,6 @@ nnoremap <silent><F3> :set hlsearch!<CR>
 "" Toggle syntax highlighting
 nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
   \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
-
-
-"" Add shell script modeline at end of file
-nnoremap <leader>ml/sh Go<CR># vi:ft=sh:et:sts=2:sw=2:ts=8<ESC><C-o>
 
 
 "" Quote word before or at the cursor (see :help word)
