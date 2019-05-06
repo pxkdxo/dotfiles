@@ -5,119 +5,152 @@
 
 ## If given arguments, configure those variables.
 ## Otherwise, configure known variables.
-autoenv::main() {
+autoenv() {
 
   [[ $# -eq 0 ]] && set -- BROWSER EDITOR GCC_COLORS LS_COLORS
 
   while [[ $# -gt 0 ]]; do
-    if command -v "autoenv::$1" 1>/dev/null; then
-      "autoenv::$1"
+
+    if [[ $1 = @([^[:alpha:]_]|*[^[:alnum:]_])* ]]; then
+      printf '%q: autoenv: %q: not a valid identifier\n' "${0##*/}" "$1" 1>&2
+
+    elif command -v autoenv::"$1" 1>/dev/null; then
+      autoenv::"$1"
+
     else
-      printf '%q: autoenv: %q: No such function\n' "${0##*/}" "$1" 1>&2
+      printf '%q: autoenv: %q: no such function\n' "${0##*/}" "$1" 1>&2
+
     fi
+
     shift
+
   done
 
   return 0
+
 }
 
 
 
 ## Set default browser
 autoenv::BROWSER() {
-  local BROWSER='' && {
-    case $# in
-      1)
-        declare -gx BROWSER="$1"
-        ;;
 
-      0)
-        if [[ ${DISPLAY} ]]; then
-          set -- google-chrome firefox chromium
-        else
-          set -- elinks w3m lynx
-        fi
-        ;&
+  if local -a BROWSER=( "$@" ); then
 
-      *)
-        while (( $# )); do
-          read -r BROWSER < <(command -v "$1") && {
-            declare -gx BROWSER="$1"
-            break
-          }
-          shift
-        done
-    esac
-  }
+    if [[ ${DISPLAY} ]]; then
+      BROWSER+=( google-chrome-stable firefox chromium epiphany-browser )
+    else
+      BROWSER+=( elinks links w3m lynx )
+    fi
+
+    while (( ${#BROWSER[@]} )); do
+      if BROWSER[0]="$(command -v "$1")"; then
+        declare -gx BROWSER="${BROWSER[0]}"
+        break
+      fi
+      BROWSER=( "${BROWSER[@]:1}" )
+    done
+
+  fi
+
 }
+
 
 
 ## Set default text editor
 autoenv::EDITOR() {
-  local EDITOR && {
-    case $# in
-      1)
-        declare -gx EDITOR="$1"
-        ;;
 
-      0)
-        set -- vim vi nano
-        ;&
+  if local -a EDITOR=( "$@" ); then
 
-      *)
-        while (( $# )); do
-          read -r EDITOR < <(command -v "$1") && {
-            declare -gx EDITOR="$1"
-            break
-          }
-          shift
-        done
-    esac
-  }
+    EDITOR+=( vim nvim emacs nano vi )
+
+    while (( ${#EDITOR[@]} )); do
+      if EDITOR[0]="$(command -v "$1")"; then
+        declare -gx EDITOR="${EDITOR[0]}"
+        break
+      fi
+      EDITOR=( "${EDITOR[@]:1}" )
+    done
+
+  fi
+
 }
+
 
 
 ## Set GCC output formatting
 autoenv::GCC_COLORS() {
-  local IFS=';' && declare -gx GCC_COLORS=\
-"${*-caret=01;34:error=01;31:locus=01:note=33:quote=01;32:warning=01;35}"
+
+  if local -A GCC_COLORS=( [caret]='01;34' [error]='01;31'
+                           [locus]='01'    [note]='33'
+                           [quote]='01;32' [warning]='01;35' )
+  then
+
+    while (( $# )); do
+      GCC_COLORS[${1%%=*}]=${1#*=}
+      shift
+    done
+
+    set -- "${!GCC_COLORS[@]}"
+
+    while (( $# )); do
+      GCC_COLORS[0]=${GCC_COLORS[0]:+${GCC_COLORS[0]}:}$1=${GCC_COLORS[$1]}
+      shift
+    done
+
+    declare -gx GCC_COLORS=${GCC_COLORS[0]}
+
+  fi
+
 }
+
 
 
 ## Set command output colors
 autoenv::LS_COLORS() {
-  if local IFS LS_COLORS='' && command -v dircolors; then
-    case "$(($#))" in
+
+  if local IFS="${IFS}" && local LS_COLORS='' && command -v dircolors; then
+
+    case $# in
       0)
         if [[ -f ~/.dircolors ]]; then
-          IFS=\' read -r _ LS_COLORS _ < <(\command dircolors -b ~/.dircolors)
+          IFS="'" read -r _ LS_COLORS _ < <(command dircolors -b ~/.dircolors)
           declare -gx LS_COLORS=${LS_COLORS}
-          return $?
+          return "$?"
         else
-          IFS=\' read -r _ LS_COLORS _ < <(\command dircolors -b)
+          IFS="'" read -r _ LS_COLORS _ < <(command dircolors -b)
           declare -gx LS_COLORS=${LS_COLORS}
           return $?
         fi
         ;;
+
       1)
         if [[ -f $1 ]]; then
-          IFS=\' read -r _ LS_COLORS _ < <(\command dircolors -b "$1")
+          IFS="'" read -r _ LS_COLORS _ < <(command dircolors -b "$1")
           declare -gx LS_COLORS=${LS_COLORS}
           return $?
         else
           return $?
         fi
         ;;
+
       *)
         IFS=:
         declare -gx LS_COLORS="$*"
         return $?
         ;;
+
     esac
+
   fi 1>/dev/null
+
 }
 
 
 
 ## Apply configuration
-autoenv::main
+autoenv
+
+
+
+# vi:ft=sh:et:sts=2:sw=2:ts=8

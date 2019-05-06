@@ -162,7 +162,6 @@ alias mctl='machinectl'
 alias jctlu='journalctl --user'
 alias sctlu='systemctl --user'
 
-alias m='mpv'
 
 
 ## -- external command shortcuts --
@@ -191,6 +190,7 @@ if command -v 'pip3' 1>/dev/null; then
   alias pip='pip3'
 fi
 
+
 # -- xclip --
 
 alias xc0='xclip -sel clipboard'
@@ -210,79 +210,25 @@ alias xc2.f='xclip -sel secondary -f'
           
 
 
-## -- docker --
-
-alias doc='docker'
-
-alias doc.stopall='docker stop $(docker ps -q) 2>/dev/null'
-
-alias doc.killall='docker kill $(docker ps -q) 2>/dev/null'
-
-alias doc.rmdead='docker rm $(docker ps -aq) 2>/dev/null'
-
-alias doc.rmall=\
-'{ docker kill $(docker ps -q); docker rm $(docker ps -aq); } 2> /dev/null'
-
-
-
-## Create a new jupyter datascience notebook container
-doc.jupyter() {
-
-  ## Initialize local variables
-  local help='' cmd=( docker run --tty ) || return 8
-
-  ## Construct help message
-  printf -v help '%q: usage: %q [-d] [-p host-port] [-v host-directory]' \
-      "${0##*/}" "${FUNCNAME[@]::1}"
-
-  ## Parse options
-  while (( $# )); do
-    case "$1" in
-
-     -p|--port)
-        shift
-        cmd+=( -p "${1:-"${JOVYAN_PORT:-"8888"}"}:8888" )
-        shift || break
-        ;;
-
-      -v|--volume)
-        shift
-        cmd+=( -v "${1:-"${JOVYAN_WORK:-"${PWD}"}"}:/home/jovyan/work" )
-        shift || break
-        ;;
-
-      -d|--detach)
-        cmd+=( -d )
-        shift
-        ;;
-
-      --rm)
-        cmd+=( --rm )
-        shift
-        ;;
-
-      -h|--help)
-        printf '%s\n' "${help}"
-        return 0
-        ;;
-
-      *)
-        printf '%s\n' "${help}" 1>&2
-        return 2
-        ;;
-
-    esac
-  done
-
-  ## Run jupyter nb
-  "${cmd[@]}" jupyter/datascience-notebook
-}
-
 
 ## -- poor-man's functions --
 
 ## find non-recursively in the current directory (absolute)
 alias findhere='find ./ -maxdepth 1'
+
+
+## Run vim pager
+alias vless='/usr/share/vim/vim[0-9][0-9]/macros/less.sh'
+
+
+## Pulse Audio loop to send input to output
+alias paloop='pacmd load-module module-loopback latency_msec=6'
+
+
+## Dig aliases to query DNS servers for my WAN IP
+alias wanip='dig @resolver1.opendns.com ANY myip.opendns.com +short'
+alias wanip4='dig @resolver1.opendns.com -4 myip.opendns.com +short'
+alias wanip6='dig @resolver1.opendns.com -6 myip.opendns.com +short'
 
 
 
@@ -317,22 +263,32 @@ mygroupstab() {
 }
 
 
-## Fork a copy of executable of the existing parent process
+
+## Fork a copy of executable of the current parent process
 fork_parent() {
   if test -x "/proc/${PPID}/exe"; then
-    ( exec -a "$0" "/proc/${PPID}/exe" "$@" ) 0</dev/null 1>&0 2>&1 & disown %+
+    (exec -a "$0" "/proc/${PPID}/exe" "$@") 0</dev/null 1>&0 2>&1 &
+    disown %+
   else
     printf 1>&2 '%q: %q: %q: No such file or directory\n' \
-      "${0##*/}" "${FUNCNAME[0]}" "/proc/${PPID}/exe"
+      "${0##*/}" "${FUNCNAME}" "/proc/${PPID}/exe"
     return 1
   fi
 }
 
-## Run vim
-alias vless='/usr/share/vim/vim[0-9][0-9]/macros/less.sh'
 
-# vi:et:ft=sh:sts=2:sw=2:ts=8:tw=79
 
-# Pulse Audio
+## Use wget to download the contents of a web directory
+wgetdir() { 
+  wget  --execute robots=off                    \
+        --recursive                             \
+        --no-parent                             \
+        --no-directories                        \
+        --level="${wget_depth:-1}"              \
+        --reject="${wget_reject:-"index.html"}" \
+        "$@"
+}
 
-alias paloop='pacmd load-module module-loopback latency_msec="$((${paloop_latency_msec:-8}))"'
+
+
+## vim:et:ft=sh:sts=2:sw=2:ts=8

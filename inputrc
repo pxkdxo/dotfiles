@@ -61,7 +61,7 @@ set revert-all-at-newline               on
 set comment-begin                       "#"
 set expand-tilde                        off
 set horizontal-scroll-mode              off
-set keyseq-timeout                      800
+set keyseq-timeout                      0
 
 
 ## Vi Editing Mode

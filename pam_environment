@@ -8,6 +8,7 @@
 XDG_CACHE_HOME          DEFAULT=@{HOME}/.cache
 XDG_CONFIG_HOME         DEFAULT=@{HOME}/.local/etc
 XDG_DATA_HOME           DEFAULT=@{HOME}/.local/share
+XDG_RUNTIME_DIR         DEFAULT=@{HOME}/.local/run/user         OVERRIDE=${XDG_RUNTIME_DIR}
 
 XDG_DATA_DIRS           DEFAULT=/usr/local/share:/usr/share     OVERRIDE=${XDG_DATA_DIRS}
 XDG_CONFIG_DIRS         DEFAULT=/etc/xdg                        OVERRIDE=${XDG_CONFIG_DIRS}
@@ -31,7 +32,6 @@ TZ                      DEFAULT=America/Los_Angeles
 
 BLOCK_SIZE              DEFAULT=human-readable
 QUOTING_STYLE           DEFAULT=shell-escape
-
 TIME_STYLE              DEFAULT="+ %a %_d %b %_I:%M %p "
 
 
@@ -140,4 +140,4 @@ __GL_THREADED_OPTIMIZATIONS   DEFAULT=1
 
 
 
-# vi:ft=conf
+# vi:ft=conf:sts=2:sw=2:ts=8:tw=0

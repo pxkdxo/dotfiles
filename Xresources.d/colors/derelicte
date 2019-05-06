@@ -1,8 +1,8 @@
-! Gruvbox-Black
+! Derelicte
 
-*background:  #121212
-*foreground:  #fdfbfa
-*cursorColor: darkorange2
+*background:  #302627
+*foreground:  #e2ccb0
+*cursorColor: #ee7600
 
 !black
 *color0:      #1a1a1a

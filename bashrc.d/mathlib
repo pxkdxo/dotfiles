@@ -1,36 +1,103 @@
-##
-## 20-mathlib: Collection of functions to do math in bash
-##
+## mathlib :
+## A collection of variables & functions for doing math in bash
 
 
-function math::_accumulate() { 
-  printf '%d\n' "$(( "$*" ))"
+
+## -- Global variables
+
+## Store the max integer value
+case ${BASH_VERSINFO[-1]%%-*} in
+  x86_64)
+    declare -i __math_maxint=$(( 2 ** 64 - 1 ))
+    ;;
+  x86)
+    declare -i __math_maxint=$(( 2 ** 32 - 1 ))
+    ;;
+  *)
+    declare -i __math_maxint=$(( -1 ))
+    ;;
+esac
+
+
+
+## -- Arithmetic
+
+## Evaluate expansion of arguments separated by IFS
+math::__operate() { 
+  printf "${output_fmt:-%d}\n" "$(( "$*" ))"
 }
 
-function math::multiply() {
-    IFS='*' math::_accumulate "$@"
+## Multiply arguments
+math::multiply() {
+    IFS='*' math::__operate "$@"
 }
 
-function math::divide() {
-    IFS='/' math::_accumulate "$@"
+## Divide arguments
+math::divide() {
+    IFS='/' math::__operate "$@"
 }
 
-function math::add() {
-    IFS='+' math::_accumulate "$@"
+## Add arguments
+math::add() {
+    IFS='+' math::__operate "$@"
 }
 
-function math::subtract() {
-    IFS='-' math::_accumulate "$@"
+## Subtract arguments
+math::subtract() {
+    IFS='-' math::__operate "$@"
 }
 
-function math::xor() {
-    IFS='^' math::_accumulate "$@"
+## Bitwise xor arguments
+math::xor() {
+    IFS='^' math::__operate "$@"
 }
 
-function math::and() {
-    IFS='&' math::_accumulate "$@"
+## Bitwise and arguments
+math::and() {
+    IFS='&' math::__operate "$@"
 }
 
-function math::or() {
-    IFS='|' math::_accumulate "$@"
+## Bitwise or arguments
+math::or() {
+    IFS='|' math::__operate "$@"
 }
+
+
+
+## -- Sequences
+
+## Print n elements of the fibonnaci sequence
+math::fibonnaci() { 
+
+  ## Initialize sequence values / index / element count / start & end indices
+  if local -i curr=0 next=1 index=0 &&
+     local -i n=$((     $(( ${n:-$1}     )) > 0 ? $(( ${n:-$1} ))     : 10 )) &&
+     local -i start=$(( $(( ${start:-$2} )) > 0 ? $(( ${start:-$2} )) : 1  )) &&
+     local -i end=$(( n + start ))
+  then
+    
+      ## Compute seq until end index is reached or max int limit is surpassed
+    while (( ++index < end && next >= curr )); do
+      ## Print current value, skipping elements occuring before start index
+      (( index >= start )) && printf "${output_fmt:-%d}\n" "$(( curr ))"
+      ## Compute next two sequence elements
+      ((  next += curr, curr = next - curr ))
+    done
+
+    ## If max integer limit was surpassed, print message and return error (2)
+    (( next >= curr )) || {
+      printf "%q(): max integer limit reached\n" "${FUNCNAME}" 1>&2
+      return 2
+    }
+
+  ## If local variables could not be set, return failure (1)
+  else
+    printf "%q(): failed to initialize local variables\n" "${FUNCNAME}" 1>&2
+    return 1
+  fi
+
+}
+
+
+
+# vi:ft=sh:et:sts=2:sw=2:ts=8:tw=80
