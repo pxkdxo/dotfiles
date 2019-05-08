@@ -2,12 +2,11 @@
 ## .gitignore
 #
 
-
-# Blacklist Everything
+## blacklist everything
 /**
 
 
-# Whitelist Specifics
+## modify whitelist as needed
 !/asoundrc
 !/automated_script.sh
 !/awesome
@@ -48,8 +47,10 @@
 !/python
 !/python/rc.py
 !/ranger
-!/ranger/**
-!/README.md
+!/ranger/commands.py
+!/ranger/rc.conf
+!/ranger/rifle.conf
+!/ranger/scope.sh
 !/screenrc
 !/surfraw
 !/surfraw/**
@@ -78,3 +79,4 @@
 !/xserverrc
 !/zsh
 !/zsh/**
+!/README.md
