@@ -14,7 +14,7 @@ fi
 
 
 ## Set file creation mode mask
-if test "$((UID))" -eq 0; then
+if test "${UID:-"$(id -u)"}" -eq 0; then
   umask 0002
 else
   umask 0022
@@ -27,7 +27,7 @@ for _ in  "${HOME-}/.local/bin" "${HOME-}/.local/games"; do
     *":$_:"*)
       ;;
     *)
-      PATH="$_${PATH:+":${PATH}"}"
+      PATH="$_${PATH:+":${PATH-}"}"
       ;;
   esac
 done

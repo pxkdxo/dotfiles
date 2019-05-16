@@ -7,23 +7,22 @@
 ## Otherwise, configure known variables.
 autoenv() {
 
-  [[ $# -eq 0 ]] && set -- BROWSER EDITOR GCC_COLORS LS_COLORS
+  (( ! $# )) && {
+    set -- BROWSER EDITOR GCC_COLORS LS_COLORS
+  }
 
-  while [[ $# -gt 0 ]]; do
+  while (( $# > 0 )); do
 
-    if [[ $1 = @([^[:alpha:]_]|*[^[:alnum:]_])* ]]; then
-      printf '%q: autoenv: %q: not a valid identifier\n' "${0##*/}" "$1" 1>&2
+#    if [[ $1 == @([^[:alpha:]_]|*[^[:alnum:]_])* ]]; then
+#      printf '%q: autoenv: %q: not a valid identifier\n' "${0##*/}" "$1" 1>&2
 
-    elif command -v autoenv::"$1" 1>/dev/null; then
-      autoenv::"$1"
-
+    if command -v autoenv\:\:"$1" 1>/dev/null; then
+      autoenv\:\:"$1"
     else
-      printf '%q: autoenv: %q: no such function\n' "${0##*/}" "$1" 1>&2
-
+      printf '%q: %q: %q: not defined\n' "${0##*/}" "${FUNCNAME[0]}" "$1" 1>&2
     fi
 
     shift
-
   done
 
   return 0
@@ -44,7 +43,7 @@ autoenv::BROWSER() {
     fi
 
     while (( ${#BROWSER[@]} )); do
-      if BROWSER[0]="$(command -v "$1")"; then
+      if command -v "${BROWSER[0]}" 1>/dev/null; then
         declare -gx BROWSER="${BROWSER[0]}"
         break
       fi
@@ -62,10 +61,10 @@ autoenv::EDITOR() {
 
   if local -a EDITOR=( "$@" ); then
 
-    EDITOR+=( vim nvim emacs nano vi )
+    EDITOR+=( vim nvim nano emacs vi )
 
     while (( ${#EDITOR[@]} )); do
-      if EDITOR[0]="$(command -v "$1")"; then
+      if command -v "${EDITOR[0]}" 1>/dev/null; then
         declare -gx EDITOR="${EDITOR[0]}"
         break
       fi

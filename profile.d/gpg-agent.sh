@@ -17,11 +17,11 @@ gpg-connect-agent /bye 1>/dev/null 2>&1
 
 
 ## Configure SSH to use gpg-agent
-[ -S "${SSH_AUTH_SOCK}" ] && [ "${SSH_AUTH_SOCK##*/}" = "S.gpg-agent.ssh" ] || {
+[ -S "${SSH_AUTH_SOCK}" ] && [ "${SSH_AUTH_SOCK##*/}" = 'S.gpg-agent.ssh' ] || {
   unset SSH_AGENT_PID # Unset the current ssh-agent PID
   ## Check that agent was not started as ``gpg-agent --daemon /bin/sh''
   if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne "$$" ]; then
-    ## Set SSH_AUTH_SOCK to gpg-agent ssh socket & add it to the environment
+    ## Set SSH_AUTH_SOCK to gpg-agent ssh socket
     export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
   fi
 }
