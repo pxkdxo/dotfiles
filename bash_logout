@@ -25,5 +25,5 @@ tput reset
 
 # When leaving the console clear the screen
 if [[ ${SHLVL} -eq 1 ]]; then
-  clear_console
+  command -v clear_console 1>/dev/null && clear_console -q
 fi
