@@ -4,7 +4,7 @@
 system_encoding           = "UTF-8"
 
 ##### directories ######
-mpd_music_dir             = "~/Audio/Music"
+mpd_music_dir             = "~/Music"
 ncmpcpp_directory         = "~/.local/share/ncmpcpp"
 lyrics_directory          = "~/.local/share/ncmpcpp/lyrics"
 
