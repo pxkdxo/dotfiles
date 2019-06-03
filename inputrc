@@ -1,5 +1,5 @@
 #
-## readline 7.0 initialization
+## readline initialization
 #
 
 
@@ -57,7 +57,7 @@ set mark-modified-lines                 off
 set revert-all-at-newline               on
 
 
-##  
+## Misc
 set comment-begin                       "#"
 set expand-tilde                        off
 set horizontal-scroll-mode              off
@@ -68,16 +68,15 @@ set keyseq-timeout                      0
 set editing-mode                        vi
 
 
-## Vi-Insert Keymap
-set keymap                              vi-insert
 
+## vi-insert keymap
+set keymap                              vi-insert
 
 ## <ESC> to enter vi-command mode
 "\C-[":                         vi-movement-mode
 
-
-## <F1> puts line inside command substitution
-"\eOP":                         "\C-a$(\C-e)"
+## <F1> inserts '--help' then submits the line
+"\eOP":                         " --help\C-k\r"
 
 ## <F2> puts line inside double quotes
 "\eOQ":                         "\C-a"\C-e""
@@ -85,8 +84,14 @@ set keymap                              vi-insert
 ## <F2> puts line inside double quotes
 "\eOR":                         "\C-a'\C-e'"
 
-## <F4> inserts '--help' then submits the line
-"\eOS":                         " --help\C-k\r"
+## <F4> puts line inside subshell
+"\eOS":                         "\C-a(\C-e)"
+
+## <F5> puts line inside command substitution
+"\e[15~":                       "\C-a$(\C-e)"
+
+### <F6>
+#"\e[17~":
 
 
 ## Up

@@ -1,0 +1,244 @@
+## readline vi-insert default keymap
+
+#            abort                                         (not bound)
+"\C-j":      accept-line
+"\C-m":      accept-line
+#            alias-expand-line                             (not bound)
+#            arrow-key-prefix                              (not bound)
+#            backward-byte                                 (not bound)
+"\M-OD":     backward-char
+"\M-[D":     backward-char
+"\C-h":      backward-delete-char
+"\C-?":      backward-delete-char
+#            backward-kill-line                            (not bound)
+#            backward-kill-word                            (not bound)
+#            backward-word                                 (not bound)
+#            beginning-of-history                          (not bound)
+"\M-OH":     beginning-of-line
+"\M-[H":     beginning-of-line
+"\M-[200~":  bracketed-paste-begin
+#            call-last-kbd-macro                           (not bound)
+#            capitalize-word                               (not bound)
+#            character-search                              (not bound)
+#            character-search-backward                     (not bound)
+#            clear-screen                                  (not bound)
+"\C-i":      complete
+#            complete-command                              (not bound)
+#            complete-filename                             (not bound)
+#            complete-hostname                             (not bound)
+#            complete-into-braces                          (not bound)
+#            complete-username                             (not bound)
+#            complete-variable                             (not bound)
+#            copy-backward-word                            (not bound)
+#            copy-forward-word                             (not bound)
+#            copy-region-as-kill                           (not bound)
+#            dabbrev-expand                                (not bound)
+"\M-[3~":    delete-char
+#            delete-char-or-list                           (not bound)
+#            delete-horizontal-space                       (not bound)
+#            digit-argument                                (not bound)
+#            display-shell-version                         (not bound)
+#            do-lowercase-version                          (not bound)
+#            downcase-word                                 (not bound)
+#            dump-functions                                (not bound)
+#            dump-macros                                   (not bound)
+#            dump-variables                                (not bound)
+#            dynamic-complete-history                      (not bound)
+#            edit-and-execute-command                      (not bound)
+#            emacs-editing-mode                            (not bound)
+#            end-kbd-macro                                 (not bound)
+#            end-of-history                                (not bound)
+"\M-OF":     end-of-line
+"\M-[F":     end-of-line
+#            exchange-point-and-mark                       (not bound)
+#            forward-backward-delete-char                  (not bound)
+#            forward-byte                                  (not bound)
+"\M-OC":     forward-char
+"\M-[C":     forward-char
+"\C-s":      forward-search-history
+#            forward-word                                  (not bound)
+#            glob-complete-word                            (not bound)
+#            glob-expand-word                              (not bound)
+#            glob-list-expansions                          (not bound)
+#            history-and-alias-expand-line                 (not bound)
+#            history-expand-line                           (not bound)
+#            history-search-backward                       (not bound)
+#            history-search-forward                        (not bound)
+#            history-substring-search-backward             (not bound)
+#            history-substring-search-forward              (not bound)
+#            insert-comment                                (not bound)
+#            insert-completions                            (not bound)
+#            insert-last-argument                          (not bound)
+#            kill-line                                     (not bound)
+#            kill-region                                   (not bound)
+#            kill-whole-line                               (not bound)
+#            kill-word                                     (not bound)
+#            magic-space                                   (not bound)
+"\C-n":      menu-complete
+"\C-p":      menu-complete-backward
+"\M-OB":     next-history
+"\M-[B":     next-history
+#            non-incremental-forward-search-history        (not bound)
+#            non-incremental-forward-search-history-again  (not bound)
+#            non-incremental-reverse-search-history        (not bound)
+#            non-incremental-reverse-search-history-again  (not bound)
+#            old-menu-complete                             (not bound)
+#            operate-and-get-next                          (not bound)
+#            overwrite-mode                                (not bound)
+#            possible-command-completions                  (not bound)
+#            possible-completions                          (not bound)
+#            possible-filename-completions                 (not bound)
+#            possible-hostname-completions                 (not bound)
+#            possible-username-completions                 (not bound)
+#            possible-variable-completions                 (not bound)
+"\M-OA":     previous-history
+"\M-[A":     previous-history
+#            print-last-kbd-macro                          (not bound)
+"\C-v":      quoted-insert
+#            redraw-current-line                           (not bound)
+#            re-read-init-file                             (not bound)
+"\C-r":      reverse-search-history
+#            revert-line                                   (not bound)
+"\C-a":      self-insert
+"\C-b":      self-insert
+"\C-c":      self-insert
+"\C-e":      self-insert
+"\C-f":      self-insert
+"\C-g":      self-insert
+"\C-k":      self-insert
+"\C-l":      self-insert
+"\C-o":      self-insert
+"\C-q":      self-insert
+"\C-x":      self-insert
+"\C-z":      self-insert
+"\C-\\":     self-insert
+"\C-]":      self-insert
+"\C-^":      self-insert
+"            ":                                            self-insert
+"!":         self-insert
+"\"":        self-insert
+"#":         self-insert
+"$":         self-insert
+"%":         self-insert
+"&":         self-insert
+"'":         self-insert
+"(":         self-insert
+"*":         self-insert
+"+":         self-insert
+",":         self-insert
+"-":         self-insert
+".":         self-insert
+"/":         self-insert
+"0":         self-insert
+"1":         self-insert
+"2":         self-insert
+"3":         self-insert
+"4":         self-insert
+"5":         self-insert
+"6":         self-insert
+"7":         self-insert
+"8":         self-insert
+"9":         self-insert
+":":         self-insert
+";":         self-insert
+"<":         self-insert
+"=":         self-insert
+">":         self-insert
+"?":         self-insert
+"@":         self-insert
+"A":         self-insert
+"B":         self-insert
+"C":         self-insert
+"D":         self-insert
+"E":         self-insert
+"F":         self-insert
+"G":         self-insert
+"H":         self-insert
+"I":         self-insert
+"J":         self-insert
+"K":         self-insert
+"L":         self-insert
+"M":         self-insert
+"N":         self-insert
+"O":         self-insert
+"P":         self-insert
+"Q":         self-insert
+"R":         self-insert
+"S":         self-insert
+"T":         self-insert
+"U":         self-insert
+"V":         self-insert
+"W":         self-insert
+"X":         self-insert
+"Y":         self-insert
+"Z":         self-insert
+"[":         self-insert
+"\\":        self-insert
+"^":         self-insert
+"_":         self-insert
+"`":         self-insert
+"a":         self-insert
+"b":         self-insert
+"c":         self-insert
+"d":         self-insert
+"e":         self-insert
+"f":         self-insert
+"g":         self-insert
+"h":         self-insert
+"i":         self-insert
+"j":         self-insert
+"k":         self-insert
+"l":         self-insert
+"m":         self-insert
+"n":         self-insert
+"o":         self-insert
+"p":         self-insert
+"q":         self-insert
+"r":         self-insert
+"s":         self-insert
+"t":         self-insert
+"u":         self-insert
+"v":         self-insert
+"w":         self-insert
+"x":         self-insert
+"y":         self-insert
+"z":         self-insert
+"{":         self-insert
+"|":         self-insert
+"~":         self-insert
+"\200":      self-insert
+"\201":      self-insert
+"\202":      self-insert
+"\203":      self-insert
+"\204":      self-insert
+"\205":      self-insert
+"\206":      self-insert
+"\207":      self-insert
+"\210":      self-insert
+"\211":      self-insert
+"\212":      self-insert
+"\213":      self-insert
+"\214":      self-insert
+"\215":      self-insert
+"\216":      self-insert
+"\217":      self-insert
+"\220":      self-insert
+"\221":      self-insert
+"\222":      self-insert
+"\223":      self-insert
+"\224":      self-insert
+"\225":      self-insert
+"\226":      self-insert
+"\227":      self-insert
+"\230":      self-insert
+"\231":      self-insert
+"\232":      self-insert
+"\233":      self-insert
+"\234":      self-insert
+"\235":      self-insert
+"\236":      self-insert
+"\237":      self-insert
+
+
+
+# vim:ft=readline
