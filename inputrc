@@ -90,9 +90,13 @@ set keymap                              vi-insert
 ## <F5> puts line inside command substitution
 "\e[15~":                       "\C-a$(\C-e)"
 
-### <F6>
-#"\e[17~":
+## <F6> insert sudo at beginning of line
+"\e[17~":                       "\C-asudo "
 
+## <F7> insert su - root -c at beginning of line
+"\e[18~":                       "\C-asu - root -c "
+
+"\M-\C-?":                      backward-kill-word
 
 ## Up
 "\eOA":                         previous-history

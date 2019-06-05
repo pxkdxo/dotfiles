@@ -42,6 +42,9 @@
 !/nanorc
 !/ncmpcpp
 !/ncmpcpp/config
+!/nvim
+!/nvim/init.vim
+!/nvim/colors
 !/pam_environment
 !/profile
 !/profile.d

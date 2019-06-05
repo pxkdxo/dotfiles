@@ -278,10 +278,12 @@ endif
 
 "" Set terminal colorscheme
 if &t_Co == 16777216 || $COLORTERM == 'truecolor' || $COLORTERM == '24bit'
-  colorscheme spacegray
+  "colorscheme spacegray
+  colorscheme desertP
 elseif $TERM =~ '\v^(iterm|linux|rxvt|st|tmux|vte|xterm)(-.*)?$'
   let &t_Co = 256
-  colorscheme spacegray
+  "colorscheme spacegray
+  colorscheme desertP
 endif
 
 
@@ -308,22 +310,21 @@ autocmd FileType python
 
 
 "" -- C / C++ --
-
 let g:c_comment_strings = 1 " Allow strings & numbers inside comments
 let g:c_gnu             = 1 " Highlight GNU specific items
 let g:c_space_errors    = 1 " Highlight space errors (?)
 
 "" Set local options when opening a C or C++ file
-autocmd FileType c,cpp setlocal sts=4 sw=4
+autocmd FileType c,cpp setlocal sts=8 sw=8
 
 
 "" Define mapping to set C modeline at end of file
 autocmd FileType c
-  \ nnoremap <leader>ml Go<CR>// vi:ft=c:et:sts=4:sw=4:ts=8<ESC><C-o>
+  \ nnoremap <leader>ml Go<CR>// vi:ft=c:et:sts=8:sw=8:ts=8<ESC><C-o>
 
 "" Define mapping to set C++ modeline at end of file
 autocmd FileType cpp
-  \ nnoremap <leader>ml Go<CR>// vi:ft=cpp:et:sts=4:sw=4:ts=8<ESC><C-o>
+  \ nnoremap <leader>ml Go<CR>// vi:ft=cpp:et:sts=8:sw=8:ts=8<ESC><C-o>
 
 
 
@@ -399,6 +400,11 @@ endif
 
 "" Key to act as <leader> in mappings
 let g:mapleader = ','         
+
+
+"" Next / Previous Tab
+nnoremap <silent><ESC>[1;3C :tabnext<CR>
+nnoremap <silent><ESC>[1;3D  :tabprev<CR>
 
 
 "" Toggle search highlighting
