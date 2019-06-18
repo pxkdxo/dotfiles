@@ -124,6 +124,7 @@ set keymap                              vi-insert
 "\e[1;5C":                      shell-forward-word
 "\e[5C":                        shell-forward-word
 "\e[1;3C":                      forward-word
+"\M-f": forward-word
 
 
 ## Left
@@ -134,6 +135,7 @@ set keymap                              vi-insert
 "\e[1;5D":                      shell-backward-word
 "\e[5D":                        shell-backward-word
 "\e[1;3D":                      backward-word
+"\M-b": backward-word
 
 
 ## Menu Completion 
@@ -147,10 +149,12 @@ set keymap                              vi-insert
 "\C-j":                         accept-line
 
 
+
+
 "\e[5~":                        reverse-search-history
 "\e[6~":                        forward-search-history
 "\e ":                          magic-space
-"\C-k":                         kill-line
+"\M-\C-?":                      backward-kill-word
 "\eOH":                         beginning-of-line
 "\e[H":                         beginning-of-line
 "\C-a":                         beginning-of-line
@@ -192,6 +196,7 @@ set keymap                              vi-insert
 "\e[4~":                        end-of-line
 "\e[8~":                        end-of-line
 "\e%":                          exchange-point-and-mark
+"\C-x\C-x":                          exchange-point-and-mark
 "\eg":                          glob-complete-word
 "\C-*":                         glob-expand-word
 "\C-g":                         glob-list-expansions
@@ -199,6 +204,8 @@ set keymap                              vi-insert
 "\C-x*":                        insert-completions
 "\e.":                          insert-last-argument
 "\e_":                          insert-last-argument
+"\C-k":                         kill-line
+"\M-d":                         kill-word
 "\en":                          non-incremental-forward-search-history
 "\ep":                          non-incremental-reverse-search-history
 "\C-o":                         operate-and-get-next

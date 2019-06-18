@@ -1,3 +1,10 @@
 [user]
-email = pdeyoreo@gmail.com
-name  = Patrick DeYoreo
+	email = pdeyoreo@gmail.com
+	name = Patrick DeYoreo
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+	interactive = auto
+[credential]
+	helper = cache --timeout=3600

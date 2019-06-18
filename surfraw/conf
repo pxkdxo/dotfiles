@@ -29,11 +29,11 @@ SURFRAW_graphical="no"
 
 # name/path of text browser executable
 # e.g links, lynx, w3m
-SURFRAW_text_browser="elinks"
+SURFRAW_text_browser="www-browser"
 
 # name/path of browser executable
 # e.g mozilla, netscape etc. Default to $BROWSER if no listed ones found
-SURFRAW_graphical_browser="${BROWSER:-firefox}"
+SURFRAW_graphical_browser="x-www-browser"
 
 # text browser arguments, or "none"
 SURFRAW_text_browser_args="none"

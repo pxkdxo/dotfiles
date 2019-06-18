@@ -1,6 +1,4 @@
-#
 ## ~/.pam_environment : login environment
-#
 
 
 ## Default Directories
@@ -32,15 +30,14 @@ TZ                      DEFAULT=America/Los_Angeles
 
 BLOCK_SIZE              DEFAULT=human-readable
 QUOTING_STYLE           DEFAULT=shell-escape
-TIME_STYLE              DEFAULT="+ %a %_d %b %_I:%M %p "
+TIME_STYLE              DEFAULT="+%a %_d %b %Y %_I:%M %p"
 
 
 
 ## Compatibility
 
-VERSION_CONTROL         DEFAULT=existing
-
-POSIXLY_CORRECT         DEFAULT=
+#VERSION_CONTROL         DEFAULT=existing
+#POSIXLY_CORRECT         DEFAULT=
 #_POSIX2_VERSION         DEFAULT=200809
 
 

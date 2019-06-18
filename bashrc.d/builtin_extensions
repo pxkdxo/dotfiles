@@ -2,14 +2,14 @@
 
 
 ## Make the specified directory, then cd into it
-## mkcd [mkdir-options] directory
+## mkcd [mkdir_options] directory
 mkcd() {
-  if test "$#" -le 0; then
-    printf 'usage: %s [mkdir-options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
+  if (( $# < 1 )); then
+    printf 'usage: %q [mkdir_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
     return 2
   fi
 
-  if mkdir -pv "$@"; then
+  if mkdir "$@"; then
     printf 'cd -- %q\n' "${!#}"
     cd -- "${!#}"
   fi
@@ -20,21 +20,34 @@ mkcd() {
 ## cd into a directory and print its contents
 ## cdls [ls_options] directory
 cdls() {
-  if test "$#" -le 0; then
-    printf 'usage: %s [ls-options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
+  if (( $# < 1 )); then
+    printf 'usage: %q [ls_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
     return 2
   fi
-
-  printf 'cd -- %q\n' "${!#}"
-  if cd -- "${!#}"; then
-    ls "${@:1:($# - 1)}"
+  
+  if printf 'cd -- %q\n' "${!#}"; cd -- "${!#}"; then
+    if (( $# > 1 )); then
+      ls "${@:1:($# - 1)}" ./
+    else
+      ls ./
+    fi
   fi
 }
 
 
 ## cd up (../) depth levels of the directory heirarchy
 up() {
-  cd ../
+  local -i i=0
+  if (( $# > 1 )); then
+    printf 'usage: %q [depth]\n' "${FUNCNAME[0]}" 1>&2
+    return 2
+  fi
+
+  if { (( ${1:-1} > 0 )); } 2>/dev/null; then
+    for (( i = ${1:-1}; i > 0; --i )); do
+      cd ../
+    done
+  fi
 }
 
 
@@ -44,3 +57,6 @@ lwhich() {
     ls -l $(type -ap "$_")
   done
 }
+
+
+# vi:ft=sh:et:sts=2:sw=2:ts=8

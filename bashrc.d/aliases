@@ -1,10 +1,9 @@
 ## Alias definitions for interactive shells
-## maintained by Patrick DeYoreo
 
 
 ## Function for defining multiple aliases from a template
 ## usage: aliasfmt to-replace template [name ...]
-aliasfmt() {
+alias_fmt() {
 
   ## Too few arguments, then print usage message and return
   test "$#" -lt 2 && {
@@ -28,7 +27,9 @@ aliasfmt() {
 
 
 
-## -- expand next word --
+## -- define aliases allowing expansion of following word --
+
+#alias_fmt '{}' '{} ' exec nohup rlwrap sudo unbuffer
 
 alias exec="${BASH_ALIASES["exec"]:-"exec"} "
 
@@ -36,14 +37,9 @@ alias nohup="${BASH_ALIASES["nohup"]:-"nohup"} "
 
 alias sudo="${BASH_ALIASES["sudo"]:-"sudo"} "
 
-alias rlwrap="${BASH_ALIASES["rlwrap"]:-"rlwrap"} "
-
-alias unbuffer="${BASH_ALIASES["unbuffer"]:-"unbuffer"} "
-
 
 
 ## -- default options --
-
 
 alias jobs='jobs -l'
 
@@ -65,9 +61,13 @@ alias shuf='shuf --random-source=/dev/random'
 
 alias sort='sort --random-source=/dev/random'
 
+alias emacs='emacs --no-window-system'
+
 
 
 ## -- colored output --
+
+#alias_fmt '{}' '{} --color=auto' ls dir vdir grep egrep fgrep
 
 alias ls="${BASH_ALIASES["ls"]:-"ls"} --color=auto"
 
@@ -81,21 +81,17 @@ alias egrep="${BASH_ALIASES["egrep"]:-"egrep"} --color=auto"
 
 alias fgrep="${BASH_ALIASES["fgrep"]:-"fgrep"} --color=auto"
 
-alias pcre2grep="${BASH_ALIASES["pcre2grep"]:-"pcre2grep"} --color=auto"
 
 
+## -- overrides --
 
-## -- command overrides --
-
-#alias which='type -P'
-
-if command -v 'htop' 1>/dev/null; then
+if command -v htop 1>/dev/null; then
   alias top='htop'
 fi
 
 
 
-## -- builtins --
+## -- shell builtins --
 
 alias l='ls'
 alias ll='ls -l'
@@ -105,8 +101,6 @@ alias lla='ls -lA'
 alias llr='ls -lR'
 
 alias j='jobs'
-
-alias mkd='mkdir'
 
 alias pf='printf'
 
@@ -153,7 +147,7 @@ alias pf,G='printf '"'"'%#'"'"'"'"'"'"'"'"'G\n'"'"
 
 
 
-## -- system command shortcuts --
+## -- systemd command shortcuts --
 
 alias jctl='journalctl'
 alias sctl='systemctl'
@@ -164,15 +158,8 @@ alias sctlu='systemctl --user'
 
 
 
-## -- external command shortcuts --
-
-alias mkvenv='mkvirtualenv'
-alias cdvenv='cdvirtualenv'
-alias lsvenv='lsvirtualenv'
-alias rmvenv='rmvirtualenv'
-
-
 ## -- python --
+
 alias p='python'
 alias py='python'
 
@@ -191,24 +178,24 @@ if command -v 'pip3' 1>/dev/null; then
 fi
 
 
-# -- xclip --
 
-alias xc0='xclip -sel clipboard'
-alias xc0.i='xclip -sel clipboard -i'
-alias xc0.o='xclip -sel clipboard -o'
-alias xc0.f='xclip -sel clipboard -f'
+## -- xclip --
 
-alias xc1='xclip -sel primary'
-alias xc1.i='xclip -sel primary -i'
-alias xc1.o='xclip -sel primary -o'
-alias xc1.f='xclip -sel primary -f'
+alias xc.0='xclip -sel clipboard'
+alias xci.0='xclip -sel clipboard -i'
+alias xco.0='xclip -sel clipboard -o'
+alias xcf.0='xclip -sel clipboard -f'
 
-alias xc2='xclip -sel secondary'
-alias xc2.i='xclip -sel secondary -i'
-alias xc2.o='xclip -sel secondary -o'
-alias xc2.f='xclip -sel secondary -f'
+alias xc.1='xclip -sel primary'
+alias xci.1='xclip -sel primary -i'
+alias xco.1='xclip -sel primary -o'
+alias xcf.1='xclip -sel primary -f'
+
+alias xc.2='xclip -sel secondary'
+alias xci.2='xclip -sel secondary -i'
+alias xco.2='xclip -sel secondary -o'
+alias xcf.2='xclip -sel secondary -f'
           
-
 
 
 ## -- poor-man's functions --
@@ -218,7 +205,10 @@ alias findhere='find ./ -maxdepth 1'
 
 
 ## Run vim pager
-alias vless='/usr/share/vim/vim[0-9][0-9]/macros/less.sh'
+alias vless='/usr/share/vim/vim80/macros/less.sh'
+
+## Run nvim pager
+alias nvless='/usr/share/nvim/runtime/macros/less.sh'
 
 
 ## Pulse Audio loop to send input to output
@@ -265,16 +255,16 @@ mygroupstab() {
 
 
 ## Fork a copy of executable of the current parent process
-fork_parent() {
-  if test -x "/proc/${PPID}/exe"; then
-    (exec -a "$0" "/proc/${PPID}/exe" "$@") 0</dev/null 1>&0 2>&1 &
-    disown %+
-  else
-    printf 1>&2 '%q: %q: %q: No such file or directory\n' \
-      "${0##*/}" "${FUNCNAME}" "/proc/${PPID}/exe"
-    return 1
-  fi
-}
+#fork_parent() {
+#  if test -x "/proc/${PPID}/exe"; then
+#    (exec -a "$0" "/proc/${PPID}/exe" "$@") 0</dev/null 1>&0 2>&1 &
+#    disown %+
+#  else
+#    printf 1>&2 '%q: %q: %q: No such file or directory\n' \
+#      "${0##*/}" "${FUNCNAME}" "/proc/${PPID}/exe"
+#    return 1
+#  fi
+#}
 
 
 
@@ -284,7 +274,7 @@ wgetdir() {
         --recursive                             \
         --no-parent                             \
         --no-directories                        \
-        --level="${wget_depth:-1}"              \
+        --level="${wget_depth:-"1"}"              \
         --reject="${wget_reject:-"index.html"}" \
         "$@"
 }

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ## Aliases for docker
 ## Patrick DeYoreo <pdeyoreo@gmail.com>
 
@@ -79,65 +80,83 @@ alias doc.rmall='{ doc.kill $(doc.ps -q); doc.rm $(doc.ps -aq); } 2>/dev/null'
 
 ## Create a new jupyter datascience notebook container
 ## usage: doc.jupyter-notebook [-d] [--rm] [-p host-port] [-v host-directory]
-doc.jupyter-notebook() {
+doc.jupyter-nb() {
 
-  ## Try to initialize local variables
-  if local cmd=( ) help=''; then
-    ## Define generic command and generate usage message
-    cmd=( docker run --tty )
-    printf -v help 'usage: %q [-d] [--rm] [-p host-port] [-v host-dir]' \
-      "${FUNCNAME}"
-  else
-    ## Print error message and return error code
-    printf "%q: %q: Unable to initialize local variables\n" 1>&2 \
-      "${0##*/}" "${FUNCNAME}"
-    return 3
-  fi
+  ## Initialize local variables
+  local usage='usage: %q [-d] [--rm] [-p host-port] [-v host-dir] [image]' &&
+    local -a cmd=( docker run --tty )  || {
+    printf '%q: Cannot assign local variables\n' "${FUNCNAME}" 1>&2 
+    return 10
+  }
 
   ## Parse options and construct command
-  while (( $# )); do
+  while [[ $1 == -?* ]]; do
     case $1 in
-
+      --)
+        shift
+        break
+        ;;
      -p|--port)
         shift
-        cmd+=( -p "${1:-"${JOVYAN_PORT:-"8888"}"}:8888" )
+        cmd+=( -p "${1:-"${JUPYTER_PORT:-"8888"}"}:8888" )
         shift || break
         ;;
-
       -v|--volume)
         shift
-        cmd+=( -v "${1:-"${JOVYAN_WORK:-"${PWD}"}"}:/home/jovyan/work" )
+        cmd+=( -v "${1:-"${JUPYTER_DIR:-"${PWD}"}"}:/home/jovyan/work" )
         shift || break
         ;;
-
       -d|--detach)
         cmd+=( -d )
         shift
         ;;
-
       --rm)
         cmd+=( --rm )
         shift
         ;;
-
       -h|--help)
-        printf '%s\n' "${help}"
+        printf "${usage}\n" "${FUNCNAME[0]}"
         return 0
         ;;
-
       *)
-        printf '%s\n' "${help}" 1>&2
+        printf "${usage}\n" "${FUNCNAME[0]}" 1>&2
         return 2
         ;;
-
     esac
   done
 
 
-  ## Run jupyter-notebook
-  "${cmd[@]}" jupyter/datascience-notebook
+  if (( $# > 1 )); then
+    { printf "%q: %q: too many arguments\n" "${0##*/}" "${FUNCNAME[0]}"
+      printf "${usage}\n" "${FUNCNAME[0]}"
+    } 1>&2
+    return 2
+  fi
+
+  if (( $# )); then
+    cmd+=( "jupyter/${1#*/}" )
+
+  else
+    read -r "cmd[${#cmd[@]}]" < <(
+      docker image ls --format='{{.Repository}}' 'jupyter/*-notebook'
+      printf 'jupyter/scipy-notebook\n'
+    )
+  fi
+
+  "${cmd[@]}"
 }
 
 
 
 ## vim:et:ft=sh:sts=2:sw=2:ts=8
+doc.jupyter-token() {
+local -A ps=( ) tokens=( )
+  while IFS=':' read -r 'ps[id]' 'ps[image]'; do
+    [[ ${ps['image']} == jupyter/*-notebook &&
+          $(docker logs "${ps['id']}") =~ https?://.*/\?token=([^[:space:]]*)
+    ]] && tokens["${ps['id']}"]="${BASH_REMATCH[1]}" || unset -v 'ps[@]' 
+  done < <(docker ps --format '{{.ID}}:{{.Image}}')
+  for _ in "${!tokens[@]}"; do
+    printf '%q\t%q\n' "$_" "${tokens["$_"]}"
+  done
+}

@@ -1,9 +1,9 @@
 ## .zshrc : zsh 5.4.1 interactive shell initialization file
 
 
-## Load plugins from my app data dir
+## Load plugins from zsh data directory
 () { repeat $# do { source "$1"; shift } done
-} ${XDG_DATA_HOME:-~/.local/share}/zsh/plugins/*/*.zsh(.N)
+} "${XDG_DATA_HOME:-"${HOME}/.local/share"}/zsh/plugins"/*/*.zsh(.N)
 
 
 zstyle ':completion:*' add-space true
@@ -60,7 +60,11 @@ zstyle ':compinstall'  filename ~/.zshrc
 autoload -Uz compinit
 compinit
 
-HISTFILE=${XDG_DATA_HOME:-~/.local/share}/zsh/history
+if test -d "${XDG_CACHE_HOME:-"${HOME}/.cache"}/zsh"; then
+  HISTFILE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/zsh/history"
+else
+  HISTFILE="${HOME}/.zsh_history"
+fi
 HISTSIZE=32767
 SAVEHIST=30000
 

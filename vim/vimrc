@@ -47,7 +47,7 @@ set softtabstop=2
 set tabstop=8
 
 "" Line length past which lines are broken automatically 
-set textwidth=79
+set textwidth=80
 
 
 
@@ -97,7 +97,6 @@ endif
 
 "" Always show status line
 set laststatus=2
-
 
 
 "" -- Cursor Movement --
@@ -288,6 +287,45 @@ endif
 
 
 
+"" -- C / C++ --
+let g:c_comment_strings = 1 " Allow strings & numbers inside comments
+let g:c_gnu             = 1 " Highlight GNU specific items
+let g:c_space_errors    = 1 " Highlight space errors (?)
+
+"" Set local options when opening a C or C++ file
+autocmd FileType c,cpp setlocal sts=8 sw=8
+
+
+"" Define mapping to set C modeline at end of file
+autocmd FileType c
+  \ nnoremap <leader>ml Go<CR>// vi:ft=c:et:sts=8:sw=8:ts=8<ESC><C-o>
+
+"" Define mapping to set C++ modeline at end of file
+autocmd FileType cpp
+  \ nnoremap <leader>ml Go<CR>// vi:ft=cpp:et:sts=8:sw=8:ts=8<ESC><C-o>
+
+
+
+"" -- Git commits --
+
+"" Set textwidth when writing a git commit message
+autocmd FileType gitcommit setlocal tw=72
+
+
+
+"" -- Man --
+
+"" Set local options when opening a manpage
+autocmd FileType man setlocal colorcolumn= nohidden noswapfile noundofile
+
+"" Load the Man plugin
+runtime ftplugin/man.vim
+
+"" K command opens man pages in vim
+set keywordprg=:Man
+
+
+
 "" -- Python --
 
 "" Set the default python version for pyx commands
@@ -309,25 +347,6 @@ autocmd FileType python
 
 
 
-"" -- C / C++ --
-let g:c_comment_strings = 1 " Allow strings & numbers inside comments
-let g:c_gnu             = 1 " Highlight GNU specific items
-let g:c_space_errors    = 1 " Highlight space errors (?)
-
-"" Set local options when opening a C or C++ file
-autocmd FileType c,cpp setlocal sts=8 sw=8
-
-
-"" Define mapping to set C modeline at end of file
-autocmd FileType c
-  \ nnoremap <leader>ml Go<CR>// vi:ft=c:et:sts=8:sw=8:ts=8<ESC><C-o>
-
-"" Define mapping to set C++ modeline at end of file
-autocmd FileType cpp
-  \ nnoremap <leader>ml Go<CR>// vi:ft=cpp:et:sts=8:sw=8:ts=8<ESC><C-o>
-
-
-
 "" -- Readline --
 
 let g:readline_has_bash = 1 " Highlight additions available through bash
@@ -336,6 +355,17 @@ let g:readline_has_bash = 1 " Highlight additions available through bash
 "" Define mapping to set sed modeline at end of file
 autocmd FileType sed
   \ nnoremap <leader>ml Go<CR># vi:ft=readline:et:sts=2:sw=2:ts=8<ESC><C-o>
+
+
+
+"" -- Sed --
+
+let g:highlight_sedtabs = 1 " Highlight real tabs in sed scripts
+
+
+"" Define mapping to set sed modeline at end of file
+autocmd FileType sed
+  \ nnoremap <leader>ml Go<CR># vi:ft=sed:et:sts=2:sw=2:ts=8<ESC><C-o>
 
 
 
@@ -351,29 +381,15 @@ autocmd FileType sh
   \ nnoremap <leader>ml Go<CR># vi:ft=sh:et:sts=2:sw=2:ts=8<ESC><C-o>
 
 
+"" Set filetype to sh when editing a shell command line in vim
 
-"" -- Sed --
-
-let g:highlight_sedtabs = 1 " Highlight real tabs in sed scripts
-
-
-"" Define mapping to set sed modeline at end of file
-autocmd FileType sed
-  \ nnoremap <leader>ml Go<CR># vi:ft=sed:et:sts=2:sw=2:ts=8<ESC><C-o>
-
-
-
-"" -- Man --
-
-"" Set local options when opening a manpage
-autocmd FileType man setlocal colorcolumn= nohidden noswapfile noundofile
-
-"" Load the Man plugin
-runtime ftplugin/man.vim
-
-"" K command opens man pages in vim
-set keywordprg=:Man
-
+if isdirectory($TMPDIR)
+  autocmd BufRead $TMPDIR/bash-fc.*,/tmp/bash-fc.*
+    \ set ft=sh noswapfile noundofile
+else
+  autocmd BufRead /tmp/bash-fc.*
+    \ set ft=sh noswapfile noundofile
+endif
 
 
 "" -- help --
@@ -403,8 +419,11 @@ let g:mapleader = ','
 
 
 "" Next / Previous Tab
+nnoremap <silent><C-T>      :tabnew<CR>
 nnoremap <silent><ESC>[1;3C :tabnext<CR>
-nnoremap <silent><ESC>[1;3D  :tabprev<CR>
+nnoremap <silent><ESC>[1;3D :tabprev<CR>
+noremap! <silent><ESC>[1;3C <ESC>:tabnext<CR>
+noremap! <silent><ESC>[1;3D <ESC>:tabprev<CR>
 
 
 "" Toggle search highlighting

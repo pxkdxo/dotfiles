@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-exec /usr/bin/env X -keeptty -verbose 2 -nolisten tcp "$@" 2>&1
+if command -v X 1>/dev/null; then
+  exec "$(command -v X)" -keeptty -nolisten tcp "$@" "vt${XDG_VTNR}" 2>&1
+fi
