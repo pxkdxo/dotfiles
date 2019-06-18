@@ -1,47 +1,26 @@
-## -- youtube-dl --
+## youtube-dl shell extensions
 
+
+## define a command shortcut
 alias ydl='youtube-dl'
 
 
 ## download audio from youtube with available metadata
 ydla() {
   youtube-dl \
-  --extract-audio \
-  --audio-quality 0 \
-  --console-title \
-  --format 'bestaudio/best' \
-  --output \
-  "${XDG_MUSIC_DIR:-"${HOME}/Music"}/%(title)s-%(abr)dkBps.%(ext)s" \
-  --geo-bypass \
-  --ignore-errors \
-  --playlist-random \
-  --min-sleep-interval 1 \
-  --max-sleep-interval 5 \
-  --add-metadata \
-  --metadata-from-title \
-    '^((?P<artist>.+?)\s+-\s+((?P<album>.+?)\s+-\s+)?)?(?P<title>.+?)?$' \
-  --exec 'mv {} "$(printf %s {} | tr -s '"'"' '"'"' _)"' \
-  "$@"
-}
-
-
-## download youtube audio from link in clipboard
-ydla.sel() {
-
-  if [[ 'clipboard' =~ "$1" || 'primary' =~ "$1" || 'secondary' =~ "$1" ]]; then
-
-    ydla "$(xclip -o -selection "${1:-"clipboard"}")"
-
-  else
-    printf 1>&2 '%q: %q: %q: invalid selection\n' \
-      "${0##*/}" "${FUNCNAME[@]::1}" "$1"
-
-    printf 1>&2 '%q: usage: %q selection\n' \
-      "${0##*/}" "${FUNCNAME[@]::1}"
-
-    return 2
-
-  fi
+    --extract-audio \
+    --audio-quality 0 \
+    --format 'bestaudio/best' \
+    --output "${XDG_MUSIC_DIR:-"${HOME}/Music"}/%(title)s.%(ext)s" \
+    --geo-bypass \
+    --ignore-errors \
+    --playlist-random \
+    --min-sleep-interval 1 \
+    --max-sleep-interval 5 \
+    --add-metadata \
+    --metadata-from-title \
+      '^((?P<artist>.+?)\s+-\s+((?P<album>.+?)\s+-\s+)?)?(?P<title>.+?)?$' \
+    "$@"
 }
 
 
