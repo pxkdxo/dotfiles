@@ -1,29 +1,29 @@
-# ~/.bash_logout : bash logout script
-  
-# Honor both 'histappend' and 'erasedups'
+## ~/.bash_logout : bash logout script
+
+## Honor both 'histappend' and 'erasedups'
 if [[ :${HISTCONTROL-}: = *:erasedups:* ]]; then
   if [[ :${BASHOPTS-}:  = *:histappend:* ]]; then
-    history -a  # Append new history
-    history -c  # Clear history
-    history -r  # Read history (shared state)
+    history -a  ## Append new history
+    history -c  ## Clear history
+    history -r  ## Read history (shared state)
   else
-    history -n            # Read new history
-    shopt -s histappend   # Enable 'histappend' (shared state)
+    history -n            ## Read new history
+    shopt -s histappend   ## Enable 'histappend' (shared state)
   fi
 
-  # Trigger duplicate removal by writing the history file 
-  history -w
-
-  # No more history to append...
+  ## Clear the history buffer
   history -c
+
+  ## Re-read history from updated histfile
+  history -r
 fi
 
 
-# Clear and reset the terminal
-tput reset
 
-
-# When leaving the console clear the screen
+## If leaving the console, clear the screen
 if [[ ${SHLVL} -eq 1 ]]; then
-  command -v clear_console 1>/dev/null && clear_console -q
+  clear_console -q
+## Otherwise, reset the terminal
+else
+  tput reset
 fi

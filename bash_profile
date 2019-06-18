@@ -13,7 +13,16 @@ if [[ -f ~/.bashrc && -r ~/.bashrc ]]; then
 fi
 
 
-## autostart X upon login on tty1
-if [[ -z ${DISPLAY} && ${XDG_VTNR} -eq 1 ]]; then
-  exec /usr/bin/env startx
+## If logging in at tty1, switch to an Xsession
+if [[ -z ${DISPLAY-} && ${XDG_VTNR-} -eq 1 ]] && command -v startx 1>/dev/null
+then
+  exec startx
 fi
+
+
+## For other logins, switch to a tmux session
+#if [[ -z ${TMUX} ]] && command -v tmux 1>/dev/null; then
+#  tmux list-sessions 1>/dev/null &&
+#    exec tmux attach ||
+#    exec tmux new-session
+#fi

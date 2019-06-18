@@ -8,8 +8,8 @@
 # If this is not an interactive shell, stop
 [[ $- != *i* ]] && return 0
 
-# Create a directory to store shell data
-mkdir -p "${XDG_CACHE_HOME:-"${HOME}/.cache"}/bash"
+# Create a cache directory
+mkdir -p -m 0700 "${XDG_CACHE_HOME:-"${HOME}/.cache"}/bash"
 
 # Make an associative array to store terminfo entries
 declare -A ti=( )
@@ -97,7 +97,7 @@ shopt -u dotglob
 ## -- History Options --
 
 # Configure the location of the history file
-if [[ -d ${XDG_CACHE_HOME:-"${HOME}/.cache"}/bash ]]; then
+if [[ -d ${XDG_CACHE_HOME:-${HOME}/.cache}/bash ]]; then
   HISTFILE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/bash/history"
 else
   HISTFILE="${HOME}/.bash_history"
@@ -133,19 +133,19 @@ shopt -s lithist
 
 
 
-## -- Prompt Variables --
+## -- Prompt Appearance --
 
 # Limit depth of paths yielded by '\w' upon prompt exanding
-PROMPT_DIRTRIM=4
+declare -i PROMPT_DIRTRIM=4
 
 # Uncomment for a colored prompt (assuming terminal has the capability)
 color_prompt='yes'
 
-# Check if color_prompt is non-null
-if [[ -n ${color_prompt} ]]; then
-  # Check for color support; assume it's compliant with Ecma-48 (ISO/IEC-6429)
-  command -v tput 1>/dev/null && tput setaf 1 || unset -v color_prompt
-fi
+# If color_prompt is non-null, check for color support
+[[ -n ${color_prompt} ]] && {
+  { command -v tput && tput setaf 2>&1; } 1>/dev/null ||
+    unset -v color_prompt
+}
 
 
 
@@ -153,7 +153,8 @@ fi
 ## -- Prompt Strings --
 
 # Sets the primary prompt
-PS1() { declare -g PS1='\
+PS1() {
+  declare -g PS1='\
 \[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
 \['"$1"'\]\
 $(printf '\''%.s'$'\u2500'\'' {1..'"$(( COLUMNS ? COLUMNS : "$(tput cols)" ))"'}
@@ -178,37 +179,40 @@ $(printf '\''%.s'$'\u2500'\'' {1..'"$(( COLUMNS ? COLUMNS : "$(tput cols)" ))"'}
 \n\
 \[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}\]\
 \['"$1"'\]\
-\$'$'\u0192\u2022''\
-\[${ti[sgr0]:=$(tput sgr0)}\] '; }
+\$>\
+\[${ti[sgr0]:=$(tput sgr0)}\] '
+}
 
 
 # Sets the secondary prompt
-PS2() { declare -g PS2='\
+PS2() {
+  declare -g PS2='\
 \[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}\]\
 \['"$1"'\]\
 $(( (LINENO - '"$((BASH_LINENO[-1]))"') / 10 ))\
 $(( (LINENO - '"$((BASH_LINENO[-1]))"') % 10 ))\
-'$'\u2022''\
-\[${ti[sgr0]:=$(tput sgr0)}\] '; }
+\[${ti[sgr0]:=$(tput sgr0)}\] '
+}
 
 
 # Sets the select prompt
-PS3() { declare -g PS3='*> '; }
+PS3() { declare -g PS3='?> '; }
 
 
 # Sets the execution-trace prompt
-PS4() { declare -g PS4='+> '; }
+PS4() { declare -g PS4='.> '; }
 
 
 # Updates the prompt strings
 __set_prompt_strings() {
 
-  # Get exit status of previous command
-  set -- "$?"
+  # If called with no args, set 1st param to exit status of previous command
+  set -- "${1:-"$?"}"
 
-  # Choose color based on previous exit status (if color_prompt is enabled)
-  [[ -n ${color_prompt} ]] && (( $1 > 0 )) && 
+  # If color_prompt is non-null, set prompt color based on value of 1st param
+  if [[ -n ${color_prompt} ]] && (( $1 > 0 )); then
     set -- "$1" "$(tput setaf "$(( ($1 - 1) % 6 + 1 ))")"
+  fi
 
   PS1 "$2"  # Set primary prompt
   PS2 "$2"  # Set secondary prompt
@@ -217,7 +221,6 @@ __set_prompt_strings() {
 
   # Return exit status of the last command executed before this function
   return "$1"
-
 }
 
 
@@ -225,30 +228,24 @@ __set_prompt_strings() {
 
 ## -- PROMPT_COMMAND / bash-preexec --
 
-# Define regex to check for bash-preexec by matching its DEBUG trap
-__bash_preexec_regex=\
+# Regex to check for presence of bash-preexec by matching its DEBUG trap
+__bp_debug_trap_regex=\
 "trap -- '(.*[;"$'\n''])?\s*__bp_preexec_invoke_exec\s*([;'$'\n'"].*)?' DEBUG"
 
-# Check if bash-preexec is being used
-if [[ $(trap -p DEBUG) =~ ${__bash_preexec_regex} ]]; then
+# Check if bash-preexec is active
+if [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_regex} ]]; then
 
   # Prepend function to update prompt strings to precmd_functions
   precmd_functions=( __set_prompt_strings "${precmd_functions[@]}" )
 
-# Check if the prompt_command array needs to be configured
+# Check if the prompt_command array is configured
 elif [[ ${prompt_command} != __set_prompt_strings ]]; then
 
   # Check if the prompt_command array needs to be created
   if [[ ${prompt_command@a} != *a* ]]; then
 
     # Unset any existing prompt_command variable
-    [[ -v prompt_command ]] && {
-      if [[ -R prompt_command ]]; then
-        unset -nv prompt_command
-      else
-        unset -v prompt_command
-      fi
-    }
+    [[ -v prompt_command ]] && unset -v prompt_command
 
     # Read commands from PROMPT_COMMAND into the prompt_command array
     IFS=$';\n' read -r -d '' -a prompt_command <<<"${PROMPT_COMMAND}"
@@ -286,7 +283,7 @@ case ${TERM} in
 
   xterm*|rxvt*|vte*|screen*|tmux*)
     # Test for bash-preexec
-    if [[ $(trap -p DEBUG) =~ ${__bash_preexec_regex} ]]; then
+    if [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_regex} ]]; then
       ( IFS=':'; [[ ":${precmd_functions[*]}:" != *:__set_window_title:* ]] ) &&
         precmd_functions+=( __set_window_title )
     else
@@ -303,13 +300,19 @@ esac
 ## -- Bash Completion --
 
 # Looks for bash-completion in XDG directories, falling back to sane defaults
-# Note: only sources first file found
+# Sources first file found
 __load_bash_completion() {
-  if local IFS=':'; then
-    for _ in ${XDG_DATA_HOME:-~/.local/share} ${XDG_DATA_DIRS:-/usr/share}; do
+  if local IFS=':' && local -a dirs=( 
+    "${XDG_DATA_HOME:-"${HOME-}/.local/share"}"
+    "${XDG_DATA_DIRS:-"/usr/local/share:/usr/share"}"
+    )
+  then
+    read -r -a dirs <<<"${dirs[*]}"
+    for _ in "${dirs[@]}"; do
       if [[ -f "$_/bash-completion/bash_completion" ]]; then
-        source "$_/bash-completion/bash_completion"
-        return 0
+        if source "$_/bash-completion/bash_completion"; then
+          return 0
+        fi
       fi
     done
   fi
@@ -339,8 +342,8 @@ gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
 
 ## Configure SSH to use gpg-agent
 [[ -S ${SSH_AUTH_SOCK} && ${SSH_AUTH_SOCK} == /?(*/)S.gpg-agent.ssh ]] || {
-  unset SSH_AGENT_PID # Unset the current ssh-agent PID
-  ## Check that gpg-agent was not started as ``gpg-agent --daemon /bin/sh''
+  unset -v SSH_AGENT_PID
+  ## Check that gpg-agent was not started as 'gpg-agent --daemon /bin/sh'
   if (( ${gnupg_SSH_AUTH_SOCK_by:-0} != $$ )); then
     ## Set SSH_AUTH_SOCK to gpg-agent's socket and add it to the environment
     export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
@@ -353,9 +356,8 @@ gpg-connect-agent updatestartuptty /bye 1>/dev/null 2>&1
 ## -- Lessopen --
 
 # Make less more friendly for non-text input files
-if command -v lesspipe 1>/dev/null; then
+command -v lesspipe 1>/dev/null &&
   eval "$(SHELL="$(command -v "${0##*(*/|-)}")" lesspipe)"
-fi
 
 
 
@@ -366,37 +368,42 @@ fi
 # Accepts a single set of arguments to pass on to sourced scripts
 sourcedir() {
 
-  # Check if this is the top layer of recursion, and if so, save BASHOPTS
+  # If this is the top layer of recursion, check status of nullglob
   [[ "${FUNCNAME[0]}" == "${FUNCNAME[1]}" ]] || {
-    local -i nullglob=0 || return 10
+    local -i nullglob=0
     shopt -q nullglob && nullglob=1
   }
 
-  # Check if first argument is a directory
-  if [[ -d $1/ ]]; then
+  # If the first arg is a directory, operate on its contents
+  if [[ -d "$1"/ ]]; then
+
     # Enable nullglob to allow empty expansions
     shopt -s nullglob
-    # Recurse on all files and subdirectories (if any)
+
+    # Recurse through all files and subdirectoriess
     for _ in "$1"/*; do
       "${FUNCNAME[0]}" "$_" "${@:2}"
     done
-    # If nullglob is still enabled, disable it for stability
+
+    # Disable nullglob for stability
     shopt -q nullglob && shopt -u nullglob
 
-  # First argument is not a directory
+  # If the first arg is not a directory, try to source it
   else
-    # If nullglob is still enabled, disable it for stability
+
+    # Disable nullglob for stability
     shopt -q nullglob && shopt -u nullglob
-    # Source the first argument, passing any additional parameters
+
+    # Source the first arg, passing in any additional params
     builtin source "$@"
+
   fi
 
-  # Check if this is the top layer of recursion, and if so, reset nullglob
+  # If this is the top layer of recursion, reset nullglob
   [[ "${FUNCNAME[0]}" == "${FUNCNAME[1]}" ]] || {
     (( nullglob )) && shopt -s nullglob
   }
 
-  # Return to caller
   return 0
 }
 
@@ -405,61 +412,6 @@ sourcedir() {
 sourcedir ~/.bashrc.d
 
 
-
-
-### -- Bash Traps --
-#
-### Array of all traps indexed by signal name
-#declare -A BASH_TRAPS=(
-#  [HUP]=''        [INT]=''        [QUIT]=''      
-#  [ILL]=''        [TRAP]=''       [ABRT]=''      
-#  [BUS]=''        [FPE]=''        [KILL]=''      
-#  [USR1]=''       [SEGV]=''       [USR2]=''              
-#  [PIPE]=''       [ALRM]=''       [TERM]=''      
-#  [STKFLT]=''     [CHLD]=''       [CONT]=''      
-#  [STOP]=''       [TSTP]=''       [TTIN]=''      
-#  [TTOU]=''       [URG]=''        [XCPU]=''              
-#  [XFSZ]=''       [VTALRM]=''     [PROF]=''      
-#  [WINCH]=''      [IO]=''         [PWR]=''       
-#  [SYS]=''        [RTMIN]=''      [RTMIN+1]=''   
-#  [RTMIN+2]=''    [RTMIN+3]=''    [RTMIN+4]=''           
-#  [RTMIN+5]=''    [RTMIN+6]=''    [RTMIN+7]=''   
-#  [RTMIN+8]=''    [RTMIN+9]=''    [RTMIN+10]=''  
-#  [RTMIN+11]=''   [RTMIN+12]=''   [RTMIN+13]=''  
-#  [RTMIN+14]=''   [RTMIN+15]=''   [RTMAX-14]=''          
-#  [RTMAX-13]=''   [RTMAX-12]=''   [RTMAX-11]=''  
-#  [RTMAX-10]=''   [RTMAX-9]=''    [RTMAX-8]=''   
-#  [RTMAX-7]=''    [RTMAX-6]=''    [RTMAX-5]=''   
-#  [RTMAX-4]=''    [RTMAX-3]=''    [RTMAX-2]=''   
-#  [RTMAX-1]=''    [RTMAX]=''      [DEBUG]=''        
-#  [ERR]=''        [EXIT]=''       [RETURN]=''               
-#)
-#
-#
-## Maps traps to signal names
-#__update_bash_traps() {
-#  local -             &&
-#    set -o functrace  &&
-#    local sig=''      &&
-#    for sig in "${!BASH_TRAPS[@]}"; do
-#      declare -Ag BASH_TRAPS["${sig}"]="$(trap -p "${sig}")"
-#    done
-#  trap "${BASH_TRAPS["RETURN"]:-"trap RETURN"}" RETURN
-#} && declare -ft __update_bash_traps
-#
-#
-### Test for bash-preexec
-#if [[ "$(trap -p DEBUG)" =~ ${__bash_preexec_regex} ]]; then
-#  ## Add Pre-Cmd function to update BASH_TRAPS
-#  ( IFS=':'; [[ ":${precmd_functions[*]}:" != *:__update_bash_traps:* ]] ) &&
-#    precmd_functions+=( '__update_bash_traps' )
-#else 
-#  ## Add prompt_command function to update BASH_TRAPS
-#  ( IFS=':'; [[ ":${prompt_command[*]}:" != *:__update_bash_traps:* ]] ) &&
-#    prompt_command+=( '__update_bash_traps' )
-#fi
-
-  
 
 
 # vi:et:sts=2:sw=2:ts=8:tw=80
