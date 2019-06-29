@@ -1,16 +1,15 @@
-#
 ## .gitignore
-#
 
 ## blacklist everything
 /**
 
-
-## modify whitelist as needed
+## whitelist as needed
+!/README.md
 !/asoundrc
 !/automated_script.sh
 !/awesome
 !/awesome/rc.lua
+!/bash_completion
 !/bash_logout
 !/bash_profile
 !/bashrc
@@ -83,5 +82,4 @@
 !/Xresources.d/**
 !/xserverrc
 !/zsh
-!/zsh/**
-!/README.md
+!/zsh/zshrc
