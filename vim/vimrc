@@ -1,5 +1,4 @@
-"" vimrc : initialization script for vim(1) 
-
+"" vimrc : vim initialization script
 
 "" Unset 'compatible' to use vim defaults (instead of vi)
 if &compatible
@@ -25,7 +24,9 @@ execute pathogen#infect()
 filetype plugin indent on
 
 "" Perform syntax highlighting
-syntax enable
+if has("syntax")
+  syntax enable
+endif
 
 
 
@@ -34,7 +35,7 @@ syntax enable
 "" Insert spaces insted of tab characters
 set expandtab
 
-"" No. of columns reserved for line #'s minus (1) for 
+"" No. of columns reserved for line #'s minus (1) for
 set numberwidth=3
 
 "" No. of spaces to use for an indent
@@ -46,8 +47,8 @@ set softtabstop=2
 "" Visual width of a real '\t' tab (i.e. ascii 0x09)
 set tabstop=8
 
-"" Line length past which lines are broken automatically 
-set textwidth=80
+"" Line length past which lines are broken automatically
+set textwidth=78
 
 
 
@@ -276,12 +277,13 @@ endif
 "" -- Colors --
 
 "" Set terminal colorscheme
-if &t_Co == 16777216 || $COLORTERM == 'truecolor' || $COLORTERM == '24bit'
-  "colorscheme spacegray
+if &t_Co == 16777216
   colorscheme desertP
-elseif $TERM =~ '\v^(iterm|linux|rxvt|st|tmux|vte|xterm)(-.*)?$'
+elseif $COLORTERM =~ '\v^(truecolor|24bit)$'
+  let &t_Co = 16777216
+  colorscheme desertP
+elseif $TERM =~ '\v^(xterm|rxvt|vte|iterm|st|tmux|screen|linux)(-.*)?$'
   let &t_Co = 256
-  "colorscheme spacegray
   colorscheme desertP
 endif
 
@@ -293,16 +295,7 @@ let g:c_gnu             = 1 " Highlight GNU specific items
 let g:c_space_errors    = 1 " Highlight space errors (?)
 
 "" Set local options when opening a C or C++ file
-autocmd FileType c,cpp setlocal sts=8 sw=8
-
-
-"" Define mapping to set C modeline at end of file
-autocmd FileType c
-  \ nnoremap <leader>ml Go<CR>// vi:ft=c:et:sts=8:sw=8:ts=8<ESC><C-o>
-
-"" Define mapping to set C++ modeline at end of file
-autocmd FileType cpp
-  \ nnoremap <leader>ml Go<CR>// vi:ft=cpp:et:sts=8:sw=8:ts=8<ESC><C-o>
+autocmd FileType c,cpp setlocal cin cino=:0 noet sts=0 sw=8 ts=8
 
 
 
@@ -316,7 +309,7 @@ autocmd FileType gitcommit setlocal tw=72
 "" -- Man --
 
 "" Set local options when opening a manpage
-autocmd FileType man setlocal colorcolumn= nohidden noswapfile noundofile
+autocmd FileType man setlocal cc= nohid noswf noudf
 
 "" Load the Man plugin
 runtime ftplugin/man.vim
@@ -331,19 +324,14 @@ set keywordprg=:Man
 "" Set the default python version for pyx commands
 if v:version >= 800
   if has('python3')
-    set pyxversion=3 " Prefer Python3
+    set pyxversion=3 " python3 is best
   elseif has('python2')
-    set pyxversion=2 " Python2 will do
+    set pyxversion=2 " python2 is fine
   endif
 endif
 
-let g:python_recommended_style = 1  " PEP8 compliance
 let g:python_highlight_all = 1      " Enable all available highlighting
-
-
-"" Define mapping to set python modeline at end of file
-autocmd FileType python
-  \ nnoremap <leader>ml Go<CR># vi:ft=python:et:sts=4:sw=4:ts=8<ESC><C-o>
+let g:python_recommended_style = 1  " PEP8 compliance
 
 
 
@@ -352,20 +340,16 @@ autocmd FileType python
 let g:readline_has_bash = 1 " Highlight additions available through bash
 
 
-"" Define mapping to set sed modeline at end of file
-autocmd FileType sed
-  \ nnoremap <leader>ml Go<CR># vi:ft=readline:et:sts=2:sw=2:ts=8<ESC><C-o>
+
+"" -- Markdown --
+
+autocmd FileType markdown setlocal tw=0
 
 
 
 "" -- Sed --
 
-let g:highlight_sedtabs = 1 " Highlight real tabs in sed scripts
-
-
-"" Define mapping to set sed modeline at end of file
-autocmd FileType sed
-  \ nnoremap <leader>ml Go<CR># vi:ft=sed:et:sts=2:sw=2:ts=8<ESC><C-o>
+let g:highlight_sedtabs = 1 " Highlight tabs in sed scripts
 
 
 
@@ -375,64 +359,49 @@ let g:is_posix          = 1 " Highlighting for ambiguous *.sh files
 let g:sh_fold_enabled   = 3 " Folding mode (functions, if/do/for)
 let g:sh_no_error       = 1 " Relax error detection
 
-
-"" Define mapping to set sh modeline at end of file
-autocmd FileType sh
-  \ nnoremap <leader>ml Go<CR># vi:ft=sh:et:sts=2:sw=2:ts=8<ESC><C-o>
-
-
 "" Set filetype to sh when editing a shell command line in vim
-
-if isdirectory($TMPDIR)
-  autocmd BufRead $TMPDIR/bash-fc.*,/tmp/bash-fc.*
-    \ set ft=sh noswapfile noundofile
+if empty($TMPDIR)
+  autocmd BufRead /tmp/bash-fc.* setlocal ft=sh noswf noudf
 else
-  autocmd BufRead /tmp/bash-fc.*
-    \ set ft=sh noswapfile noundofile
+  autocmd BufRead $TMPDIR/bash-fc.* setlocal ft=sh noswf noudf
 endif
+
 
 
 "" -- help --
 
 "" Set local options when opening a manpage
-autocmd FileType help
-  \ setlocal colorcolumn= nohidden noswapfile noundofile
+autocmd FileType help setlocal cc= nohid noswf noudf
 
 
 
 "" -- Powerline --
 
-if has('python3')
-  let g:powerline_pycmd = 'py3'
-elseif has('python')
-  let g:powerline_pycmd = 'py'
-else
-  let g:powerline_pycmd = ''
-endif
+python3 from powerline.vim import setup as powerline_setup
+python3 powerline_setup()
+python3 del powerline_setup
 
 
 
 "" -- Mappings--
 
 "" Key to act as <leader> in mappings
-let g:mapleader = ','         
+let g:mapleader = ','
 
 
-"" Next / Previous Tab
+"" New, next, and previous tab
 nnoremap <silent><C-T>      :tabnew<CR>
 nnoremap <silent><ESC>[1;3C :tabnext<CR>
 nnoremap <silent><ESC>[1;3D :tabprev<CR>
-noremap! <silent><ESC>[1;3C <ESC>:tabnext<CR>
-noremap! <silent><ESC>[1;3D <ESC>:tabprev<CR>
-
-
-"" Toggle search highlighting
-nnoremap <silent><F3> :set hlsearch!<CR>
 
 
 "" Toggle syntax highlighting
 nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
   \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
+
+
+"" Toggle search highlighting
+nnoremap <silent><F8> :set hlsearch!<CR>
 
 
 "" Quote word before or at the cursor (see :help word)
@@ -443,6 +412,8 @@ nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
 nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
 nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
 nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
+nnoremap <leader>` vl<ESC>bi<<ESC>ea`<ESC>l
+
 
 "" Quote WORD before or at the cursor (see :help WORD)
 "" Note: 'selection' must be inclusive or exclusive
@@ -452,6 +423,7 @@ nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
 nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
 nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
+nnoremap <leader><leader>` vl<ESC>Bi<<ESC>Ea`<ESC>l
 
 
 "" Search forward for the current visual selection
@@ -461,6 +433,7 @@ vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
   \gvy/<C-R><C-R>
   \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"',old_reg,old_regtype)<CR>
+
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern

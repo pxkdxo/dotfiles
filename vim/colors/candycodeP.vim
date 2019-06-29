@@ -4,7 +4,7 @@
 
 set background=dark
 highlight clear
-let g:colors_name="candycode"
+let g:colors_name="candycodeP"
 
 let save_cpo = &cpo
 set cpo&vim
