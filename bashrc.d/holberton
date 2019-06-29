@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+## Environment variables for Holberton
+
+
+alias gcc='gcc -Wall -Werror -Wextra -pedantic'
+
+hbtn::load_dir_dict()
+{
+  local dirname''
+  local basename=''
+  if [[ -d $1 ]]; then
+    declare -Ag HOLBERTON=( [0]="$1" )
+    for _ in "$1"/*; do
+      if [[ -d $_ ]]; then
+        dirname="${_%/*}" basename="${_##*/}"
+        HOLBERTON+=( ["${basename^^}"]="${dirname}/${basename}" )
+      fi
+    done
+  fi
+}
+
+hbtn::load_dir_dict "${XDG_DOCUMENTS_DIR:-${HOME}/Documents}/Holberton"
