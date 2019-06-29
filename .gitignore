@@ -51,7 +51,6 @@
 !/profile.d/**
 !/python
 !/python/rc.py
-!/ranger
 !/ranger/commands.py
 !/ranger/rc.conf
 !/ranger/rifle.conf
