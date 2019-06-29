@@ -6,14 +6,14 @@
 eval export $(systemctl --user show-environment 2>/dev/null)
 
 
-## Initialize terminal
+## Initialize the terminal
 if test -t 0 && command -v tput 1>/dev/null; then
   tput init
 fi
 
 
 ## Set file creation mode mask
-if test "${UID:-"$(id -ur)"}" -eq 0; then
+if test "${UID:-"$(id -u)"}" -eq 0; then
   umask 0002
 else
   umask 0022
@@ -21,14 +21,16 @@ fi
 
 
 ## Prepend my executable paths
-for _ in  "${HOME-}/.local/bin" "${HOME-}/.local/games"; do
-  case ":${PATH-}:" in
-    *":$_:"*)
-      ;;
-    *)
-      PATH="$_${PATH:+":${PATH-}"}"
-      ;;
-  esac
+for _ in  "${HOME-}/.local/bin" "${HOME-}/bin"; do
+  if test -d "$_"; then
+    case ":${PATH-}:" in
+      *":$_:"*)
+        ;;
+      *)
+        PATH="$_${PATH:+":${PATH-}"}"
+        ;;
+    esac
+  fi
 done
 export PATH
 
@@ -43,11 +45,8 @@ if test -d "${1:-"${HOME-}/.profile.d"}"; then
 fi
 
 
-### Termcap should be dead; kill it
-#unset -v TERMCAP
+## Termcap should be dead; kill it
+unset -v TERMCAP
 
-### Man is much better at figuring this out than we are
-#unset -v MANPATH
-
-
-# vi:ft=sh:sts=2:sw=2:ts=8:tw=80
+## Man is much better at figuring this out than we are
+unset -v MANPATH
