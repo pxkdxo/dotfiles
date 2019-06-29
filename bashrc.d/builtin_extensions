@@ -1,62 +1,70 @@
-## shell builtin extensions
+#!/usr/bin/env bash
+
+##
+# cdls - cd into a directory and list it's contents
+# @:1:($#-1) : Options for ls
+# @:(-1):1:1 : The directory name
+
+cdls()
+{
+  (( $# )) || {
+    printf 'usage: %q [ls_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
+    return 2
+  }
+  printf 'cd -- %q\n' "${!#}" 1>&2
+  cd -- "${!#}" && ls -Cp --color=auto "${@:1:(($# ? $# : 1) - 1)}"
+}
 
 
-## Make the specified directory, then cd into it
-## mkcd [mkdir_options] directory
-mkcd() {
-  if (( $# < 1 )); then
+##
+# mkcd - make a directory and cd into it
+# @:1:($#-1): Options for mkdir
+# @:(-1)  : The directory name
+
+mkcd()
+{
+  (( $# )) || {
     printf 'usage: %q [mkdir_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
     return 2
-  fi
-
-  if mkdir "$@"; then
+  }
+  if mkdir -pv "$@"; then
     printf 'cd -- %q\n' "${!#}"
     cd -- "${!#}"
   fi
 }
 
 
+##
+# up - cd upward
+# @1 : The number of levels to cd up
 
-## cd into a directory and print its contents
-## cdls [ls_options] directory
-cdls() {
-  if (( $# < 1 )); then
-    printf 'usage: %q [ls_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
-    return 2
-  fi
-  
-  if printf 'cd -- %q\n' "${!#}"; cd -- "${!#}"; then
-    if (( $# > 1 )); then
-      ls "${@:1:($# - 1)}" ./
-    else
-      ls ./
-    fi
-  fi
-}
-
-
-## cd up (../) depth levels of the directory heirarchy
-up() {
-  local -i i=0
-  if (( $# > 1 )); then
+up()
+{
+  (( $# < 2 )) || {
     printf 'usage: %q [depth]\n' "${FUNCNAME[0]}" 1>&2
     return 2
-  fi
-
-  if { (( ${1:-1} > 0 )); } 2>/dev/null; then
-    for (( i = ${1:-1}; i > 0; --i )); do
-      cd ../
-    done
-  fi
+  }
+  (( ${1-1} > 0 )) || {
+    printf '%q: depth must be a non-negative integer\n' "${FUNCNAME[0]}" 1>&2
+    return 1
+  }
+  trap 'cd "$(printf '"'"'%.s../'"'"' {1..'"$(( ${1-1} ))"'})"'$'\n'"$(
+  : "$(trap -p RETURN)"
+  printf '%s' "${_:-trap - RETURN}"
+  )" RETURN
 }
 
+declare -ft up
 
-## details of files that would be executed for given commands
-lwhich() {
-  for _; do
-    ls -l $(type -ap "$_")
+
+##
+# lstype - print a long listing of each command
+# @ : Command names
+
+lstype()
+{
+  while (( $# )); do
+    ls -Cp --color=auto -l "$(type -ap "$1")"
+    shift
   done
 }
-
-
-# vi:ft=sh:et:sts=2:sw=2:ts=8
