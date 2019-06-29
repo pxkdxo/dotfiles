@@ -5,9 +5,9 @@
 "\M-\C-g":   abort
 "\C-j":      accept-line
 "\C-m":      accept-line
-#            alias-expand-line                             (not         bound)
-#            arrow-key-prefix                              (not         bound)
-#            backward-byte                                 (not         bound)
+#            alias-expand-line                             (not bound)
+#            arrow-key-prefix                              (not bound)
+#            backward-byte                                 (not bound)
 "\C-b":      backward-char
 "\M-OD":     backward-char
 "\M-[D":     backward-char
@@ -35,13 +35,13 @@
 "\M-{":      complete-into-braces
 "\M-~":      complete-username
 "\M-$":      complete-variable
-#            copy-backward-word                            (not         bound)
-#            copy-forward-word                             (not         bound)
-#            copy-region-as-kill                           (not         bound)
-#            dabbrev-expand                                (not         bound)
+#            copy-backward-word                            (not bound)
+#            copy-forward-word                             (not bound)
+#            copy-region-as-kill                           (not bound)
+#            dabbrev-expand                                (not bound)
 "\C-d":      delete-char
 "\M-[3~":    delete-char
-#            delete-char-or-list                           (not         bound)
+#            delete-char-or-list                           (not bound)
 "\M-\\":     delete-horizontal-space
 "\M--":      digit-argument
 "\M-0":      digit-argument
@@ -107,20 +107,20 @@
 "\M-Y":      do-lowercase-version
 "\M-Z":      do-lowercase-version
 "\M-l":      downcase-word
-#            dump-functions                                (not         bound)
-#            dump-macros                                   (not         bound)
-#            dump-variables                                (not         bound)
+#            dump-functions                                (not bound)
+#            dump-macros                                   (not bound)
+#            dump-variables                                (not bound)
 "\M-\C-i":   dynamic-complete-history
 "\C-x\C-e":  edit-and-execute-command
-#            emacs-editing-mode                            (not         bound)
+#            emacs-editing-mode                            (not bound)
 "\C-x)":     end-kbd-macro
 "\M->":      end-of-history
 "\C-e":      end-of-line
 "\M-OF":     end-of-line
 "\M-[F":     end-of-line
 "\C-x\C-x":  exchange-point-and-mark
-#            forward-backward-delete-char                  (not         bound)
-#            forward-byte                                  (not         bound)
+#            forward-backward-delete-char                  (not bound)
+#            forward-byte                                  (not bound)
 "\C-f":      forward-char
 "\M-OC":     forward-char
 "\M-[C":     forward-char
@@ -129,33 +129,33 @@
 "\M-g":      glob-complete-word
 "\C-x*":     glob-expand-word
 "\C-xg":     glob-list-expansions
-#            history-and-alias-expand-line                 (not         bound)
+#            history-and-alias-expand-line                 (not bound)
 "\M-^":      history-expand-line
-#            history-search-backward                       (not         bound)
-#            history-search-forward                        (not         bound)
-#            history-substring-search-backward             (not         bound)
-#            history-substring-search-forward              (not         bound)
+#            history-search-backward                       (not bound)
+#            history-search-forward                        (not bound)
+#            history-substring-search-backward             (not bound)
+#            history-substring-search-forward              (not bound)
 "\M-#":      insert-comment
 "\M-*":      insert-completions
 "\M-.":      insert-last-argument
 "\M-_":      insert-last-argument
 "\C-k":      kill-line
-#            kill-region                                   (not         bound)
-#            kill-whole-line                               (not         bound)
+#            kill-region                                   (not bound)
+#            kill-whole-line                               (not bound)
 "\M-d":      kill-word
-#            magic-space                                   (not         bound)
-#            menu-complete                                 (not         bound)
-#            menu-complete-backward                        (not         bound)
+#            magic-space                                   (not bound)
+#            menu-complete                                 (not bound)
+#            menu-complete-backward                        (not bound)
 "\C-n":      next-history
 "\M-OB":     next-history
 "\M-[B":     next-history
 "\M-n":      non-incremental-forward-search-history
-#            non-incremental-forward-search-history-again  (not         bound)
+#            non-incremental-forward-search-history-again  (not bound)
 "\M-p":      non-incremental-reverse-search-history
-#            non-incremental-reverse-search-history-again  (not         bound)
-#            old-menu-complete                             (not         bound)
+#            non-incremental-reverse-search-history-again  (not bound)
+#            old-menu-complete                             (not bound)
 "\C-o":      operate-and-get-next
-#            overwrite-mode                                (not         bound)
+#            overwrite-mode                                (not bound)
 "\C-x!":     possible-command-completions
 "\M-=":      possible-completions
 "\M-?":      possible-completions
@@ -166,10 +166,10 @@
 "\C-p":      previous-history
 "\M-OA":     previous-history
 "\M-[A":     previous-history
-#            print-last-kbd-macro                          (not         bound)
+#            print-last-kbd-macro                          (not bound)
 "\C-q":      quoted-insert
 "\C-v":      quoted-insert
-#            redraw-current-line                           (not         bound)
+#            redraw-current-line                           (not bound)
 "\C-x\C-r":  re-read-init-file
 "\C-r":      reverse-search-history
 "\M-\C-r":   revert-line
