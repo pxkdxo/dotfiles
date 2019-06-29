@@ -1,22 +1,19 @@
-## mathlib :
-## A collection of variables & functions for doing math in bash
+#!/usr/bin/env bash
+## mathlib : a collection of variables & functions for doing math in bash
 
 
 
 ## -- Global variables
 
-## Store the max integer value
-case ${BASH_VERSINFO[-1]%%-*} in
-  x86_64)
-    declare -i __math_maxint=$(( 2 ** 64 - 1 ))
-    ;;
-  x86)
-    declare -i __math_maxint=$(( 2 ** 32 - 1 ))
-    ;;
-  *)
-    declare -i __math_maxint=$(( -1 ))
-    ;;
-esac
+### Determine the max integer value
+#case ${BASH_VERSINFO[-1]%%-*} in
+#  x86_64)
+#    __math_INT_MAX=$(( 2 ** 64 - 1 ))
+#    ;;
+#  x86)
+#    __math_INT_MAX=$(( 2 ** 32 - 1 ))
+#    ;;
+#esac
 
 
 
@@ -66,21 +63,21 @@ math::or() {
 
 ## -- Sequences
 
-## Print n elements of the fibonnaci sequence
-math::fibonnaci() { 
+## Print n elements of the fibonacci sequence
+math::fibonacci() { 
 
   ## Initialize sequence values / index / element count / start & end indices
-  if local -i curr=0 next=1 index=0 &&
-     local -i count=$(( $(( ${count:-$1} )) > 0 ? $(( ${count:-$1} )) : 10 )) &&
-     local -i start=$(( $(( ${start:-$2} )) > 0 ? $(( ${start:-$2} )) : 1  )) &&
-     local -i end=$(( start + count ))
+  if local curr=0 next=1 index=0 &&
+     local count=$(( $(( ${count:-$1} )) > 0 ? $(( ${count:-$1} )) : 10 )) &&
+     local start=$(( $(( ${start:-$2} )) > 0 ? $(( ${start:-$2} )) : 1  )) &&
+     local end=$(( start + count ))
   then
 
     ## Compute seq until end index is reached or max int limit is surpassed
     while (( ++index < end && next >= curr )); do
       ## Print current value, skipping elements occuring before start index
-      (( index >= start )) && printf "${output_fmt:-%d}\n" "$(( curr ))"
-      ## Compute next two sequence elements
+      (( index < start )) || printf "${output_fmt:-%d}\n" "$(( curr ))"
+      ## Compute the next two sequence elements
       ((  next += curr, curr = next - curr ))
     done
 
@@ -95,9 +92,4 @@ math::fibonnaci() {
     printf "%q(): failed to initialize local variables\n" "${FUNCNAME}" 1>&2
     return 1
   fi
-
 }
-
-
-
-# vi:ft=sh:et:sts=2:sw=2:ts=8:tw=80

@@ -1,61 +1,40 @@
-## bash library for manipulating the PATH variable
+#!/usr/bin/env bash
+## Function for manipulating the PATH variable
 
 
 path::append() {
-  PATH=":${PATH-}:"
-  while test "$#" -gt 0; do
-    if test -n "$1"; then
-      case "${PATH}" in
-        *:"$1":*)
-          ;;
-        *)
-          PATH="${PATH:+"${PATH}:"}$1"
-          ;;
-      esac
-    fi
-    shift
+  for _; do
+    case ":${PATH}:" in
+      *:"$_":*)
+        ;;
+      *)
+        PATH="${PATH:+"${PATH}:"}$_"
+        ;;
+    esac
   done
-  PATH="${PATH:1:(-1)}"
+  export PATH
 }
-
 
 
 path::prepend() {
-  PATH=":${PATH-}:"
-  while test "$#" -gt 0; do
-    if test -n "$1"; then
-      case "${PATH}" in
-        *:"$1":*)
-          ;;
-        *)
-          PATH="$1${PATH:+":${PATH}"}"
-          ;;
-      esac
-    fi
-    shift
+  for _; do
+    case ":${PATH}:" in
+      *:"$_":*)
+        ;;
+      *)
+        PATH="$_${PATH:+":${PATH}"}"
+        ;;
+    esac
   done
-  PATH="${PATH:1:(-1)}"
+  export PATH
 }
-
 
 
 path::remove() {
   PATH=":${PATH-}:"
-  while test "$#" -gt 0; do
-    if test -n "$1"; then
-      while
-        case "${PATH}" in
-        *:"$1":*)
-          PATH="${PATH%%:"$1":*}:${PATH#*:"$1":}" 
-          ;;
-        *)
-          false
-          ;;
-      esac
-      do :
-      done
-    fi
-    shift
+  for _; do
+    PATH="${PATH//:"$_":/:}"
   done
   PATH="${PATH:1:(-1)}"
+  export PATH
 }
