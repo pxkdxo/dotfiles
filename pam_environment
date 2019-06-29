@@ -6,7 +6,7 @@
 XDG_CACHE_HOME          DEFAULT=@{HOME}/.cache
 XDG_CONFIG_HOME         DEFAULT=@{HOME}/.local/etc
 XDG_DATA_HOME           DEFAULT=@{HOME}/.local/share
-XDG_RUNTIME_DIR         DEFAULT=@{HOME}/.local/run/user         OVERRIDE=${XDG_RUNTIME_DIR}
+XDG_RUNTIME_DIR         DEFAULT=@{HOME}/.tmp                    OVERRIDE=${XDG_RUNTIME_DIR}
 
 XDG_DATA_DIRS           DEFAULT=/usr/local/share:/usr/share     OVERRIDE=${XDG_DATA_DIRS}
 XDG_CONFIG_DIRS         DEFAULT=/etc/xdg                        OVERRIDE=${XDG_CONFIG_DIRS}
@@ -17,7 +17,7 @@ TMPDIR                  DEFAULT=@{HOME}/.tmp
 
 ## Locale
 
-IFS                     DEFAULT=
+#IFS                     DEFAULT=
 LANG                    DEFAULT=en_US.UTF-8
 LANGUAGE                DEFAULT=en_US
 LC_ALL                  DEFAULT=
@@ -45,7 +45,7 @@ TIME_STYLE              DEFAULT="+%a %_d %b %Y %_I:%M %p"
 ## GnuPG
 
 GPG_TTY                 DEFAULT=
-GNUPGHOME               DEFAULT=${XDG_CONFIG_HOME}/.gnupg
+GNUPGHOME               DEFAULT=${XDG_CONFIG_HOME}/gnupg
 
 SSH_AGENT_PID           DEFAULT=
 SSH_AUTH_SOCK           DEFAULT=${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh
@@ -72,19 +72,17 @@ ELINKS_CONFDIR          DEFAULT=${XDG_CONFIG_HOME}/elinks
 
 ## Less
 
-LESS="-FiMR --no-init --hilite-unread --quotes=`' --silent --window=-2"
-SYSTEMD_LESS='
-
+LESS                    DEFAULT='-FgiMqRX --window=-2'
 LESSBINFMT              DEFAULT=*d<%02x>
 LESSUBINFMT             DEFAULT=<U+%04lx>
 
 
 
 ## Systemd
-#
-SYSTEMD_PAGER           DEFAULT=
-SYSTEMD_EDITOR          DEFAULT=
-SYSTEMD_LESS            DEFAULT=FRSXMK
+
+#SYSTEMD_PAGER           DEFAULT=
+#SYSTEMD_EDITOR          DEFAULT=
+#SYSTEMD_LESS            DEFAULT=FRSXMK
 
 
 
@@ -92,7 +90,7 @@ SYSTEMD_LESS            DEFAULT=FRSXMK
 
 WINEARCH                DEFAULT=win64
 WINEPREFIX              DEFAULT=${XDG_DATA_HOME}/wine
-WINEDLLPATH             DEFAULT=@{HOME}/.local/lib/wine:@{HOME}/.local/lib64/wine:@{HOME}/.local/lib32/wine:/usr/local/lib/wine:/usr/local/lib64/wine:/usr/local/lib32/wine:/usr/lib/wine:/usr/lib64/wine:/us>WINEPREFIX=@{HOME}/.local/share/wine
+WINEDLLPATH             DEFAULT=@{HOME}/.local/lib/wine:@{HOME}/.local/lib64/wine:@{HOME}/.local/lib32/wine:/usr/local/lib/wine:/usr/local/lib64/wine:/usr/local/lib32/wine:/usr/lib/wine:/usr/lib64/wine:/usr/lib32/wine
 
 
 
@@ -109,7 +107,12 @@ SRCPKGDEST              DEFAULT=${XDG_DATA_HOME}/makepkg/srcpkg
 
 ## Readline
 
-INPUTRC                 DEFAULT=${XDG_CONFIG_HOME}/inputrc
+#INPUTRC                 DEFAULT=${XDG_CONFIG_HOME}/inputrc
+
+
+
+## Rlwrap
+
 RLWRAP_HOME             DEFAULT=${XDG_DATA_HOME}/rlwrap
 
 
@@ -128,11 +131,11 @@ PYTHONSTARTUP           DEFAULT=${XDG_CONFIG_HOME}/python/rc.py
 
 ## NVidia
 
-__GL_FSAA_MODE                DEFAULT=10
-__GL_LOG_MAX_ANISO            DEFAULT=4
-__GL_SHADER_DISK_CACHE        DEFAULT=1
+#__GL_FSAA_MODE                DEFAULT=10
+#__GL_LOG_MAX_ANISO            DEFAULT=4
+#__GL_SHADER_DISK_CACHE        DEFAULT=1
 __GL_SHADER_DISK_CACHE_PATH   DEFAULT=${XDG_CACHE_HOME}/nv/GLCache
-__GL_THREADED_OPTIMIZATIONS   DEFAULT=1
+#__GL_THREADED_OPTIMIZATIONS   DEFAULT=1
 
 
 
