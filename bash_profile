@@ -21,8 +21,11 @@ fi
 
 
 ## For other logins, switch to a tmux session
-#if [[ -z ${TMUX} ]] && command -v tmux 1>/dev/null; then
-#  tmux list-sessions 1>/dev/null &&
+#if [[ -z ${TMUX} ]] && command -v tmux >/dev/null; then
+#  tmux list-sessions >/dev/null &&
 #    exec tmux attach ||
 #    exec tmux new-session
 #fi
+
+
+# vi:ft=sh
