@@ -48,8 +48,7 @@
 !/profile
 !/profile.d
 !/profile.d/**
-!/python
-!/python/rc.py
+!/pythonrc.py
 !/ranger
 !/ranger/commands.py
 !/ranger/rc.conf

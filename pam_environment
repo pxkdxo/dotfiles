@@ -125,7 +125,7 @@ LUAROCKS_CONFIG         DEFAULT=${XDG_CONFIG_HOME}/luarocks/config.lua
 
 ## Python
 
-PYTHONSTARTUP           DEFAULT=${XDG_CONFIG_HOME}/python/rc.py
+PYTHONSTARTUP           DEFAULT=${XDG_CONFIG_HOME}/pythonrc.py
 
 
 
