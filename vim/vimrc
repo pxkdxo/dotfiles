@@ -48,7 +48,7 @@ set softtabstop=2
 set tabstop=8
 
 "" Line length past which lines are broken automatically
-set textwidth=78
+set textwidth=80
 
 
 
