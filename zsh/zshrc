@@ -2,9 +2,14 @@
 
 
 ## Load plugins from zsh data directory
-() { repeat $# do { source "$1"; shift } done
+() {
+  while (( $# )) do {
+    source "$1"
+    shift
+  } done
 } "${XDG_DATA_HOME:-"${HOME}/.local/share"}/zsh/plugins"/*/*.zsh(.N)
 
+mkdir -p -m 0700 "${XDG_CACHE_HOME:-"${HOME}/.cache"}/zsh"
 
 zstyle ':completion:*' add-space true
 zstyle ':completion:*' completer _expand _complete _ignored _match _approximate _prefix
@@ -12,7 +17,7 @@ zstyle ':completion:*' completions 1
 zstyle ':completion:*' condition 0
 
 
-zstyle ':completion:*' format "%U%B## %d%u%b"
+#zstyle ':completion:*' format "%U%B %d%u%b"
 
 zstyle ':completion:*' glob 1
 
@@ -60,11 +65,10 @@ zstyle ':compinstall'  filename ~/.zshrc
 autoload -Uz compinit
 compinit
 
-if test -d "${XDG_CACHE_HOME:-"${HOME}/.cache"}/zsh"; then
+if test -d "${XDG_CACHE_HOME:-${HOME}/.cache}/zsh"; then
   HISTFILE="${XDG_CACHE_HOME:-"${HOME}/.cache"}/zsh/history"
-else
-  HISTFILE="${HOME}/.zsh_history"
 fi
+
 HISTSIZE=32767
 SAVEHIST=30000
 
@@ -100,7 +104,6 @@ setopt RematchPcre
 
 
 PS1='%B%n%b@%B%m%b:%B%(3~+../../+)%2~/%b
-%B%D{%A %-d %B %Y %-I:%M %p %Z}%b
 %B%(0?^^%${?}F${?})%#%f%b '
 
 
