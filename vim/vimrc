@@ -48,7 +48,7 @@ set softtabstop=2
 set tabstop=8
 
 "" Line length past which lines are broken automatically
-set textwidth=80
+set textwidth=79
 
 
 
@@ -89,15 +89,16 @@ set showcmd
 set showmatch
 
 "" Highlight specified columns relative to 'textwidth'
-set colorcolumn=+1,+2,+3,+4,+5,+6,+7,+8
+let &colorcolumn = join(map(range(1, &textwidth), '"+" . v:val'), ',')
 
-"" Show @@@ in-place of lines that do not fit entirely in window
+"" @@@ in place of lines that don't fit, hex in place of nonprintable chars
 if v:version >= 800
-  set display=truncate
+  set display=truncate,uhex
 endif
 
 "" Always show status line
 set laststatus=2
+
 
 
 "" -- Cursor Movement --
@@ -124,7 +125,7 @@ set virtualedit=block
 
 "" -- Buffers --
 
-"" Re-read open file if it was changed by another program
+"" Re-read file if it was changed, unless it was deleted
 set autoread
 
 "" Hide closed buffers rather than unloading them
@@ -160,10 +161,10 @@ set wildmode=list:longest,full
 set timeout
 
 "" Time in ms to wait for completion of a mapping
-set timeoutlen=1597
+set timeoutlen=1500
 
 "" Time in ms to wait for completion of a key code
-set ttimeoutlen=144
+set ttimeoutlen=150
 
 
 
@@ -173,13 +174,13 @@ set ttimeoutlen=144
 set history=10000
 
 "" Number of modifications to remember for any given file
-set undolevels=2500
+set undolevels=1500
 
 "" Always save the whole buffer for undo when reloading it
 set undoreload=-1
 
 "" Max characters that may be typed between swapfile syncs
-set updatecount=144
+set updatecount=150
 
 
 
@@ -193,20 +194,13 @@ endif
 
 "" Clear swap / undo directory preferences
 set directory=
-set undodir=
+set   undodir=
 
 
 "" Append MYVIMRUNTIME if non-null
 if $MYVIMRUNTIME != ''
   set directory+=$MYVIMRUNTIME/swap/
   set   undodir+=$MYVIMRUNTIME/undo/
-endif
-
-
-"" Append XDG_DATA_HOME if non-null
-if $XDG_DATA_HOME != ''
-  set directory+=$XDG_DATA_HOME/vim/swap/
-  set   undodir+=$XDG_DATA_HOME/vim/undo/
 endif
 
 
@@ -250,6 +244,7 @@ if ! isdirectory(split(&directory, ',')[0])
         \ . shellescape(split(&directory, ',')[0]))
 endif
 
+
 "" Make the primary undo directory
 if ! isdirectory(split(&undodir, ',')[0])
   silent! call system('/usr/bin/env mkdir -pm 700 '
@@ -270,20 +265,22 @@ set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 "" Enable the mouse
 if has('mouse')
   set mouse=a
+  if has('mouse_sgr')
+    set ttymouse=sgr
+  endif
 endif
 
 
 
 "" -- Colors --
 
-"" Set terminal colorscheme
-if &t_Co == 16777216
-  colorscheme desertP
-elseif $COLORTERM =~ '\v^(truecolor|24bit)$'
-  let &t_Co = 16777216
-  colorscheme desertP
-elseif $TERM =~ '\v^(xterm|rxvt|vte|iterm|st|tmux|screen|linux)(-.*)?$'
-  let &t_Co = 256
+"" Enable true color and set colorscheme
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+  colorscheme darkP
+else
   colorscheme desertP
 endif
 
@@ -349,7 +346,7 @@ autocmd FileType markdown setlocal tw=0
 
 "" -- Sed --
 
-let g:highlight_sedtabs = 1 " Highlight tabs in sed scripts
+let g:highlight_sedtabs = 1 " Highlight tab characters in sed scripts
 
 
 
@@ -391,21 +388,28 @@ let g:mapleader = ','
 
 "" New, next, and previous tab
 nnoremap <silent><C-T>      :tabnew<CR>
+nnoremap <silent><M-Right>  :tabnext<CR>
 nnoremap <silent><ESC>[1;3C :tabnext<CR>
+nnoremap <silent><M-Left>   :tabprev<CR>
 nnoremap <silent><ESC>[1;3D :tabprev<CR>
 
 
 "" Toggle syntax highlighting
 nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
-  \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
+    \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
 
 
 "" Toggle search highlighting
 nnoremap <silent><F8> :set hlsearch!<CR>
 
 
+"" Toggle line numbers
+nnoremap <silent><F9> :set nu!<Bar>
+      \if &number<Bar>set rnu<Bar>else<Bar>set nornu<Bar>endif<CR>
+
+
 "" Quote word before or at the cursor (see :help word)
-"" Note: 'selection' must be inclusive or exclusive
+"" Note: 'selection' must be set to inclusive or exclusive
 nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
 nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
 nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
@@ -416,7 +420,7 @@ nnoremap <leader>` vl<ESC>bi<<ESC>ea`<ESC>l
 
 
 "" Quote WORD before or at the cursor (see :help WORD)
-"" Note: 'selection' must be inclusive or exclusive
+"" Note: 'selection' must be set to inclusive or exclusive
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
 nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
 nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
@@ -429,19 +433,19 @@ nnoremap <leader><leader>` vl<ESC>Bi<<ESC>Ea`<ESC>l
 "" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
-  \let old_regtype=getregtype('"')<CR>
-  \gvy/<C-R><C-R>
-  \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \gV:call setreg('"',old_reg,old_regtype)<CR>
+    \let old_regtype=getregtype('"')<CR>
+    \gvy/<C-R><C-R>
+    \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+    \gV:call setreg('"',old_reg,old_regtype)<CR>
 
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
-  \let old_regtype=getregtype('"')<CR>
-  \gvy?<C-R><C-R>
-  \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \gV:call setreg('"',old_reg,old_regtype)<CR>
+    \let old_regtype=getregtype('"')<CR>
+    \gvy?<C-R><C-R>
+    \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+    \gV:call setreg('"',old_reg,old_regtype)<CR>
 
 
 
@@ -450,5 +454,5 @@ vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
 "" Allow options to be set from a modeline
 set modeline
 
-"" Restrict editor if SWIM owns this file (this should be last)
+"" Restrict editor if SWIM owns this file (should be last in vimrc)
 set secure

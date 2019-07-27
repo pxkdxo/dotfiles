@@ -22,6 +22,8 @@ hi Folded       guifg=#c2bfa5       guibg=#050505       gui=underline
 hi LineNr       guifg=#928c75       guibg=NONE          gui=NONE
             \   ctermfg=darkgray    ctermbg=NONE        cterm=NONE
 
+hi ColorColumn	guibg=#111111
+
 hi Directory    guifg=#00bbdd       guibg=NONE          gui=NONE
             \   ctermfg=cyan        ctermbg=NONE        cterm=NONE
 hi NonText      guifg=#77ff22       guibg=NONE          gui=bold
