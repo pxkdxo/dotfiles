@@ -5,16 +5,16 @@ debug_print("window class   : " .. get_window_class())
 debug_print("class instance : " .. get_class_instance_name())
 debug_print("")
 
--- Set xterm window opacity
+-- Set window opacity
 if get_window_class() == "XTerm" then
 
-  -- QuakeDD (dropdown terminal)
+  -- QuakeDD dropdown terminal
   if get_class_instance_name() == "QuakeDD" then
-    set_window_opacity(0.80)
+    set_window_opacity(0.85)
 
-  -- Default
+  -- All other terminals
   else
-    set_window_opacity(0.90)
+    set_window_opacity(0.95)
 
   end
 
