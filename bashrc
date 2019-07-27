@@ -1,5 +1,7 @@
+#!/usr/bin/env bash
+#
 ## ~/.bashrc: executed by bash(1) for non-login shells
-
+###
 
 ## If this is not an interactive shell, stop
 [[ $- == *i* ]] || return 0
@@ -9,8 +11,7 @@ mkdir -m 0700 -p "${XDG_CACHE_HOME:-${HOME-}/.cache}/bash"
 
 
 
-
-## -- Display --
+## -- Display 
 
 ## Check window size after each command and update LINES and COLUMNS
 shopt -s checkwinsize
@@ -20,27 +21,28 @@ kill -WINCH "$$"
 
 
 
+## -- Shell Options 
 
-## -- Shell Options --
-
-## Traps on ERR will be inherited by functions, cmd subs, and subshells
+## Inherit ERR traps in functions, command substitutions, and subshells
 set -o errtrace
 
-## The >| operator is required to overwrite existing files via redirection
+## Require >| redirection operator to overwrite existing files
 set -o noclobber
 
-## The status of a terminated background job will be reported immediately
+## Report the status of a terminated background job immediately
 set -o notify
 
+## Do not resolve symbolic links when executing builtins (such as cd)
+set -o physical
 
 
 
-## -- Bash Options --
+## -- Bash Options 
 
 ## If a directory name is given as a command, pass it to cd as an argument
 shopt -s autocd
 
-## Check if a command found in the hash table exists before trying to execute it
+## Confirm commands in the hash table exist before trying to execute them
 shopt -s checkhash
 
 ## Show jobs before exiting and require confirmation if any are running
@@ -66,8 +68,7 @@ shopt -s progcomp
 
 
 
-
-## -- Globbing Options --
+## -- Globbing Options 
 
 ## Ignore current locale's collating sequence when matching range-expressions
 shopt -s globasciiranges
@@ -89,8 +90,7 @@ shopt -u dotglob
 
 
 
-
-## -- History Options --
+## -- History Options 
 
 ## Configure the location of the history file
 if [[ -d ${XDG_CACHE_HOME:-${HOME-}/.cache}/bash ]]; then
@@ -104,10 +104,10 @@ HISTSIZE=10000
 HISTFILESIZE=10000
 
 ## Keep duplicates out of the command history
-HISTCONTROL='erasedups'
+HISTCONTROL='ignoredups:erasedups'
 
 ## Ignore blanks surrounding otherwise immediate duplicates
-HISTIGNORE='*([[:blank:]])&*([[:blank:]])'
+HISTIGNORE='*([[:blank:]])@(&|fg|bg)*([[:blank:]])'
 
 ## Append to the history file instead of overwriting it
 shopt -s histappend
@@ -126,90 +126,108 @@ shopt -s histverify
 
 
 
-
-## -- Prompt Appearance --
+## -- Prompting
 
 ## Limit depth of paths produced from '\w' upon prompt expansion
-PROMPT_DIRTRIM=4
+PROMPT_DIRTRIM=3
 
 ## Create a table to hold terminfo data
 declare -A ti=( )
 
 ## Set color_prompt to null to disable (enabled by default)
-if [[ -n ${color_prompt-yes} ]] && tput setaf 1>/dev/null 2>&1; then
-  color_prompt=yes
+if (( ${color_prompt-1} )) && tput setaf &>/dev/null; then
+  color_prompt=1
 else
-  color_prompt=
+  color_prompt=0
 fi
 
 
-
-
-## -- Prompt Strings --
-
 ## Set the primary prompt
-__set_PS1() {
+__set_PS1()
+{
   PS1='\
 \[${ti[sgr0]:=$(tput sgr0)}\]\
-\[${ti[bold]:=$(tput bold)}${ti[dim]:=$(tput dim)}\]\
+\[${ti[bold]:=$(tput bold)}\]\[${ti[dim]:=$(tput dim)}\]\
 \['"$1"'\]\
-$(eval "printf %.s'$'\u2500'' {1..$(( ${COLUMNS-$(tput cols)} ))}")\
+$(while ((COLUMNS -= 1, COLUMNS > -1)); do printf '$'\u2500''; done)\
 \[${ti[sgr0]:=$(tput sgr0)}\]\n\
 \[${ti[sgr0]:=$(tput sgr0)}\]\
-\[${ti[bold]:=$(tput bold)}\]\u\[${ti[dim]:=$(tput dim)}\]@\
+\[${ti[bold]:=$(tput bold)}\]\u\
+\[${ti[dim]:=$(tput dim)}\]@\
 \[${ti[sgr0]:=$(tput sgr0)}\]\
-\[${ti[bold]:=$(tput bold)}\]\h\[${ti[dim]:=$(tput dim)}\]:\
+\[${ti[bold]:=$(tput bold)}\]\h\
+\[${ti[dim]:=$(tput dim)}\]:\
 \[${ti[sgr0]:=$(tput sgr0)}\]\
 \[${ti[bold]:=$(tput bold)}\]\w\
 \[${ti[sgr0]:=$(tput sgr0)}\]\n\
 \[${ti[sgr0]:=$(tput sgr0)}\]\
 \[${ti[bold]:=$(tput bold)}\]\
-\['"$1"'\]\$>\
+\['"$1"'\]\
+\$>\
 \[${ti[sgr0]:=$(tput sgr0)}\] '
 }
 
+
 ## Set the secondary prompt
-__set_PS2() {
+__set_PS2()
+{
   PS2='\
-\[${ti[sgr0]:=$(tput sgr0)}${ti[bold]:=$(tput bold)}\]\
+\[${ti[sgr0]:=$(tput sgr0)}\]\
+\[${ti[bold]:=$(tput bold)}\]\
 \['"$1"'\]\
 $(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))\
 $(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))\
 \[${ti[sgr0]:=$(tput sgr0)}\] '
 }
 
+
 ## Set the select prompt
-__set_PS3() {
-  PS3='?> '
+__set_PS3()
+{
+  PS3='?: '
 }
+
 
 ## Set the execution-trace prompt
-__set_PS4() {
-  PS4='.> '
+__set_PS4()
+{
+  PS4='.\
+${ti[sgr0]:=$(tput sgr0)}\
+${ti[bold]:=$(tput bold)}\
+>\
+${ti[sgr0]:=$(tput sgr0)} '
 }
+
+
+## Set the pre-execution prompt
+__set_PS0()
+{
+  PS0=${PS0}
+}
+
 
 ## Update the prompt strings
-__set_prompt_strings() {
+__set_PS()
+{
+  case "$(( ${1:-$?} && ${color_prompt-0} ))" in
+    0 ) set -- "${1:-$?}"
+      ;;
+    1 ) set -- "${1:-$?}" "$(tput setaf "$(( (${1:-$?} - 1) % 6 + 1 ))")"
+      ;;
+  esac
 
-  local status="${1:-$?}"
-  local color=""
+  __set_PS0 "$2"
+  __set_PS1 "$2"
+  __set_PS2 "$2"
+  __set_PS3 "$2"
+  __set_PS4 "$2"
 
-  if [[ -n ${color_prompt} ]] && (( status > 0 )); then
-    color="$(tput setaf "$(( (status - 1) % 6 + 1 ))")"
-  fi
-
-  __set_PS1 "${color}"
-  __set_PS2 "${color}"
-  __set_PS3 "${color}"
-  __set_PS4 "${color}"
-
-  return "${status}"
+  return "$(( $1 ))"
 }
 
 
 
-
-## -- prompt_command / bash-preexec --
+## -- PROMPT_COMMAND / bash-preexec 
 
 ## Regex to check for presence of bash-preexec by matching its DEBUG trap
 __bp_debug_trap_regex=\
@@ -218,60 +236,75 @@ $'trap -- \'(.*[;\n])?\\s*__bp_preexec_invoke_exec\\s*([;\n].*)?\' DEBUG'
 ## Check if bash-preexec is active
 if [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_regex} ]]; then
 
+  ## Remove any remains of prompt_command
+  PROMPT_COMMAND=\
+${PROMPT_COMMAND//*([[:blank:]])__prompt_command*([[:blank:]])?($'\n'|;)}
+    PROMPT_COMMAND=\
+${PROMPT_COMMAND//__prompt_command_last_status/__bp_last_ret_value}
+
   ## Prepend function to update prompt strings to precmd_functions
-  ( IFS=':'; [[ ":${precmd_functions[*]}:" != *:__set_prompt_strings:* ]] ) &&
-    precmd_functions+=( __set_prompt_strings )
+  ( IFS=':' &&
+    [[ ":${precmd_functions[*]}:" != *:__set_PS:* ]] ) &&
+    precmd_functions+=( __set_PS )
 
-## If bash-preexec is not active...
 else
-
   ## Setup prompt command
-  [[ -n ${__prompt_command_loaded} ]] || {
+  if (( !__prompt_command_loaded )); then
 
-    ## Prevent accidental re-configuration
-    __prompt_command_loaded=yes
+    ## Refresh (compact?) prompt command functions array
+    __prompt_command_functions=( )
 
-    ## Store the last exit status
-    __last_status=""
+    ## Protection against accidental reloading
+    __prompt_command_loaded=1
 
-    ## Set exit status to first arg
-    __set_status() {
-      return "$(( $1 ))"
-    }
+    ## Remove any remains of bash-preexec
+    PROMPT_COMMAND=\
+${PROMPT_COMMAND//*([[:blank:]])__bp_interactive_mode*([[:blank:]])?($'\n'|;)}
+    PROMPT_COMMAND=\
+${PROMPT_COMMAND//*([[:blank:]])__bp_precmd_invoke_cmd*([[:blank:]])?($'\n'|;)}
+    PROMPT_COMMAND=\
+${PROMPT_COMMAND//__bp_last_ret_value/__prompt_command_last_status}
 
-    ## Run the functions listed in prompt_command_functions
-    __prompt_command() {
-      __last_status=$?
-      local function
-      for function in "${prompt_command_functions[@]}"; do
-        __set_status "$(( __last_status ))"
-        "${function}"
-      done
-      return "$(( __last_status ))"
-    }
+    ## Trim leading and trailing w/s & semicolons
+    PROMPT_COMMAND="${PROMPT_COMMAND##*([[:space:];])}"
+    PROMPT_COMMAND="${PROMPT_COMMAND%%*([[:space:];])}"
 
-    ## Create a list of functions to run in __prompt_command
-    prompt_command_functions=( )
+    ## Run items in __prompt_command_functions before each primary prompt
+    PROMPT_COMMAND="__prompt_command;${PROMPT_COMMAND:+ ${PROMPT_COMMAND};}"
+  fi
 
-    ## Remove any traces of bash-preexec
-    PROMPT_COMMAND="${PROMPT_COMMAND//*([[:blank:]])__bp_@(precmd_invoke_cmd|interactive_mode)?(;|$'\n')}"
-    PROMPT_COMMAND="${PROMPT_COMMAND//__bp_last_ret_value/__last_status}"
-    PROMPT_COMMAND="${PROMPT_COMMAND##*([[:space:]]|;)}"
-    PROMPT_COMMAND="${PROMPT_COMMAND%%*([[:space:]]|;)}"
-    PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND};}"
+  ## The exit status of the last command
+  __prompt_command_last_status=0
 
-    ## Run prompt_command_functions before each primary prompt
-    PROMPT_COMMAND="__prompt_command;${PROMPT_COMMAND:+ ${PROMPT_COMMAND}}"
+  ## Set the exit status
+  __prompt_command_set_status() {
+    return "$(( $1 ))"
   }
 
-  ( IFS=':'; [[ ":${prompt_command[*]}:" != *:__set_prompt_strings:* ]] ) &&
-    prompt_command_functions+=( __set_prompt_strings )
+  ## Run the functions from the prompt command functions array
+  __prompt_command() {
+    __prompt_command_last_status=$?
+    local prompt_command_function
+    __prompt_command_functions=( "${__prompt_command_functions[@]}" )
+    for prompt_command_function in "${__prompt_command_functions[@]}"; do
+      if command -v "${prompt_command_function}" 1>/dev/null; then
+        __prompt_command_set_status __prompt_command_last_status
+        "${prompt_command_function}"
+      fi
+    done
+    return "$(( __prompt_command_last_status ))"
+  }
+
+  ## Append function to set prompt strings if not already included
+  ( IFS=':' &&
+    [[ :${__prompt_command_functions[*]}: != *:__set_PS:* ]]
+  ) && __prompt_command_functions+=( __set_PS )
+
 fi
 
 
 
-
-## -- Window Titles ---
+## -- Window Titles -
 
 ## Configure terminal window titles
 case ${TERM} in
@@ -293,69 +326,59 @@ case ${TERM} in
     ;;
 esac
 
-
 if [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_regex} ]]; then
-  (IFS=':'; [[ ":${precmd_functions[*]}:" != *:__set_window_title:* ]]) &&
-    precmd_functions+=( __set_window_title )
+  ( IFS=':' &&
+    [[ ":${precmd_functions[*]}:" != *:__set_window_title:* ]]
+  ) && precmd_functions+=( __set_window_title )
 
 elif [[ -n ${__prompt_command_loaded} ]]; then
-  (IFS=':'; [[ ":${prompt_command[*]}:" != *:__set_window_title:* ]]) &&
-    prompt_command_functions+=( __set_window_title )
-
-else
-  PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND%%?(;)*([[:blank:]])}; }__set_window_title;"
-
+  ( IFS=':' &&
+    [[ ":${__prompt_command_functions[*]}:" != *:__set_window_title:* ]]
+  ) && __prompt_command_functions+=( __set_window_title )
 fi
 
 
 
-
-## -- GnuPG --
+## -- GnuPG 
 
 ## Set GPG_TTY to the TTY device on stdin
-if tty --silent; then
-  export GPG_TTY="$(tty)"
-else
-  export GPG_TTY=""
-fi
+tty --silent && GPG_TTY=$(tty) || GPG_TTY=""
+export GPG_TTY
 
 ## Refresh gpg-agent in case the user switched to an Xsession
 gpg-connect-agent updatestartuptty /bye &>/dev/null
 
 ## Configure SSH to use gpg-agent instead of ssh-agent
-if [[ ${SSH_AGENT_AUTH_SOCK-} != */S.gpg-agent.ssh ]]; then
+if ! [[ -S ${SSH_AUTH_SOCK} && ${SSH_AUTH_SOCK} == */S.gpg-agent.ssh ]]; then
   unset -v SSH_AGENT_PID
-  if [[ ${gnupg_SSH_AUTH_SOCK_by:-0} -ne $$ ]]; then
-    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+  if (( ${gnupg_SSH_AUTH_SOCK_by:-0} != $$ )); then
+    SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    export SSH_AUTH_SOCK
   fi
 fi
 
 
 
-
-## -- Lessopen --
+## -- Lessopen 
 
 ## Make less more friendly for non-text input files
 if command -v lesspipe 1>/dev/null; then
-  eval "$(SHELL="$(command -v "${0##?(*/)?(-)}")" lesspipe)"
+  eval "$(SHELL=${BASH:-$(command -v bash)} lesspipe)"
 fi
 
 
 
+## -- Bash Completion 
 
-## -- Bash Completion --
-
-## Use bash-completion, if available, unless posix mode is set
-if ! shopt -qo posix; then
-  if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+## Load bash-completion, if available, unless posix mode is set
+shopt -qo posix ||
+  if [[ -r /usr/share/bash-completion/bash_completion ]]; then
     source /usr/share/bash-completion/bash_completion
   fi
-fi
 
 
 
-
-## -- Bash Aliases --
+## -- Bash Aliases 
 
 ## Check for bash_aliases file
 if [[ -f ~/.bash_aliases ]]; then
@@ -364,45 +387,23 @@ fi
 
 
 
+## -- Extra Config 
 
-## -- Extra Config --
-
-## Recursively sources the contents of a directory
-## Accepts a single set of arguments to pass to sourced scripts
-sourcedir() {
-  ## If this is the top layer of recursion, check status of nullglob
-  if [[ "${FUNCNAME[0]}" != "${FUNCNAME[1]}" ]]; then
-    local -i nullglob=0
-    shopt -q nullglob && nullglob=1
-  fi
-  ## If the first arg is a directory, operate on its contents
-  if [[ -d "$1"/ ]]; then
-    ## Enable nullglob to allow empty expansions
-    shopt -s nullglob
-    ## Recurse through all files and subdirectoriess
-    for _ in "$1"/*; do
-      "${FUNCNAME[0]}" "$_" "${@:2}"
+## Recursively source the contents of a directory
+sourcedir()
+{
+  if [[ -d $1/ ]]; then
+    for _ in "${1%"${1##*[^/]}"}"/*; do
+      "${FUNCNAME}" "$_" "${@:2}"
     done
-    ## Disable nullglob for stability
-    shopt -q nullglob && shopt -u nullglob
-  ## If the first arg is not a directory, try to source it
   else
-    ## Disable nullglob for stability
-    shopt -q nullglob && shopt -u nullglob
-    ## Source the first arg, passing in any additional params
     builtin source "$@"
   fi
-  ## If this is the top layer of recursion, reset nullglob
-  if [[ "${FUNCNAME[0]}" != "${FUNCNAME[1]}" ]]; then
-    (( nullglob )) && shopt -s nullglob
-  fi
-  return 0
 }
 
 
 
-
-## Source addition config files
-if [[ -d ~/.bashrc.d ]]; then
+## Run additional startup scripts
+if [[ -d ~/.bashrc.d/ ]]; then
   sourcedir ~/.bashrc.d/
 fi
