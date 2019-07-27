@@ -1,28 +1,26 @@
-##
-## 20-arrlib : Library of functions to manipulate bash arrays
-##
+#!/usr/bin/env bash
+
+## arrlib : collection of functions to manipulate arrays
 
 
+##
+# arr::join - join array elements with a given character
+# @1: array name
+# @[2]: joining character
 arr::join() {
-  [[ $# -eq 2 && $1 = [[:alpha:]_]*([[:alnum:]_]) ]] || return 2
+  [[ $# -ge 1 && $# -le 2 && -v $1 ]] || return 2
   trap 'printf '"'"'%s\n'"'"' "${'"${1%%:*}[*]${1##"${1%%:*}"}"'}";'"$(
-  if [[ $(trap -p RETURN) ]]; then
-    printf '%s' "$(trap -p RETURN)"
-  else
-    printf 'trap -- RETURN'
-  fi)" RETURN
-  IFS="$2" return
+    : "$(trap -p RETURN)"
+    printf '%s' "${_:-trap - RETURN})"
+  )" RETURN
+  IFS="${2-${IFS-$' \t\n'}}" return
 }
+declare -ft arr::join
 
 
-
-arr::ifsjoin() {
-  [[ $# -eq 1 && $1 = [[:alpha:]_]*([[:alnum:]_]) ]] || return 2
-  trap 'printf '"'"'%s\n'"'"' "${'"${1%%:*}[*]${1##"${1%%:*}"}"'}";'"$(
-  if [[ $(trap -p RETURN) ]]; then
-    printf '%s' "$(trap -p RETURN)"
-  else
-    printf 'trap -- RETURN'
-  fi)" RETURN
-  return
-}
+##
+# arr::apply - apply a command to each member of an array
+# @1: the command to run
+#arr::map() 
+#{
+#}

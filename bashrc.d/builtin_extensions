@@ -1,70 +1,246 @@
 #!/usr/bin/env bash
+#
+## Extension to builtins and other helpful stuff in pure bash
+###
 
+
+###
+## cdls - cd into a directory and list it's contents
 ##
-# cdls - cd into a directory and list it's contents
-# @:1:($#-1) : Options for ls
-# @:(-1):1:1 : The directory name
-
+## usage: cdls [ls-options ...] directory
+##
+## @ls-options : option(s) for ls
+## @directory: the name of the directory
+###
 cdls()
 {
-  (( $# )) || {
-    printf 'usage: %q [ls_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
+  if (( $# )); then
+    cd -- "${!#}" && ls "${@:1:($# ? ($# - 1) : 0)}"
+  else
+    printf 1>&2 'usage: %s [ls_options] [--] directory\n' "${FUNCNAME}"
     return 2
-  }
-  printf 'cd -- %q\n' "${!#}" 1>&2
-  cd -- "${!#}" && ls -Cp --color=auto "${@:1:(($# ? $# : 1) - 1)}"
-}
-
-
-##
-# mkcd - make a directory and cd into it
-# @:1:($#-1): Options for mkdir
-# @:(-1)  : The directory name
-
-mkcd()
-{
-  (( $# )) || {
-    printf 'usage: %q [mkdir_options] [--] directory\n' "${FUNCNAME[0]}" 1>&2
-    return 2
-  }
-  if mkdir -pv "$@"; then
-    printf 'cd -- %q\n' "${!#}"
-    cd -- "${!#}"
   fi
 }
 
 
+###
+## mkcd - make a directory and cd into it
 ##
-# up - cd upward
-# @1 : The number of levels to cd up
-
-up()
+## usage: mkcd [mkdir-options ...] directory
+##
+## @mkdir-options : option(s) for mkdir
+## @directory: the name of the directory
+###
+mkcd()
 {
-  (( $# < 2 )) || {
-    printf 'usage: %q [depth]\n' "${FUNCNAME[0]}" 1>&2
+  if (( $# )); then
+    mkdir "$@" && cd -- "${!#}"
+  else
+    printf 1>&2 'usage: %s [mkdir_options] [--] directory\n' "${FUNCNAME}"
     return 2
-  }
-  (( ${1-1} > 0 )) || {
-    printf '%q: depth must be a non-negative integer\n' "${FUNCNAME[0]}" 1>&2
-    return 1
-  }
-  trap 'cd "$(printf '"'"'%.s../'"'"' {1..'"$(( ${1-1} ))"'})"'$'\n'"$(
-  : "$(trap -p RETURN)"
-  printf '%s' "${_:-trap - RETURN}"
-  )" RETURN
+  fi
 }
 
-declare -ft up
 
-
+###
+## lswhich - print a long listing of each command
 ##
-# lstype - print a long listing of each command
-# @ : Command names
-
-lstype()
+## usage: lstype [name ...]
+##
+## @name: command name(s) to list
+###
+lswhich()
 {
-  while (( $# )); do
-    ls -Cp --color=auto -l "$(type -ap "$1")"
-    shift
+  local REPLY
+  for _; do
+    while read -r REPLY; do
+      ls -l "${REPLY}"
+    done < <(type -ap "$_")
   done
+}
+
+
+###
+## errmsg - print an error message
+##
+## usage: errmsg [name ...] error
+##
+## @name: program(s), function(s), or value(s) to prepend
+## @error: the error message to print
+##
+## Return: the exit status of the command before this function
+###
+errmsg()
+{
+  trap -- "$(
+    printf "%s\nreturn $?" "$(
+      : "$(trap -p RETURN)"
+      printf '%s' "${_:-trap - RETURN}"
+  )")" RETURN
+  if (( $# > 0 )); then
+    if (( $# > 1 )); then
+      printf '%s: ' "${@:1:($# - 1)}"
+    fi
+    printf '%s\n' "${!#}"
+  fi 1>&2
+}
+
+
+###
+## up - cd upward
+##
+## usage: up [depth]
+##
+## @depth : The number of levels to cd up
+###
+up()
+{
+  if (( $# > 1 )); then
+    printf 1>&2 'usage: %s [depth]\n' "${FUNCNAME}"
+    return 2
+  elif [[ ${1:-1} -lt 0 || $1 = *[^[:digit:]]* ]]; then
+    errmsg "${FUNCNAME}" 'depth must be a non-negative integer'
+    return 1
+  elif [[ ${1:-1} -gt 0 ]]; then
+    cd -- "$(for ((__up = ${1:-1}; __up > 0; __up -= 1)); do printf ../; done)"
+  fi
+}
+
+
+###
+## add-alias - adds an alias to bash aliases file 
+##
+## usage: addalias name[=value] ...
+##
+## @name: the name of an alias
+## @value: optionally, a value to assign to name
+##
+## Return: 2 if called with the wrong number of arguments,
+## 1 if name is invalid or value is not given and name does not exist,
+## 0 otherwise.
+###
+addalias()
+{
+  local -
+  if [[ -n ${DEBUG+_} ]]; then
+    set -"${DEBUG_OPTS:-xv}"
+  fi
+  local OPTIND=1
+  local option
+  local file="${BASH_ALIASES_FILE:-${HOME}/.bash_aliases}"
+  while getopts ':o:h' option; do
+    case ${option} in
+      o ) file=${OPTARG}
+        ;;
+      h ) printf 'usage: %s [-o file] name[=value] ...\n' "${FUNCNAME}"
+        ;;&
+      : ) errmsg "${FUNCNAME}" "${OPTARG}" 'option requires an argument'
+        ;;&
+      \?) errmsg "${FUNCNAME}" "${OPTARG}" 'invalid option'
+        ;;&
+      * ) return 2
+    esac
+  done
+  for _ in "${@:OPTIND}"; do
+    alias -- "$_"
+    if [[ $_ = *=* ]]; then
+      alias -- "${_%%=*}"
+    fi
+  done 1>>"${file}"
+}
+
+
+###
+## pushdtmp - make a temp directory and push it onto the directory stack
+##
+## usage: pushdtmp [template]
+##
+## @template: directory name template (must contain 3 or more consecutive X's)
+###
+pushdtmp()
+{
+  local -
+  if [[ -n ${DEBUG+_} ]]; then
+    set -"${DEBUG_OPTS:-xv}"
+  fi
+  if (( $# > 1 )); then
+    errmsg "${FUNCNAME}" 'too many arguments'
+    printf 1>2 'usage: %s [template]\n' "${FUNCNAME}"
+    return 2
+  fi
+  if wait "$!"; then
+    pushd "$(< /dev/stdin)"
+  fi < <(mktemp -d --tmpdir -- "${1-tmp.XXXXXXXXXX}")
+}
+
+
+###
+## assign_by_ref - assign a value to a variable by reference
+##
+## usage: assign_by_ref name [value]
+##
+## @name: the name of a variable
+## @value: the value to assign
+##
+## Return: 1 if name is not a valid identifier or has a bad subscript,
+## 2 if called with the wrong number of arguments,
+## otherwise 0
+###
+assign_by_ref()
+{
+  local -
+  if [[ -n ${DEBUG+_} ]]; then
+    set -"${DEBUG_OPTS:-xv}"
+  fi
+  if (( $# != 2 )); then
+    errmsg "${FUNCNAME}" 'wrong number of arguments'
+    printf 1>&2 'usage: %s name value\n' "${FUNCNAME}"
+    return 2
+  fi
+  [[ $1 =~ ^([[:alpha:]_][[:alnum:]_]*)(\[(.*)])?$ ]]  ||
+    errmsg "${FUNCNAME}" "$1" 'not a valid identifier' ||
+    return 1
+  if [[ ${BASH_REMATCH[2]} = ?(\[*([[:blank:]])+([[:digit:]])*([[:blank:]])]) ]]
+  then
+    eval "$1"'=$2'
+  elif [[ ${!BASH_REMATCH[1]@a} = *A* ]]; then
+    eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=$2'
+  else
+    errmsg "${FUNCNAME}" "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]" \
+      'bad array subscript'
+    return 1
+  fi
+}
+
+
+###
+## subrepl_function - make new functions from old ones
+##
+## usage: subrepl_function old-func new-func [pattern sub]
+###
+subrepl_function()
+{ 
+  local -
+  if [[ -n ${DEBUG+_} ]]; then
+    set -"${DEBUG_OPTS:-xv}"
+  fi
+  if (( $# !=2 && $# != 4 )); then
+    printf 1>&2 'usage: %s old-func new-func [pattern sub]\n' "${FUNCNAME}"
+    return 2
+  fi
+  if [[ ${FUNCNAME} = ${FUNCNAME[1]} ]]; then
+    trap -- "$(
+    : "$(trap -p RETURN)"
+      printf '%s\n' "${_:-trap - RETURN}"
+      : "$(declare -pf "$2")"
+      printf '%s\n' "${_//$3/"$4"}"
+    )" RETURN
+  elif declare -F -- "$1"; then
+    trap -- "$(
+      : "$(trap -p RETURN)"
+      printf '%s\n' "${_:-trap - RETURN}"
+      : "$(declare -pf "$1")"
+      printf '%s\n' "${_/"$1"/"$2"}"
+    )"$'\n'"${FUNCNAME}"' "$@"'$'\n''return' RETURN
+  fi 1>/dev/null
 }

@@ -4,23 +4,16 @@
 ###
 
 
-###
-## dirname -- a replacement for dirname(1)
-##
-## usage: dirname [path] ...
-
-
-## Get a physical absolute path to this file and add it to the environment
-BASH_ALIASES_FILE=$(CDPATH= cd -- "${BASH_SOURCE%/*}"; pwd; printf +)
+## Get a physical, absolute path to this file and put it in the environment
+BASH_ALIASES_FILE=$(CDPATH= cd -- "${BASH_SOURCE[0]%/*}"; pwd; printf +)
 BASH_ALIASES_FILE=${BASH_ALIASES_FILE%??}
-BASH_ALIASES_FILE=${BASH_ALIASES_FILE%/}/${BASH_SOURCE##*/}
-export BASH_ALIASES_FILE
+BASH_ALIASES_FILE=${BASH_ALIASES_FILE%/}/${BASH_SOURCE[0]##*/}
 
 
 ###
-## fmtalias - define aliases from a template
+## aliasfmt - define aliases from a template
 ##
-## usage: fmtalias replace-str template [name] ...
+## usage: aliasfmt replace-str template [name ...]
 ##
 ## @replace-str: string to replace in @template
 ## @template: template for alias value
@@ -35,9 +28,11 @@ fmtalias()
     printf 1>&2 'usage: %q replace-str template [name ...]\n' "${FUNCNAME}"
     return 2
   fi
+
   ## Transform args into assignments and append replace-str
   set -- "${@/%/=$2}" "$1"
   shift 2
+
   ## For each argument until replace-str, create an alias
   while (( $# > 1 )); do
     set -- "${1%%=*}" "${1#*=}" "${@:2}"
@@ -216,3 +211,4 @@ alias wgetdir='wget -e robots=off -r -np -nd -l 1 -R index.html'
 alias xc0-strip='xclip -sel clipboard -o | sed '\''s/[[:blank:]]\+$//'\'' | xclip -sel clipboard'
 alias xc1-strip='xclip -sel primary -o | sed '\''s/[[:blank:]]\+$//'\'' | xclip -sel primary'
 alias xc2-strip='xclip -sel secondary -o | sed '\''s/[[:blank:]]\+$//'\'' | xclip -sel secondary'
+alias gush='git push'

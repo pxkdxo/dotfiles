@@ -1,6 +1,6 @@
-## GNUPG command aliases for interactive shells
-## Patrick DeYoreo
-## pdeyoreo@gmail.com
+#!/usr/bin/env bash
+
+## gnupg aliases and functions
 
 
 ## -- gpg
@@ -11,14 +11,11 @@ alias gpg.stdout='gpg --yes --output /dev/stdout'
 ## Encrypt a file symmetrically, passing all options to gpg
 ## usage: gpg-symmetric [options] filename
 gpg.symmetric() {
-  ## Check for arguments
-  if (( $# < 1 )); then
+  (( $# > 0 )) || {
     printf 'usage: %q [options] filename\n' "${FUNCNAME}" 1>&2
     return 2
-  else
-    gpg "${@:1:($# - 1)}" --symmetric "${!#}"
-    return "$?"
-  fi
+  }
+  gpg "${@:1:($# - 1)}" --symmetric "${!#}"
 }
 
 
@@ -40,4 +37,4 @@ alias gpg-agent.dumptolog='kill -s USR1 "$(pgrep gpg-agent)"'
 
 
 
-# vi:ft=sh:et:sts=2:sw=2:ts=8
+# vi:ft=sh

@@ -1,11 +1,12 @@
-##
-## Library to help configure the environment
+#!/usr/bin/env bash
+
+## Functions to help configure the environment
 ##
 
 
 ## If given arguments, configure those variables.
 ## Otherwise, configure known variables.
-autoenv() {
+autoenv::main() {
 
   (( ! $# )) && {
     set -- BROWSER EDITOR GCC_COLORS LS_COLORS
@@ -16,10 +17,10 @@ autoenv() {
 #    if [[ $1 == @([^[:alpha:]_]|*[^[:alnum:]_])* ]]; then
 #      printf '%q: autoenv: %q: not a valid identifier\n' "${0##*/}" "$1" 1>&2
 
-    if command -v autoenv\:\:"$1" 1>/dev/null; then
-      autoenv\:\:"$1"
+    if command -v "autoenv::$1" 1>/dev/null; then
+      "autoenv::$1"
     else
-      printf '%q: %q: %q: not defined\n' "${0##*/}" "${FUNCNAME[0]}" "$1" 1>&2
+      printf '%%q: %q: undefined\n' "${FUNCNAME}" "$1" 1>&2
     fi
 
     shift
@@ -148,8 +149,8 @@ autoenv::LS_COLORS() {
 
 
 ## Apply configuration
-autoenv
+autoenv::main
 
 
 
-# vi:ft=sh:et:sts=2:sw=2:ts=8
+# vi:ft=sh

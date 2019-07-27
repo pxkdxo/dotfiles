@@ -19,9 +19,9 @@
 
 ## -- Arithmetic
 
-## Evaluate expansion of arguments separated by IFS
+## Evaluate expression produced by joining args with IFS
 math::__operate() { 
-  printf "${output_fmt:-%d}\n" "$(( "$*" ))"
+  printf "${outputfmt:-%d}\n" "$(( "$*" ))"
 }
 
 ## Multiply arguments
@@ -61,9 +61,8 @@ math::or() {
 
 
 
-## -- Sequences
-
-## Print n elements of the fibonacci sequence
+## Print elements of the fibonacci sequence
+## usage: math::fibonacci [count] [start]
 math::fibonacci() { 
 
   ## Initialize sequence values / index / element count / start & end indices
@@ -83,13 +82,13 @@ math::fibonacci() {
 
     ## If max integer limit was surpassed, print message and return error (2)
     (( next >= curr )) || {
-      printf "%q(): max integer limit reached\n" "${FUNCNAME}" 1>&2
-      return 2
+      printf "%q: integer overflow\n" "${FUNCNAME}" 1>&2
+      return 3
     }
 
-  ## If local variables could not be set, return failure (1)
   else
-    printf "%q(): failed to initialize local variables\n" "${FUNCNAME}" 1>&2
-    return 1
+    ## If local variables could not be set, return status (10)
+    printf "%q: failed to initialize local variables\n" "${FUNCNAME}" 1>&2
+    return 10
   fi
 }

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+## bashrc.d/history: shell command history functions
+###
+
+
+## reload_history - load command history from the history file
+history::reload_history() {
+  history -c  ## clear history
+  history -r  ## read history
+}
+
+
+## sync_history - synchronize command history with the history file
+history::sync_history() {
+  history -n  ## read new history
+  history -w  ## write history
+  history::reload_history ## re-load history
+}
+
+
+# vi:ft=sh

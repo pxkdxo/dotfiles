@@ -1,22 +1,85 @@
 #!/usr/bin/env bash
-## Environment variables for Holberton
+#
+## aliases, functions and variables for Holberton
+###
+
+alias gcc="gcc -std=c90 -Wall -Werror -Wextra -pedantic"
 
 
-alias gcc='gcc -Wall -Werror -Wextra -pedantic'
 
-hbtn::load_dir_dict()
+
+
+
+
+export hb_project_dir='/home/pat/Documents/Holberton/Projects/holbertonschool-low_level_programming/0x10-variadic_functions'
+
+hb-project()
 {
-  local dirname''
-  local basename=''
-  if [[ -d $1 ]]; then
-    declare -Ag HOLBERTON=( [0]="$1" )
-    for _ in "$1"/*; do
-      if [[ -d $_ ]]; then
-        dirname="${_%/*}" basename="${_##*/}"
-        HOLBERTON+=( ["${basename^^}"]="${dirname}/${basename}" )
+  local REPLY
+  case $# in
+    0)
+      if [[ -n ${hb_project_dir} ]]; then
+        cd -- "${hb_project_dir}"
+      else
+        printf 1>&2 '%q: project directory is not set\n' "${FUNCNAME}"
+        printf 1>&2 'Supply a directory name as an argument to set it\n'
+        return 1
       fi
-    done
-  fi
+      ;;
+    1)
+      if [[ -n ${hb_project_dir} ]]; then
+        read -r -p 'Change the active project directory? [Y/n] ' REPLY
+        if [[ ${REPLY^} != Y* ]]; then
+          printf 'Abort.\n'
+          return 0
+        fi
+      fi
+      if __hb-project-set "$1"; then
+          printf 'Project directory set to %s\n' "${hb_project_dir@Q}"
+        return 0
+      else
+        printf 'Refusing to set project directory\n'
+        return 1
+      fi
+      ;;
+    *)
+      printf 1>&2 '%q: too many arguments\n' "${FUNCNAME}"
+      printf 1>&2 'usage: %q [directory]\n'  "${FUNCNAME}"
+      return 2
+      ;;
+  esac
 }
 
-hbtn::load_dir_dict "${XDG_DOCUMENTS_DIR:-${HOME}/Documents}/Holberton"
+__hb-project-set()
+{
+  local hb_project_dir                                            &&
+  hb_project_dir=$(CDPATH= cd -- "${1:-.}" && pwd -P && printf +) &&
+  hb_project_dir=${hb_project_dir%??}                             &&
+  sed -E -i '
+  /^export hb_project_dir=/{
+    : get
+    /\\$/{
+      N
+      b get
+    }
+    z
+    : var
+    a export hb_project_dir='"'${hb_project_dir//\'/\'\\\'\'}'"'
+    : cat
+    n
+    b cat
+  }
+  $b var' "${BASH_SOURCE[0]}" && declare -gx hb_project_dir="${hb_project_dir}"  
+}
+
+
+hb-gcc() 
+{
+  gcc "$@" "${1%%-*}-main.c" -o "${1%.c}"
+}
+
+
+hb-gcc-run() 
+{ 
+  gcc "$@" "${1%%-*}-main.c" -o "${1%.c}" && ./"${1%.c}"
+}
