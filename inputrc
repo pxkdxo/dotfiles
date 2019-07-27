@@ -71,20 +71,20 @@ set editing-mode        vi
 ## vi-insert keymap
 set keymap              vi-insert
 
-### <ESC> to enter vi-command mode
-#"\C-[":                 vi-movement-mode
-### <F1> inserts '--help' then submits the line
-#"\eOP":                 " --help\C-k\r"
-### <F2> puts line inside double quotes
-#"\eOQ":                 "\C-a$(\C-e)"
-### <F2> puts line inside double quotes
-#"\eOR":                 "\C-a"\C-e""
-### <F4> puts line inside subshell
-#"\eOS":                 "\C-a'\C-e'"
-### <F5> puts line inside command substitution
-#"\e[15~":               "\C-a(\C-e)"
-### <F6> insert sudo at beginning of line
-#"\e[17~":               "\C-asudo "
+## <ESC> start vi-command mode
+"\C-[":                 vi-movement-mode
+## <F1> insert --help and submit the line
+"\eOP":                 " --help\C-k\r"
+## <F2> put line inside single quotes
+"\eOQ":                 "\C-a'\C-e'"
+## <F3> put line inside double quotes
+"\eOR":                 "\C-a"\C-e""
+## <F4> put line inside a command substitution
+"\eOS":                 "\C-a$(\C-e)"
+## <F5> put line inside a subshell
+"\e[15~":               "\C-a(\C-e)"
+## <F6> prepend sudo
+"\e[17~":               "\C-asudo "
 ### <F7> insert su - root -c at beginning of line
 #"\e[18~":              "\C-asu - root -c "
 ### <F8>
@@ -360,7 +360,6 @@ set keymap vi-command
 "\M-_":                 insert-last-argument
 "\C-k":                 kill-line
 "\M-d":                 kill-word
-"X":                    kill-region
 "\M- ":                 magic-space
 "\C-i":                 menu-complete
 "\C-n":                 menu-complete
@@ -457,7 +456,7 @@ set keymap vi-command
 "p":                    vi-put
 ".":                    vi-redo
 "R":                    vi-replace
-#"X":                   vi-rubout
+"X":                    vi-rubout
 "/":                    vi-search
 "?":                    vi-search
 "N":                    vi-search-again
