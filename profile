@@ -35,13 +35,13 @@ done
 export PATH
 
 
-## Load additional config
+## Load additional profile config
 if test -d "${1:-"${HOME-}/.profile.d"}"; then
   for _ in "${1:-"${HOME-}/.profile.d"}"/*.sh; do
     if test -f "$_" && test -r "$_"; then
       . "$_"
     fi
-  done 1>/dev/null
+  done
 fi
 
 
@@ -50,3 +50,6 @@ unset -v TERMCAP
 
 ## Man is much better at figuring this out than we are
 unset -v MANPATH
+
+
+# vim:ft=sh
