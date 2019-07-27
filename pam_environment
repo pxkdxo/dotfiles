@@ -30,7 +30,8 @@ TZ                      DEFAULT=America/Los_Angeles
 
 BLOCK_SIZE              DEFAULT=human-readable
 QUOTING_STYLE           DEFAULT=shell-escape
-TIME_STYLE              DEFAULT="+%a %_d %b %Y %_I:%M %p"
+TIME_STYLE              DEFAULT="+%b %_d %Y %_I:%M %p"
+#TIME_STYLE              DEFAULT="+%a %_d %b %Y %_I:%M %p"
 
 
 
