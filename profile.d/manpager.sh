@@ -1,15 +1,17 @@
-## manpager.sh : set MANPAGER
+## manpager.sh : man pager configuration
 
-## Set the command for viewing man pages
 
-## Use neovim to view man pages
+## If nvim is available, use it to read man pages
 if command -v nvim 1>/dev/null; then
-  MANPAGER='nvim -c '"'"'set ft=man'"'"' -'
+  MANPAGER='nvim -c "set ft=man" -'
   export MANPAGER
 
-## Use vim to view man pages
+## Otherwise, if vim is available, use it to read man pages
 elif command -v vim 1>/dev/null; then
-  MANPAGER='vim -M -n -c '"'"'MANPAGER'"'"' -'
+  MANPAGER='vim -M -c MANPAGER -'
   export MANPAGER
 
 fi
+
+
+# vim:ft=sh

@@ -1,5 +1,4 @@
-## less_termcap.sh : escape sequences interpreted by 'less'
-## maintained by Patrick DeYoreo
+## less.sh : environment configuration for less
 
 
 ## Characters that are allowed to end a video escape sequence
@@ -80,3 +79,6 @@ export LESSANSIMIDCHARS
 #  fi
 #
 #fi &>/dev/null
+
+
+# vim:ft=sh
