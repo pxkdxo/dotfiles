@@ -126,11 +126,11 @@ addalias()
     set -"${DEBUG_OPTS:-xv}"
   fi
   local OPTIND=1
-  local option
-  local file="${BASH_ALIASES_FILE:-${HOME}/.bash_aliases}"
-  while getopts ':o:h' option; do
-    case ${option} in
-      o ) file=${OPTARG}
+  local opt=''
+  local out=''
+  while getopts ':o:h' opt; do
+    case ${opt} in
+      o ) out="${OPTARG}"
         ;;
       h ) printf 'usage: %s [-o file] name[=value] ...\n' "${FUNCNAME}"
         ;;&
@@ -139,14 +139,17 @@ addalias()
       \?) errmsg "${FUNCNAME}" "${OPTARG}" 'invalid option'
         ;;&
       * ) return 2
+        ;;
     esac
   done
-  for _ in "${@:OPTIND}"; do
-    alias -- "$_"
-    if [[ $_ = *=* ]]; then
-      alias -- "${_%%=*}"
-    fi
-  done 1>>"${file}"
+  shift "$(( OPTIND - 1 ))"
+  while (( $# )); do
+    alias -- "$1"
+    case "$1" in
+      *=*) alias -- "${1%%=*}" ;;
+    esac
+    shift
+  done >> "${out:-${BASH_ALIASES_FILE:-${HOME}/.bash_aliases}}"
 }
 
 
@@ -243,4 +246,48 @@ subrepl_function()
       printf '%s\n' "${_/"$1"/"$2"}"
     )"$'\n'"${FUNCNAME}"' "$@"'$'\n''return' RETURN
   fi 1>/dev/null
+}
+
+print_unicode () 
+{ 
+    trap "$(
+    : "$(trap -p ERR)"
+    printf '%s\n' "${_:-trap - ERR}"
+    : "$(trap -p RETURN)"
+    printf '%s\n' "${_:-trap - RETURN}"
+  )" RETURN;
+    trap - ERR;
+    if ! local chr end inc; then
+        printf '%q: %q: cannot create local vars\n' "${0##*/}" "${FUNCNAME}" 1>&2;
+        return 10;
+    fi;
+    if (( $# > 2 )); then
+        printf '%q: %q: too many arguments\n' "${0##*/}" "${FUNCNAME}" 1>&2;
+        return 1;
+    fi;
+    if (( $# < 2 )); then
+        printf '%q: %q: missing required arguments\n' "${0##*/}" "${FUNCNAME}" 1>&2;
+        printf '%q: usage: %q start end\n' "${FUNCNAME}" "${FUNCNAME}" 1>&2;
+        return 2;
+    fi;
+    if [[ $1 != +([[:xdigit:]]) ]]; then
+        printf '%q: %q: invalid starting character\n' "${0##*/}" "${FUNCNAME}" 1>&2;
+        printf '%q: usage: %q start end\n' "${FUNCNAME}" "${FUNCNAME}" 1>&2;
+        return 2;
+    fi;
+    if [[ $2 != +([[:xdigit:]]) ]]; then
+        printf '%q: %q: invalid ending character\n' "${0##*/}" "${FUNCNAME}" 1>&2;
+        printf '%q: usage: %q start end\n' "${FUNCNAME}" "${FUNCNAME}" 1>&2;
+        return 2;
+    fi;
+    chr=$(( 16#$1 ));
+    end=$(( 16#$2 ));
+    inc=$(( 16#$1 < 16#$2 ? 1 : -1 ));
+    while printf -v chr '%08x' "$(( chr ))";
+    printf '%b' "\\U${chr}";
+    (( 16#${chr} != end )); do
+        chr=$(( 16#${chr} + inc ));
+        printf '%s' "${sep:-", "}";
+    done;
+    echo
 }
