@@ -1,3 +1,4 @@
-## Initialization script for Python in interactive mode
+# Initialization script for interactive Python interpreter
 
 import os
+import sys
