@@ -10,14 +10,6 @@
 #
 # this file is shell script
 #
-# defintion commands:
-#
-#   def    -- define configuration variable unless already defined
-#             (i.e by the environment)
-#   defyn  -- define boolean configuration variable unless
-#	      already defined
-#
-# WARNING: This file has a different format to that of $HOME/.surfraw.conf!
 # $HOME/.surfraw.conf entries should always be written sh style:
 #
 # 	SURFRAW_text_browser=w3m
@@ -25,7 +17,7 @@
 
 # graphical browser? defaults to yes for meatminds. text browser users can
 # work it out how to change it.
-SURFRAW_graphical="no"
+SURFRAW_graphical="yes"
 
 # name/path of text browser executable
 # e.g links, lynx, w3m

@@ -2,12 +2,12 @@
 
 "" Unset 'compatible' to use vim defaults (instead of vi)
 if &compatible
-  set nocompatible
+    set nocompatible
 endif
 
 "" If the +eval feature is missing, this unsets 'compatible'
 silent! while 0
-  set nocompatible
+    set nocompatible
 silent! endwhile
 
 "" Always use utf-8
@@ -15,17 +15,19 @@ set encoding=utf-8
 
 
 
-"" -- Plugins & Syntax --
+"" Load plugins from ~/.vim/bundle
+try
+    execute pathogen#infect()
+catch /^Vim(execute):.*/
+endtry
 
-"" Activate pathogen
-execute pathogen#infect()
 
-"" Detect filetype, load plugins, and apply indentation style
+"" Load filetype plugins & indentation style
 filetype plugin indent on
 
 "" Perform syntax highlighting
 if has("syntax")
-  syntax enable
+    syntax enable
 endif
 
 
@@ -35,19 +37,19 @@ endif
 "" Insert spaces insted of tab characters
 set expandtab
 
-"" No. of columns reserved for line #'s minus (1) for
+"" Number of columns reserved for line numbers
 set numberwidth=3
 
-"" No. of spaces to use for an indent
-set shiftwidth=2
+"" Number of spaces to use for an indent
+set shiftwidth=4
 
-"" No. of spaces to insert for a tab
-set softtabstop=2
+"" Number of spaces to insert for a tab
+set softtabstop=4
 
-"" Visual width of a real '\t' tab (i.e. ascii 0x09)
+"" Visual width of a tab character (ASCII 0x09)
 set tabstop=8
 
-"" Line length past which lines are broken automatically
+"" Length past which lines will be broken automatically
 set textwidth=79
 
 
@@ -88,16 +90,24 @@ set showcmd
 "" Briefly jump to match upon completing pair in 'matchpairs'
 set showmatch
 
-"" Highlight specified columns relative to 'textwidth'
-let &colorcolumn = join(map(range(1, &textwidth), '"+" . v:val'), ',')
+"" Set window titles
+set title
+let &titlestring = "%([%M%R] %)%t%( (%{expand(\"%:p:~:h\")})%)%<"
 
 "" @@@ in place of lines that don't fit, hex in place of nonprintable chars
 if v:version >= 800
-  set display=truncate,uhex
+    set display=truncate,uhex
 endif
 
 "" Always show status line
 set laststatus=2
+
+"" Highlight specified columns relative to 'textwidth'
+let &colorcolumn =
+    \ join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
+
+autocmd VimResized * let &colorcolumn =
+    \ join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
 
 
 
@@ -110,7 +120,7 @@ set nostartofline
 set backspace=indent,eol,start
 
 "" Lines of padding between cursor and edge of window
-set scrolloff=4
+set scrolloff=3
 
 "" If 'nowrap' is set, minimum number of columnss to scroll at a time
 set sidescroll=1
@@ -120,6 +130,9 @@ set sidescrolloff=4
 
 "" Allow visual-block selection of empty columns
 set virtualedit=block
+
+"" Allow <Left> / <Right> to move between lines
+set whichwrap=b,s,<,>,[,]
 
 
 
@@ -132,10 +145,10 @@ set autoread
 set hidden
 
 "" Split off new windows below the current
-set splitbelow
+"set splitbelow
 
 "" Split off new windows to the right of the current
-set splitright
+"set splitright
 
 
 
@@ -144,15 +157,18 @@ set splitright
 "" Enable command completion
 set wildmenu
 
-"" Ignore case for filename completions
+"" Ignore case for filename completion
 set wildignorecase
 
-"" Insert-mode completion behavior
+"" Tweak insert-mode completion
 set completeopt=menu,preview,noselect
 
-"" Cmdline-mode completion behavior
+"" Tweak command-mode completion
 set wildmode=list:longest,full
 
+"" Use <Left> / <Right> to move cursor instead of selecting completions
+cnoremap <Left> <Space><BS><Left>
+cnoremap <Right> <Space><BS><Right>
 
 
 "" -- Key Timeout --
@@ -188,66 +204,58 @@ set updatecount=150
 
 "" Check undofile capability and use if using swapfile
 if has('persistent_undo')
-  let &undofile = &swapfile
+    let &undofile = &swapfile
 endif
-
 
 "" Clear swap / undo directory preferences
 set directory=
 set   undodir=
 
-
 "" Append MYVIMRUNTIME if non-null
 if $MYVIMRUNTIME != ''
-  set directory+=$MYVIMRUNTIME/swap/
-  set   undodir+=$MYVIMRUNTIME/undo/
+    set directory+=$MYVIMRUNTIME/swap/
+    set   undodir+=$MYVIMRUNTIME/undo/
 endif
-
 
 "" Append XDG_CACHE_HOME if non-null
 if $XDG_CACHE_HOME != ''
-  set directory+=$XDG_CACHE_HOME/vim/swap/
-  set   undodir+=$XDG_CACHE_HOME/vim/undo/
+    set directory+=$XDG_CACHE_HOME/vim/swap/
+    set   undodir+=$XDG_CACHE_HOME/vim/undo/
 endif
-
 
 "" Append first element of 'runtimepath'
-if ! empty(split(&runtimepath, ','))
-  if empty(&directory)
-    let &directory = split(&runtimepath, ',')[0] . '/swap/'
-  else
-    let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
-  endif
-  if empty(&undodir)
-    let &undodir = split(&runtimepath, ',')[0] . '/undo/'
-  else
-    let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
-  endif
+if !empty(split(&runtimepath, ','))
+    if &directory == ''
+        let &directory = split(&runtimepath, ',')[0] . '/swap/'
+    else
+        let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
+    endif
+    if &undodir == ''
+        let &undodir = split(&runtimepath, ',')[0] . '/undo/'
+    else
+        let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
+    endif
 endif
-
 
 "" Append TMPDIR if non-null
 if $TMPDIR != ''
-  set directory+=$TMPDIR/
-  set   undodir+=$TMPDIR/
+    set directory+=$TMPDIR/
+    set   undodir+=$TMPDIR/
 endif
-
 
 "" Append default tmp directories
 set directory+=/var/tmp/,/tmp/
 set   undodir+=/var/tmp/,/tmp/
 
-
 "" Make the primary swap directory
 if ! isdirectory(split(&directory, ',')[0])
-  silent! call system('/usr/bin/env mkdir -pm 700 '
+    silent! call system('/usr/bin/env mkdir -pm 700 '
         \ . shellescape(split(&directory, ',')[0]))
 endif
 
-
 "" Make the primary undo directory
 if ! isdirectory(split(&undodir, ',')[0])
-  silent! call system('/usr/bin/env mkdir -pm 700 '
+    silent! call system('/usr/bin/env mkdir -pm 700 '
         \ . shellescape(split(&undodir, ',')[0]))
 endif
 
@@ -264,24 +272,45 @@ set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
 "" Enable the mouse
 if has('mouse')
-  set mouse=a
-  if has('mouse_sgr')
-    set ttymouse=sgr
-  endif
+    set mouse=a
+    if has('mouse_sgr')
+        set ttymouse=sgr
+    endif
 endif
 
 
 
 "" -- Colors --
 
-"" Enable true color and set colorscheme
+"" Determine color capabilities and set colorscheme
 if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-  colorscheme darkP
+    if $TERM =~ '\v^(interix|putty|rxvt|screen)(-.*)?$'
+        set notermguicolors
+    elseif ($TERM =~ '\v^(gnome|iterm|st|vte)(-.*)?$'
+        \   || ($TERM =~ '\v^(tmux|xterm)(-.*)?$'
+        \       && ($XTERM_VERSION != ''
+        \           || $VTE_VERSION != ''
+        \           || $KONSOLE_PROFILE_NAME != '')))
+        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+        set termguicolors
+    endif
+endif
+if $COLORTERM =~? '\v^(truecolor|24-bit)$'
+    let &t_Co = 16777216
+elseif $COLORTERM =~ '\v^[^[:digit:]]*256[^[:digit:]]*$'
+    let &t_Co = 256
+endif
+if &t_Co >= 256
+    if &termguicolors
+        colorscheme candycodeP
+    else
+        colorscheme nevernessP
+    endif
+elseif &t_Co >= 16
+    colorscheme desertP
 else
-  colorscheme desertP
+    colorscheme desert
 endif
 
 
@@ -289,11 +318,10 @@ endif
 "" -- C / C++ --
 let g:c_comment_strings = 1 " Allow strings & numbers inside comments
 let g:c_gnu             = 1 " Highlight GNU specific items
-let g:c_space_errors    = 1 " Highlight space errors (?)
+let g:c_space_errors    = 1 " Highlight space errors
 
-"" Set local options when opening a C or C++ file
-autocmd FileType c,cpp setlocal cin cino=:0 noet sts=0 sw=8 ts=8
-
+"" Set local options upon opening a C or C++ file
+autocmd FileType c,cpp setlocal cin cino=:0,(8 noet sts=0 sw=8 ts=8
 
 
 "" -- Git commits --
@@ -306,7 +334,7 @@ autocmd FileType gitcommit setlocal tw=72
 "" -- Man --
 
 "" Set local options when opening a manpage
-autocmd FileType man setlocal cc= nohid noswf noudf
+autocmd FileType man setlocal nonu nornu cc= nohid noswf noudf
 
 "" Load the Man plugin
 runtime ftplugin/man.vim
@@ -319,22 +347,21 @@ set keywordprg=:Man
 "" -- Python --
 
 "" Set the default python version for pyx commands
-if v:version >= 800
-  if has('python3')
-    set pyxversion=3 " python3 is best
-  elseif has('python2')
-    set pyxversion=2 " python2 is fine
-  endif
+if has('pythonx')
+    if has('python3')
+        set pyxversion=3 " python3 is bst
+    elseif has('python2')
+        set pyxversion=2 " python2 is fine
+    endif
 endif
-
-let g:python_highlight_all = 1      " Enable all available highlighting
-let g:python_recommended_style = 1  " PEP8 compliance
+let g:python_highlight_all = 1  " Enable all available highlighting
+let g:pymode_python = 'python3'
 
 
 
 "" -- Readline --
 
-let g:readline_has_bash = 1 " Highlight additions available through bash
+let g:readline_has_bash = 1     " Highlight bash additions
 
 
 
@@ -352,15 +379,17 @@ let g:highlight_sedtabs = 1 " Highlight tab characters in sed scripts
 
 "" -- Sh --
 
-let g:is_posix          = 1 " Highlighting for ambiguous *.sh files
+let g:is_posix          = 1 " Highlighting for ambiguous sh files
 let g:sh_fold_enabled   = 3 " Folding mode (functions, if/do/for)
 let g:sh_no_error       = 1 " Relax error detection
 
-"" Set filetype to sh when editing a shell command line in vim
-if empty($TMPDIR)
-  autocmd BufRead /tmp/bash-fc.* setlocal ft=sh noswf noudf
+"" Set filetype to sh when editing a shell command line
+if $TMPDIR == ''
+    autocmd BufRead /tmp/bash-fc.* setlocal ft=sh noswf noudf
+        \|let b:is_bash = 1|syntax enable
 else
-  autocmd BufRead $TMPDIR/bash-fc.* setlocal ft=sh noswf noudf
+    autocmd BufRead $TMPDIR/bash-fc.* setlocal ft=sh noswf noudf
+        \|let b:is_bash = 1|syntax enable
 endif
 
 
@@ -368,15 +397,24 @@ endif
 "" -- help --
 
 "" Set local options when opening a manpage
-autocmd FileType help setlocal cc= nohid noswf noudf
+autocmd FileType help setlocal noswf noudf
 
 
 
 "" -- Powerline --
 
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
+if v:progname =~? '^vim'
+    python3 from powerline.vim import setup as powerline_setup
+    python3 powerline_setup()
+    python3 del powerline_setup
+
+elseif v:progname =~? '^nvim'
+    if has('python3')
+        let g:powerline_pycmd = 'py3'
+    elseif has('python')
+        let g:powerline_pycmd = 'py'
+    endif
+endif
 
 
 
@@ -386,48 +424,65 @@ python3 del powerline_setup
 let g:mapleader = ','
 
 
-"" New, next, and previous tab
-nnoremap <silent><C-T>      :tabnew<CR>
-nnoremap <silent><M-Right>  :tabnext<CR>
-nnoremap <silent><ESC>[1;3C :tabnext<CR>
-nnoremap <silent><M-Left>   :tabprev<CR>
-nnoremap <silent><ESC>[1;3D :tabprev<CR>
+"" Interpret Ctrl-Left/Right correctly
+map  <ESC>[1;5D <C-Left>
+map  <ESC>[1;5C <C-Right>
+map! <ESC>[1;5D <C-Left>
+map! <ESC>[1;5C <C-Right>
+map  <ESC>Od <C-Left>
+map  <ESC>Oc <C-Right>
+map! <ESC>Od <C-Left>
+map! <ESC>Oc <C-Right>
 
+"" Interpret Alt-Left/Right correctly
+map  <ESC>[1;3D <M-Left>
+map  <ESC>[1;3C <M-Right>
+map! <ESC>[1;3D <M-Left>
+map! <ESC>[1;3C <M-Right>
+map  <ESC><ESC>[D <M-Left>
+map  <ESC><ESC>[C <M-Right>
+map! <ESC><ESC>[D <M-Left>
+map! <ESC><ESC>[C <M-Right>
+
+"" Go to new / next / previous tab
+nnoremap <silent><C-T>     :tabnew<CR>
+nnoremap <silent><M-Right> :tabnext<CR>
+nnoremap <silent><M-Left>  :tabprev<CR>
+
+"" Toggle paste mode
+nnoremap <silent><F3> :set paste!<CR>
+
+"" Toggle search highlighting
+nnoremap <silent><F6> :set hlsearch!<CR>
 
 "" Toggle syntax highlighting
 nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
     \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
 
-
-"" Toggle search highlighting
-nnoremap <silent><F8> :set hlsearch!<CR>
-
-
 "" Toggle line numbers
-nnoremap <silent><F9> :set nu!<Bar>
-      \if &number<Bar>set rnu<Bar>else<Bar>set nornu<Bar>endif<CR>
+nnoremap <silent><F8> :set nu!<Bar>let &rnu = &nu<CR>
 
 
 "" Quote word before or at the cursor (see :help word)
-"" Note: 'selection' must be set to inclusive or exclusive
+"" Note: 'selection' must be set to inclusive or exclusive for this to work
 nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
 nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
 nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
 nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
 nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
 nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
-nnoremap <leader>` vl<ESC>bi<<ESC>ea`<ESC>l
+nnoremap <leader>` vl<ESC>bi`<ESC>ea`<ESC>l
 
 
 "" Quote WORD before or at the cursor (see :help WORD)
-"" Note: 'selection' must be set to inclusive or exclusive
+"" Note: 'selection' must be set to inclusive or exclusive for this to work
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
 nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
 nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
 nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
 nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
-nnoremap <leader><leader>` vl<ESC>Bi<<ESC>Ea`<ESC>l
+nnoremap <leader><leader>` vl<ESC>Bi`<ESC>Ea`<ESC>l
 
 
 "" Search forward for the current visual selection

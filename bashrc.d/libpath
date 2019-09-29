@@ -2,6 +2,14 @@
 ## Function for manipulating the PATH variable
 
 
+if  (( __libpath__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+else
+    (( __libpath__ = 1 ))
+fi
+
+
 path::append() {
   for _; do
     case ":${PATH}:" in

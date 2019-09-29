@@ -1,14 +1,12 @@
-! Xresources.d/Xft
-! Xft resources to include in Xresources file (e.g. using "#include")
+! Xresources.d/Xft : Xft config
+
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+!Xft.dpi         : 96
 
 
-Xft.autohint    : 0
-Xft.lcdfilter   : lcddefault
-Xft.hintstyle   : hintslight
-Xft.hinting     : 1
-Xft.antialias   : 1
-Xft.rgba        : rgb
-Xft.dpi         : 96
-
-
-! vi:ft=xdefaults:et:sts=4:sw=4:tw=0
+! vim:ft=xdefaults

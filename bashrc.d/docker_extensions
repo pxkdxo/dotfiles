@@ -1,113 +1,128 @@
 #!/usr/bin/env bash
+#
+# Docker stuff
 
-## Docker aliases and functions
 
+# Stop all running containers
+alias docker-stop-all='while read -r REPLY
+do
+    docker stop "${REPLY}"
+done < <(docker ps -q -f status=paused -f status=restarting -f status=running)'
 
-## Stop all running containers
-alias docker-stop-all='docker stop $(docker ps -q) 2>/dev/null'
+# Kill all running containers
+alias docker-kill-all='while read -r REPLY
+do
+    docker kill "${REPLY}"
+done < <(docker ps -q -f status=paused -f status=restarting -f status=running)'
 
-## Kill all running containers
-alias docker-kill-all='docker kill $(docker ps -q) 2>/dev/null'
+# Remove all dead containers
+alias docker-rm-old='while read -r REPLY
+do
+    docker rm "${REPLY}"
+done < <(docker ps -q -f status=dead -f status=exited)'
 
-## Remove all dead containers
-alias docker-rm-exited='docker rm $(docker ps -q -f status=exited) 2>/dev/null'
-
-## Remove all containers
+# Remove all containers
 alias docker-rm-all='{
-  docker kill $(docker ps -q) 1>&2
-  docker rm $(docker ps -aq)
-} 2>/dev/null'
+while read -r REPLY
+do
+    docker kill "${REPLY}"
+done < <(docker ps -q -f status=paused -f status=restarting -f status=running)
+while read -r REPLY
+do
+    docker rm "${REPLY}"
+done < <(docker ps -q -f status=created -f status=dead -f status=exited)
+}'
 
 
 
-## Create a new jupyter notebook container
-## usage: dkr.jupyter-notebook [-d] [--rm] [-p host-port] [-v host-directory]
-docker::jupyter() {
+# Create a new jupyter notebook container
+# usage: docker-jupyter [-d] [--rm] [-p host-port] [-v host-directory]
+docker-jupyter()
+{
+    local cmd help || return
 
-  ## Initialize local variables
-  local usagefmt='usage: %q [-d] [--rm] [-p host-port] [-v host-dir] [image]' &&
-    local -a cmd=( docker run --tty ) || {
-    printf '%q: Cannot assign local variable(s)\n' "${FUNCNAME}" 1>&2 
-    return 10
-  }
+    help="${FUNCNAME[0]} [-d] [--rm] [-p host-port] [-v host-dir] [image]"
 
-  ## Parse options and construct command
-  while [[ $1 == -?* ]]; do
-    case $1 in
-      --)
-        shift
-        break
-        ;;
-     -p|--port)
-        shift
-        cmd+=( -p "${1:-"${JUPYTER_PORT:-"8888"}"}:8888" )
-        shift || break
-        ;;
-      -v|--volume)
-        shift
-        cmd+=( -v "${1:-"${JUPYTER_DIR:-"${PWD}"}"}:/home/jovyan/work" )
-        shift || break
-        ;;
-      -d|--detach)
-        cmd+=( -d )
-        shift
-        ;;
-      --rm)
-        cmd+=( --rm )
-        shift
-        ;;
-      -h|--help)
-        printf "${usagefmt}\n" "${FUNCNAME}"
-        return 0
-        ;;
-      *)
-        printf "${usagefmt}\n" "${FUNCNAME}" 1>&2
+    cmd=( docker run --tty )
+
+    while [[ $1 == -?* ]]
+    do
+        case $1 in
+            -h|--help)
+                printf 'usage: %s\n' "${help}"
+                return 2
+                ;;
+            -p|--port)
+                shift
+                cmd+=( -p "${1:-"${JUPYTERPORT:-8888}"}:8888" )
+                shift || break
+                ;;
+            -v|--volume)
+                shift
+                cmd+=( -v "${1:-"${JUPYTERDIR:-${PWD}}"}:/home/jovyan/work" )
+                shift || break
+                ;;
+            -d|--detach)
+                cmd+=( -d )
+                shift
+                ;;
+            --rm)
+                cmd+=( --rm )
+                shift
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                printf 'usage: %s\n' "${help}" 1>&2
+                return 2
+        esac
+    done
+
+    if (( $# > 1 ))
+    then
+        printf "%s: too many arguments\n" "${FUNCNAME[0]}"
         return 2
-        ;;
-    esac
-  done
-
-  if (( $# > 1 )); then
-    { printf "%q: too many arguments\n" "${FUNCNAME}"
-      printf "${usagefmt}\n" "${FUNCNAME}"
-    } 1>&2
-    return 2
-  fi
-
-  if (( $# )); then
-    if [[ $1 == */* ]]; then
-      cmd+=( "$1" )
-    else
-      cmd+=( "jupyter/$1" )
     fi
-  else
-    { read -r "cmd[${#cmd[@]}]" || cmd[-1]='jupyter/scipy-notebook'
-    } < <(docker image ls --format='{{.Repository}}' 'jupyter/*-notebook')
-  fi
 
-  "${cmd[@]}"
+    if (( $# ))
+    then
+        if [[ $1 == */* ]]
+        then
+            "${cmd[@]}" "$1"
+        else
+            "${cmd[@]}" "jupyter/$1"
+        fi
+    else
+        read -r "cmd[${#cmd[@]}]" < <( 
+        docker image ls --format='{{.Repository}}' 'jupyter/*-notebook'
+        ) && "${cmd[@]}"
+    fi
 }
 
 
-## Find and print the tokens for all running jupyter containers
-## usage: docker.jupyter-tokens
-docker::jupyter-tokens() {
+# Find and print the tokens for all running jupyter containers
+# usage: docker-jupyter-tokens
+docker-jupyter-tokens()
+{
+    local id=( ) port=( ) token=( ) || return
 
-  local IFS id && local -A images=( ) tokens=( ) || {
-    printf '%q: Cannot assign local variables\n' "${FUNCNAME}" 1>&2 
-    return 10
-  }
+    while IFS='-/:' read -r "id[${#id[@]}]" _ "port[${#port[@]}]" _
+    do
+        if [[ "$(docker ps -aq -f "id=${id[-1]}" --format='{{.Image}}')" == jupyter/*-notebook ]]
+        then
+            if [[ $(docker logs "${id[-1]}") =~ https?://[^/]*/\?token=([[:alnum:]]+) ]]
+            then
+                token[${#token[@]}]="${BASH_REMATCH[1]}"
+            fi
+        fi
+    done < <(docker ps -q --format='{{.ID}}/{{.Ports}}')
 
-  while IFS=':' read -r id; do
-    images[${id}]=$(docker ps --filter="id=${id}" --format='{{.Image}}')
-    if [[ ${images[${id}]} == jupyter/*-notebook ]]; then
-      [[ $(docker logs "${id}") =~ https?://[^/]*/\?token=([[:alnum:]]+) ]]
-      tokens[${id}]=${BASH_REMATCH[1]}
-    fi
-  done < <(docker ps --format='{{.ID}}')
+    printf '%-16s%-8s%-s\n' 'CONTAINER ID' 'PORT' 'TOKEN'
 
-  printf '%-12s\t%-24s\t%-s\n' ID IMAGE TOKEN
-  for id in "${!tokens[@]}"; do
-    printf '%-12s\t%-24s\t%-s\n' "${id}" "${images[${id}]}" "${tokens[${id}]}"
-  done
+    for _ in "${!token[@]}"
+    do
+        printf '%-16s%-8s%-s\n' "${id[_]}" "${port[_]#*:}" "${token[_]}"
+    done
 }

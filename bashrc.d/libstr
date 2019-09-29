@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+#
+## string manipulation library
+#
+
+if  (( __libstr__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+else
+    (( __libstr__ = 1 ))
+fi
+
+
+###
+## print lowercase version of each arg
+###
+str::lower()
+{
+    printf '%s\n' "${@,,}"
+}
+
+###
+## print uppercase version of each arg
+###
+str::upper()
+{
+    printf '%s\n' "${@^^}"
+}
+
+###
+## print capitalized version of each arg
+###
+str::capitalize()
+{
+    printf '%s\n' "${@^}"
+}
+
+###
+## print opposite-case version of each arg
+###
+str::swapcase()
+{
+    printf '%s\n' "${@~~}"
+}
+
+
+###
+## print numeric values of given chars
+###
+str::ord()
+{
+    local base="${base:-d}" || return
+
+    while [[ $# -gt 0 && ${1::1} == - ]]
+    do
+        case "${1:1}" in
+            [diouxX])
+                base="${1:1}"
+                shift
+                ;;
+            -)
+                shift
+                break
+                ;;
+            *)
+                printf 1>&2 '%q: %q: %q: invalid option\n' \
+                    "${0##*/}" "${FUNCNAME[0]}" "$1"
+                printf 1>&2 '%q: usage: %q [-d|-i|-o|-u|-x|-X] VALUE ...\n' \
+                    "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+                return 2
+        esac
+    done
+
+    if [[ $# -eq 0 ]]
+    then
+        printf 1>&2 '%q: usage: %q [-d|-i|-o|-u|-x|-X] VALUE ...\n'  \
+            "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    fi
+
+    while (( $# ))
+    do
+        if [[ ${1//?( )/${sep-, }\'} =~ ${1//?/(${sep-, })(\'.)} ]]
+        then
+            printf '%'"${base}"'%s' "${BASH_REMATCH[@]:2}" $'\n'
+        fi
+        shift
+    done
+}
+
+
+###
+## print the prompt expansion of each arg (requires bash >= 4.4)
+###
+str::prompt_expand()
+{
+    printf '%s\n' "${@@P}"
+}
+
+
+###
+## print the length of a string
+###
+str::len()
+{
+    if [[ $# -eq 0 ]]
+    then
+        printf 1>&2 '%q: usage: %q VALUE ...\n' \
+            "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    fi
+
+    while (( $# ))
+    do
+        printf '%d\n' "${#1}"
+        shift
+    done   
+}
+
+
+###
+## str::unicode_range - print a range of unicode characters (inclusive)
+##
+## usage: unicode_range start end
+###
+unicode_range() 
+{ 
+    local char stop incr || return
+
+    if (( $# > 2 ))
+    then
+        printf '%q: %q: too many arguments\n' "${0##*/}" "${FUNCNAME[0]}"
+        return 1
+    elif (( $# < 2 ))
+    then
+        printf 1>&2 '%q: %q: missing required arguments\n' "${0##*/}" "${FUNCNAME[0]}"
+        printf 1>&2 '%q: usage: %q start end\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    elif [[ $1 != +([[:xdigit:]]) ]]
+    then
+        printf 1>&2 '%q: %q: invalid starting character\n' "${0##*/}" "${FUNCNAME[0]}"
+        printf 1>&2 '%q: usage: %q start end\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    elif [[ $2 != +([[:xdigit:]]) ]]
+    then
+        printf 1>&2 '%q: %q: invalid ending character\n' "${0##*/}" "${FUNCNAME[0]}"
+        printf 1>&2 '%q: usage: %q start end\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    fi
+
+    for ((
+        char = (16#$1), stop = (16#$2), incr = (char < stop ? 1 : -1);
+        char != stop;
+        char += incr
+        ))
+    do
+        printf -v char '%08x' "${char}"
+        printf '%b' "\U${char}"
+        if (( char = (16#${char}), char + incr != stop ))
+        then
+            printf '%s' "${sep-, }"
+        else
+            echo
+        fi
+    done
+}
+
+# vim:ft=sh:tw=80

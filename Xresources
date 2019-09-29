@@ -1,16 +1,14 @@
-! ~/.Xresources
-! resources to be loaded by xrdb (e.g. using "xrdb -load" or "xrdb -merge")
+! ~/.Xresources: X resources user config
 
-#include ".Xresources.d/Xcursor"
-#include ".Xresources.d/Xft"
+#include ".Xresources.d/URxvt"
 #include ".Xresources.d/XTerm"
+#include ".Xresources.d/Xft"
+#include ".Xresources.d/Xcursor"
+#include ".Xresources.d/colors/electricity"
 
-!#include ".Xresources.d/colors/steamburn"
-#include ".Xresources.d/colors/derelicte"
+*locale: true
 
-
-*locale         : true
-*customization  : -color
+*customization: -color
 
 
 ! vim:ft=xdefaults

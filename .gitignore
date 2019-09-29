@@ -1,14 +1,9 @@
-## .gitignore
+# .gitignore: whitelist for untracked files - see gitignore(5)
 
-## blacklist everything
 /**
-
-## whitelist as needed
 !/README.md
 !/asoundrc
-!/automated_script.sh
 !/awesome
-!/awesome/rc.lua
 !/bash_completion
 !/bash_logout
 !/bash_profile
@@ -54,9 +49,12 @@
 !/ranger/rc.conf
 !/ranger/rifle.conf
 !/ranger/scope.sh
-!/screenrc
+!/rofi
+!/rofi/config
+!/rofi/themes
+!/rofi/themes/**
 !/surfraw
-!/surfraw/**
+!/surfraw/conf
 !/tmux.conf
 !/user-dirs.dirs
 !/user-dirs.locale
@@ -71,8 +69,6 @@
 !/vim/syntax
 !/vim/syntax/**
 !/w3m
-!/w3m/config
-!/w3m/keymap
 !/xinitrc
 !/xinitrc.d
 !/xinitrc.d/**

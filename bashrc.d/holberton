@@ -3,83 +3,73 @@
 ## aliases, functions and variables for Holberton
 ###
 
-alias gcc="gcc -std=c90 -Wall -Werror -Wextra -pedantic"
+alias gcc='gcc -Wall -Werror -Wextra -pedantic'
 
-
-
-
-
-
-
-export hb_project_dir='/home/pat/Documents/Holberton/Projects/holbertonschool-low_level_programming/0x10-variadic_functions'
-
-hb-project()
+hbtn-project()
 {
   local REPLY
   case $# in
     0)
-      if [[ -n ${hb_project_dir} ]]; then
-        cd -- "${hb_project_dir}"
+      if [[ -n ${hbtn_project} ]]; then
+        cd -- "${hbtn_project}" || unset -v hbtn_project
       else
-        printf 1>&2 '%q: project directory is not set\n' "${FUNCNAME}"
-        printf 1>&2 'Supply a directory name as an argument to set it\n'
-        return 1
+        printf 1>&2 '%q: project directory is not set\n' "${FUNCNAME[0]}"
+        printf 1>&2 'Supply a directory name to set it\n'
+        return 0
       fi
       ;;
     1)
-      if [[ -n ${hb_project_dir} ]]; then
+      if [[ -n ${hbtn_project} ]]; then
         read -r -p 'Change the active project directory? [Y/n] ' REPLY
         if [[ ${REPLY^} != Y* ]]; then
-          printf 'Abort.\n'
+          printf 'Aborting.\n'
           return 0
         fi
       fi
-      if __hb-project-set "$1"; then
-          printf 'Project directory set to %s\n' "${hb_project_dir@Q}"
+      if __hbtn-project-set "$1"; then
+          printf 'Project directory set to %q\n' "${hbtn_project}"
         return 0
       else
-        printf 'Refusing to set project directory\n'
+        printf 'Refusing to set project directory to %q\n' "$1"
         return 1
       fi
       ;;
     *)
-      printf 1>&2 '%q: too many arguments\n' "${FUNCNAME}"
-      printf 1>&2 'usage: %q [directory]\n'  "${FUNCNAME}"
+      printf 1>&2 '%q: too many arguments\n' "${FUNCNAME[0]}"
+      printf 1>&2 'usage: %q [directory]\n'  "${FUNCNAME[0]}"
       return 2
       ;;
   esac
 }
 
-__hb-project-set()
+__hbtn-project-set()
 {
-  local hb_project_dir                                            &&
-  hb_project_dir=$(CDPATH= cd -- "${1:-.}" && pwd -P && printf +) &&
-  hb_project_dir=${hb_project_dir%??}                             &&
-  sed -E -i '
-  /^export hb_project_dir=/{
-    : get
-    /\\$/{
+    local hbtn_project &&
+        hbtn_project="$(CDPATH='' cd -- "${1:-.}" && pwd && printf +)" &&
+        hbtn_project="${hbtn_project%??}" || return
+
+    # shellcheck disable=SC2016
+    sed -i -E '
+    /^export hbtn_project=/{
+      : old
+      /(^|[^\])(\\\\)*\\$/{
+        N
+        b old
+      }
+      z
+      : new
+      a export hbtn_project='"${hbtn_project@Q}"'
+      : cat
       N
-      b get
+      b cat
     }
-    z
-    : var
-    a export hb_project_dir='"'${hb_project_dir//\'/\'\\\'\'}'"'
-    : cat
-    n
-    b cat
-  }
-  $b var' "${BASH_SOURCE[0]}" && declare -gx hb_project_dir="${hb_project_dir}"  
+    $b new
+    ' "${BASH_SOURCE[0]}" && declare -gx hbtn_project="${hbtn_project}"
 }
 
 
-hb-gcc() 
-{
-  gcc "$@" "${1%%-*}-main.c" -o "${1%.c}"
-}
 
 
-hb-gcc-run() 
-{ 
-  gcc "$@" "${1%%-*}-main.c" -o "${1%.c}" && ./"${1%.c}"
-}
+
+
+export hbtn_project='/home/pat/Documents/Holberton/Projects/holbertonschool-low_level_programming/0x19-stacks_queues_lifo_fifo'

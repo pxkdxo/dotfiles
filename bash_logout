@@ -1,21 +1,12 @@
-#
-## ~/.bash_logout : bash logout script
-###
+# ~/.bash_logout: bash logout script
 
+# Reset the terminal
+tput reset
 
-### Honor both 'histappend' and 'erasedups'
-if [[ :${BASHOPTS}::${HISTCONTROL}: == *:histappend:*:erasedups:* ]]; then
-  history -n  ## Read new history
-  history -w  ## Write history (erase duplicates)
-  history -c  ## Clear history
-fi
-
-
-## If leaving the console, clear the screen; otherwise, reset the terminal
-if (( SHLVL == 1 )); then
-  clear_console -q
-else
-  tput reset
+# If leaving the console, clear the screen
+if (( SHLVL ))
+then
+    clear_console -q
 fi
 
 

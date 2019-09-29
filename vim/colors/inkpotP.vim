@@ -55,6 +55,8 @@ if has("gui_running")
 
     hi CursorLine         guibg=#2e2e37
 
+    hi ColorColumn    gui=none                   guibg=#101010
+
     hi IncSearch      gui=BOLD   guifg=#303030   guibg=#cd8b60
     hi Search         gui=NONE   guifg=#303030   guibg=#ad7b57
     hi ErrorMsg       gui=BOLD   guifg=#ffffff   guibg=#ce4e4e
@@ -182,6 +184,7 @@ else
     exec "hi SpecialKey     cterm=BOLD   ctermfg=" . <SID>X(55) . " ctermbg=" . "NONE"
     exec "hi Title          cterm=BOLD   ctermfg=" . <SID>X(48) . " ctermbg=" . "NONE"
     exec "hi Visual         cterm=NONE   ctermfg=" . <SID>X(79) . " ctermbg=" . <SID>X(38)
+    exec "hi ColorColumn    cterm=NONE   ctermfg=" . "NONE"     . " ctermbg=" . <SID>X(8)
 
     exec "hi Comment        cterm=NONE   ctermfg=" . <SID>X(52) . " ctermbg=" . "NONE"
     exec "hi Constant       cterm=NONE   ctermfg=" . <SID>X(73) . " ctermbg=" . "NONE"

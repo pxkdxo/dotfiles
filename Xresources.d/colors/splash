@@ -1,0 +1,39 @@
+! Splash
+
+*background:  #222222
+*foreground:  #d8d8d8
+*cursorColor: darkorange2
+
+!black
+*color0:      #303031
+*color8:      #707074
+
+!red
+*color1:      #f70b85
+*color9:      #f70b4a
+
+!green
+*color2:      #0bf77d
+*color10:     #0bf742
+
+!yellow
+*color3:      #f7f30b
+*color11:     #f7b80b
+
+!blue
+*color4:      #0b85f7
+*color12:     #0bc0f7
+
+!magenta
+*color5:      #f30bf7
+*color13:     #0bf7b8
+
+!cyan
+*color6:      #0bf7f3
+*color14:     #f70bc0
+
+!white
+*color7:      #d8d8df
+*color15:     #f8f8ff
+
+! vi:ft=xdefaults

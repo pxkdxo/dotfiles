@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+8f () 
+{ 
+    local _8f='\e[38;2;'"$((16#$1))"';'"$((16#$2))"';'"$((16#$3))"'m'"${*:4}"
+    printf '%s'"$(tput sgr0)"'\n' "${_8f@P}"
+}
+
+8b () 
+{ 
+    local _8b='\e[48;2;'"$((16#$1))"';'"$((16#$2))"';'"$((16#$3))"'m'"${*:4}"
+    printf '%s'"$(tput sgr0)"'\n' "${_8b@P}"
+}
+
+
+8f_from_colors_dict () 
+{
+    local REPLY=( )
+    while IFS=$' \t\n' read -r -a REPLY
+    do
+        (( ${#REPLY[@]} != 4 )) ||
+            8f "${REPLY[@]::3}" "${REPLY[@]}"
+    done
+} < "${1:-${XDG_CONFIG_HOME:-${HOME}/.config}/colors/dict/rgb-hex.txt}"
+
+
+8f_colors_random () 
+{ 
+    local _r="$((${r:-$((RANDOM%128+128))}%256))"
+    local _g="$((${g:-$((RANDOM%128+128))}%256))"
+    local _b="$((${b:-$((RANDOM%128+128))}%256))"
+    local i j k r="${_r}" g="${_g}" b="${_b}"
+
+    local COLWIDTH="$(( ($(tput cols) - 8) / 3 ))"
+    local REPLY
+    local TIMEOUT="$((${TIMEOUT:-0}))"
+
+    set -- \
+        "$((${1:-${RANDOM}}%256))" \
+        "$((${2:-${RANDOM}}%256))" \
+        "$((${3:-${RANDOM}}%256))" \
+        "${4:-h3110 w0r1d}" ${4:+"${@:5}"}
+
+    for (( i=0;i++<256;r=((r+$1)%256),g=((g+$2)%256),b=((b+$3)%256) ))
+    do
+        for (( j=0;j++<256;r=((r+g)%256),g=((g+b)%256),b=((b+r)%256) ))
+        do
+            for (( k=0;k++<256;r=((r+b)%256),g=((g+r)%256),b=((b+g)%256) ))
+            do
+                8f "$(printf '%02x' "${r}")" \
+                   "$(printf '%02x' "${g}")" \
+                   "$(printf '%02x' "${b}")" \
+                   "$(printf '#%02x%02x%02x:' "${r}" "${g}" "${b}")" \
+                   "${@:4}"
+            done
+        done
+    done 1> >( 
+
+    while REPLY=( ) && read -r 'REPLY[0]' && read -r 'REPLY[1]' && read -r 'REPLY[2]'
+    do
+        printf "%-${COLWIDTH}s\t%-${COLWIDTH}s\t%-${COLWIDTH}s\n" "${REPLY[@]@P}"
+        read -r -u 3 -t "${TIMEOUT}"
+    done 3<> <(:)
+    )
+}

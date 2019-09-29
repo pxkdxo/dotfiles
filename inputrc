@@ -1,278 +1,262 @@
+# readline configuration
+
+
+# Term
 #
-## readline initialization
+set bind-tty-special-chars on
+set echo-control-characters on
+set enable-bracketed-paste off
+set enable-keypad off
+
+
+# 8bit
 #
+set bell-style visible
+set convert-meta on
+set input-meta on
+set output-meta on
+set enable-meta-key on
 
 
-## Term
-set bind-tty-special-chars              on
-set echo-control-characters             on
-set enable-bracketed-paste              off
-set enable-keypad                       off
+# Visual
+#
+set blink-matching-paren on
+set colored-completion-prefix on
+set colored-stats on
+set mark-directories on
+set mark-symlinked-directories on
+set visible-stats off
 
 
-## 8bit
-set bell-style                          visible
-set convert-meta                        on
-set input-meta                          on
-set output-meta                         on
-set enable-meta-key                     on
+# Completion
+#
+set completion-display-width -1
+set completion-ignore-case on
+set completion-map-case off
+set completion-prefix-display-length 0
+set completion-query-items 144
+set disable-completion off
+set match-hidden-files on
+set menu-complete-display-prefix on
+set page-completions on
+set print-completions-horizontally off
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set skip-completed-text on
 
 
-## Prompt
-set emacs-mode-string                   "\1\e[0;1;2m\2@\1\e[0m\2"
-set vi-cmd-mode-string                  "\1\e[0;1;2m\2:\1\e[0m\2"
-set vi-ins-mode-string                  "\1\e[0;1;2m\2+\1\e[0m\2"
-set show-mode-in-prompt                 on
+# History
+#
+set history-preserve-point on
+set history-size 10000
+set mark-modified-lines off
+set revert-all-at-newline on
 
 
-## Visual
-set blink-matching-paren                on
-set colored-completion-prefix           on
-set colored-stats                       on
-set mark-directories                    on
-set mark-symlinked-directories          on
-set visible-stats                       off
+# Misc
+#
+set comment-begin "#"
+set expand-tilde off
+set horizontal-scroll-mode off
+set keyseq-timeout 0
 
 
-## Completion
-set completion-display-width            -1
-set completion-ignore-case              on
-set completion-map-case                 off
-set completion-prefix-display-length    0
-set completion-query-items              144
-set disable-completion                  off
-set match-hidden-files                  on
-set menu-complete-display-prefix        on
-set page-completions                    on
-set print-completions-horizontally      off
-set show-all-if-ambiguous               on
-set show-all-if-unmodified              on
-set skip-completed-text                 on
+# Prompt
+#
+set emacs-mode-string "\1\e[1;2m\2@\1\e[0m\2"
+set vi-cmd-mode-string "\1\e[1;2m\2:\1\e[0m\2"
+set vi-ins-mode-string "\1\e[1;2m\2+\1\e[0m\2"
+set show-mode-in-prompt on
 
 
-## History
-set history-preserve-point              on
-set history-size                        10000
-set mark-modified-lines                 off
-set revert-all-at-newline               on
+# Mode
+#
+set editing-mode vi
 
 
-## Misc
-set comment-begin                       "#"
-set expand-tilde                        off
-set horizontal-scroll-mode              off
-set keyseq-timeout                      0
+# vi-insert
+#
+set keymap vi-insert
 
 
-
-## Vi Editing Mode
-set editing-mode        vi
-
-## vi-insert keymap
-set keymap              vi-insert
-
-## <ESC> start vi-command mode
-"\C-[":                 vi-movement-mode
-## <F1> insert --help and submit the line
-"\eOP":                 " --help\C-k\r"
-## <F2> put line inside single quotes
-"\eOQ":                 "\C-a'\C-e'"
-## <F3> put line inside double quotes
-"\eOR":                 "\C-a"\C-e""
-## <F4> put line inside a command substitution
-"\eOS":                 "\C-a$(\C-e)"
-## <F5> put line inside a subshell
-"\e[15~":               "\C-a(\C-e)"
-## <F6> prepend sudo
-"\e[17~":               "\C-asudo "
-### <F7> insert su - root -c at beginning of line
-#"\e[18~":              "\C-asu - root -c "
-### <F8>
-#"\e[19~":              "\C-asu - root -c "
-### <F9>
-#"\e[20~":              "\C-asu - root -c "
-### <F10>
-#"\e[21~":              "\C-asu - root -c "
-
-
-
-#"\C-g":                abort
-"\C-x\C-g":             abort
-"\M-\C-g":              abort
+"\C-]":                 "\e0WlDIman \C-m"
 "\C-j":                 accept-line
 "\C-m":                 accept-line
-"\C-b":                 backward-char
-"\M-OD":                backward-char
+"\C-oh":                backward-char
+#"\M-h":                 backward-char
 "\M-[D":                backward-char
 "\M-\C-OD":             backward-char
 "\M-\C-[D":             backward-char
 "\C-?":                 backward-delete-char
-"\C-h":                 backward-delete-char
-"\C-x\C-?":             backward-kill-line
-"\M-\C-?":              backward-kill-word
+"\C-odb":               backward-kill-word
+#"\M-db":                backward-kill-word
 "\M-[1;3D":             backward-word
-"\M-b":                 backward-word
-#"\M-<":                beginning-of-history
+"\M-\e[D":              backward-word
+"\C-ob":                backward-word
+#"\M-b":                 backward-word
 "\C-a":                 beginning-of-line
+"\C-b":                 beginning-of-line
+"\C-o0":                beginning-of-line
 "\M-OH":                beginning-of-line
 "\M-[1~":               beginning-of-line
 "\M-[7~":               beginning-of-line
 "\M-[H":                beginning-of-line
 "\M-[200~":             bracketed-paste-begin
-"\C-xe":                call-last-kbd-macro
-#"\M-@":                call-last-kbd-macro
-"\M-c":                 capitalize-word
-"\C-]":                 character-search
-"\M-\C-]":              character-search-backward
+"\C-o@":                call-last-kbd-macro
+"\C-of":                character-search
+#"\M-f":                 character-search
+"\C-oF":                character-search-backward
+#"\M-F":                 character-search-backward
 "\C-l":                 clear-screen
-#"\C-i":                complete
-#"\M-\e":               complete
 "\M-!":                 complete-command
 "\M-/":                 complete-filename
 "\M-@":                 complete-hostname
 "\M-{":                 complete-into-braces
 "\M-~":                 complete-username
 "\M-$":                 complete-variable
-#"\M-<":                copy-backward-word
-#"\M->":                copy-forward-word
+"\C-oyb":               copy-backward-word
+#"\M-yb":                copy-backward-word
+"\C-oye":               copy-forward-word
+#"\M-yw":                copy-forward-word
 "\M-\C-i":              dabbrev-expand
-"\C-d":                 delete-char
+"\C-h":                 delete-char
+"\M-x":                 delete-char
 "\M-[3~":               delete-char
-"\M-\\":                delete-horizontal-space
-#"\M--":                digit-argument
-#"\M-0":                digit-argument
-#"\M-1":                digit-argument
-#"\M-2":                digit-argument
-#"\M-3":                digit-argument
-#"\M-4":                digit-argument
-#"\M-5":                digit-argument
-#"\M-6":                digit-argument
-#"\M-7":                digit-argument
-#"\M-8":                digit-argument
-#"\M-9":                digit-argument
-"\C-x\C-v":             display-shell-version
-"\M-l":                 downcase-word
-#"\M-\C-i":             dynamic-complete-history
-"\C-x\C-e":             edit-and-execute-command
-"\C-x)":                end-kbd-macro
-"\M-q":                 end-kbd-macro
-#"\M->":                end-of-history
+#"\M--":                 digit-argument
+#"\M-0":                 digit-argument
+#"\M-1":                 digit-argument
+#"\M-2":                 digit-argument
+#"\M-3":                 digit-argument
+#"\M-4":                 digit-argument
+#"\M-5":                 digit-argument
+#"\M-6":                 digit-argument
+#"\M-7":                 digit-argument
+#"\M-8":                 digit-argument
+#"\M-9":                 digit-argument
+"\M-:":                 edit-and-execute-command
+"\C-oQ":                end-kbd-macro
+#"\M-Q":                 end-kbd-macro
 "\C-e":                 end-of-line
+"\C-o$":                end-of-line
 "\M-OF":                end-of-line
 "\M-[4~":               end-of-line
 "\M-[8~":               end-of-line
 "\M-[F":                end-of-line
-"\C-x\C-x":             exchange-point-and-mark
-"\M-%":                 exchange-point-and-mark
-"\C-f":                 forward-char
-"\M-OC":                forward-char
+"\C-o%":                exchange-point-and-mark
+#"\M-%":                 exchange-point-and-mark
+"\C-ol":                forward-char
+#"\M-l":                 forward-char
 "\M-[C":                forward-char
 "\M-\C-OC":             forward-char
 "\M-\C-[C":             forward-char
-"\C-s":                 forward-search-history
+"\M-N":                 forward-search-history
 "\M-[6~":               forward-search-history
 "\M-[1;3C":             forward-word
-"\M-f":                 forward-word
-"\M-g":                 glob-complete-word
-"\C-*":                 glob-expand-word
-"\C-x*":                glob-expand-word
-"\C-g":                 glob-list-expansions
-"\C-xg":                glob-list-expansions
-#"\M-!":                history-expand-line
+"\M-\e[C":              forward-word
+"\C-ow":                forward-word
+#"\M-w":                 forward-word
+"\M-=":                 glob-complete-word
+"\M-*":                 glob-expand-word
 "\M-^":                 history-expand-line
 "\M-[1;5A":             history-search-backward
 "\M-[5A":               history-search-backward
+"\M-Oa":                history-search-backward
 "\M-[1;5B":             history-search-forward
 "\M-[5B":               history-search-forward
-"\M-<":                 history-substring-search-backward
-"\M->":                 history-substring-search-forward
+"\M-Ob":                history-search-forward
+"\M-\e[A":              history-substring-search-backward
+"\M-\C-t":              history-substring-search-backward
+"\M-\e[B":              history-substring-search-forward
+"\M-\C-g":              history-substring-search-forward
 "\M-#":                 insert-comment
-"\M-*":                 insert-completions
-"\M-.":                 insert-last-argument
-#"\M-_":                insert-last-argument
+"\M-\C-a":              insert-completions
 "\C-k":                 kill-line
-"\M-d":                 kill-word
+"\C-od$":               kill-line
+#"\M-d$":                kill-line
+"\C-odw":               kill-word
+#"\M-dw":                kill-word
 "\M- ":                 magic-space
 "\C-i":                 menu-complete
-"\C-n":                 menu-complete
-"\C-p":                 menu-complete-backward
 "\M-[Z":                menu-complete-backward
-#"\C-n":                next-history
 "\M-OB":                next-history
 "\M-[B":                next-history
 "\M-\C-OB":             next-history
 "\M-\C-[B":             next-history
-"\M-n":                 non-incremental-forward-search-history
-"\M-p":                 non-incremental-reverse-search-history
-"\C-o":                 operate-and-get-next
-"\C-x!":                possible-command-completions
-"\M-=":                 possible-completions
-"\M-?":                 possible-completions
-"\C-x/":                possible-filename-completions
-"\C-x@":                possible-hostname-completions
-"\C-x~":                possible-username-completions
-"\C-x$":                possible-variable-completions
-#"\C-p":                previous-history
+"\C-n":                 non-incremental-forward-search-history
+"\C-p":                 non-incremental-reverse-search-history
+"\M-\C-d":              possible-completions
+"\M-\C-l":              possible-completions
 "\M-OA":                previous-history
 "\M-[A":                previous-history
 "\M-\C-OA":             previous-history
 "\M-\C-[A":             previous-history
-"\C-q":                 quoted-insert
 "\C-v":                 quoted-insert
 "\M-[2~":               quoted-insert
-"\C-x\C-r":             re-read-init-file
+"\M-?":                 reverse-search-history
 "\C-r":                 reverse-search-history
 "\M-[5~":               reverse-search-history
-"\M-\C-r":              revert-line
-"\M-r":                 revert-line
-"\C-@":                 set-mark
-"\M-\C-h":              shell-backward-kill-word
+"\M-\C-u":              revert-line
+"\C-ov":                set-mark
+#"\M-v":                 set-mark
+"\M-\C-?":              shell-backward-kill-word
 "\M-[1;5D":             shell-backward-word
 "\M-[5D":               shell-backward-word
-"\M-\C-e":              shell-expand-line
+"\M-Od":                shell-backward-word
+"\M-`":                 shell-expand-line
 "\M-[1;5C":             shell-forward-word
 "\M-[5C":               shell-forward-word
-"\M-\C-d":              shell-kill-word
+"\M-Oc":                shell-forward-word
+"\M-d":                 shell-kill-word
 "\M-[":                 skip-csi-sequence
-"\C-x(":                start-kbd-macro
-"\M-q":                 start-kbd-macro
+"\C-oq":                start-kbd-macro
+#"\M-q":                 start-kbd-macro
 "\M-&":                 tilde-expand
-"\C-t":                 transpose-chars
-"\M-t":                 transpose-words
-"\C-_":                 undo
 "\C-u":                 unix-line-discard
-"\M-u":                 upcase-word
+"\C-ou":                undo
+#"\M-u":                 undo
 "\C-w":                 vi-unix-word-rubout
+"\C-o\"":               yank
+"\M-\"":                yank
 "\C-y":                 yank
-#"\M-.":                yank-last-arg
-"\M-_":                 yank-last-arg
-"\M-\C-y":              yank-nth-arg
-"\M-y":                 yank-pop
+"\C-o.":                yank-last-arg
+"\M-.":                 yank-last-arg
+#"\C-@":                 yank-nth-arg
+"\C-@":                 yank-pop
+#"\M-y":                 yank-pop
 
 
-
-## vi-command keymap
+# vi-command
+#
 set keymap vi-command
 
-#"\C-g":                abort
-"\C-x\C-g":             abort
-"\M-\C-g":              abort
+
+"\C-]":                 "0WlDIman \C-m"
 "\C-j":                 accept-line
 "\C-m":                 accept-line
+"\M-h":                 backward-char
+"\M-[D":                backward-char
+"\M-\C-OD":             backward-char
+"\M-\C-[D":             backward-char
 "\C-b":                 backward-char
 "\C-h":                 backward-char
-"\M-OD":                backward-char
 "\M-[D":                backward-char
 "\M-\C-OD":             backward-char
 "\M-\C-[D":             backward-char
 "h":                    backward-char
 "\C-?":                 backward-delete-char
 "\C-h":                 backward-delete-char
-"\C-x\C-?":             backward-kill-line
+"\M-db":                backward-kill-word
 "\M-\C-?":              backward-kill-word
+"\M-[1;3D":             backward-word
+"\M-\e[D":              backward-word
 "\M-b":                 backward-word
-#"\M-<":                beginning-of-history
 "\M-[5~":               beginning-of-history
+"\C-a":                 beginning-of-line
+"\C-b":                 beginning-of-line
+"\M-OH":                beginning-of-line
+"\M-[1~":               beginning-of-line
+"\M-[7~":               beginning-of-line
+"\M-[H":                beginning-of-line
 "0":                    beginning-of-line
 "\C-a":                 beginning-of-line
 "\M-OH":                beginning-of-line
@@ -281,54 +265,58 @@ set keymap vi-command
 "\M-[H":                beginning-of-line
 "\M-[200~":             bracketed-paste-begin
 "@":                    call-last-kbd-macro
-"\C-xe":                call-last-kbd-macro
-"\M-c":                 capitalize-word
-"\C-]":                 character-search
-"\M-\C-]":              character-search-backward
+#"\M-c":                 capitalize-word
+#"\M-f":                 character-search
+#"\C-]":                 character-search
+#"\M-F":                 character-search-backward
+#"\M-\C-]":              character-search-backward
 "\C-l":                 clear-screen
-"\C-i":                 menu-complete
-"\M-[Z":                menu-complete
-#"\M-\e":               complete
 "\M-!":                 complete-command
 "\M-/":                 complete-filename
 "\M-@":                 complete-hostname
 "\M-{":                 complete-into-braces
 "\M-~":                 complete-username
 "\M-$":                 complete-variable
-"y":                    copy-region-as-kill
+"\M-yb":                copy-backward-word
+"\M-yw":                copy-forward-word
+#"y":                    copy-region-as-kill
 "\M-\C-i":              dabbrev-expand
+"\C-h":                 delete-char
+"\M-x":                 delete-char
 "\C-d":                 delete-char
 "\M-[3~":               delete-char
-"\M-\\":                delete-horizontal-space
-#"\M--":                digit-argument
-#"\M-0":                digit-argument
-#"\M-1":                digit-argument
-#"\M-2":                digit-argument
-#"\M-3":                digit-argument
-#"\M-4":                digit-argument
-#"\M-5":                digit-argument
-#"\M-6":                digit-argument
-#"\M-7":                digit-argument
-#"\M-8":                digit-argument
-#"\M-9":                digit-argument
-"\C-x\C-v":             display-shell-version
+"\M--":                 digit-argument
+"\M-0":                 digit-argument
+"\M-1":                 digit-argument
+"\M-2":                 digit-argument
+"\M-3":                 digit-argument
+"\M-4":                 digit-argument
+"\M-5":                 digit-argument
+"\M-6":                 digit-argument
+"\M-7":                 digit-argument
+"\M-8":                 digit-argument
+"\M-9":                 digit-argument
 "\M-l":                 downcase-word
-#"\M-[Z":               dynamic-complete-history
-#"\M-\C-i":             dynamic-complete-history
-"\C-x\C-e":             edit-and-execute-command
-"\C-xv":                edit-and-execute-command
-"\C-x)":                end-kbd-macro
-"\M-q":                 end-kbd-macro
-#"\M->":                end-of-history
+"\M-:":                 edit-and-execute-command
+"\M-Q":                 end-kbd-macro
 "\M-[6~":               end-of-history
+"\C-e":                 end-of-line
+"\M-OF":                end-of-line
+"\M-[4~":               end-of-line
+"\M-[8~":               end-of-line
+"\M-[F":                end-of-line
 "$":                    end-of-line
 "\C-e":                 end-of-line
 "\M-OF":                end-of-line
 "\M-[4~":               end-of-line
 "\M-[8~":               end-of-line
 "\M-[F":                end-of-line
+"\M-%":                 exchange-point-and-mark
 "%":                    exchange-point-and-mark
-"\C-x\C-x":             exchange-point-and-mark
+"\M-l":                 forward-char
+"\M-[C":                forward-char
+"\M-\C-OC":             forward-char
+"\M-\C-[C":             forward-char
 "          ":           forward-char
 " ":                    forward-char
 "\C-f":                 forward-char
@@ -337,82 +325,82 @@ set keymap vi-command
 "\M-\C-OC":             forward-char
 "\M-\C-[C":             forward-char
 "l":                    forward-char
-"\C-s":                 forward-search-history
+"\M-N":                 forward-search-history
+"\M-[6~":               forward-search-history
+"\M-[1;3C":             forward-word
+"\M-\e[C":              forward-word
+"\M-w":                 forward-word
 "\M-f":                 forward-word
+"\M-=":                 glob-complete-word
 "\M-g":                 glob-complete-word
 "\M-g\M-.":             glob-complete-word
-"\C-x*":                glob-expand-word
+"\M-*":                 glob-expand-word
 "\M-g\M-=":             glob-expand-word
-"\C-xg":                glob-list-expansions
-"\M-g\M-?":             glob-list-expansions
-#"\M-!":                history-expand-line
 "\M-^":                 history-expand-line
 "\M-[1;5A":             history-search-backward
 "\M-[5A":               history-search-backward
+"\M-Oa":                history-search-backward
 "\M-[1;5B":             history-search-forward
 "\M-[5B":               history-search-forward
-"\M-<":                 history-substring-search-backward
-"\M->":                 history-substring-search-forward
+"\M-Ob":                history-search-forward
+"\M-\e[A":              history-substring-search-backward
+"\M-\C-t":              history-substring-search-backward
+"\M-\e[B":              history-substring-search-forward
+"\M-\C-g":              history-substring-search-forward
 "#":                    insert-comment
 "\M-#":                 insert-comment
+"\M-\C-a":              insert-completions
 "\M-*":                 insert-completions
 "\M-.":                 insert-last-argument
 "\M-_":                 insert-last-argument
 "\C-k":                 kill-line
+"\M-d$":                kill-line
+"\M-dw":                kill-word
 "\M-d":                 kill-word
 "\M- ":                 magic-space
 "\C-i":                 menu-complete
-"\C-n":                 menu-complete
-"\C-p":                 menu-complete-backward
 "\M-[Z":                menu-complete-backward
-"+":                    next-history
-"\C-n":                 next-history
 "\M-OB":                next-history
 "\M-[B":                next-history
 "\M-\C-OB":             next-history
 "\M-\C-[B":             next-history
+"+":                    next-history
 "j":                    next-history
-"\M-n":                 non-incremental-forward-search-history
-"\M-p":                 non-incremental-reverse-search-history
-"\C-o":                 operate-and-get-next
-"\C-x!":                possible-command-completions
-"\C-n":                 possible-completions
-"\C-p":                 possible-completions
-"\M-=":                 possible-completions
-"\M-?":                 possible-completions
-"\C-x/":                possible-filename-completions
-"\C-x@":                possible-hostname-completions
-"\C-x~":                possible-username-completions
-"\C-x$":                possible-variable-completions
-"-":                    previous-history
-"\C-p":                 previous-history
+"\C-n":                 non-incremental-forward-search-history
+"\C-p":                 non-incremental-reverse-search-history
+"\M-\C-d":              possible-completions
+"\M-\C-l":              possible-completions
 "\M-OA":                previous-history
 "\M-[A":                previous-history
 "\M-\C-OA":             previous-history
 "\M-\C-[A":             previous-history
+"-":                    previous-history
 "k":                    previous-history
-"\C-q":                 quoted-insert
 "\C-v":                 quoted-insert
 "\M-[2~":               quoted-insert
-"\C-x\C-r":             re-read-init-file
+"\M-?":                 reverse-search-history
 "\C-r":                 reverse-search-history
+"\M-[5~":               reverse-search-history
+"\M-\C-u":              revert-line
 "U":                    revert-line
-"\M-\C-r":              revert-line
 "\M-r":                 revert-line
+"\M-v":                 set-mark
 "v":                    set-mark
+"\M-\C-?":              shell-backward-kill-word
 "\M-\C-h":              shell-backward-kill-word
 "\M-[1;5D":             shell-backward-word
 "\M-[5D":               shell-backward-word
-"\M-\e[D":              shell-backward-word
+"\M-Od":                shell-backward-word
 "\M-`":                 shell-expand-line
 "\M-[1;5C":             shell-forward-word
 "\M-[5C":               shell-forward-word
-"\M-\e[C":              shell-forward-word
-"\M-\C-d":              shell-kill-word
+"\M-Oc":                shell-forward-word
+"\M-d":                 shell-kill-word
 "\M-[":                 skip-csi-sequence
-"\C-x(":                start-kbd-macro
+"\M-q":                 start-kbd-macro
 "q":                    start-kbd-macro
-"\C-t":                 transpose-chars
+"\M-&":                 tilde-expand
+"\M-u":                 undo
 "\C-u":                 unix-line-discard
 "A":                    vi-append-eol
 "a":                    vi-append-mode
@@ -469,9 +457,16 @@ set keymap vi-command
 "_":                    vi-yank-arg
 "Y":                    vi-yank-to
 "y":                    vi-yank-to
+"\M-\"":                yank
 "\C-y":                 yank
+"\M-.":                 yank-last-arg
+"\C-@":                 yank-nth-arg
+"\M-y":                 yank-pop
 
 
-
-## Set keymap to vi-insert
+# Default keymap
+#
 set keymap vi-insert
+
+
+# vi:ft=readline
