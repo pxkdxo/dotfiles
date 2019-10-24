@@ -5,7 +5,7 @@
 
 if  (( __libstr__ ))
 then
-    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return 0 || exit 0
 else
     (( __libstr__ = 1 ))
 fi
@@ -14,7 +14,7 @@ fi
 ###
 ## print lowercase version of each arg
 ###
-str::lower()
+str::tolower()
 {
     printf '%s\n' "${@,,}"
 }
@@ -22,7 +22,7 @@ str::lower()
 ###
 ## print uppercase version of each arg
 ###
-str::upper()
+str::toupper()
 {
     printf '%s\n' "${@^^}"
 }
@@ -45,7 +45,7 @@ str::swapcase()
 
 
 ###
-## print numeric values of given chars
+## print numberic values of given characters
 ###
 str::ord()
 {
@@ -65,7 +65,7 @@ str::ord()
             *)
                 printf 1>&2 '%q: %q: %q: invalid option\n' \
                     "${0##*/}" "${FUNCNAME[0]}" "$1"
-                printf 1>&2 '%q: usage: %q [-d|-i|-o|-u|-x|-X] VALUE ...\n' \
+                printf 1>&2 '%q: usage: [sep=string] %q [-d|-i|-o|-u|-x|-X] value ...\n' \
                     "${FUNCNAME[0]}" "${FUNCNAME[0]}"
                 return 2
         esac
@@ -73,16 +73,21 @@ str::ord()
 
     if [[ $# -eq 0 ]]
     then
-        printf 1>&2 '%q: usage: %q [-d|-i|-o|-u|-x|-X] VALUE ...\n'  \
+        printf 1>&2 '%q: usage: [sep=string] %q [-d|-i|-o|-u|-x|-X] value ...\n'  \
             "${FUNCNAME[0]}" "${FUNCNAME[0]}"
         return 2
     fi
 
     while (( $# ))
     do
-        if [[ ${1//?( )/${sep-, }\'} =~ ${1//?/(${sep-, })(\'.)} ]]
+        if (( ${#1} > 1 ))
         then
-            printf '%'"${base}"'%s' "${BASH_REMATCH[@]:2}" $'\n'
+            if [[ ${1//?( )/${sep-, }\'} =~ ${1//?/(${sep-, })(\'.)} ]]
+            then
+                printf '%'"${base}"'%s' "${BASH_REMATCH[@]:2}" $'\n'
+            fi
+        else
+            printf '%'"${base}"'%s' "'$1" $'\n'
         fi
         shift
     done

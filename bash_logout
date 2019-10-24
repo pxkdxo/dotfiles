@@ -4,10 +4,9 @@
 tput reset
 
 # If leaving the console, clear the screen
-if (( SHLVL ))
+if (( SHLVL == 1 ))
 then
-    clear_console -q
+  clear_console -q
 fi
-
 
 # vi:ft=sh

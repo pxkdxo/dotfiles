@@ -14,7 +14,6 @@ silent! endwhile
 set encoding=utf-8
 
 
-
 "" Load plugins from ~/.vim/bundle
 try
     execute pathogen#infect()
@@ -29,7 +28,6 @@ filetype plugin indent on
 if has("syntax")
     syntax enable
 endif
-
 
 
 "" -- Tabs & Formatting --
@@ -92,7 +90,7 @@ set showmatch
 
 "" Set window titles
 set title
-let &titlestring = "%([%M%R] %)%t%( (%{expand(\"%:p:~:h\")})%)%<"
+let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 
 "" @@@ in place of lines that don't fit, hex in place of nonprintable chars
 if v:version >= 800
@@ -104,10 +102,10 @@ set laststatus=2
 
 "" Highlight specified columns relative to 'textwidth'
 let &colorcolumn =
-    \ join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
+    \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
 
 autocmd VimResized * let &colorcolumn =
-    \ join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
+    \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
 
 
 
@@ -132,7 +130,7 @@ set sidescrolloff=4
 set virtualedit=block
 
 "" Allow <Left> / <Right> to move between lines
-set whichwrap=b,s,<,>,[,]
+set whichwrap=b,s,[,]
 
 
 
@@ -177,26 +175,26 @@ cnoremap <Right> <Space><BS><Right>
 set timeout
 
 "" Time in ms to wait for completion of a mapping
-set timeoutlen=1500
+set timeoutlen=987
 
 "" Time in ms to wait for completion of a key code
-set ttimeoutlen=150
+set ttimeoutlen=144
 
 
 
 "" -- History  --
 
 "" Number of search patterns and ``:'' commands to remember (max: 10000)
-set history=10000
+set history=4096
 
 "" Number of modifications to remember for any given file
-set undolevels=1500
+set undolevels=2048
 
 "" Always save the whole buffer for undo when reloading it
 set undoreload=-1
 
 "" Max characters that may be typed between swapfile syncs
-set updatecount=150
+set updatecount=80
 
 
 
@@ -224,7 +222,7 @@ if $XDG_CACHE_HOME != ''
 endif
 
 "" Append first element of 'runtimepath'
-if !empty(split(&runtimepath, ','))
+if ! empty(split(&runtimepath, ','))
     if &directory == ''
         let &directory = split(&runtimepath, ',')[0] . '/swap/'
     else
@@ -282,35 +280,33 @@ endif
 
 "" -- Colors --
 
-"" Determine color capabilities and set colorscheme
+"" Try to guess color capabilities
 if exists('+termguicolors')
-    if $TERM =~ '\v^(interix|putty|rxvt|screen)(-.*)?$'
-        set notermguicolors
+    if $TERM =~ '\v^(putty|rxvt|screen)(-.*)?$'
+        let &termguicolors = 0
     elseif ($TERM =~ '\v^(gnome|iterm|st|vte)(-.*)?$'
         \   || ($TERM =~ '\v^(tmux|xterm)(-.*)?$'
-        \       && ($XTERM_VERSION != ''
-        \           || $VTE_VERSION != ''
-        \           || $KONSOLE_PROFILE_NAME != '')))
+        \       && ! (empty($XTERM_VERSION) && empty($VTE_VERSION))))
         let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
         let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-        set termguicolors
+        let &termguicolors = 1
     endif
 endif
+
+"" Interpret the value of COLORTERM
 if $COLORTERM =~? '\v^(truecolor|24-bit)$'
     let &t_Co = 16777216
 elseif $COLORTERM =~ '\v^[^[:digit:]]*256[^[:digit:]]*$'
     let &t_Co = 256
 endif
-if &t_Co >= 256
-    if &termguicolors
-        colorscheme candycodeP
-    else
-        colorscheme nevernessP
-    endif
+
+"" Set a colorscheme
+if &t_Co >= 256 && &termguicolors
+    colorscheme vice
 elseif &t_Co >= 16
-    colorscheme desertP
+    colorscheme vice
 else
-    colorscheme desert
+    colorscheme peachpuff
 endif
 
 
@@ -321,20 +317,25 @@ let g:c_gnu             = 1 " Highlight GNU specific items
 let g:c_space_errors    = 1 " Highlight space errors
 
 "" Set local options upon opening a C or C++ file
-autocmd FileType c,cpp setlocal cin cino=:0,(8 noet sts=0 sw=8 ts=8
+autocmd FileType c,cpp
+    \ setlocal cin noet sts=0 sw=8 ts=8 |
+    \ let &l:cino = ":0,(" . &ts
+
 
 
 "" -- Git commits --
 
 "" Set textwidth when writing a git commit message
-autocmd FileType gitcommit setlocal tw=72
+autocmd FileType gitcommit setlocal tw=50
 
 
 
 "" -- Man --
 
 "" Set local options when opening a manpage
-autocmd FileType man setlocal nonu nornu cc= nohid noswf noudf
+autocmd FileType man
+    \ setlocal cc= noma nonu nornu nohid noro noswf noudf |
+    \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
 
 "" Load the Man plugin
 runtime ftplugin/man.vim
@@ -344,52 +345,72 @@ set keywordprg=:Man
 
 
 
+"" -- Markdown --
+
+autocmd FileType markdown
+    \ setlocal cc= nonu nornu linebreak breakindent showbreak=\\+ |
+    \ let &l:breakindentopt = "min:" . &tw / 4 . ",shift:" . &sw . ",sbr"
+
+
+
 "" -- Python --
 
-"" Set the default python version for pyx commands
+"" Set the default version for pyx commands
 if has('pythonx')
     if has('python3')
-        set pyxversion=3 " python3 is bst
+        set pyxversion=3
     elseif has('python2')
-        set pyxversion=2 " python2 is fine
+        set pyxversion=2
     endif
 endif
-let g:python_highlight_all = 1  " Enable all available highlighting
-let g:pymode_python = 'python3'
+
+"" Enable all available highlighting
+let g:python_highlight_all = 1
+
+"" Enable syntastic plugins
+let g:syntastic_python_checkers = ['pep8', 'python']
 
 
 
 "" -- Readline --
 
-let g:readline_has_bash = 1     " Highlight bash additions
-
-
-
-"" -- Markdown --
-
-autocmd FileType markdown setlocal tw=0
+"" Highlight bash additions
+let g:readline_has_bash = 1
 
 
 
 "" -- Sed --
 
-let g:highlight_sedtabs = 1 " Highlight tab characters in sed scripts
+"" Highlight real tab characters in sed scripts
+let g:highlight_sedtabs = 1
 
 
 
 "" -- Sh --
 
-let g:is_posix          = 1 " Highlighting for ambiguous sh files
-let g:sh_fold_enabled   = 3 " Folding mode (functions, if/do/for)
-let g:sh_no_error       = 1 " Relax error detection
+"" Default highlighting for shell scripts
+let g:is_posix = 1
+
+"" Fold functions and if/do/for clauses
+let g:sh_fold_enabled = 3
+
+"" Relax error detection
+let g:sh_no_error = 1
+
+"" Set local options when opening a shell script
+autocmd FileType bash,sh,zsh setlocal et sts=2 sw=2 ts=8
 
 "" Set filetype to sh when editing a shell command line
 if $TMPDIR == ''
-    autocmd BufRead /tmp/bash-fc.* setlocal ft=sh noswf noudf
-        \|let b:is_bash = 1|syntax enable
+    autocmd BufRead /tmp/bash-fc.*
+        \ setlocal ft=sh noswf noudf|
+        \ let b:is_bash = 1|
+        \ syntax enable
 else
-    autocmd BufRead $TMPDIR/bash-fc.* setlocal ft=sh noswf noudf
-        \|let b:is_bash = 1|syntax enable
+    autocmd BufRead $TMPDIR/bash-fc.*
+        \ setlocal ft=sh noswf noudf|
+        \ let b:is_bash = 1|
+        \ syntax enable
 endif
 
 
@@ -401,21 +422,37 @@ autocmd FileType help setlocal noswf noudf
 
 
 
-"" -- Powerline --
+"" -- Syntastic --
 
-if v:progname =~? '^vim'
-    python3 from powerline.vim import setup as powerline_setup
-    python3 powerline_setup()
-    python3 del powerline_setup
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
 
-elseif v:progname =~? '^nvim'
-    if has('python3')
-        let g:powerline_pycmd = 'py3'
-    elseif has('python')
-        let g:powerline_pycmd = 'py'
-    endif
-endif
 
+
+"" -- Airline / Promptline / Tmuxline --
+
+let g:airline_theme = 'vice'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tmuxline#enabled = 0
+let g:airline_symbols = {
+    \'space': ' ',
+    \'paste': '',
+    \'maxlinenr': '',
+    \'dirty': 'ﯓ',
+    \'crypt': '',
+    \'linenr': '',
+    \'readonly': 'ﰸ',
+    \'spell': 'ﮜ',
+    \'modified': '',
+    \'notexists': '',
+    \'keymap': 'הּ',
+    \'ellipsis': '…',
+    \'branch': '',
+    \'whitespace': ''
+    \}
 
 
 "" -- Mappings--
@@ -423,31 +460,45 @@ endif
 "" Key to act as <leader> in mappings
 let g:mapleader = ','
 
+"" Interpret Alt-Up/Down correctly
+map  <ESC><ESC>[A <M-Up>
+map  <ESC><ESC>[B <M-Down>
+map! <ESC><ESC>[A <M-Up>
+map! <ESC><ESC>[B <M-Down>
+map  <ESC>[1;3A   <M-Up>
+map  <ESC>[1;3B   <M-Down>
+map! <ESC>[1;3A   <M-Up>
+map! <ESC>[1;3B   <M-Down>
 
-"" Interpret Ctrl-Left/Right correctly
-map  <ESC>[1;5D <C-Left>
-map  <ESC>[1;5C <C-Right>
-map! <ESC>[1;5D <C-Left>
-map! <ESC>[1;5C <C-Right>
-map  <ESC>Od <C-Left>
-map  <ESC>Oc <C-Right>
-map! <ESC>Od <C-Left>
-map! <ESC>Oc <C-Right>
-
-"" Interpret Alt-Left/Right correctly
-map  <ESC>[1;3D <M-Left>
-map  <ESC>[1;3C <M-Right>
-map! <ESC>[1;3D <M-Left>
-map! <ESC>[1;3C <M-Right>
-map  <ESC><ESC>[D <M-Left>
+"" Interpret Alt-Right/Left correctly
 map  <ESC><ESC>[C <M-Right>
-map! <ESC><ESC>[D <M-Left>
+map  <ESC><ESC>[D <M-Left>
 map! <ESC><ESC>[C <M-Right>
+map! <ESC><ESC>[D <M-Left>
+map  <ESC>[1;3C   <M-Right>
+map  <ESC>[1;3D   <M-Left>
+map! <ESC>[1;3C   <M-Right>
+map! <ESC>[1;3D   <M-Left>
 
-"" Go to new / next / previous tab
-nnoremap <silent><C-T>     :tabnew<CR>
-nnoremap <silent><M-Right> :tabnext<CR>
-nnoremap <silent><M-Left>  :tabprev<CR>
+"" Interpret Ctrl-Up/Down correctly
+map  <ESC>Oa    <C-Up>
+map  <ESC>Ob    <C-Down>
+map! <ESC>Oa    <C-Up>
+map! <ESC>Ob    <C-Down>
+map  <ESC>[1;5A <C-Up>
+map  <ESC>[1;5B <C-Down>
+map! <ESC>[1;5A <C-Up>
+map! <ESC>[1;5B <C-Down>
+
+"" Interpret Ctrl-Right/Left correctly
+map  <ESC>Oc    <C-Right>
+map  <ESC>Od    <C-Left>
+map! <ESC>Oc    <C-Right>
+map! <ESC>Od    <C-Left>
+map  <ESC>[1;5C <C-Right>
+map  <ESC>[1;5D <C-Left>
+map! <ESC>[1;5C <C-Right>
+map! <ESC>[1;5D <C-Left>
 
 "" Toggle paste mode
 nnoremap <silent><F3> :set paste!<CR>
@@ -456,11 +507,32 @@ nnoremap <silent><F3> :set paste!<CR>
 nnoremap <silent><F6> :set hlsearch!<CR>
 
 "" Toggle syntax highlighting
-nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
-    \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
+nnoremap <silent><F7> 
+    \ :
+    \ if exists('g:syntax_on')<Bar>
+    \ syntax off<Bar>
+    \ else<Bar>syntax enable<Bar>
+    \ endif<CR>
 
 "" Toggle line numbers
 nnoremap <silent><F8> :set nu!<Bar>let &rnu = &nu<CR>
+
+"" Go to new tab
+nnoremap <silent><C-T> :tabnew<CR>
+
+"" Go to next tab
+nnoremap <silent><M-Right> :tabnext<CR>
+
+"" Go to previous tab
+nnoremap <silent><M-Left> :tabprev<CR>
+
+"" Key to act as <leader> in mappings
+let g:mapleader = ','
+
+autocmd FileType * nnoremap <silent><leader>#!
+    \ ggI<C-R>=substitute(
+    \ &filetype, '..*', '#!' . exepath(&filetype) . '\r', ''
+    \ )<CR><ESC>``
 
 
 "" Quote word before or at the cursor (see :help word)
@@ -473,7 +545,6 @@ nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
 nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
 nnoremap <leader>` vl<ESC>bi`<ESC>ea`<ESC>l
 
-
 "" Quote WORD before or at the cursor (see :help WORD)
 "" Note: 'selection' must be set to inclusive or exclusive for this to work
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
@@ -484,7 +555,6 @@ nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
 nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
 nnoremap <leader><leader>` vl<ESC>Bi`<ESC>Ea`<ESC>l
 
-
 "" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
@@ -492,7 +562,6 @@ vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
     \gvy/<C-R><C-R>
     \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
     \gV:call setreg('"',old_reg,old_regtype)<CR>
-
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
@@ -504,7 +573,7 @@ vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
 
 
 
-"" -- Misc --
+"" -- Finally --
 
 "" Allow options to be set from a modeline
 set modeline

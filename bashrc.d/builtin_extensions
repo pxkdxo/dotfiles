@@ -13,15 +13,27 @@ fi
 #######################################
 # fork - fork a command
 #
-# usage: fork command
+# usage: fork command [arguments] ...
 #######################################
 fork()
 {
-    if (( $# ))
+    if ! (( $# ))
     then
-        (exec -- "$@" &) 
+        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} command [args ...]"
+        return 2
     fi
-} 0</dev/null 1>/dev/null
+    if ! type -P "$1" 1>/dev/null
+    then
+        if declare -F command_not_found_handle 1>/dev/null
+        then
+            command_not_found_handle "$1"
+        else
+            msg::err "${FUNCNAME[0]}" "$1" "command not found"
+        fi
+        return 127
+    fi
+    exec "$@" 0</dev/null 1>/dev/null 2>&1 &
+}
 
 
 ############################################################################
@@ -85,35 +97,38 @@ lswhich()
     done
 }
 
+fn()
+{
+    if (( $# ))
+    then
+        eval "shift; $1"
+    else
+        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} body [args ...]"
+        return 2
+    fi
+}
 
 #######################################
-# putslist - print a comma-separated list
+# putlist - print a comma-separated list
 #
-# usage: putslist value ...
+# usage: [end=[END]] [sep=[SEP]] putlist VALUE ...
 #######################################
-putslist()
+putlist()
 {
-    local IFS="${IFS:-, }" && local MAPFILE || return
+    local MAPFILE || return
 
     if ! (( $# ))
     then
         msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [value] ..."
         return 2
     fi
+    
+    # shellcheck disable=SC2016
+    mapfile -c 1 -C 'fn '"'"'(( $1 )) && MAPFILE[-1]+=${sep-, }'"'" -d '' -t
 
-    mapfile -d "${IFS:0:1}" MAPFILE <<<"$*"
+    printf '%s' "${MAPFILE[@]}" "${end-$'\n'}"
 
-    MAPFILE[-1]="${MAPFILE[-1]%?}"
-
-    IFS="${IFS:1}"
-
-    if [[ ${#IFS} -gt 1 ]]
-    then
-        "${FUNCNAME[0]}" "${MAPFILE[@]}"
-    else
-        printf '%s' "${MAPFILE[*]}"$'\n'
-    fi
-}
+} < <(printf '%s\0' "$@")
 
 
 #######################################
@@ -275,24 +290,41 @@ pushtmp()
 #######################################
 assign_by_ref()
 {
-    if (( $# != 2 ))
+    if (( $# < 2 ))
     then
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} name value"
+        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} name value ..."
         return 2
-    elif ! [[ $1 =~ ^([[:alpha:]_][[:alnum:]_]*)(\[(.*)])?$ ]]
+    fi
+    if [[ $1 =~ ^([[:alpha:]_][[:alnum:]_]*)(\[(.*)])?$ ]]
     then
-        msg::err "${FUNCNAME[0]}" "$1" 'not a valid identifier'
-        return 1
-    elif [[ -z ${BASH_REMATCH[2]} ]]
-    then
-        eval "$1"'=$2'
-    elif [[ ${!BASH_REMATCH[1]@a} == *A* ]]
-    then
-        eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=$2'
-    elif (( $((BASH_REMATCH[3])), 1 )) 2>/dev/null
-    then
-        eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=$2'
+        if [[ -z ${BASH_REMATCH[2]} ]]
+        then
+            if (( $# > 2 ))
+            then
+                eval "$1"'=("${@:2}")'
+            else
+                eval "$1"'=$2'
+            fi
+        elif [[ ${!BASH_REMATCH[1]@a} == *A* ]]
+        then
+            if (( $# > 2 ))
+            then
+                eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=("${@:2}")'
+            else
+                eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=$2'
+            fi
+        elif (( $((BASH_REMATCH[3])), 1 )) 2>/dev/null
+        then
+            if (( $# > 2 ))
+            then
+                eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=("${@:2}")'
+            else
+                eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=$2'
+            fi
+        else
+            msg::err "${FUNCNAME[0]}" "${BASH_REMATCH[0]}" 'bad subscript'
+        fi
     else
-        msg::err "${FUNCNAME[0]}" "${BASH_REMATCH[0]}" 'bad array subscript'
+        msg::err "${FUNCNAME[0]}" "$1" 'not a valid identifier'
     fi
 }

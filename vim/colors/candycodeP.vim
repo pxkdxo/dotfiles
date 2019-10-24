@@ -22,7 +22,8 @@ hi Folded       guifg=#c2bfa5       guibg=#050505       gui=underline
 hi LineNr       guifg=#928c75       guibg=NONE          gui=NONE
             \   ctermfg=darkgray    ctermbg=NONE        cterm=NONE
 
-hi ColorColumn	guibg=#111111
+hi ColorColumn	guibg=NONE          guibg=#111111       gui=NONE
+            \   ctermfg=NONE        ctermbg=234         cterm=NONE
 
 hi Directory    guifg=#00bbdd       guibg=NONE          gui=NONE
             \   ctermfg=cyan        ctermbg=NONE        cterm=NONE

@@ -1,65 +1,76 @@
 #!/usr/bin/env bash
 
-8f () 
+set8f () 
 { 
-    local _8f='\e[38;2;'"$((16#$1))"';'"$((16#$2))"';'"$((16#$3))"'m'"${*:4}"
-    printf '%s'"$(tput sgr0)"'\n' "${_8f@P}"
+    : "\\[\\e[38;2;$((16#$1));$((16#$2));$((16#$3))m\\]${*:4}"
+    printf '%s' "${_@P}" "$(tput sgr0)" $'\n'
 }
 
-8b () 
+set8b () 
 { 
-    local _8b='\e[48;2;'"$((16#$1))"';'"$((16#$2))"';'"$((16#$3))"'m'"${*:4}"
-    printf '%s'"$(tput sgr0)"'\n' "${_8b@P}"
+    : "\\[\\e[48;2;$((16#$1));$((16#$2));$((16#$3))m\\]${*:4}"
+    printf '%s' "${_@P}"  "$(tput sgr0)" $'\n'
 }
 
-
-8f_from_colors_dict () 
+set8f_from_colors_dict () 
 {
-    local REPLY=( )
+    local REPLY
     while IFS=$' \t\n' read -r -a REPLY
     do
-        (( ${#REPLY[@]} != 4 )) ||
-            8f "${REPLY[@]::3}" "${REPLY[@]}"
+        if (( ${#REPLY[@]} == 4 ))
+        then
+            set8f "${REPLY[@]::3}" "${REPLY[@]}"
+        fi
     done
-} < "${1:-${XDG_CONFIG_HOME:-${HOME}/.config}/colors/dict/rgb-hex.txt}"
+} 0< "${1:-${XDG_CONFIG_HOME:-${HOME}/.config}/colors/dict/rgb-hex.txt}"
 
-
-8f_colors_random () 
+set8f_colors_random () 
 { 
+    local COLUMNS="$(( ($(tput cols) - 8) / 3 ))"
+    local REPLY=( )
+    local TIMEOUT="$((${TIMEOUT:-0}))"
+
     local _r="$((${r:-$((RANDOM%128+128))}%256))"
     local _g="$((${g:-$((RANDOM%128+128))}%256))"
     local _b="$((${b:-$((RANDOM%128+128))}%256))"
-    local i j k r="${_r}" g="${_g}" b="${_b}"
 
-    local COLWIDTH="$(( ($(tput cols) - 8) / 3 ))"
-    local REPLY
-    local TIMEOUT="$((${TIMEOUT:-0}))"
+    local r="${_r}"
+    local g="${_g}"
+    local b="${_b}"
+
+    local i
+    local j
+    local k
 
     set -- \
-        "$((${1:-${RANDOM}}%256))" \
-        "$((${2:-${RANDOM}}%256))" \
-        "$((${3:-${RANDOM}}%256))" \
-        "${4:-h3110 w0r1d}" ${4:+"${@:5}"}
+        "$((${1:-RANDOM}%256))" \
+        "$((${2:-RANDOM}%256))" \
+        "$((${3:-RANDOM}%256))" \
+        "${4:-The quick brown fox jumps over the lazy dog}" ${4:+"${@:5}"}
 
-    for (( i=0;i++<256;r=((r+$1)%256),g=((g+$2)%256),b=((b+$3)%256) ))
+    while (( i++ < 256 ))
     do
-        for (( j=0;j++<256;r=((r+g)%256),g=((g+b)%256),b=((b+r)%256) ))
+        while (( j++ < 256 ))
         do
-            for (( k=0;k++<256;r=((r+b)%256),g=((g+r)%256),b=((b+g)%256) ))
+            while (( k++ < 256 ))
             do
-                8f "$(printf '%02x' "${r}")" \
-                   "$(printf '%02x' "${g}")" \
-                   "$(printf '%02x' "${b}")" \
-                   "$(printf '#%02x%02x%02x:' "${r}" "${g}" "${b}")" \
-                   "${@:4}"
+                set8f \
+                    "$(printf '%02x' "${r}")" \
+                    "$(printf '%02x' "${g}")" \
+                    "$(printf '%02x' "${b}")" \
+                    "$(printf '#%02x%02x%02x:' "${r}" "${g}" "${b}")" \
+                    "${@:4}"
+                : "$((r = (r+g) % 256, g = (g+b) % 256, b = (b+r) % 256))"
             done
+            : "$((r = (r+b) % 256, g = (g+r) % 256, b = (b+g) % 256))"
         done
-    done 1> >( 
-
-    while REPLY=( ) && read -r 'REPLY[0]' && read -r 'REPLY[1]' && read -r 'REPLY[2]'
+        : "$((r = (r+$1) % 256, g = (g+$2) % 256, b = (b+$3) % 256 ))"
+    done 1> >(
+    while read -r 'REPLY[0]' && read -r 'REPLY[1]' && read -r 'REPLY[2]'
     do
-        printf "%-${COLWIDTH}s\t%-${COLWIDTH}s\t%-${COLWIDTH}s\n" "${REPLY[@]@P}"
+        printf "%-${COLUMNS}s\t%-${COLUMNS}s\t%-${COLUMNS}s\n" "${REPLY[@]@P}"
         read -r -u 3 -t "${TIMEOUT}"
+        REPLY=( )
     done 3<> <(:)
     )
 }

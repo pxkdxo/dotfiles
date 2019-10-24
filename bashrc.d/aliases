@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+#
+# ~/.bash_aliases : aliases for interactive shells
+
+# Add an absolute path to this file to the environment
+
+if  (( __aliases__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return 0 || exit 0
+else
+    (( __aliases__ = 1 ))
+fi
+
+
+if wait "$!" && read -d '' -r BASH_ALIASES_FILE
+then
+    export BASH_ALIASES_FILE="${BASH_ALIASES_FILE%/}/${BASH_SOURCE[0]##*/}"
+else
+    unset -v BASH_ALIASES_FILE 
+fi < <(CDPATH='' cd -- "${BASH_SOURCE[0]%/*}" && pwd && printf '\0')
+
+
+# fmtalias - define aliases from a template
+#
+# usage: fmtalias replace-str template name ...
+#
+# @replace-str: string to replace in template
+# @template: alias value template 
+# @name: alias name and substitution for replace-str
+#
+# Return: 2 if called with too few arguments, otherwise 0
+#
+fmtalias()
+{
+    # Check number of arguments
+    if (( $# < 3 ))
+    then
+        printf 1>&2 '%s: usage: %s replace-str template name ...\n' \
+            "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    fi
+    # Transform arguments into assignments and append replace-str
+    set -- "${@/%/="$2"}" "$1"
+    shift 2
+    # For each argument up until replace-str, create an alias
+    # shellcheck disable=SC2139
+    while (( $# > 1 ))
+    do
+        set -- "${1%%=*}" "${1#*=}" "${@:2}"
+        BASH_ALIASES["$1"]="${2//"${!#}"/"${BASH_ALIASES["$1"]:-$1}"}"
+        shift 2
+    done
+}
+
+
+# default options
+#
+alias gdb='gdb -q'
+alias ls='ls -Cp'
+alias mkdir='mkdir -pv'
+alias mv='mv -biv'
+alias rm='rm -Iv'
+alias rmdir='rmdir -v'
+alias vim='vim -p'
+alias feh='feh -B black -D 7 -Z'
+
+# perform alias expansion on 1st argument
+#
+fmtalias % '% ' nohup sudo unbuffer
+
+# print colored output to terminals
+#
+fmtalias % '% --color=auto' egrep fgrep grep ls
+
+# go back to previous directory
+alias -- -='cd -' back='cd -'
+
+# clear
+#
+alias c='clear'
+
+# dirstack
+#
+alias ds='dirs'
+alias po='popd'
+alias pu='pushd'
+
+# info
+#
+command -v pinfo 1>/dev/null && alias info='pinfo'
+
+# jobs
+#
+alias j='jobs'
+alias jl='jobs -l'
+alias jx='jobs -x'
+
+# ls
+#
+alias l='ls'
+alias ll='ls -l'
+alias la='ls -A'
+alias lla='ls -lA'
+
+# python
+#
+alias p='python' py='python' py2='python2' py3='python3'
+alias pep8='pep8 2>/dev/null'
+command -v python3 1>/dev/null && alias python='python3'
+command -v pip3 1>/dev/null && alias pip='pip3'
+
+# systemd
+#
+alias sctl='systemctl'
+alias jctl='journalctl'
+alias sctl-u='systemctl --user'
+alias jctl-u='journalctl --user'
+
+# tmux
+#
+alias t='tmux'
+alias ta='tmux attach'
+alias tl='tmux ls'
+alias tn='tmux new'
+
+# top
+#
+command -v htop 1>/dev/null &&
+    alias top='htop'
+
+# vim
+#
+alias v='vim'
+
+# xclip
+#
+alias cb='xclip -sel clipboard'
+alias cb-ltrim='cb -o | sed '"'"'s/^[[:blank:]]*//'"'"' | cb'
+alias cb-rtrim='cb -o | sed '"'"'s/[[:blank:]]*$//'"'"' | cb'
+alias cb-strip='cb -o | sed '"'"'s/^[[:blank:]]*\|[[:blank:]]*$//'"'"' | cb'
+
+alias cb1='xclip -sel primary'
+alias cb1-ltrim='cb1 -o | sed '"'"'s/^[[:blank:]]*//'"'"' | cb1'
+alias cb1-rtrim='cb1 -o | sed '"'"'s/[[:blank:]]*$//'"'"' | cb1'
+alias cb1-strip='cb1 -o | sed '"'"'s/^[[:blank:]]*\|[[:blank:]]*$//'"'"' | cb1'
+
+alias cb2='xclip -sel secondary'
+alias cb2-ltrim='cb2 -o | sed '"'"'s/^[[:blank:]]*//'"'"' | cb2'
+alias cb2-rtrim='cb2 -o | sed '"'"'s/[[:blank:]]*$//'"'"' | cb2'
+alias cb2-strip='cb2 -o | sed '"'"'s/^[[:blank:]]*\|[[:blank:]]*$//'"'"' | cb2'
+
+# remove a trailing newline from a file
+#
+trim-nl()
+{
+    local MAPFILE || return 1
+    if (( $# != 1 ))
+    then
+        printf '%s: usage: %s file\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 1
+    fi
+
+    mapfile <"$1" || return
+
+    if [[ ${MAPFILE[-1]:(-1)} == $'\n' ]]
+    then
+        truncate -s -1 "$1"
+    fi
+}
+
+# call printf in a friendly wrapper
+#
+printf()
+{
+    if [[ ${1-} == *([-#0+, ])*([0-9])?(.*([0-9]))[diouxXeEfFgGaAcsbq] ]]
+    then
+        builtin printf "%${1-}\n" "${@:2}"
+    else
+        builtin printf "$@"
+    fi
+}
+
+# find non-recursively in the current directory
+#
+alias findhere='find . -mindepth 1 -maxdepth 1'
+
+# run vim / nvim as a pager
+#
+alias vless='/usr/share/vim/vim80/macros/less.sh'
+alias nvless='/usr/share/nvim/runtime/macros/less.sh'
+
+# send PulseAudio input to output
+#
+alias paloop='pacmd load-module module-loopback latency_msec=8'
+
+# query DNS servers for my WAN IP
+alias wanip='dig @resolver1.opendns.com ANY myip.opendns.com +short'
+alias wanip4='dig @resolver1.opendns.com -4 myip.opendns.com +short'
+alias wanip6='dig @resolver1.opendns.com -6 myip.opendns.com +short'
+
+# Holberton
+alias betty-show-func-doc='sed -nE '"'"'
+/^\/\*\* *$/{
+: next
+p
+n
+/^ \*\/ *$/!b next
+N
+p
+a\\n
+}
+'"'"

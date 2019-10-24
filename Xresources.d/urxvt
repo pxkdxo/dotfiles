@@ -21,10 +21,13 @@ URxvt.matcher.button: 1
 URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
 
+! pointer
+!URxvt.pointerBlank: true
+
 ! cursor
 URxvt.cursorBlink: true
 URxvt.cursorUnderline: false
-!
+
 ! fonts
 URxvt.letterSpace: -1
 URxvt.font: \
@@ -64,5 +67,8 @@ URxvt.keysym.Shift-Down: command:\033]721;1\007
 
 ! Disable printing the terminal contents upon pressign PrtSc
 URxvt.print-pipe: "cat 1>/dev/null 2>&1"
+
+!URxvt.depth: 32
+!URxvt.background: rgba:2222/2222/2222/ee00
 
 ! vim: ft=xdefaults
