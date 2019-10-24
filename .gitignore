@@ -5,6 +5,8 @@
 !/asoundrc
 !/awesome
 !/bash_completion
+!/bash_completion.d
+!/bash_completion.d/**
 !/bash_logout
 !/bash_profile
 !/bashrc
@@ -13,8 +15,6 @@
 !/colors
 !/colors/**
 !/compton.conf
-!/cower
-!/cower/config
 !/devilspie2
 !/devilspie2/**
 !/dircolors
@@ -43,7 +43,6 @@
 !/profile
 !/profile.d
 !/profile.d/**
-!/pythonrc.py
 !/ranger
 !/ranger/commands.py
 !/ranger/rc.conf
@@ -64,8 +63,6 @@
 !/vim/vimrc
 !/vim/colors
 !/vim/colors/**
-!/vim/plugin
-!/vim/plugin/**
 !/vim/syntax
 !/vim/syntax/**
 !/w3m
