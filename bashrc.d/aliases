@@ -1,218 +1,212 @@
 #!/usr/bin/env bash
 #
-## bash aliases for interactive shells
-###
+# ~/.bash_aliases : aliases for interactive shells
+
+# Add an absolute path to this file to the environment
+
+if  (( __aliases__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return 0 || exit 0
+else
+    (( __aliases__ = 1 ))
+fi
 
 
-###
-## dirname -- a replacement for dirname(1)
-##
-## usage: dirname [path] ...
+if wait "$!" && read -d '' -r BASH_ALIASES_FILE
+then
+    export BASH_ALIASES_FILE="${BASH_ALIASES_FILE%/}/${BASH_SOURCE[0]##*/}"
+else
+    unset -v BASH_ALIASES_FILE 
+fi < <(CDPATH='' cd -- "${BASH_SOURCE[0]%/*}" && pwd && printf '\0')
 
 
-## Get a physical absolute path to this file and add it to the environment
-BASH_ALIASES_FILE=$(CDPATH= cd -- "${BASH_SOURCE%/*}"; pwd; printf +)
-BASH_ALIASES_FILE=${BASH_ALIASES_FILE%??}
-BASH_ALIASES_FILE=${BASH_ALIASES_FILE%/}/${BASH_SOURCE##*/}
-export BASH_ALIASES_FILE
-
-
-###
-## fmtalias - define aliases from a template
-##
-## usage: fmtalias replace-str template [name] ...
-##
-## @replace-str: string to replace in @template
-## @template: template for alias value
-## @name: alias name and substitute for @replace-str
-##
-## Return: 2 if called with too few arguments, 0 otherwise.
-###
+# fmtalias - define aliases from a template
+#
+# usage: fmtalias replace-str template name ...
+#
+# @replace-str: string to replace in template
+# @template: alias value template 
+# @name: alias name and substitution for replace-str
+#
+# Return: 2 if called with too few arguments, otherwise 0
+#
 fmtalias()
 {
-  ## If too few arguments, then print usage message and return
-  if (( $# < 2 )); then
-    printf 1>&2 'usage: %q replace-str template [name ...]\n' "${FUNCNAME}"
-    return 2
-  fi
-  ## Transform args into assignments and append replace-str
-  set -- "${@/%/=$2}" "$1"
-  shift 2
-  ## For each argument until replace-str, create an alias
-  while (( $# > 1 )); do
-    set -- "${1%%=*}" "${1#*=}" "${@:2}"
-    BASH_ALIASES[$1]=${2//"${!#}"/"${BASH_ALIASES[$1]:-$1}"}
+    # Check number of arguments
+    if (( $# < 3 ))
+    then
+        printf 1>&2 '%s: usage: %s replace-str template name ...\n' \
+            "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 2
+    fi
+    # Transform arguments into assignments and append replace-str
+    set -- "${@/%/="$2"}" "$1"
     shift 2
-  done
+    # For each argument up until replace-str, create an alias
+    # shellcheck disable=SC2139
+    while (( $# > 1 ))
+    do
+        set -- "${1%%=*}" "${1#*=}" "${@:2}"
+        BASH_ALIASES["$1"]="${2//"${!#}"/"${BASH_ALIASES["$1"]:-$1}"}"
+        shift 2
+    done
 }
 
 
-###
-## default options
-###
-
-alias ls='ls -Cp'
-
-alias mkdir='mkdir -pv'
-
-alias mv='mv -biv'
-
-alias rm='rm -Iv'
-
+# default options
+#
 alias gdb='gdb -q'
+alias ls='ls -Cp'
+alias mkdir='mkdir -pv'
+alias mv='mv -biv'
+alias rm='rm -Iv'
+alias rmdir='rmdir -v'
+alias vim='vim -p'
+alias feh='feh -B black -D 7 -Z'
 
+# perform alias expansion on 1st argument
+#
+fmtalias % '% ' nohup sudo unbuffer
 
-###
-## expand aliases given as first argument
-###
-fmtalias {} '{} ' nohup sudo unbuffer
+# print colored output to terminals
+#
+fmtalias % '% --color=auto' egrep fgrep grep ls
 
-###
-## produce colored output in the terminal
-###
-fmtalias {} '{} --color=auto' grep egrep fgrep ls dir vdir
+# go back to previous directory
+alias -- -='cd -' back='cd -'
 
-
-###
-## misc shortcuts
-###
+# clear
+#
 alias c='clear'
 
-
-###
-## dirstack shortcuts
-###
+# dirstack
+#
 alias ds='dirs'
 alias po='popd'
 alias pu='pushd'
 
+# info
+#
+command -v pinfo 1>/dev/null && alias info='pinfo'
 
-###
-## jobs shortcuts
-###
-alias j='jobs -l'
+# jobs
+#
+alias j='jobs'
+alias jl='jobs -l'
 alias jx='jobs -x'
 
-
-###
-## printf shortcuts
-###
-alias pf='printf'
-printf()
-{
-  local flag='[-0,+# ]'
-  local width='[^0[:alpha:][:cntrl:][:punct:][:space:]]*([[:digit:]])'
-  local precision='.*([[:digit:]])'
-  local conversion='[diouxXeEfFgGaAcsbq]'
-
-  if [[ $1 == *(${flag})?(${width})?(${precision})${conversion} ]]; then
-    builtin printf "%$1\n" "${@:2}"
-  else
-    builtin printf "$@"
-  fi
-}
-
-
-###
-## ls shortcuts
-###
+# ls
+#
 alias l='ls'
 alias ll='ls -l'
 alias la='ls -A'
 alias lla='ls -lA'
 
+# python
+#
+alias p='python' py='python' py2='python2' py3='python3'
+alias pep8='pep8 2>/dev/null'
+command -v python3 1>/dev/null && alias python='python3'
+command -v pip3 1>/dev/null && alias pip='pip3'
 
-###
-## tmux shortcuts
-###
+# systemd
+#
+alias sctl='systemctl'
+alias jctl='journalctl'
+alias sctl-u='systemctl --user'
+alias jctl-u='journalctl --user'
+
+# tmux
+#
 alias t='tmux'
 alias ta='tmux attach'
 alias tl='tmux ls'
 alias tn='tmux new'
 
+# top
+#
+command -v htop 1>/dev/null &&
+    alias top='htop'
 
-###
-## python shortcuts
-###
-alias p='python'
-alias p2='python2'
-alias p3='python3'
+# vim
+#
+alias v='vim'
 
-if command -v python3 1>/dev/null; then
-  alias python='python3'
-fi
+# xclip
+#
+alias cb='xclip -sel clipboard'
+alias cb-ltrim='cb -o | sed '"'"'s/^[[:blank:]]*//'"'"' | cb'
+alias cb-rtrim='cb -o | sed '"'"'s/[[:blank:]]*$//'"'"' | cb'
+alias cb-strip='cb -o | sed '"'"'s/^[[:blank:]]*\|[[:blank:]]*$//'"'"' | cb'
 
-if command -v pip3 1>/dev/null; then
-  alias pip='pip3'
-fi
+alias cb1='xclip -sel primary'
+alias cb1-ltrim='cb1 -o | sed '"'"'s/^[[:blank:]]*//'"'"' | cb1'
+alias cb1-rtrim='cb1 -o | sed '"'"'s/[[:blank:]]*$//'"'"' | cb1'
+alias cb1-strip='cb1 -o | sed '"'"'s/^[[:blank:]]*\|[[:blank:]]*$//'"'"' | cb1'
 
+alias cb2='xclip -sel secondary'
+alias cb2-ltrim='cb2 -o | sed '"'"'s/^[[:blank:]]*//'"'"' | cb2'
+alias cb2-rtrim='cb2 -o | sed '"'"'s/[[:blank:]]*$//'"'"' | cb2'
+alias cb2-strip='cb2 -o | sed '"'"'s/^[[:blank:]]*\|[[:blank:]]*$//'"'"' | cb2'
 
-###
-## systemd shortcuts
-###
-alias sctl='systemctl'
-alias sctl-u='systemctl --user'
+# remove a trailing newline from a file
+#
+trim-nl()
+{
+    local MAPFILE || return 1
+    if (( $# != 1 ))
+    then
+        printf '%s: usage: %s file\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+        return 1
+    fi
 
-alias jctl='journalctl'
-alias jctl-u='journalctl --user'
+    mapfile <"$1" || return
 
+    if [[ ${MAPFILE[-1]:(-1)} == $'\n' ]]
+    then
+        truncate -s -1 "$1"
+    fi
+}
 
-###
-## xclip shortcuts
-###
-alias xc0='xclip -sel clipboard'
-alias xc0-i='xclip -sel clipboard -i'
-alias xc0-o='xclip -sel clipboard -o'
-alias xc0-f='xclip -sel clipboard -f'
+# call printf in a friendly wrapper
+#
+printf()
+{
+    if [[ ${1-} == *([-#0+, ])*([0-9])?(.*([0-9]))[diouxXeEfFgGaAcsbq] ]]
+    then
+        builtin printf "%${1-}\n" "${@:2}"
+    else
+        builtin printf "$@"
+    fi
+}
 
-alias xc1='xclip -sel primary'
-alias xc1-i='xclip -sel primary -i'
-alias xc1-o='xclip -sel primary -o'
-alias xc1-f='xclip -sel primary -f'
-
-alias xc2='xclip -sel secondary'
-alias xc2-i='xclip -sel secondary -i'
-alias xc2-o='xclip -sel secondary -o'
-alias xc2-f='xclip -sel secondary -f'
-
-
-###
-## top substitute
-###
-if command -v htop 1>/dev/null; then
-  alias top='htop'
-fi
-
-
-###
-## info substitute
-###
-if command -v pinfo 1>/dev/null; then
-  alias info='pinfo'
-fi
-
-
-###
-## poor man's functions
-###
-
-## find non-recursively in the current directory
+# find non-recursively in the current directory
+#
 alias findhere='find . -mindepth 1 -maxdepth 1'
 
-## Run vim / nvim as a pager
-alias nless='/usr/share/nvim/runtime/macros/less.sh'
+# run vim / nvim as a pager
+#
 alias vless='/usr/share/vim/vim80/macros/less.sh'
+alias nvless='/usr/share/nvim/runtime/macros/less.sh'
 
-## Send PulseAudio input to output
+# send PulseAudio input to output
+#
 alias paloop='pacmd load-module module-loopback latency_msec=8'
 
-## Query DNS servers for my WAN IP
+# query DNS servers for my WAN IP
 alias wanip='dig @resolver1.opendns.com ANY myip.opendns.com +short'
 alias wanip4='dig @resolver1.opendns.com -4 myip.opendns.com +short'
 alias wanip6='dig @resolver1.opendns.com -6 myip.opendns.com +short'
 
-## Download the contents of a directory over http(s)
-alias wgetdir='wget -e robots=off -r -np -nd -l 1 -R index.html'
-alias xc0-strip='xclip -sel clipboard -o | sed '\''s/[[:blank:]]\+$//'\'' | xclip -sel clipboard'
-alias xc1-strip='xclip -sel primary -o | sed '\''s/[[:blank:]]\+$//'\'' | xclip -sel primary'
-alias xc2-strip='xclip -sel secondary -o | sed '\''s/[[:blank:]]\+$//'\'' | xclip -sel secondary'
+# Holberton
+alias betty-show-func-doc='sed -nE '"'"'
+/^\/\*\* *$/{
+: next
+p
+n
+/^ \*\/ *$/!b next
+N
+p
+a\\n
+}
+'"'"

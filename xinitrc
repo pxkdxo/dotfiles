@@ -1,39 +1,86 @@
 #!/usr/bin/env sh
+#
+# xinit initialization script
 
-## xinitrc : Initialize a new Xsession
+
+# Initialize global variables.
+
+SYSRESOURCES='/etc/X11/Xresources'
+USERRESOURCES="${HOME}/.Xresources"
+
+SYSXINITRCDIR='/etc/X11/xinit/xinitrc.d'
+USERXINITRCDIR="${HOME}/.xinitrc.d"
+
+WM='awesome'
 
 
-## Clear X resource database
-xrdb -load '/dev/null'
+# Merge in system resources.
 
-## Merge in system resources
-xrdb -merge '/etc/X11/xinit/Xresources'
+if test -f "${SYSRESOURCES}"
+then
+    xrdb -merge "${SYSRESOURCES}"
 
-## run system scripts
-if test -d '/etc/X11/xinit/xinitrc.d'; then
-  for _ in '/etc/X11/xinit/xinitrc.d'/*; do
-    if test -f "$_" && test -r "$_"; then
-      . "$_"
-    fi
-  done
+elif test -d "${SYSRESOURCES}"
+then
+    for _ in "${SYSRESOURCES}"/*
+    do
+        if test -f "$_" && test -r "$_"
+        then
+            xrdb -merge "$_"
+        fi
+    done
 fi
 
-## Merge in user resources
-xrdb -merge "${HOME-}/.Xresources"
 
-## run user scripts
-if test -d "${HOME-}/.xinitrc.d"; then
-  for _ in "${HOME-}/.xinitrc.d"/*.sh; do
-    if test -f "$_" && test -r "$_"; then
-      . "$_"
-    fi
-  done
+# Merge in user resources.
+
+if test -f "${USERRESOURCES}"
+then
+    xrdb -merge -I"${HOME}" "${USERRESOURCES}"
+
+elif test -d "${USERRESOURCES}"
+then
+    for _ in "${USERRESOURCES}"/*
+    do
+        if test -f "$_" && test -r "$_"
+        then
+            xrdb -merge -I"${HOME}" "$_"
+        fi
+    done
 fi
 
-## Activate monitors
-xrandr --auto
 
-## Pass control to WM
-if command -v awesome 1>/dev/null; then
-  exec awesome
+# Run system config scripts.
+
+if test -d "${SYSXINITRCDIR}"
+then
+    for _ in "${SYSXINITRCDIR}"/*
+    do
+        if test -f "$_" && test -r "$_"
+        then
+            . "$_"
+        fi
+    done
 fi
+
+
+# Run user config scripts.
+
+if test -d "${USERXINITRCDIR}"
+then
+    for _ in "${USERXINITRCDIR}"/*
+    do
+        if test -f "$_" && test -r "$_"
+        then
+            . "$_"
+        fi
+    done
+fi
+
+
+# Pass control to window manager.
+
+exec "$(command -v "${WM}")"
+
+
+# vi:ft=sh

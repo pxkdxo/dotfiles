@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+#
+# Message formatting library
+
+
+if  (( __libmsg__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+else
+    (( __libmsg__ = 1 ))
+fi
+
+
+#######################################
+# Print a formatted message to standard output (no newline)
+# Usage:
+#   msg::nonl [CONTEXT ...] MESSAGE
+# Globals:
+#   None
+# Arguments:
+#   CONTEXT: values to prepend (i.e. programs, functions, options, etc.)
+#   MESSAGE: message to print
+# Return:
+#   Exit status of the previous command
+#######################################
+msg::nonl()
+{
+    trap -- "$(
+    printf "%s\nreturn $?" "$(
+    : "$(trap -p RETURN)"
+    printf "%s" "${_:-trap RETURN}"
+    )"
+    )" RETURN
+    if (( $# > 0 ))
+    then
+        if (( $# > 1 ))
+        then
+            printf "%s: " "${@:1:($# - 1)}"
+        fi
+        printf "%s" "${!#}"
+    fi
+}
+
+
+#######################################
+# Print a formatted message to standard output
+# Usage:
+#   msg::std [CONTEXT ...] MESSAGE
+# Globals:
+#   None
+# Arguments:
+#   CONTEXT: values to prepend (i.e. programs, functions, options, etc.)
+#   MESSAGE: message to print
+# Return:
+#   Exit status of the previous command
+#######################################
+msg::std()
+{
+    trap -- "$(
+    printf "%s\nreturn $?" "$(
+    : "$(trap -p RETURN)"
+    printf "%s" "${_:-trap RETURN}"
+    )"
+    )" RETURN
+    if (( $# > 0 ))
+    then
+        if (( $# > 1 ))
+        then
+            printf "%s: " "${@:1:($# - 1)}"
+        fi
+        printf "%s\n" "${!#}"
+    fi
+}
+
+
+#######################################
+# Print a formatted message to standard error
+# Usage:
+#   msg::err [CONTEXT ...] MESSAGE
+# Globals:
+#   None
+# Arguments:
+#   CONTEXT: values to prepend (i.e. programs, functions, options, etc.)
+#   MESSAGE: message to print
+# Return:
+#   Exit status of the previous command
+#######################################
+msg::err()
+{
+    msg::std "$@" 1>&2
+}
+
+
+#######################################
+# Print a formatted message to standard error (no newline)
+# Usage:
+#   msg::err_nonl [CONTEXT ...] MESSAGE
+# Globals:
+#   None
+# Arguments:
+#   CONTEXT: values to prepend (i.e. programs, functions, options, etc.)
+#   MESSAGE: message to print
+# Return:
+#   Exit status of the previous command
+#######################################
+msg::err_nonl()
+{
+    msg::nonl "$@" 1>&2
+}
+
+
+# vi:et:ft=sh:sts=4:sw=4

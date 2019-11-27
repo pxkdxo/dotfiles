@@ -48,7 +48,8 @@ hi FoldColumn   gui=NONE guifg=#40c0ff guibg=#00305c
 
 " Other
 hi Directory    gui=NONE guifg=#40f0d0 guibg=NONE
-hi ColorColumn	                       guibg=#111111
+hi ColorColumn  gui=NONE guifg=NONE    guibg=#111111
+            \            ctermfg=NONE  ctermbg=234
 hi LineNr       gui=NONE guifg=#9090a0 guibg=NONE
 hi NonText      gui=BOLD guifg=#4080ff guibg=NONE
 hi SpecialKey   gui=BOLD guifg=#8080ff guibg=NONE

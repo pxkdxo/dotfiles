@@ -1,18 +1,14 @@
-## Aliases for the Arch Linux package manager
+# Aliases for the Arch Linux package manager
 
-
-## Sync
+# Sync
 
 alias pac.s="sudo pacman --sync"
-
 alias pac.sg="pacman --sync --groups"
 alias pac.si="pacman --sync --info"
 alias pac.sl="pacman --sync --list"
 alias pac.ss="pacman --sync --search"
-
 alias pac.sc="pac.s --clean"
 alias pac.scc="pac.sc --clean"
-
 alias pac.su="pac.s --sysupgrade"
 alias pac.sy="pac.s --refresh"
 alias pac.suy="pac.su --refresh"
@@ -20,21 +16,17 @@ alias pac.syy="pac.sy --refresh"
 alias pac.suyy="pac.suy --refresh"
 
 
-
 # Remove
 
 alias pac.r="sudo pacman --remove --nodeps --recursive --unneeded"
-
 alias pac.rc="pac.r --cascade"
 alias pac.rs="pac.r --recursive"
 alias pac.rcs="pac.rc --recursive"
 
 
-
-## Query
+# Query
 
 alias pac.q="pacman --query"
-
 alias pac.qd="pac.q --deps"
 alias pac.qdms="pac.qd --foreign --search"
 alias pac.qdmt="pac.qd --foreign --unrequired"
@@ -44,7 +36,6 @@ alias pac.qdnt="pac.qd --native --unrequired"
 alias pac.qdntt="pac.qdnt --unrequired"
 alias pac.qdt="pac.qd --unrequired"
 alias pac.qdtt="pac.qdt --unrequired"
-
 alias pac.qe="pac.q --explicit"
 alias pac.qems="pac.qe --foreign --search"
 alias pac.qemt="pac.qe --foreign --unrequired"
@@ -54,63 +45,48 @@ alias pac.qent="pac.qe --native --unrequired"
 alias pac.qentt="pac.qent --unrequired"
 alias pac.qet="pac.q --explicit --unrequired"
 alias pac.qett="pac.qet --unrequired"
-
 alias pac.qg="pac.q --groups"
 alias pac.qgs="pac.qg --search"
-
 alias pac.qi="pac.q --info"
-
 alias pac.qk="pac.q --check"
 alias pac.qkk="pac.qk --check"
-
 alias pac.ql="pac.q --list"
-
 alias pac.qm="pac.q --foreign"
 alias pac.qms="pac.qm --search"
 alias pac.qmt="pac.qm --unrequired"
 alias pac.qmtt="pac.qmt --unrequired"
-
 alias pac.qn="pac.q --native"
 alias pac.qns="pac.qn --search"
 alias pac.qnt="pac.qn --unrequired"
 alias pac.qntt="pac.qnt --unrequired"
-
 alias pac.qo="pac.q --owns"
 alias pac.qs="pac.q --search"
-
 alias pac.qt="pac.q --unrequired"
 alias pac.qtt="pac.qt --unrequired"
-
 alias pac.qu="pac.q --upgrades"
 
 
-
-## Upgrade
+# Upgrade
 
 alias pac.u="sudo pacman --upgrade"
 
 
-
-## Database
+# Database
 
 alias pac.d="pacman --database"
-
 alias pac.dk="pac.d --check"
 alias pac.dkk="pac.dk --check"
 
 
-
-## Files
+# Files
 
 alias pac.f="pacman --files"
-
 alias pac.fl="pac.f --list"
 alias pac.fo="pac.f --owns"
 alias pac.fs="pac.f --search --regex"
-
 alias pac.fy="sudo pacman --files --refresh"
 alias pac.fyy="pac.fy --refresh"
 
 
 
-## vim:ft=sh:et:sts=2:sw=2:ts=8
+# vim:ft=sh:et:sts=2:sw=2:ts=8

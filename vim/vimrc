@@ -2,32 +2,32 @@
 
 "" Unset 'compatible' to use vim defaults (instead of vi)
 if &compatible
-  set nocompatible
+    set nocompatible
 endif
 
 "" If the +eval feature is missing, this unsets 'compatible'
 silent! while 0
-  set nocompatible
+    set nocompatible
 silent! endwhile
 
 "" Always use utf-8
 set encoding=utf-8
 
 
+"" Load plugins from ~/.vim/bundle
+try
+    execute pathogen#infect()
+catch /^Vim(execute):.*/
+endtry
 
-"" -- Plugins & Syntax --
 
-"" Activate pathogen
-execute pathogen#infect()
-
-"" Detect filetype, load plugins, and apply indentation style
+"" Load filetype plugins & indentation style
 filetype plugin indent on
 
 "" Perform syntax highlighting
 if has("syntax")
-  syntax enable
+    syntax enable
 endif
-
 
 
 "" -- Tabs & Formatting --
@@ -35,19 +35,19 @@ endif
 "" Insert spaces insted of tab characters
 set expandtab
 
-"" No. of columns reserved for line #'s minus (1) for
+"" Number of columns reserved for line numbers
 set numberwidth=3
 
-"" No. of spaces to use for an indent
-set shiftwidth=2
+"" Number of spaces to use for an indent
+set shiftwidth=4
 
-"" No. of spaces to insert for a tab
-set softtabstop=2
+"" Number of spaces to insert for a tab
+set softtabstop=4
 
-"" Visual width of a real '\t' tab (i.e. ascii 0x09)
+"" Visual width of a tab character (ASCII 0x09)
 set tabstop=8
 
-"" Line length past which lines are broken automatically
+"" Length past which lines will be broken automatically
 set textwidth=79
 
 
@@ -88,16 +88,24 @@ set showcmd
 "" Briefly jump to match upon completing pair in 'matchpairs'
 set showmatch
 
-"" Highlight specified columns relative to 'textwidth'
-let &colorcolumn = join(map(range(1, &textwidth), '"+" . v:val'), ',')
+"" Set window titles
+set title
+let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 
 "" @@@ in place of lines that don't fit, hex in place of nonprintable chars
 if v:version >= 800
-  set display=truncate,uhex
+    set display=truncate,uhex
 endif
 
 "" Always show status line
 set laststatus=2
+
+"" Highlight specified columns relative to 'textwidth'
+let &colorcolumn =
+    \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
+
+autocmd VimResized * let &colorcolumn =
+    \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
 
 
 
@@ -110,7 +118,7 @@ set nostartofline
 set backspace=indent,eol,start
 
 "" Lines of padding between cursor and edge of window
-set scrolloff=4
+set scrolloff=3
 
 "" If 'nowrap' is set, minimum number of columnss to scroll at a time
 set sidescroll=1
@@ -120,6 +128,9 @@ set sidescrolloff=4
 
 "" Allow visual-block selection of empty columns
 set virtualedit=block
+
+"" Allow <Left> / <Right> to move between lines
+set whichwrap=b,s,[,]
 
 
 
@@ -132,10 +143,10 @@ set autoread
 set hidden
 
 "" Split off new windows below the current
-set splitbelow
+"set splitbelow
 
 "" Split off new windows to the right of the current
-set splitright
+"set splitright
 
 
 
@@ -144,15 +155,18 @@ set splitright
 "" Enable command completion
 set wildmenu
 
-"" Ignore case for filename completions
+"" Ignore case for filename completion
 set wildignorecase
 
-"" Insert-mode completion behavior
+"" Tweak insert-mode completion
 set completeopt=menu,preview,noselect
 
-"" Cmdline-mode completion behavior
+"" Tweak command-mode completion
 set wildmode=list:longest,full
 
+"" Use <Left> / <Right> to move cursor instead of selecting completions
+cnoremap <Left> <Space><BS><Left>
+cnoremap <Right> <Space><BS><Right>
 
 
 "" -- Key Timeout --
@@ -161,26 +175,26 @@ set wildmode=list:longest,full
 set timeout
 
 "" Time in ms to wait for completion of a mapping
-set timeoutlen=1500
+set timeoutlen=987
 
 "" Time in ms to wait for completion of a key code
-set ttimeoutlen=150
+set ttimeoutlen=144
 
 
 
 "" -- History  --
 
 "" Number of search patterns and ``:'' commands to remember (max: 10000)
-set history=10000
+set history=4096
 
 "" Number of modifications to remember for any given file
-set undolevels=1500
+set undolevels=2048
 
 "" Always save the whole buffer for undo when reloading it
 set undoreload=-1
 
 "" Max characters that may be typed between swapfile syncs
-set updatecount=150
+set updatecount=80
 
 
 
@@ -188,66 +202,58 @@ set updatecount=150
 
 "" Check undofile capability and use if using swapfile
 if has('persistent_undo')
-  let &undofile = &swapfile
+    let &undofile = &swapfile
 endif
-
 
 "" Clear swap / undo directory preferences
 set directory=
 set   undodir=
 
-
 "" Append MYVIMRUNTIME if non-null
 if $MYVIMRUNTIME != ''
-  set directory+=$MYVIMRUNTIME/swap/
-  set   undodir+=$MYVIMRUNTIME/undo/
+    set directory+=$MYVIMRUNTIME/swap/
+    set   undodir+=$MYVIMRUNTIME/undo/
 endif
-
 
 "" Append XDG_CACHE_HOME if non-null
 if $XDG_CACHE_HOME != ''
-  set directory+=$XDG_CACHE_HOME/vim/swap/
-  set   undodir+=$XDG_CACHE_HOME/vim/undo/
+    set directory+=$XDG_CACHE_HOME/vim/swap/
+    set   undodir+=$XDG_CACHE_HOME/vim/undo/
 endif
-
 
 "" Append first element of 'runtimepath'
 if ! empty(split(&runtimepath, ','))
-  if empty(&directory)
-    let &directory = split(&runtimepath, ',')[0] . '/swap/'
-  else
-    let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
-  endif
-  if empty(&undodir)
-    let &undodir = split(&runtimepath, ',')[0] . '/undo/'
-  else
-    let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
-  endif
+    if &directory == ''
+        let &directory = split(&runtimepath, ',')[0] . '/swap/'
+    else
+        let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
+    endif
+    if &undodir == ''
+        let &undodir = split(&runtimepath, ',')[0] . '/undo/'
+    else
+        let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
+    endif
 endif
-
 
 "" Append TMPDIR if non-null
 if $TMPDIR != ''
-  set directory+=$TMPDIR/
-  set   undodir+=$TMPDIR/
+    set directory+=$TMPDIR/
+    set   undodir+=$TMPDIR/
 endif
-
 
 "" Append default tmp directories
 set directory+=/var/tmp/,/tmp/
 set   undodir+=/var/tmp/,/tmp/
 
-
 "" Make the primary swap directory
 if ! isdirectory(split(&directory, ',')[0])
-  silent! call system('/usr/bin/env mkdir -pm 700 '
+    silent! call system('/usr/bin/env mkdir -pm 700 '
         \ . shellescape(split(&directory, ',')[0]))
 endif
 
-
 "" Make the primary undo directory
 if ! isdirectory(split(&undodir, ',')[0])
-  silent! call system('/usr/bin/env mkdir -pm 700 '
+    silent! call system('/usr/bin/env mkdir -pm 700 '
         \ . shellescape(split(&undodir, ',')[0]))
 endif
 
@@ -264,24 +270,43 @@ set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
 
 "" Enable the mouse
 if has('mouse')
-  set mouse=a
-  if has('mouse_sgr')
-    set ttymouse=sgr
-  endif
+    set mouse=a
+    if has('mouse_sgr')
+        set ttymouse=sgr
+    endif
 endif
 
 
 
 "" -- Colors --
 
-"" Enable true color and set colorscheme
+"" Try to guess color capabilities
 if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-  colorscheme darkP
+    if $TERM =~ '\v^(putty|rxvt|screen)(-.*)?$'
+        let &termguicolors = 0
+    elseif ($TERM =~ '\v^(gnome|iterm|st|vte)(-.*)?$'
+        \   || ($TERM =~ '\v^(tmux|xterm)(-.*)?$'
+        \       && ! (empty($XTERM_VERSION) && empty($VTE_VERSION))))
+        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+        let &termguicolors = 1
+    endif
+endif
+
+"" Interpret the value of COLORTERM
+if $COLORTERM =~? '\v^(truecolor|24-bit)$'
+    let &t_Co = 16777216
+elseif $COLORTERM =~ '\v^[^[:digit:]]*256[^[:digit:]]*$'
+    let &t_Co = 256
+endif
+
+"" Set a colorscheme
+if &t_Co >= 256 && &termguicolors
+    colorscheme vice
+elseif &t_Co >= 16
+    colorscheme vice
 else
-  colorscheme desertP
+    colorscheme peachpuff
 endif
 
 
@@ -289,24 +314,28 @@ endif
 "" -- C / C++ --
 let g:c_comment_strings = 1 " Allow strings & numbers inside comments
 let g:c_gnu             = 1 " Highlight GNU specific items
-let g:c_space_errors    = 1 " Highlight space errors (?)
+let g:c_space_errors    = 1 " Highlight space errors
 
-"" Set local options when opening a C or C++ file
-autocmd FileType c,cpp setlocal cin cino=:0 noet sts=0 sw=8 ts=8
+"" Set local options upon opening a C or C++ file
+autocmd FileType c,cpp
+    \ setlocal cin noet sts=0 sw=8 ts=8 |
+    \ let &l:cino = ":0,(" . &ts
 
 
 
 "" -- Git commits --
 
 "" Set textwidth when writing a git commit message
-autocmd FileType gitcommit setlocal tw=72
+autocmd FileType gitcommit setlocal tw=50
 
 
 
 "" -- Man --
 
 "" Set local options when opening a manpage
-autocmd FileType man setlocal cc= nohid noswf noudf
+autocmd FileType man
+    \ setlocal cc= noma nonu nornu nohid noro noswf noudf |
+    \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
 
 "" Load the Man plugin
 runtime ftplugin/man.vim
@@ -316,51 +345,72 @@ set keywordprg=:Man
 
 
 
+"" -- Markdown --
+
+autocmd FileType markdown
+    \ setlocal cc= nonu nornu linebreak breakindent showbreak=\\+ |
+    \ let &l:breakindentopt = "min:" . &tw / 4 . ",shift:" . &sw . ",sbr"
+
+
+
 "" -- Python --
 
-"" Set the default python version for pyx commands
-if v:version >= 800
-  if has('python3')
-    set pyxversion=3 " python3 is best
-  elseif has('python2')
-    set pyxversion=2 " python2 is fine
-  endif
+"" Set the default version for pyx commands
+if has('pythonx')
+    if has('python3')
+        set pyxversion=3
+    elseif has('python2')
+        set pyxversion=2
+    endif
 endif
 
-let g:python_highlight_all = 1      " Enable all available highlighting
-let g:python_recommended_style = 1  " PEP8 compliance
+"" Enable all available highlighting
+let g:python_highlight_all = 1
+
+"" Enable syntastic plugins
+let g:syntastic_python_checkers = ['pep8', 'python']
 
 
 
 "" -- Readline --
 
-let g:readline_has_bash = 1 " Highlight additions available through bash
-
-
-
-"" -- Markdown --
-
-autocmd FileType markdown setlocal tw=0
+"" Highlight bash additions
+let g:readline_has_bash = 1
 
 
 
 "" -- Sed --
 
-let g:highlight_sedtabs = 1 " Highlight tab characters in sed scripts
+"" Highlight real tab characters in sed scripts
+let g:highlight_sedtabs = 1
 
 
 
 "" -- Sh --
 
-let g:is_posix          = 1 " Highlighting for ambiguous *.sh files
-let g:sh_fold_enabled   = 3 " Folding mode (functions, if/do/for)
-let g:sh_no_error       = 1 " Relax error detection
+"" Default highlighting for shell scripts
+let g:is_posix = 1
 
-"" Set filetype to sh when editing a shell command line in vim
-if empty($TMPDIR)
-  autocmd BufRead /tmp/bash-fc.* setlocal ft=sh noswf noudf
+"" Fold functions and if/do/for clauses
+let g:sh_fold_enabled = 3
+
+"" Relax error detection
+let g:sh_no_error = 1
+
+"" Set local options when opening a shell script
+autocmd FileType bash,sh,zsh setlocal et sts=2 sw=2 ts=8
+
+"" Set filetype to sh when editing a shell command line
+if $TMPDIR == ''
+    autocmd BufRead /tmp/bash-fc.*
+        \ setlocal ft=sh noswf noudf|
+        \ let b:is_bash = 1|
+        \ syntax enable
 else
-  autocmd BufRead $TMPDIR/bash-fc.* setlocal ft=sh noswf noudf
+    autocmd BufRead $TMPDIR/bash-fc.*
+        \ setlocal ft=sh noswf noudf|
+        \ let b:is_bash = 1|
+        \ syntax enable
 endif
 
 
@@ -368,16 +418,41 @@ endif
 "" -- help --
 
 "" Set local options when opening a manpage
-autocmd FileType help setlocal cc= nohid noswf noudf
+autocmd FileType help setlocal noswf noudf
 
 
 
-"" -- Powerline --
+"" -- Syntastic --
 
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
 
+
+
+"" -- Airline / Promptline / Tmuxline --
+
+let g:airline_theme = 'vice'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tmuxline#enabled = 0
+let g:airline_symbols = {
+    \'space': ' ',
+    \'paste': '',
+    \'maxlinenr': '',
+    \'dirty': 'ﯓ',
+    \'crypt': '',
+    \'linenr': '',
+    \'readonly': 'ﰸ',
+    \'spell': 'ﮜ',
+    \'modified': '',
+    \'notexists': '',
+    \'keymap': 'הּ',
+    \'ellipsis': '…',
+    \'branch': '',
+    \'whitespace': ''
+    \}
 
 
 "" -- Mappings--
@@ -385,50 +460,100 @@ python3 del powerline_setup
 "" Key to act as <leader> in mappings
 let g:mapleader = ','
 
+"" Interpret Alt-Up/Down correctly
+map  <ESC><ESC>[A <M-Up>
+map  <ESC><ESC>[B <M-Down>
+map! <ESC><ESC>[A <M-Up>
+map! <ESC><ESC>[B <M-Down>
+map  <ESC>[1;3A   <M-Up>
+map  <ESC>[1;3B   <M-Down>
+map! <ESC>[1;3A   <M-Up>
+map! <ESC>[1;3B   <M-Down>
 
-"" New, next, and previous tab
-nnoremap <silent><C-T>      :tabnew<CR>
-nnoremap <silent><M-Right>  :tabnext<CR>
-nnoremap <silent><ESC>[1;3C :tabnext<CR>
-nnoremap <silent><M-Left>   :tabprev<CR>
-nnoremap <silent><ESC>[1;3D :tabprev<CR>
+"" Interpret Alt-Right/Left correctly
+map  <ESC><ESC>[C <M-Right>
+map  <ESC><ESC>[D <M-Left>
+map! <ESC><ESC>[C <M-Right>
+map! <ESC><ESC>[D <M-Left>
+map  <ESC>[1;3C   <M-Right>
+map  <ESC>[1;3D   <M-Left>
+map! <ESC>[1;3C   <M-Right>
+map! <ESC>[1;3D   <M-Left>
 
+"" Interpret Ctrl-Up/Down correctly
+map  <ESC>Oa    <C-Up>
+map  <ESC>Ob    <C-Down>
+map! <ESC>Oa    <C-Up>
+map! <ESC>Ob    <C-Down>
+map  <ESC>[1;5A <C-Up>
+map  <ESC>[1;5B <C-Down>
+map! <ESC>[1;5A <C-Up>
+map! <ESC>[1;5B <C-Down>
 
-"" Toggle syntax highlighting
-nnoremap <silent><F7> :if exists('g:syntax_on')<Bar>
-    \syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
+"" Interpret Ctrl-Right/Left correctly
+map  <ESC>Oc    <C-Right>
+map  <ESC>Od    <C-Left>
+map! <ESC>Oc    <C-Right>
+map! <ESC>Od    <C-Left>
+map  <ESC>[1;5C <C-Right>
+map  <ESC>[1;5D <C-Left>
+map! <ESC>[1;5C <C-Right>
+map! <ESC>[1;5D <C-Left>
 
+"" Toggle paste mode
+nnoremap <silent><F3> :set paste!<CR>
 
 "" Toggle search highlighting
-nnoremap <silent><F8> :set hlsearch!<CR>
+nnoremap <silent><F6> :set hlsearch!<CR>
 
+"" Toggle syntax highlighting
+nnoremap <silent><F7> 
+    \ :
+    \ if exists('g:syntax_on')<Bar>
+    \ syntax off<Bar>
+    \ else<Bar>syntax enable<Bar>
+    \ endif<CR>
 
 "" Toggle line numbers
-nnoremap <silent><F9> :set nu!<Bar>
-      \if &number<Bar>set rnu<Bar>else<Bar>set nornu<Bar>endif<CR>
+nnoremap <silent><F8> :set nu!<Bar>let &rnu = &nu<CR>
+
+"" Go to new tab
+nnoremap <silent><C-T> :tabnew<CR>
+
+"" Go to next tab
+nnoremap <silent><M-Right> :tabnext<CR>
+
+"" Go to previous tab
+nnoremap <silent><M-Left> :tabprev<CR>
+
+"" Key to act as <leader> in mappings
+let g:mapleader = ','
+
+autocmd FileType * nnoremap <silent><leader>#!
+    \ ggI<C-R>=substitute(
+    \ &filetype, '..*', '#!' . exepath(&filetype) . '\r', ''
+    \ )<CR><ESC>``
 
 
 "" Quote word before or at the cursor (see :help word)
-"" Note: 'selection' must be set to inclusive or exclusive
+"" Note: 'selection' must be set to inclusive or exclusive for this to work
 nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
 nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
 nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
 nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
 nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
 nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
-nnoremap <leader>` vl<ESC>bi<<ESC>ea`<ESC>l
-
+nnoremap <leader>` vl<ESC>bi`<ESC>ea`<ESC>l
 
 "" Quote WORD before or at the cursor (see :help WORD)
-"" Note: 'selection' must be set to inclusive or exclusive
+"" Note: 'selection' must be set to inclusive or exclusive for this to work
 nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
 nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
 nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
 nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
 nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
 nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
-nnoremap <leader><leader>` vl<ESC>Bi<<ESC>Ea`<ESC>l
-
+nnoremap <leader><leader>` vl<ESC>Bi`<ESC>Ea`<ESC>l
 
 "" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
@@ -437,7 +562,6 @@ vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
     \gvy/<C-R><C-R>
     \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
     \gV:call setreg('"',old_reg,old_regtype)<CR>
-
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
@@ -449,7 +573,7 @@ vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
 
 
 
-"" -- Misc --
+"" -- Finally --
 
 "" Allow options to be set from a modeline
 set modeline

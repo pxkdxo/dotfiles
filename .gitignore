@@ -1,15 +1,12 @@
-## .gitignore
+# .gitignore: whitelist for untracked files - see gitignore(5)
 
-## blacklist everything
 /**
-
-## whitelist as needed
 !/README.md
 !/asoundrc
-!/automated_script.sh
 !/awesome
-!/awesome/rc.lua
 !/bash_completion
+!/bash_completion.d
+!/bash_completion.d/**
 !/bash_logout
 !/bash_profile
 !/bashrc
@@ -18,8 +15,6 @@
 !/colors
 !/colors/**
 !/compton.conf
-!/cower
-!/cower/config
 !/devilspie2
 !/devilspie2/**
 !/dircolors
@@ -48,15 +43,17 @@
 !/profile
 !/profile.d
 !/profile.d/**
-!/pythonrc.py
 !/ranger
 !/ranger/commands.py
 !/ranger/rc.conf
 !/ranger/rifle.conf
 !/ranger/scope.sh
-!/screenrc
+!/rofi
+!/rofi/config
+!/rofi/themes
+!/rofi/themes/**
 !/surfraw
-!/surfraw/**
+!/surfraw/conf
 !/tmux.conf
 !/user-dirs.dirs
 !/user-dirs.locale
@@ -66,13 +63,9 @@
 !/vim/vimrc
 !/vim/colors
 !/vim/colors/**
-!/vim/plugin
-!/vim/plugin/**
 !/vim/syntax
 !/vim/syntax/**
 !/w3m
-!/w3m/config
-!/w3m/keymap
 !/xinitrc
 !/xinitrc.d
 !/xinitrc.d/**

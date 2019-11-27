@@ -6,34 +6,33 @@
 ## -- gpg
 
 ## Write gpg output to stdout
-alias gpg.stdout='gpg --yes --output /dev/stdout'
+alias gpg-stdout='gpg --yes --output /dev/stdout'
 
-## Encrypt a file symmetrically, passing all options to gpg
+## Encrypt a file, passing all options to gpg
 ## usage: gpg-symmetric [options] filename
-gpg.symmetric() {
+gpg-symmetric() {
   (( $# > 0 )) || {
-    printf 'usage: %q [options] filename\n' "${FUNCNAME}" 1>&2
+    printf 'usage: %q [options] filename\n' "${FUNCNAME[0]}" 1>&2
     return 2
   }
   gpg "${@:1:($# - 1)}" --symmetric "${!#}"
 }
 
 
-
 ## -- gpg-agent
 
 ## Flush all cached passphrases and re-read configuration file
-alias gpg-agent.flush='kill -s HUP "$(pgrep gpg-agent)"'
+alias gpg-agent-flush='kill -s HUP "$(pgrep gpg-agent)"'
 
 ## Shut down the process after all current requests are fulfilled
 ## Upon receiving this signal 3 times, force a shutdown
-alias gpg-agent.shutdown='kill -s TERM "$(pgrep gpg-agent)"'
+alias gpg-agent-shutdown='kill -s TERM "$(pgrep gpg-agent)"'
 
 ## Shut down the process immediately
-alias gpg-agent.interrupt='kill -s INT "$(pgrep gpg-agent)"'
+alias gpg-agent-interrupt='kill -s INT "$(pgrep gpg-agent)"'
 
 ## Dump internal information to the log file
-alias gpg-agent.dumptolog='kill -s USR1 "$(pgrep gpg-agent)"'
+alias gpg-agent-dumptolog='kill -s USR1 "$(pgrep gpg-agent)"'
 
 
 

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# arrlib : collection of functions to manipulate arrays
+
+
+if  (( __libarr__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+else
+    (( __libarr__ = 1 ))
+fi
+
+
+##
+# arr::join - join array elements with a given character
+# @1: array name
+# @[2]: joining character
+##
+arr::join()
+{
+    local IFS="${2-${IFS-$' \t\n'}}" || return
+
+    if [[ $# -le 0 || $# -ge 3 ]]; then
+        printf 1>&2 'usage: %s name [separator]\n' "${FUNCNAME[0]}"
+        return 2
+    fi
+
+    if [[ $# -eq 2 && ${#2} -ne 1 ]]; then
+        printf 1>&2 '%s: %s: must be a single char\n' "${FUNCNAME[0]}" "$2"
+        return 1
+    fi
+
+    trap "$(
+    : "$(trap -p RETURN)"
+    printf '%s' "${_:-trap RETURN}"
+    )"$'\n''printf '"'"'%s\n'"'"' "${'"${1%%:*}[*]${1#"${1%%:*}"}"'}"' RETURN
+}

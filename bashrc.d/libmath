@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+#
+# mathlib : a collection of variables & functions for doing math in bash
+
+
+if  (( __libmath__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+else
+    (( __libmath__ = 1 ))
+fi
+
+
+# -- Arithmetic
+
+# Evaluate expression produced by joining args with IFS
+math::__operate()
+{ 
+    printf '%d\n' "$(( "$*" ))"
+}
+
+# Multiply arguments
+math::mul()
+{
+    IFS='*' math::__operate "$@"
+}
+
+# Divide arguments
+math::div()
+{
+    IFS='/' math::__operate "$@"
+}
+
+# Add arguments
+math::add()
+{
+    IFS='+' math::__operate "$@"
+}
+
+# Subtract arguments
+math::sub()
+{
+    IFS='-' math::__operate "$@"
+}
+
+# Bitwise xor arguments
+math::xor() {
+IFS='^' math::__operate "$@"
+}
+
+# Bitwise and arguments
+math::and()
+{
+    IFS='&' math::__operate "$@"
+}
+
+# Bitwise or arguments
+math::or()
+{
+    IFS='|' math::__operate "$@"
+}
+
+
+# Print elements of the fibonacci sequence
+# usage: math::fibonacci [count] [start]
+math::fibonacci()
+{ 
+    # Initialize sequence values / index / element count / start & end indices
+    local curr=0 next=1 index=0 &&
+        local count=$(( $((${count:-$1})) > 0 ? $((${count:-$1})) : 10 )) &&
+        local start=$(( $((${start:-$2})) > 0 ? $((${start:-$2})) : 1  )) &&
+        local end=$(( start + count )) ||
+        return
+
+    # Compute seq until end index is reached or max int limit is surpassed
+    while (( ++index < end && next >= curr )); do
+        # Print current value, skipping elements occuring before start index
+        (( index < start )) || printf "%d\n" "$((curr))"
+        # Compute the next two sequence elements
+        ((  next += curr, curr = next - curr ))
+    done
+
+    # If max integer limit was surpassed, print message and return error (2)
+    if (( next < curr ))
+    then
+        printf "%s: integer overflow\n" "${FUNCNAME[0]}" 1>&2
+        return 3
+    fi
+}

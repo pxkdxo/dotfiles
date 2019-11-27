@@ -1,156 +1,110 @@
 #!/usr/bin/env bash
 
-## Functions to help configure the environment
-##
+# Functions to help configure the environment
 
-
-## If given arguments, configure those variables.
-## Otherwise, configure known variables.
-autoenv::main() {
-
-  (( ! $# )) && {
-    set -- BROWSER EDITOR GCC_COLORS LS_COLORS
-  }
-
-  while (( $# > 0 )); do
-
-#    if [[ $1 == @([^[:alpha:]_]|*[^[:alnum:]_])* ]]; then
-#      printf '%q: autoenv: %q: not a valid identifier\n' "${0##*/}" "$1" 1>&2
-
-    if command -v "autoenv::$1" 1>/dev/null; then
-      "autoenv::$1"
-    else
-      printf '%%q: %q: undefined\n' "${FUNCNAME}" "$1" 1>&2
-    fi
-
-    shift
-  done
-
-  return 0
-
+# Apply configuration for the variables given as arguments
+autoenv::main()
+{
+    while (( $# ))
+    do
+        if command -v "autoenv::$1" 1>/dev/null
+        then
+            "autoenv::$1"
+        else
+            printf '%s: %s: undefined\n' "${FUNCNAME[0]}" "$1" 1>&2
+        fi
+        shift
+    done
 }
 
 
-
-## Set default browser
-autoenv::BROWSER() {
-
-  if local -a BROWSER=( "$@" ); then
-
-    if [[ ${DISPLAY} ]]; then
-      BROWSER+=( google-chrome-stable firefox chromium epiphany-browser )
-    else
-      BROWSER+=( elinks links w3m lynx )
-    fi
+# Set default browser
+autoenv::BROWSER()
+{
+    local BROWSER=( "$@" google-chrome firefox ) || return
 
     while (( ${#BROWSER[@]} )); do
-      if command -v "${BROWSER[0]}" 1>/dev/null; then
-        declare -gx BROWSER="${BROWSER[0]}"
-        break
-      fi
-      BROWSER=( "${BROWSER[@]:1}" )
+        if command -v "${BROWSER[0]}" 1>/dev/null; then
+            # shellcheck disable=SC2178
+            declare -gx BROWSER="${BROWSER[0]}"
+            break
+        fi
+        BROWSER=( "${BROWSER[@]:1}" )
     done
-
-  fi
-
 }
 
 
-
-## Set default text editor
-autoenv::EDITOR() {
-
-  if local -a EDITOR=( "$@" ); then
-
-    EDITOR+=( vim nvim nano emacs vi )
+# Set default text editor
+autoenv::EDITOR()
+{
+    local EDITOR=( "$@" vim nvim nano ) || return
 
     while (( ${#EDITOR[@]} )); do
-      if command -v "${EDITOR[0]}" 1>/dev/null; then
-        declare -gx EDITOR="${EDITOR[0]}"
-        break
-      fi
-      EDITOR=( "${EDITOR[@]:1}" )
+        if command -v "${EDITOR[0]}" 1>/dev/null; then
+            # shellcheck disable=SC2178
+            declare -gx EDITOR="${EDITOR[0]}"
+            break
+        fi
+        EDITOR=( "${EDITOR[@]:1}" )
     done
-
-  fi
-
 }
 
 
-
-## Set GCC output formatting
-autoenv::GCC_COLORS() {
-
-  if local -A GCC_COLORS=( [caret]='01;34' [error]='01;31'
-                           [locus]='01'    [note]='33'
-                           [quote]='01;32' [warning]='01;35' )
-  then
-
-    while (( $# )); do
-      GCC_COLORS[${1%%=*}]=${1#*=}
-      shift
-    done
-
-    set -- "${!GCC_COLORS[@]}"
+# Set GCC output formatting
+autoenv::GCC_COLORS()
+{
+    local -A GCC_COLORS=(
+        [caret]='01;34' [error]='01;31'
+        [locus]='01'    [note]='33'
+        [quote]='01;32' [warning]='01;35'
+    ) || return
 
     while (( $# )); do
-      GCC_COLORS[0]=${GCC_COLORS[0]:+${GCC_COLORS[0]}:}$1=${GCC_COLORS[$1]}
-      shift
+        GCC_COLORS["${1%%=*}"]="${1#*=}"
+        shift
     done
 
-    declare -gx GCC_COLORS=${GCC_COLORS[0]}
+    for _ in "${!GCC_COLORS[@]}"
+    do
+        GCC_COLORS[0]="${GCC_COLORS[0]:+${GCC_COLORS[0]}:}$_=${GCC_COLORS[$_]}"
+    done
 
-  fi
-
+    # shellcheck disable=SC2178
+    declare -gx GCC_COLORS="${GCC_COLORS[0]}"
 }
 
 
+# Set command output colors
+autoenv::LS_COLORS()
+{
+    local IFS LS_COLORS && command -v dircolors 1>/dev/null || return
 
-## Set command output colors
-autoenv::LS_COLORS() {
-
-  if local IFS="${IFS}" && local LS_COLORS='' && command -v dircolors; then
-
-    case $# in
-      0)
-        if [[ -f ~/.dircolors ]]; then
-          IFS="'" read -r _ LS_COLORS _ < <(command dircolors -b ~/.dircolors)
-          declare -gx LS_COLORS=${LS_COLORS}
-          return "$?"
-        else
-          IFS="'" read -r _ LS_COLORS _ < <(command dircolors -b)
-          declare -gx LS_COLORS=${LS_COLORS}
-          return $?
-        fi
-        ;;
-
-      1)
-        if [[ -f $1 ]]; then
-          IFS="'" read -r _ LS_COLORS _ < <(command dircolors -b "$1")
-          declare -gx LS_COLORS=${LS_COLORS}
-          return $?
-        else
-          return $?
-        fi
-        ;;
-
-      *)
-        IFS=:
-        declare -gx LS_COLORS="$*"
-        return $?
-        ;;
-
+    case "$#" in
+        0)
+            if [[ -f ~/.dircolors ]]; then
+                IFS="'" read -r _ LS_COLORS _ < <(dircolors -b ~/.dircolors)
+                declare -gx LS_COLORS="${LS_COLORS}"
+            else
+                IFS="'" read -r _ LS_COLORS _ < <(dircolors -b)
+                declare -gx LS_COLORS="${LS_COLORS}"
+            fi
+            ;;
+        1)
+            if [[ -f $1 ]]; then
+                IFS="'" read -r _ LS_COLORS _ < <(dircolors -b -- "$1")
+                declare -gx LS_COLORS="${LS_COLORS}"
+            fi
+            ;;
+        *)
+            IFS=':'
+            declare -gx LS_COLORS="$*"
+            ;;
     esac
-
-  fi 1>/dev/null
-
 }
 
 
-
-## Apply configuration
-autoenv::main
-
+# Apply default configuration
+autoenv::main 'BROWSER' 'EDITOR' 'GCC_COLORS' 'LS_COLORS'
 
 
 # vi:ft=sh

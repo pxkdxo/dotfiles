@@ -2,31 +2,226 @@
 
 # Bash readline bindings
 
+if  (( __readline__ ))
+then
+    [[ $0 != "${BASH_SOURCE[0]}" ]] && return 0 || exit 0
+else
+    (( __readline__ = 1 ))
+fi
 
-__rl_surround() {
-  READLINE_LINE=$1${READLINE_LINE}$2
-  READLINE_POINT=$((READLINE_POINT + ${#1}))
+rl::help()
+{
+    eval '
+    READLINE_LINE="${READLINE_LINE%%[[:blank:]]-*} --help -h"
+    if (( '"${#READLINE_LINE}"' < $((READLINE_POINT)) ))
+    then
+        READLINE_POINT="$(( "${#READLINE_LINE}" ))"
+    fi
+    '
+}
+
+if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] > 3 && BASH_VERSINFO[1] > 3) ))
+then
+    rl::quote()
+    {
+        eval '
+        READLINE_LINE="${READLINE_LINE@Q}"
+        READLINE_POINT="$((
+        READLINE_POINT * ${#READLINE_LINE} / '"$((
+        ${#READLINE_LINE} ? ${#READLINE_LINE} : 1
+        ))"'
+        ))"'
+    }
+    else
+    rl::quote()
+    {
+        eval '
+        printf -v READLINE_LINE '%q' "${READLINE_LINE}"
+        READLINE_POINT="$((
+        READLINE_POINT * ${#READLINE_LINE} / '"$((
+        ${#READLINE_LINE} ? ${#READLINE_LINE} : 1
+        ))"'
+        ))"'
+    }
+fi
+
+rl::prefix()
+{
+    READLINE_POINT="$(( $((READLINE_POINT)) - ${#READLINE_LINE} ))"
+    READLINE_LINE="${1-}${READLINE_LINE}"
+    READLINE_POINT="$(( $((READLINE_POINT)) + ${#READLINE_LINE} ))"
+}
+
+rl::suffix()
+{
+    READLINE_LINE="${READLINE_LINE}${1-}"
+}
+
+rl::surround()
+{
+    rl::prefix "${1-}"
+    rl::suffix "${2-}"
+}
+
+rl::surround_word()
+{
+    local i="$((READLINE_POINT + 1))" j="$((i))" || return
+
+    while [[ $((++i)) -ge 0 && ${READLINE_LINE:i:1} == [[:alnum:]_] ]]
+    do :
+    done
+    while [[ $((++i)) -lt ${#READLINE_LINE} && ${READLINE_LINE:i:1} != [[:alnum:]_] ]]
+    do :
+    done
+    if (( i > ${#READLINE_LINE} ))
+    then
+        while [[ $((--j)) -ge 0 && ${READLINE_LINE:j:1} != [[:alnum:]_] ]]
+        do :
+        done
+        (( i = ++j )) || return 0
+        while [[ $((--i)) -ge 0 && ${READLINE_LINE:i:1} == [[:alnum:]_] ]]
+        do :
+        done
+        (( ++i ))
+    else
+        : $((j = i))
+        while [[ $((++j)) -lt ${#READLINE_LINE} && ${READLINE_LINE:j:1} == [[:alnum:]_] ]]
+        do :
+        done
+    fi
+    READLINE_LINE="${READLINE_LINE::i}${1}${READLINE_LINE:i:(j-i)}${2}${READLINE_LINE:j}"
+    if (( i <= READLINE_POINT ))
+    then
+        : "$((READLINE_POINT += ${#1} + ${#2}))"
+    fi
+}
+
+rl::next_word()
+{
+    : "$((READLINE_POINT + 1))"
+
+    while (( ++_ < ${#READLINE_LINE} )) && [[ ${READLINE_LINE:_:1} == [[:alnum:]_] ]]
+    do :
+    done
+    while (( ++_ < ${#READLINE_LINE} )) && [[ ${READLINE_LINE:_:1} != [[:alnum:]_] ]]
+    do :
+    done
+    if (( _ >= ${#READLINE_LINE} ))
+    then
+        return "$((READLINE_POINT))"
+    fi
+    return "$((_))"
+}
+
+rl::next_word_end()
+{
+    : "$((READLINE_POINT + 1))"
+
+    while (( ++_ < ${#READLINE_LINE} )) && [[ ${READLINE_LINE:_:1} != [[:alnum:]_] ]]
+    do : "$((_))"
+    done
+    while (( ++_ < ${#READLINE_LINE} )) && [[ ${READLINE_LINE:_:1} == [[:alnum:]_] ]]
+    do : "$((_))"
+    done
+    if (( _ >= ${#READLINE_LINE} )) &&  [[ "${READLINE_LINE:(-1)}" != [[:alnum:]_]] ]]
+    then
+        return "$((READLINE_POINT))"
+    fi
+    return "$((_))"
+}
+
+rl::prev_word()
+{
+    : "$((READLINE_POINT))"
+
+    while (( _ > 0 )) && [[ ${READLINE_LINE:_:1} != [[:alnum:]_] ]]
+    do : "$((--_))"
+    done
+    while (( _ > 0 )) && [[ ${READLINE_LINE:_:1} == [[:alnum:]_] ]]
+    do : "$((--_))"
+    done
+    if (( _ <= 0 )) && [[ "${READLINE_LINE::1}" != [[:alnum:]_]] ]]
+    then
+        return "$((READLINE_POINT))"
+    fi
+    return "$((_))"
+}
+
+rl::prev_word_end()
+{
+    : "$((READLINE_POINT))"
+
+    while (( _ > 0 )) && [[ ${READLINE_LINE:_:1} == [[:alnum:]_] ]]
+    do : "$((--_))"
+    done
+    while (( _ > 0 )) && [[ ${READLINE_LINE:_:1} != [[:alnum:]_] ]]
+    do : "$((--_))"
+    done
+    if (( _ <= 0 ))
+    then
+        return "$((READLINE_POINT))"
+    fi
+    return "$((_))"
 }
 
 
-__rl_quote() {
-  local old_len=${#READLINE_LINE}
-  READLINE_LINE=${READLINE_LINE@Q}
-  READLINE_POINT=$((READLINE_POINT + ${#READLINE_LINE} - old_len - 1))
-}
+# <F1>
+bind -x '"\eOP": {
+if [[ -n ${READLINE_LINE#"${READLINE_LINE%%[^[:space:]]*}"} ]]
+then
+    rl::help
+    eval '"'"'READLINE_POINT=0 READLINE_LINE=""'"'"$'\n'"${READLINE_LINE}"'
+fi
+}'
+bind -x '"\e[11~": {
+if [[ -n ${READLINE_LINE#"${READLINE_LINE%%[^[:space:]]*}"} ]]
+then
+    rl::help
+    eval '"'"'READLINE_POINT=0 READLINE_LINE=""'"'"$'\n'"${READLINE_LINE}"'
+fi
+}'
 
+# <F2>
+bind -x '"\eOQ": rl::quote'
+bind -x '"\e[12~": rl::quote'
 
-#bind -x '"\eOP": __rl_F1'
-bind -x '"\eOQ": __rl_quote'
-bind -x '"\eOR": __rl_surround \" \"'
-bind -x '"\eOS": __rl_surround \$\( \)'
-bind -x '"\e[15~": __rl_surround \( \)'
-bind -x '"\e[17~": __rl_surround "sudo "'
-bind -x '"\e[18~": __rl_quote && __rl_surround "su -c "'
-#bind -x '"\e[19~": __rl_F8'
-#bind -x '"\e[20~": __rl_F9'
-#bind -x '"\e[21~": __rl_F10'
-#bind -x '"\e[23~": __rl_F11'
-#bind -x '"\e[24~": __rl_F12'
+# <F3>
+bind -x '"\eOR": rl::surround_word \'"'"' \'"'"
+bind -x '"\e[13~": rl::surround_word \'"'"' \'"'"
+bind -x '"\e[25~": rl::surround \'"'"' \'"'"
 
-bind -x '"\M-C": printf %s "${READLINE_LINE}" | xclip -i -sel clipboard'
+# <F4>
+bind -x '"\eOS": rl::surround_word \" \"'
+bind -x '"\e[14~": rl::surround_word \" \"'
+bind -x '"\e[26~": rl::surround \" \"'
+
+# <F5>
+bind -x '"\e[15~": rl::surround_word '"'"'${'"'"' '"'}'"
+bind -x '"\e[28~": rl::surround '"'"'${'"'"' '"'}'"
+
+# <F6>
+bind -x '"\e[17~": rl::surround_word '"'"'$('"'"' '"')'"
+bind -x '"\e[29~": rl::surround '"'"'$('"'"' '"')'"
+
+# <F7>
+bind -x '"\e[18~": rl::surround_word '"'('"' '"')'"
+bind -x '"\e[31~": rl::surround '"'('"' '"')'"
+
+# <F8>
+bind -x '"\e[18~": rl::prefix '"'"'sudo '"'"
+
+# <F9>
+bind -x '"\e[19~": rl::prefix '"'"'su -c '"'"
+
+# <F10>
+#bind -x '"\e[21~": '
+
+# <F11>
+#bind -x '"\e[23~": '
+
+# <F12>
+#bind -x '"\e[24~": '
+
+# Shift-Alt-C
+# shellcheck disable=SC2016
+bind -x '"\M-C": printf "%s" "${READLINE_LINE}" | xclip -sel clipboard'

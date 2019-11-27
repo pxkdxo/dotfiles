@@ -87,8 +87,10 @@ hi LineNr         ctermfg=DarkMagenta     guifg=#2b506e guibg=#000000 gui=none
 " Normal colour: just white thank you.
 hi Normal         guifg=#ffffff guibg=#000000 gui=none
 
+" Color column.
+hi ColorColumn    ctermfg=NONE  ctermbg=237 guifg=NONE guibg=#101010 gui=none
+
 " Others:  These are "highlight-groups" and "highlight-default" in help section.
-hi ColorColumn    guibg=#101010 gui=none
 hi Cursor         guifg=#43705a guibg=#e6fff3 gui=none
 hi DiffAdd        guifg=#e6fff3 guibg=#43705a gui=bold
 hi DiffChange     guifg=#e6fff3 guibg=#43705a gui=none

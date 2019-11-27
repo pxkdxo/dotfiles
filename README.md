@@ -1,3 +1,2 @@
 # dotfiles
-### user-specific application configuration files
-
+### personal configuration files
