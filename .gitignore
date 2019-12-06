@@ -4,6 +4,7 @@
 !/README.md
 !/asoundrc
 !/awesome
+!/awesome/rc.lua
 !/bash_completion
 !/bash_completion.d
 !/bash_completion.d/**
@@ -55,6 +56,7 @@
 !/surfraw
 !/surfraw/conf
 !/tmux.conf
+!/tmuxline.conf
 !/user-dirs.dirs
 !/user-dirs.locale
 !/user-tmpfiles.d

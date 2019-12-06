@@ -80,7 +80,11 @@ fi
 
 # Pass control to window manager.
 
-exec "$(command -v "${WM}")"
+if command -v "${WM}" 1> /dev/null
+then
+  exec "${WM}"
+fi
+exit 127
 
 
 # vi:ft=sh

@@ -6,7 +6,7 @@
 # shellcheck disable=SC1091
 if [[ -f ${BASH_SOURCE[0]%/*}/libmsg ]]
 then
-    source -- "${BASH_SOURCE[0]%/*}/libmsg"
+  source -- "${BASH_SOURCE[0]%/*}/libmsg"
 fi
 
 
@@ -17,22 +17,14 @@ fi
 #######################################
 fork()
 {
-    if ! (( $# ))
-    then
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} command [args ...]"
-        return 2
-    fi
-    if ! type -P "$1" 1>/dev/null
-    then
-        if declare -F command_not_found_handle 1>/dev/null
-        then
-            command_not_found_handle "$1"
-        else
-            msg::err "${FUNCNAME[0]}" "$1" "command not found"
-        fi
-        return 127
-    fi
+  if (( $# ))
+  then
     exec "$@" 0</dev/null 1>/dev/null 2>&1 &
+    disown %+
+  else
+    msg::err "${FUNCNAME[0]}" "usage" "${FUNCNAME[0]} command [args ...]"
+    return 2
+  fi
 }
 
 
@@ -46,13 +38,13 @@ fork()
 #######################################
 cdls()
 {
-    if (( $# ))
-    then
-        cd -- "${!#}" && ls "${@:1:($# ? ($# - 1) : 0)}"
-    else
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [ls-options] directory"
-        return 2
-    fi
+  if (( $# ))
+  then
+    cd -- "${!#}" && ls "${@:1:($# ? ($# - 1) : 0)}"
+  else
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [ls-options] directory"
+    return 2
+  fi
 }
 
 
@@ -66,13 +58,13 @@ cdls()
 #######################################
 mkcd()
 {
-    if (( $# ))
-    then
-        mkdir "$@" && cd -- "${!#}" || return
-    else
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [mkdir-options] directory"
-        return 2
-    fi
+  if (( $# ))
+  then
+    mkdir "$@" && cd -- "${!#}"
+  else
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [mkdir-options] directory"
+    return 2
+  fi
 }
 
 
@@ -85,28 +77,18 @@ mkcd()
 #######################################
 lswhich()
 {
-    local IFS REPLY || return
+  local IFS REPLY || return
 
-    while (( $# ))
+  while (( $# ))
+  do
+    while IFS='' read -r -a REPLY
     do
-        while IFS='' read -r -a REPLY
-        do
-            ls -l "${REPLY[@]}"
-        done < <(type -ap "$1")
-        shift
-    done
+      ls -l "${REPLY[@]}"
+    done < <(type -ap "$1")
+    shift
+  done
 }
 
-fn()
-{
-    if (( $# ))
-    then
-        eval "shift; $1"
-    else
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} body [args ...]"
-        return 2
-    fi
-}
 
 #######################################
 # putlist - print a comma-separated list
@@ -115,19 +97,16 @@ fn()
 #######################################
 putlist()
 {
-    local MAPFILE || return
+  local MAPFILE || return
 
-    if ! (( $# ))
-    then
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [value] ..."
-        return 2
-    fi
-    
-    # shellcheck disable=SC2016
-    mapfile -c 1 -C 'fn '"'"'(( $1 )) && MAPFILE[-1]+=${sep-, }'"'" -d '' -t
-
-    printf '%s' "${MAPFILE[@]}" "${end-$'\n'}"
-
+  if ! (( $# ))
+  then
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [value] ..."
+    return 2
+  fi
+  # shellcheck disable=SC2016
+  mapfile -c 1 -C 'fn '"'"'(( $1 )) && MAPFILE[-1]+=${sep-, }'"'" -d '' -t
+  printf '%s' "${MAPFILE[@]}" "${end-$'\n'}"
 } < <(printf '%s\0' "$@")
 
 
@@ -138,38 +117,30 @@ putlist()
 #######################################
 abspath()
 {
-    local pathname IFS REPLY || return
+  local pathname IFS REPLY || return
 
-    if ! (( $# ))
+  if ! (( $# ))
+  then
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} pathname ..."
+  fi
+  for pathname
+  do
+    pathname="${pathname%"${pathname##*[^/]}"}"
+    pathname="${pathname/%[^\/]"${pathname:1}"/"./${pathname}"}"
+    if [[ -d "${pathname:=/}" ]]
     then
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} pathname ..."
-    fi
-
-    for pathname
-    do
-        pathname="${pathname%"${pathname##*[^/]}"}"
-
-        pathname="${pathname/%[^\/]"${pathname:1}"/"./${pathname}"}"
-
-        if [[ -d ${pathname:=/} ]]
-        then
-            if wait "$!"
-            then
-                IFS='' read -r -d '' REPLY
-
-                printf '%q\n' "${REPLY%?}"
-
-            fi < <(CDPATH='' cd -- "${pathname}" && pwd && printf '\0')
-
-        elif wait "$!"
-        then
-            IFS='' read -r -d '' REPLY
-
-            printf '%q\n' "${REPLY%?}/${pathname##*/}"
-
-        fi < <(CDPATH='' cd -- "${pathname%/*}/" && pwd && printf '\0')
-        shift
-    done
+      if wait "$!"
+      then
+        IFS='' read -r -d '' REPLY
+        printf '%s\n' "${REPLY%?}"
+      fi < <(CDPATH='' cd -- "${pathname}" && pwd && printf '\0')
+    elif wait "$!"
+    then
+      IFS='' read -r -d '' REPLY
+      printf '%s\n' "${REPLY%?}/${pathname##*/}"
+    fi < <(CDPATH='' cd -- "${pathname%/*}/" && pwd && printf '\0')
+    shift
+  done
 }
 
 
@@ -182,28 +153,25 @@ abspath()
 #######################################
 up()
 {
-    if [[ $# -eq 0 ]]
+  if (( $# ))
+  then
+    if (( $# > 1 ))
     then
-        cd ..
-        return
+      printf 1>&2 '%s: usage: %s [depth]\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+      return 2
     fi
-
-    if [[ $# -gt 1 ]]
+    if ! (( $1 == $1 )) 2>/dev/null || (( $1 < 1 ))
     then
-        printf 1>&2 '%s: usage: %s [depth]\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
-        return 2
+      printf 1>&2 '%s: %s: depth must be a positive integer\n' "${FUNCNAME[0]}" "$1"
+      return 1
     fi
-
-    if (( ($1) < 1 ))
-    then
-        printf 1>&2 '%s: %s: depth must be a positive integer\n' "${FUNCNAME[0]}" "$1"
-        return 1
-    fi
-
     cd "$(
     PWD="${PWD//[^/]}"
-    eval printf %.s../ \{1.."$(( ${#PWD} < $1 ? ${#PWD} : $1 ))"\}
-    )" || return
+    eval 'printf %.s../ {1..'"$(( ${#PWD} < $1 ? ${#PWD} : $1 ))"'}'
+    )"
+  else
+    cd ..
+  fi
 }
 
 
@@ -221,56 +189,56 @@ up()
 #######################################
 addalias()
 {
-    local OPTARG
-    local OPTIND=1
-    local option
-    local output="${BASH_ALIASES_FILE:-${HOME-}/.bash_aliases}"
+  local OPTARG
+  local OPTIND=1
+  local option
+  local output="${BASH_ALIASES_FILE:-${HOME-}/.bash_aliases}"
 
-    while getopts ':o:h' option
-    do
-        case "${option}" in
-            o ) output="${OPTARG}"
-                ;;
-            h ) msg::std "${FUNCNAME[0]}"  'usage: %s [-o file] name[=value] ...'
-                ;;&
-            : ) msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'option requires an argument'
-                ;;&
-            \?) msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'invalid option'
-                ;;&
-            * ) return 2
-        esac
-    done
-    shift "$((OPTIND - 1))"
-    for _
-    do
-        if [[ $_ == *=* ]]
-        then
-            alias -- "$_" "${_%%=*}"
-        else
-            alias -- "$_"
-        fi
-    done 1>> "${output}"
+  while getopts ':o:h' option
+  do
+    case "${option}" in
+      o ) output="${OPTARG}"
+        ;;
+      h ) msg::std "${FUNCNAME[0]}"  'usage: %s [-o file] name[=value] ...'
+        ;;&
+      : ) msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'option requires an argument'
+        ;;&
+      \?) msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'invalid option'
+        ;;&
+      * ) return 2
+    esac
+  done
+  shift "$((OPTIND - 1))"
+  for _
+  do
+    if [[ $_ == *=* ]]
+    then
+      alias -- "$_" "${_%%=*}"
+    else
+      alias -- "$_"
+    fi
+  done 1>> "${output}"
 }
 
 
 #######################################
-# pushtmp - make a temp directory and push it onto the directory stack
+# pushtemp - make a temp directory and push it onto the directory stack
 #
-# usage: pushtmp [TEMPLATE]
+# usage: pushtemp [TEMPLATE]
 #
 # @TEMPLATE: directory name template (must contain 3 or more consecutive X's)
 #######################################
-pushtmp()
+pushtemp()
 {
-    if (( $# > 1 ))
-    then
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [template]"
-        return 2
-    fi
-    if wait "$!"
-    then
-        pushd -- "$(cat)"
-    fi < <(mktemp -d --tmpdir -- "${1:-${FUNCNAME[0]}-XXX}")
+  if (( $# > 1 ))
+  then
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [template]"
+    return 2
+  fi
+  if wait "$!"
+  then
+    pushd -- "$(cat)"
+  fi < <(mktemp -d --tmpdir -- "${1:-${FUNCNAME[0]}-XXXX}")
 }
 
 
@@ -290,41 +258,41 @@ pushtmp()
 #######################################
 assign_by_ref()
 {
-    if (( $# < 2 ))
+  if (( $# < 2 ))
+  then
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} name value ..."
+    return 2
+  fi
+  if [[ $1 =~ ^([[:alpha:]_][[:alnum:]_]*)(\[(.*)])?$ ]]
+  then
+    if [[ -z ${BASH_REMATCH[2]} ]]
     then
-        msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} name value ..."
-        return 2
-    fi
-    if [[ $1 =~ ^([[:alpha:]_][[:alnum:]_]*)(\[(.*)])?$ ]]
+      if (( $# > 2 ))
+      then
+        eval "$1"'=("${@:2}")'
+      else
+        eval "$1"'=$2'
+      fi
+    elif [[ ${!BASH_REMATCH[1]@a} == *A* ]]
     then
-        if [[ -z ${BASH_REMATCH[2]} ]]
-        then
-            if (( $# > 2 ))
-            then
-                eval "$1"'=("${@:2}")'
-            else
-                eval "$1"'=$2'
-            fi
-        elif [[ ${!BASH_REMATCH[1]@a} == *A* ]]
-        then
-            if (( $# > 2 ))
-            then
-                eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=("${@:2}")'
-            else
-                eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=$2'
-            fi
-        elif (( $((BASH_REMATCH[3])), 1 )) 2>/dev/null
-        then
-            if (( $# > 2 ))
-            then
-                eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=("${@:2}")'
-            else
-                eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=$2'
-            fi
-        else
-            msg::err "${FUNCNAME[0]}" "${BASH_REMATCH[0]}" 'bad subscript'
-        fi
+      if (( $# > 2 ))
+      then
+        eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=("${@:2}")'
+      else
+        eval "${BASH_REMATCH[1]}[${BASH_REMATCH[3]@Q}]"'=$2'
+      fi
+    elif (( $((BASH_REMATCH[3])), 1 )) 2>/dev/null
+    then
+      if (( $# > 2 ))
+      then
+        eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=("${@:2}")'
+      else
+        eval "${BASH_REMATCH[1]}[$((BASH_REMATCH[3]))]"'=$2'
+      fi
     else
-        msg::err "${FUNCNAME[0]}" "$1" 'not a valid identifier'
+      msg::err "${FUNCNAME[0]}" "${BASH_REMATCH[0]}" 'bad array subscript'
     fi
+  else
+    msg::err "${FUNCNAME[0]}" "$1" 'not a valid identifier'
+  fi
 }

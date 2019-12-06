@@ -15,7 +15,7 @@ if test -n "${BASH-}"; then
     elif test -x /usr/lib/command-not-found; then
       /usr/lib/command-not-found -- "${1-}"
     else
-      printf '%s: command not found\n' "${1-}"
+      printf '%p: command not found\n' "${1-}"
     fi 1>&2
     return 127
   }
