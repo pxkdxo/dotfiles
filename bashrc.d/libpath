@@ -1,48 +1,67 @@
 #!/usr/bin/env bash
-## Function for manipulating the PATH variable
+# Library for manipulating the PATH environment variable
 
 
 if  (( __libpath__ ))
 then
-    [[ $0 != "${BASH_SOURCE[0]}" ]] && return || exit 0
+  [[ $0 != "${BASH_SOURCE[0]}" ]] && return 0 || exit 0
 else
-    (( __libpath__ = 1 ))
+  (( __libpath__ = 1 ))
 fi
 
 
-path::append() {
-  for _; do
-    case ":${PATH}:" in
-      *:"$_":*)
-        ;;
-      *)
-        PATH="${PATH:+"${PATH}:"}$_"
-        ;;
-    esac
+path::append()
+{
+  PATH="${PATH-}" || return
+  for _
+  do
+    if [[ :${PATH}: != *:"${_}":* ]]
+    then
+      PATH="${PATH:+${PATH}:}${_}"
+    fi
   done
   export PATH
 }
 
 
-path::prepend() {
-  for _; do
-    case ":${PATH}:" in
-      *:"$_":*)
-        ;;
-      *)
-        PATH="$_${PATH:+":${PATH}"}"
-        ;;
-    esac
+path::prepend()
+{
+  PATH="${PATH-}" || return
+  for _
+  do
+    if [[ :${PATH}: != *:"${_}":* ]]
+    then
+      PATH="${_}${PATH:+:${PATH}}"
+    fi
   done
   export PATH
 }
 
 
-path::remove() {
-  PATH=":${PATH-}:"
-  for _; do
-    PATH="${PATH//:"$_":/:}"
+path::remove()
+{
+  PATH=":${PATH-}:" || return
+  for _
+  do
+    PATH="${PATH//:"${_}":/:}"
   done
-  PATH="${PATH:1:(-1)}"
+  export PATH="${PATH:1:-1}"
+}
+
+
+path::deduplicate()
+{
+  local - && set -f && IFS=':' eval 'set -- ${PATH}' && PATH='' || return
+  for _
+  do
+    path::append "${_}"
+  done
   export PATH
+}
+
+
+path::count()
+{
+  local - && set -f && IFS=':' eval 'set -- ${PATH}' || return
+  echo "$#"
 }

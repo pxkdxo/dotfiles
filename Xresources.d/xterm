@@ -1,50 +1,50 @@
 ! Xresources.d/XTerm: XTerm config
 
-! -- Term --
+! Term
 
-xterm.termName: xterm-256color
-xterm*ttyModes: erase ^?
+XTerm*termName: xterm-256color
+XTerm*ttyModes: erase ^?
 
-! -- Window --
+! Window
 
-xterm*allowWindowOps: true
-xterm*signalInhibit: true
-xterm*tekInhibit: true
+XTerm*allowWindowOps: true
+XTerm*signalInhibit: true
+XTerm*tekInhibit: true
 
-! -- Locale --
+! Locale
 
 *VT100.utf8: true
-xterm*utf8Title: true
+XTerm*utf8Title: true
 
-! -- Keyboard --
+! Keyboard
 
-xterm*backarrowKey: false
-xterm*metaSendsEscape: true
+XTerm*backarrowKey: false
+XTerm*metaSendsEscape: true
 !xterm*altIsNotMeta: true
 !xterm*altSendsEscape: true
 
-! -- 8-Bit --
+! 8-Bit
 
-xterm*eightBitControl: false
-xterm*eightBitInput: true
-xterm*eightBitOutput: true
+XTerm*eightBitControl: false
+XTerm*eightBitInput: true
+XTerm*eightBitOutput: true
 !xterm*eightBitMeta: false
 
-! -- Selections --
+! Selections
 
-xterm*charClass: 33:48,37-38:48,45-47:48,64:48,58:48,126:48,61:48,63:48,43:48,35:48
-xterm*on2Clicks: regex [[:alpha:]]+://([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
-xterm*on3Clicks: word
-xterm*on4Clicks: line
-xterm*on5Clicks: group
+XTerm*charClass: 33:48,37-38:48,45-47:48,64:48,58:48,126:48,61:48,63:48,43:48,35:48
+XTerm*on2Clicks: regex [[:alpha:]]+://([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+XTerm*on3Clicks: word
+XTerm*on4Clicks: line
+XTerm*on5Clicks: group
 
-! -- Clipboard --
+! Clipboard
 
-xterm*cutNewline: false
-xterm*selectToClipboard: false
-xterm*trimSelection: true
+XTerm*cutNewline: false
+XTerm*selectToClipboard: false
+XTerm*trimSelection: true
 
-! -- Video --
+! Video
 
 *VT100*colorMode: true
 *VT100*colorAttrMode: true
@@ -52,13 +52,13 @@ xterm*trimSelection: true
 *VT100*showBlinkAsBold: true
 *VT100*veryBoldColors: 6
 
-! -- Cursor --
+! Cursor
 
-xterm*cursorBlink: true
-xterm*cursorOffTime: 610
-xterm*cursorOnTime: 987
+XTerm*cursorBlink: true
+!XTerm*cursorOffTime: 610
+!XTerm*cursorOnTime: 987
 
-! -- Fonts --
+! Fonts
 
 *VT100.font:  -misc-fixed-medium-r-normal--15-*-100-100-*-*-iso10646-1
 *VT100.font1: -misc-fixed-medium-r-normal--10-*-100-100-*-*-iso10646-1
@@ -81,47 +81,46 @@ xft:FantasqueSansMono Nerd Font Mono:style=Regular, \
 xft:SauceCodePro Nerd Font Mono:style=Regular, \
 xft:Monofur Nerd Font Mono:style=Regular
 
-*VT100*faceSize : 17
-*VT100*faceSize1: 14
-*VT100*faceSize2: 15
+*VT100*faceSize : 18
+*VT100*faceSize1: 12
+*VT100*faceSize2: 14
 *VT100*faceSize3: 16
-*VT100*faceSize4: 18
-*VT100*faceSize5: 19
-*VT100*faceSize6: 20
+*VT100*faceSize4: 20
+*VT100*faceSize5: 22
+*VT100*faceSize6: 24
 
 *VT100*forceBoxChars: true
 *VT100*renderFont: true
 *VT100*showMissingGlyphs: true
 
-! -- Scrolling -- 
+! Scrolling 
 
-xterm*fastScroll: true
-xterm*jumpScroll: true
-xterm*multiScroll: true
-xterm*saveLines: 10000
-xterm*scrollBar: false
-xterm*scrollKey: true
-xterm*scrollTtyOutput: false
+XTerm*fastScroll: true
+XTerm*jumpScroll: true
+XTerm*multiScroll: true
+XTerm*saveLines: 10000
+XTerm*scrollBar: false
+XTerm*scrollKey: true
+XTerm*scrollTtyOutput: false
 
-! -- Bell --
+! Bell
 
-xterm*bellIsUrgent: true
-xterm*bellSuppressTime: 144
-xterm*visualBell: true
-xterm*visualBellDelay: 0
-xterm*visualBellLine: true
+XTerm*bellIsUrgent: true
+XTerm*bellSuppressTime: 89
+XTerm*visualBell: true
+XTerm*visualBellDelay: 0
+XTerm*visualBellLine: true
 
-! -- Mappings --
+! Mappings
 
-xterm*translations: #override                                       \n\
+XTerm*translations: #override                                       \n\
 Ctrl Shift <Key> C: copy-selection(CLIPBOARD)                       \n\
 Ctrl Shift <Key> V: insert-selection(CLIPBOARD)                     \n\
 Ctrl Shift <Key> P: dabbrev-expand()                                \n\
 Ctrl Shift <Key> S: secure()                                        \n\
 Ctrl Shift <Key> O: exec-formatted("xdg-open '%t'", PRIMARY)        \n\
-Ctrl Shift <Btn1Up>:exec-formatted("google-chrome '%t'", PRIMARY)   \n\
+Ctrl Shift <Btn1Up>:exec-formatted("x-www-browser '%t'", PRIMARY)   \n\
 Ctrl <Key> +:       larger-vt-font()                                \n\
 Ctrl <Key> -:       smaller-vt-font() 
-
 
 ! vim:ft=xdefaults

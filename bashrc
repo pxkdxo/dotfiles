@@ -3,66 +3,49 @@
 # Stop if this is a non-interactive shell
 [[ $- == *i* ]] || return 0
 
-
-# Make a cache directory for history
-if [[ -n ${BASH_CACHE_DIR=${XDG_CACHE_HOME:-${HOME}/.cache}/bash} ]]
-then
-  if [[ -d ${BASH_CACHE_DIR} ]] || mkdir -p -- "${BASH_CACHE_DIR}"
+# Make a cache directory for shell data (e.g. history, hash table, etc.)
+[[ -z ${BASH_CACHE_DIR=${XDG_CACHE_HOME:-${HOME}/.cache}/bash} ]] ||
+  if [[ -d ${BASH_CACHE_DIR} ]] || mkdir -m 0700 -p -- "${BASH_CACHE_DIR}"
   then
     export BASH_CACHE_DIR
   else
-    unset -v BASH_CACHE_DIR
+    unset 'BASH_CACHE_DIR'
   fi
-fi
-
-# Send the shell SIGWINCH (28) to initialize LINES and COLUMNS
-kill -s SIGWINCH "$$"
 
 # Synchronize LINES and COLUMNS with window after each command
 shopt -s checkwinsize
-
+# Send the shell SIGWINCH (28) to initialize LINES and COLUMNS
+kill -s WINCH "$$" 2> /dev/null
 
 # Require the redirection operator `>|' to overwrite files
 set -o noclobber
-
-# Report status of terminated background jobs immediately
+# Report the status of terminated background jobs immediately
 set -o notify
-
-# Do not resolve symbolic links when executing builtins
+# Do not resolve symbolic links during execution of builtins
 set -o physical
 
-
-# If a directory name is given as a command, pass it to cd as an argument
+# Pass directory names given as commands as arguments to cd
 shopt -s autocd
-
-# Confirm commands in the hash table exist before trying to execute them
-shopt -s checkhash
-
-# Show jobs before exiting and require confirmation if any are running
-shopt -s checkjobs
-
 # Expand directory names upon performing filename completion
 shopt -s direxpand
-
-# Attempt to correct mispelled directory names during word completion
+# Correct mispelled directory names during word completion
 shopt -s dirspell
-
-# Send SIGHUP to all jobs when an interactive login shell exits
-shopt -s huponexit
-
-# Command substitutions inherit the value of the 'errexit' shell option
-shopt -s inherit_errexit
-
 # Enable programmable completion facilities
 shopt -s progcomp
 
+# Check that hashed commands actually exist before executing them
+shopt -s checkhash
+# Show active jobs before exiting and request confirmation to exit
+shopt -s checkjobs
+# Send SIGHUP to all jobs when interactive login shells exit
+shopt -s huponexit
+# Command substitutions inherit the value of the 'errexit' option
+shopt -s inherit_errexit
 
 # Ignore locale collating sequence when matching range expressions
 shopt -s globasciiranges
-
 # Enable extended pattern matching syntax
 shopt -s extglob
-
 # ``**'' matches all files and zero or more directories and subdirectories
 shopt -s globstar
 
@@ -71,10 +54,8 @@ EXECIGNORE='?(/usr?(/local))/lib?(?(x)@(32|64))/**/*.so*(.+([[:digit:]]))'
 
 # Don't match paths with basename `.' or `..'
 GLOBIGNORE='*(?(.)*/).?(.)*(/)'
-
 # Setting GLOBIGNORE sets 'dotglob' so unset it
 shopt -u dotglob
-
 
 # Configure the location of the history file
 if [[ -d ${BASH_CACHE_DIR} ]]
@@ -85,52 +66,49 @@ else
 fi
 
 # Number of entries that may be kept in memory
-HISTSIZE=32768
-
+HISTSIZE=65536
 # Number of entries that may be kept on disk
 HISTFILESIZE=-1
-
 # Keep duplicates out of the command history
 HISTCONTROL='ignoredups:erasedups'
-
-# Ignore blanks surrounding otherwise immediate duplicates
+# Ignore blanks surrounding immediate duplicates
 HISTIGNORE='*([[:blank:]])@(&|fg|bg|[[:blank:]])*([[:blank:]])'
 
 # Append to the history file instead of overwriting it
 shopt -s histappend
-
-# Attempt to save multiline commands as single entries
+# Try to save multiline commands as single entries
 shopt -s cmdhist
-
-# If 'cmdhist' is enabled, save multiline commands with embedded newlines
+# With 'cmdhist' enabled, save commands w/ embedded newlines
 shopt -s lithist
-
-# While using readline, load failed history subs into buffer for editing
+# With readline, load failed history subs into buffer for editing
 shopt -s histreedit
-
-# While using readline, load history sub results into buffer for editing
+# With readline, load history sub results into buffer for editing
 shopt -s histverify
 
+lower=( {a..z} )
+upper=( {A..Z} )
+digit=( {0..9} )
+letter=( "${lower[@]}" "${upper[@]}" )
+word=( "${digit[@]}" "${letter[@]}" '_' )
+punct=(
+'!' '"' '#' '$' '%' '&' "'" '(' ')' '*' '+'
+',' '-' '.' '/' ':' ';' '<' '=' '>' '?' '@'
+'[' '\' ']' '^' '_' '`' '{' '|' '}' '~' 
+)
 
-# Match bash-preexec debug trap
+# Match and remove debug traps from bash-preexec 
 __bp_preexec_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
-
-# Remove bash-preexec debug trap
 if [[ $(trap -p DEBUG) =~ ${__bp_preexec_re} ]]
 then
   case "${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}" in
     ?*$'\n'?*)
-      trap "${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}" DEBUG
-      ;;
+      trap "${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}" DEBUG ;;
     ?*$'\n')
-      trap "${BASH_REMATCH[2]}" DEBUG
-      ;;
+      trap "${BASH_REMATCH[2]}" DEBUG ;;
     $'\n'?*)
-      trap "${BASH_REMATCH[4]}" DEBUG
-      ;;
+      trap "${BASH_REMATCH[4]}" DEBUG ;;
     $'\n')
-      trap DEBUG
-      ;;
+      trap DEBUG ;;
   esac
 fi
 
@@ -139,27 +117,31 @@ PROMPT_COMMAND="${PROMPT_COMMAND//*([[:blank:]])__@(bp|pc)_*([[:alnum:]_])*([[:b
 PROMPT_COMMAND="${PROMPT_COMMAND##*([[:space:];])}"
 PROMPT_COMMAND="${PROMPT_COMMAND%%*([[:space:];])}"
 
-PROMPT_COMMAND='__pc_precmd
-'"${PROMPT_COMMAND:+${PROMPT_COMMAND}$'\n'}"
+PROMPT_COMMAND='__pc_precmd; '"${PROMPT_COMMAND:+${PROMPT_COMMAND};}"
 
-trap '__pc_preexec "${_}"' SIGUSR1
+trap '__pc_preexec "${_}"' USR1
 
 precmd_functions=( "${precmd_functions[@]}" )
 preexec_functions=( "${preexec_functions[@]}" )
 
-__pc_precmd()
-{
+# Invoke precmd functions
+__pc_precmd() {
   __pc_set_exit_status
   __pc_invoke "${precmd_functions[@]}"
 }
 
-__pc_preexec()
-{
+# Invoke preexec functions
+__pc_preexec() {
   __pc_invoke "${preexec_functions[@]}"
 }
 
-__pc_invoke()
-{
+# Set the exit status
+__pc_set_exit_status() {
+  return "$(( __pc_last_exit_status = $(( ${1:-$?} )) ))"
+}
+
+# Invoke commands
+__pc_invoke() {
   while (( $# ))
   do
     if command -v "$1" 1>/dev/null
@@ -172,15 +154,8 @@ __pc_invoke()
   return "$(( __pc_last_exit_status ))"
 }
 
-# Sets the exit status
-__pc_set_exit_status()
-{
-  return "$(( __pc_last_exit_status = $(( ${1:-$?} )) ))"
-}
-
 # Add functions to the precmd array
-add_precmd_functions()
-{
+add_precmd_functions() {
   while (( $# ))
   do
     if (IFS=':' && [[ ":${precmd_functions[*]}:" != *:"$1":* ]])
@@ -193,8 +168,7 @@ add_precmd_functions()
 }
 
 # Add functions to the preexec array
-add_preexec_functions()
-{
+add_preexec_functions() {
   while (( $# ))
   do
     if (IFS=':' && [[ ":${preexec_functions[*]}:" != *:"$1":* ]])
@@ -207,8 +181,7 @@ add_preexec_functions()
 }
 
 # Remove functions from the precmd array
-remove_precmd_functions()
-{
+remove_precmd_functions() {
   while (( $# ))
   do
     for _ in "${!precmd_functions[@]}"
@@ -224,8 +197,7 @@ remove_precmd_functions()
 }
 
 # Remove functions from the preexec array
-remove_preexec_functions()
-{
+remove_preexec_functions() {
   while (( $# ))
   do
     for _ in "${!preexec_functions[@]}"
@@ -241,18 +213,16 @@ remove_preexec_functions()
 }
 
 
-# Limit depth of paths produced from '\w' upon prompt expansion
-PROMPT_DIRTRIM=3
-
 # Initialize a dictionary to hold terminfo data
 declare -A ti=( )
 
+# Limit depth of paths produced by '\w' upon prompt expansion
+PROMPT_DIRTRIM=2
 
 # Set the pre-execution prompt
 __PS0_update() {
   PS0='$(kill -s SIGUSR1 "$$")'
 }
-
 
 # Set the primary prompt
 __PS1_update() {
@@ -284,7 +254,6 @@ __PS1_update() {
 ' '
 }
 
-
 # Set the secondary prompt
 __PS2_update() {
   PS2=\
@@ -297,26 +266,23 @@ __PS2_update() {
 ' '
 }
 
-
 # Set the select prompt
 __PS3_update() {
   PS3='?> '
 }
-
 
 # Set the execution-trace prompt
 __PS4_update() {
   PS4='.> '
 }
 
-
 # Update the prompt strings
 __PS_update() {
   set -- "$?" "$(
-  case $? in
-    (0) ;;
-    (*) tput setaf "$(( ($? - 1) % 8 + 1 ))" 2>/dev/null
-  esac
+    case "$?" in
+      (0) ;;
+      (*) tput setaf "$(( ($? - 1) % 8 + 1 ))" 2>/dev/null
+    esac
   )"
   __PS0_update "$2"
   __PS1_update "$2"
@@ -327,6 +293,7 @@ __PS_update() {
 
 # Add to precmd functions
 add_precmd_functions __PS_update
+
 
 # Configure window title
 if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]
@@ -340,11 +307,7 @@ then
   __window_title_preexec()
   {
     TTY="$(tty)"
-    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\$(
-    history 1 | sed -n '
-    1s/^[[:digit:]]*[^[:alnum:]~_:/.-]*\\([[:alnum:]~_:/.-]*\\).*/\\1/p
-    '
-    ))"
+    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\e]0;%s\a' "${WINDOW_TITLE@P}"
   }
   add_precmd_functions __window_title_precmd
@@ -362,16 +325,12 @@ then
   __window_title_preexec()
   {
     TTY="$(tty)"
-    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\$(
-    history 1 | sed -n '
-    1s/^[[:digit:]]*[^[:alnum:]~_:/.-]*\\([[:alnum:]~_:/.-]*\\).*/\\1/p
-    '
-    ))"
+    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
+  add_precmd_functions __window_title_precmd
+  add_preexec_functions __window_title_preexec
 fi
-add_precmd_functions __window_title_precmd __window_title_preexec
-
 
 
 # Set GPG_TTY to device on stdin and add it to the environment
@@ -381,10 +340,17 @@ GPG_TTY="$(tty)" || GPG_TTY="" && export GPG_TTY || unset -v GPG_TTY
 gpg-connect-agent updatestartuptty /bye &>/dev/null
 
 
+# Load thefuck
+if command -v thefuck 1>/dev/null
+then
+  eval "$(thefuck --alias)"
+fi
+
+
 # Make less more friendly for non-text input files
 if command -v lesspipe 1>/dev/null
 then
-  eval "$(SHELL=${SHELL:-$(type -P bash)} lesspipe)"
+  eval "$(SHELL="${SHELL:-$(type -P bash)}" lesspipe)"
 fi
 
 
@@ -401,7 +367,7 @@ then
 fi
 
 
-# Load bash_aliases if it exists
+# Load bash_aliases file if it exists
 if [[ -f ~/.bash_aliases ]]
 then
   source ~/.bash_aliases

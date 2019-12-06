@@ -2,7 +2,7 @@
 
 *background:  #222222
 *foreground:  #d8d8d8
-*cursorColor: #A0A0A0
+*cursorColor: #b0b0b0
 
 !black
 *color0:      #303031
@@ -33,7 +33,7 @@
 *color14:     #9400d3
 
 !white
-*color7:      #d8d8df
+*color7:      #d8d8de
 *color15:     #f8f8ff
 
 ! vi:ft=xdefaults

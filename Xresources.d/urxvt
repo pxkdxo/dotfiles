@@ -12,15 +12,6 @@ URxvt.scrollWithBuffer: true
 ! scroll back to the bottom on keypress
 URxvt.scrollTtyKeypress: true
 
-! clickable URLs
-URxvt.url-launcher: /usr/bin/xdg-open
-URxvt.underlineURLs:  True
-URxvt.matcher.button: 1
-
-! open and list recent URLs via keyboard
-URxvt.keysym.C-Delete: perl:matcher:last
-URxvt.keysym.M-Delete: perl:matcher:list
-
 ! pointer
 !URxvt.pointerBlank: true
 
@@ -47,28 +38,37 @@ xft:FantasqueSansMono Nerd Font Mono-18:style=Bold Italic, \
 xft:SauceCodePro Nerd Font Mono-15:style=Bold Italic, \
 xft:Monofur Nerd Font Mono-19:style=Regular
 
+! use font glyphs 
+URxvt*skipBuiltinGlyphs: true
+
 ! general settings
 URxvt.saveLines: 10000
 URxvt.scrollBar: False
 URxvt.scrollstyle: rxvt
 URxvt.urgentOnBell: True
 
+! disable printing terminal contents with PrtSc
+URxvt.print-pipe: "cat 1>/dev/null 2>&1"
+
 ! disable ctrl-shift bindings
 URxvt.iso14755: false
 URxvt.iso14755_52: false
 
-! Scroll using Shift-Up / Shift-Down
+! scroll up/down using shift-up/shift-down
 URxvt.keysym.Shift-Up: command:\033]720;1\007
 URxvt.keysym.Shift-Down: command:\033]721;1\007
 
-! bind copy / paste to Ctrl-Shift-c / Ctrl-Shift-v
+! clickable URLs
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.underlineURLs:  True
+URxvt.matcher.button: 1
+
+! open and list recent URLs via keyboard
+URxvt.keysym.C-Delete: perl:matcher:last
+URxvt.keysym.M-Delete: perl:matcher:list
+
+! bind copy/paste to ctrl-shift-c/ctrl-shift-v
 !URxvt.keysym.Shift-Control-V: eval:paste_clipboard
 !URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
-
-! Disable printing the terminal contents upon pressign PrtSc
-URxvt.print-pipe: "cat 1>/dev/null 2>&1"
-
-!URxvt.depth: 32
-!URxvt.background: rgba:2222/2222/2222/ee00
 
 ! vim: ft=xdefaults

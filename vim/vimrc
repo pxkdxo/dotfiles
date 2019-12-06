@@ -1,4 +1,5 @@
-"" vimrc : vim initialization script
+"" vimrc : vim startup script
+
 
 "" Unset 'compatible' to use vim defaults (instead of vi)
 if &compatible
@@ -14,13 +15,6 @@ silent! endwhile
 set encoding=utf-8
 
 
-"" Load plugins from ~/.vim/bundle
-try
-    execute pathogen#infect()
-catch /^Vim(execute):.*/
-endtry
-
-
 "" Load filetype plugins & indentation style
 filetype plugin indent on
 
@@ -30,7 +24,14 @@ if has("syntax")
 endif
 
 
-"" -- Tabs & Formatting --
+"" Load custom plugins
+try
+    execute pathogen#infect()
+catch /^Vim(execute):.*/
+endtry
+
+
+"" -- Tabs & Spacing --
 
 "" Insert spaces insted of tab characters
 set expandtab
@@ -39,17 +40,16 @@ set expandtab
 set numberwidth=3
 
 "" Number of spaces to use for an indent
-set shiftwidth=4
+set shiftwidth=2
 
 "" Number of spaces to insert for a tab
-set softtabstop=4
+set softtabstop=2
 
 "" Visual width of a tab character (ASCII 0x09)
-set tabstop=8
+set tabstop=4
 
 "" Length past which lines will be broken automatically
 set textwidth=79
-
 
 
 "" -- Patterns & Searching --
@@ -70,14 +70,13 @@ set smartcase
 set nrformats=bin,hex
 
 
-
-"" -- Info & Verbosity --
+"" -- Verbosity --
 
 "" Display line numbers
 set number
 
 "" Display line numbers relative to current line
-set relativenumber
+"set relativenumber
 
 "" Display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
@@ -87,10 +86,6 @@ set showcmd
 
 "" Briefly jump to match upon completing pair in 'matchpairs'
 set showmatch
-
-"" Set window titles
-set title
-let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 
 "" @@@ in place of lines that don't fit, hex in place of nonprintable chars
 if v:version >= 800
@@ -107,6 +102,26 @@ let &colorcolumn =
 autocmd VimResized * let &colorcolumn =
     \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
 
+"" Show window titles
+set title
+
+"" Define window titles
+let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
+
+
+"" -- Line Wrapping --
+
+"" Indent wrapped line continuations
+set breakindent
+
+"" Characters after which lines should be wrapped
+let &breakat = " \t;&|\\({"
+
+"" Indentation options for wrapped line continuations
+let &breakindentopt  = "shift:" . &shiftwidth . ",sbr"
+
+"" String to prefix wrapped line continuations
+let &showbreak = "..> "
 
 
 "" -- Cursor Movement --
@@ -133,7 +148,6 @@ set virtualedit=block
 set whichwrap=b,s,[,]
 
 
-
 "" -- Buffers --
 
 "" Re-read file if it was changed, unless it was deleted
@@ -141,13 +155,6 @@ set autoread
 
 "" Hide closed buffers rather than unloading them
 set hidden
-
-"" Split off new windows below the current
-"set splitbelow
-
-"" Split off new windows to the right of the current
-"set splitright
-
 
 
 "" -- Completion --
@@ -165,7 +172,7 @@ set completeopt=menu,preview,noselect
 set wildmode=list:longest,full
 
 "" Use <Left> / <Right> to move cursor instead of selecting completions
-cnoremap <Left> <Space><BS><Left>
+cnoremap <Left>  <Space><BS><Left>
 cnoremap <Right> <Space><BS><Right>
 
 
@@ -178,8 +185,7 @@ set timeout
 set timeoutlen=987
 
 "" Time in ms to wait for completion of a key code
-set ttimeoutlen=144
-
+set ttimeoutlen=89
 
 
 "" -- History  --
@@ -195,7 +201,6 @@ set undoreload=-1
 
 "" Max characters that may be typed between swapfile syncs
 set updatecount=80
-
 
 
 "" -- Swap / Undo --
@@ -258,12 +263,10 @@ if ! isdirectory(split(&undodir, ',')[0])
 endif
 
 
-
 "" -- Terminal --
 
 "" F**k terminal bells
 set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
-
 
 
 "" -- Mouse --
@@ -275,7 +278,6 @@ if has('mouse')
         set ttymouse=sgr
     endif
 endif
-
 
 
 "" -- Colors --
@@ -302,13 +304,22 @@ endif
 
 "" Set a colorscheme
 if &t_Co >= 256 && &termguicolors
-    colorscheme vice
+    try
+        colorscheme vice
+    catch /^Vim(colorscheme):.*/
+        colorscheme candyP
+    endtry
+    highlight ColorColumn ctermbg=235 guibg=#303030
 elseif &t_Co >= 16
-    colorscheme vice
+    try
+        colorscheme vice
+    catch /^Vim(colorscheme):.*/
+        colorscheme candyP
+    endtry
+    highlight ColorColumn ctermbg=235 guibg=#303030
 else
     colorscheme peachpuff
 endif
-
 
 
 "" -- C / C++ --
@@ -318,23 +329,21 @@ let g:c_space_errors    = 1 " Highlight space errors
 
 "" Set local options upon opening a C or C++ file
 autocmd FileType c,cpp
-    \ setlocal cin noet sts=0 sw=8 ts=8 |
-    \ let &l:cino = ":0,(" . &ts
+    \ setlocal cin noet sts=0 sw=4 ts=4|
+    \ let &l:cino = ":0,(" . &l:tabstop
 
 
+"" -- Git --
 
-"" -- Git commits --
-
-"" Set textwidth when writing a git commit message
+"" Set textwidth for commit messages
 autocmd FileType gitcommit setlocal tw=50
-
 
 
 "" -- Man --
 
-"" Set local options when opening a manpage
+"" Set local options for man pages
 autocmd FileType man
-    \ setlocal cc= noma nonu nornu nohid noro noswf noudf |
+    \ setlocal cc= noma nonu nornu nohid noro noswf noudf|
     \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
 
 "" Load the Man plugin
@@ -344,13 +353,14 @@ runtime ftplugin/man.vim
 set keywordprg=:Man
 
 
-
 "" -- Markdown --
 
+"" Set local options for markdown documents (e.g. README, etc.)
 autocmd FileType markdown
-    \ setlocal cc= nonu nornu linebreak breakindent showbreak=\\+ |
-    \ let &l:breakindentopt = "min:" . &tw / 4 . ",shift:" . &sw . ",sbr"
-
+    \ setlocal cc= nonu nornu linebreak breakindent|
+    \ let &l:breakat = " \t+-*/&|:.;,({"|
+    \ let &l:showbreak = "..> "|
+    \ let &l:breakindentopt = "shift:" . &shiftwidth . ",sbr"
 
 
 "" -- Python --
@@ -371,19 +381,16 @@ let g:python_highlight_all = 1
 let g:syntastic_python_checkers = ['pep8', 'python']
 
 
-
 "" -- Readline --
 
 "" Highlight bash additions
 let g:readline_has_bash = 1
 
 
-
 "" -- Sed --
 
 "" Highlight real tab characters in sed scripts
 let g:highlight_sedtabs = 1
-
 
 
 "" -- Sh --
@@ -398,7 +405,7 @@ let g:sh_fold_enabled = 3
 let g:sh_no_error = 1
 
 "" Set local options when opening a shell script
-autocmd FileType bash,sh,zsh setlocal et sts=2 sw=2 ts=8
+autocmd FileType bash,sh,zsh setlocal et sts=4 sw=4 ts=4
 
 "" Set filetype to sh when editing a shell command line
 if $TMPDIR == ''
@@ -414,12 +421,10 @@ else
 endif
 
 
-
 "" -- help --
 
 "" Set local options when opening a manpage
 autocmd FileType help setlocal noswf noudf
-
 
 
 "" -- Syntastic --
@@ -427,7 +432,6 @@ autocmd FileType help setlocal noswf noudf
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 0
-
 
 
 "" -- Airline / Promptline / Tmuxline --
@@ -457,123 +461,137 @@ let g:airline_symbols = {
 
 "" -- Mappings--
 
-"" Key to act as <leader> in mappings
+"" Set a key to act as <leader> in mappings
 let g:mapleader = ','
 
-"" Interpret Alt-Up/Down correctly
-map  <ESC><ESC>[A <M-Up>
-map  <ESC><ESC>[B <M-Down>
-map! <ESC><ESC>[A <M-Up>
-map! <ESC><ESC>[B <M-Down>
-map  <ESC>[1;3A   <M-Up>
-map  <ESC>[1;3B   <M-Down>
-map! <ESC>[1;3A   <M-Up>
-map! <ESC>[1;3B   <M-Down>
-
-"" Interpret Alt-Right/Left correctly
-map  <ESC><ESC>[C <M-Right>
-map  <ESC><ESC>[D <M-Left>
-map! <ESC><ESC>[C <M-Right>
-map! <ESC><ESC>[D <M-Left>
-map  <ESC>[1;3C   <M-Right>
-map  <ESC>[1;3D   <M-Left>
-map! <ESC>[1;3C   <M-Right>
-map! <ESC>[1;3D   <M-Left>
-
-"" Interpret Ctrl-Up/Down correctly
-map  <ESC>Oa    <C-Up>
-map  <ESC>Ob    <C-Down>
-map! <ESC>Oa    <C-Up>
-map! <ESC>Ob    <C-Down>
-map  <ESC>[1;5A <C-Up>
-map  <ESC>[1;5B <C-Down>
-map! <ESC>[1;5A <C-Up>
-map! <ESC>[1;5B <C-Down>
-
-"" Interpret Ctrl-Right/Left correctly
-map  <ESC>Oc    <C-Right>
-map  <ESC>Od    <C-Left>
-map! <ESC>Oc    <C-Right>
-map! <ESC>Od    <C-Left>
-map  <ESC>[1;5C <C-Right>
-map  <ESC>[1;5D <C-Left>
-map! <ESC>[1;5C <C-Right>
-map! <ESC>[1;5D <C-Left>
+"" Create tab
+nnoremap <silent><leader>tc
+    \ :tabnew<CR>
+"" Next tab
+nnoremap <silent><leader>tn
+    \ :tabnext<CR>
+"" Previous tab
+nnoremap <silent><leader>tp
+    \ :tabprev<CR>
 
 "" Toggle paste mode
-nnoremap <silent><F3> :set paste!<CR>
+nnoremap <silent><F3>
+    \ :set paste!<CR>
 
 "" Toggle search highlighting
-nnoremap <silent><F6> :set hlsearch!<CR>
+nnoremap <silent><F6>
+    \ :set hlsearch!<CR>
 
 "" Toggle syntax highlighting
-nnoremap <silent><F7> 
-    \ :
-    \ if exists('g:syntax_on')<Bar>
+nnoremap <silent><F7>
+    \ :if exists('g:syntax_on')<Bar>
     \ syntax off<Bar>
-    \ else<Bar>syntax enable<Bar>
+    \ else<Bar>
+    \ syntax enable<Bar>
     \ endif<CR>
 
 "" Toggle line numbers
-nnoremap <silent><F8> :set nu!<Bar>let &rnu = &nu<CR>
+nnoremap <silent><F8>
+    \ :set nu!<Bar>let &rnu = &nu<CR>
 
-"" Go to new tab
-nnoremap <silent><C-T> :tabnew<CR>
-
-"" Go to next tab
-nnoremap <silent><M-Right> :tabnext<CR>
-
-"" Go to previous tab
-nnoremap <silent><M-Left> :tabprev<CR>
-
-"" Key to act as <leader> in mappings
-let g:mapleader = ','
-
+"" Insert a shebang as the first line
 autocmd FileType * nnoremap <silent><leader>#!
-    \ ggI<C-R>=substitute(
-    \ &filetype, '..*', '#!' . exepath(&filetype) . '\r', ''
-    \ )<CR><ESC>``
-
+    \ ggI<C-R>=
+    \ substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
+    \ <ESC>``
 
 "" Quote word before or at the cursor (see :help word)
 "" Note: 'selection' must be set to inclusive or exclusive for this to work
-nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
-nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
-nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
-nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
-nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
-nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
-nnoremap <leader>` vl<ESC>bi`<ESC>ea`<ESC>l
+"nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
+"nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
+"nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
+"nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
+"nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
+"nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
+"nnoremap <leader>` vl<ESC>bi`<ESC>ea`<ESC>l
 
 "" Quote WORD before or at the cursor (see :help WORD)
 "" Note: 'selection' must be set to inclusive or exclusive for this to work
-nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
-nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
-nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
-nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
-nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
-nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
-nnoremap <leader><leader>` vl<ESC>Bi`<ESC>Ea`<ESC>l
+"nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
+"nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
+"nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
+"nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
+"nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
+"nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
+"nnoremap <leader><leader>` vl<ESC>Bi`<ESC>Ea`<ESC>l
 
 "" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
-vnoremap <silent> * :<C-U>let old_reg=getreg('"')<Bar>
-    \let old_regtype=getregtype('"')<CR>
-    \gvy/<C-R><C-R>
-    \=substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-    \gV:call setreg('"',old_reg,old_regtype)<CR>
+vnoremap <silent> *
+    \ :<C-U>let old_reg=getreg('"')<Bar>
+    \ let old_regtype=getregtype('"')<CR>
+    \ gvy/<C-R><C-R>=
+    \ substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+    \ gV:call setreg('"',old_reg,old_regtype)<CR>
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
-vnoremap <silent> # :<C-U>let old_reg=getreg('"')<Bar>
-    \let old_regtype=getregtype('"')<CR>
-    \gvy?<C-R><C-R>
-    \=substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-    \gV:call setreg('"',old_reg,old_regtype)<CR>
+vnoremap <silent> #
+    \ :<C-U>let old_reg=getreg('"')<Bar>
+    \ let old_regtype=getregtype('"')<CR>
+    \ gvy?<C-R><C-R>=
+    \ substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+    \ gV:call setreg('"',old_reg,old_regtype)<CR>
+
+"" Fix Alt-Up/Down/Right/Left
+map! <ESC><ESC>[A <M-Up>
+map! <ESC><ESC>[B <M-Down>
+map! <ESC><ESC>[C <M-Right>
+map! <ESC><ESC>[D <M-Left>
+map! <ESC>[1;3A   <M-Up>
+map! <ESC>[1;3B   <M-Down>
+map! <ESC>[1;3C   <M-Right>
+map! <ESC>[1;3D   <M-Left>
+nmap <ESC><ESC>[A <M-Up>
+nmap <ESC><ESC>[B <M-Down>
+nmap <ESC><ESC>[C <M-Right>
+nmap <ESC><ESC>[D <M-Left>
+nmap <ESC>[1;3A   <M-Up>
+nmap <ESC>[1;3B   <M-Down>
+nmap <ESC>[1;3C   <M-Right>
+nmap <ESC>[1;3D   <M-Left>
+vmap <ESC><ESC>[A <M-Up>
+vmap <ESC><ESC>[B <M-Down>
+vmap <ESC><ESC>[C <M-Right>
+vmap <ESC><ESC>[D <M-Left>
+vmap <ESC>[1;3A   <M-Up>
+vmap <ESC>[1;3B   <M-Down>
+vmap <ESC>[1;3C   <M-Right>
+vmap <ESC>[1;3D   <M-Left>
+
+"" Fix Ctrl-Up/Down/Right/Left
+map! <ESC>Oa    <C-Up>
+map! <ESC>Ob    <C-Down>
+map! <ESC>Oc    <C-Right>
+map! <ESC>Od    <C-Left>
+map! <ESC>[1;5A <C-Up>
+map! <ESC>[1;5B <C-Down>
+map! <ESC>[1;5C <C-Right>
+map! <ESC>[1;5D <C-Left>
+nmap <ESC>Oa    <C-Up>
+nmap <ESC>Ob    <C-Down>
+nmap <ESC>Oc    <C-Right>
+nmap <ESC>Od    <C-Left>
+nmap <ESC>[1;5A <C-Up>
+nmap <ESC>[1;5B <C-Down>
+nmap <ESC>[1;5C <C-Right>
+nmap <ESC>[1;5D <C-Left>
+vmap <ESC>Oa    <C-Up>
+vmap <ESC>Ob    <C-Down>
+vmap <ESC>Oc    <C-Right>
+vmap <ESC>Od    <C-Left>
+vmap <ESC>[1;5A <C-Up>
+vmap <ESC>[1;5B <C-Down>
+vmap <ESC>[1;5C <C-Right>
+vmap <ESC>[1;5D <C-Left>
 
 
-
-"" -- Finally --
+"" -- Lastly --
 
 "" Allow options to be set from a modeline
 set modeline

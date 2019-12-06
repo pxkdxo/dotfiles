@@ -3,10 +3,10 @@
  * User: pat
  */
 * {
-    background-color:   rgba( 34, 34, 34, 100 % );
+    background-color:   rgba(  34,  34,  34, 100 % );
     border-color:       rgba( 248, 248, 255, 100 % );
     text-color:         rgba( 248, 248, 255, 100 % );
-    font:               "FuraCode NF Medium 13";
+    font:               "Monofurbold NF bold 14";
 }
 
 configuration {
@@ -16,7 +16,7 @@ configuration {
     anchor:     north;
     location:   north;
     width:      100%;
-    padding:    2px;
+    padding:    4px;
     children:   [ horibox ];
 }
 

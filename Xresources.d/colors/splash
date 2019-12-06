@@ -33,7 +33,7 @@
 *color14:     #f70bc0
 
 !white
-*color7:      #d8d8df
+*color7:      #d8d8db
 *color15:     #f8f8ff
 
 ! vi:ft=xdefaults

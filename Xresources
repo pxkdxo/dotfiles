@@ -5,7 +5,6 @@
 #include ".Xresources.d/xterm"
 #include ".Xresources.d/urxvt"
 #include ".Xresources.d/colors/electricity"
-!#include ".Xresources.d/colors/splash"
 
 *locale: true
 *customization: -color

@@ -1,65 +1,53 @@
 #!/usr/bin/env bash
 #
-# Docker stuff
+# Functions and aliases for docker
 
+# Pause all running containers
+alias docker-pause-running='docker ps -q | xargs -I {} docker pause {}'
 
 # Stop all running containers
-alias docker-stop-all='while read -r REPLY
-do
-    docker stop "${REPLY}"
-done < <(docker ps -q -f status=paused -f status=restarting -f status=running)'
+alias docker-stop-running='docker ps -q | xargs -I {} docker stop {}'
 
 # Kill all running containers
-alias docker-kill-all='while read -r REPLY
-do
-    docker kill "${REPLY}"
-done < <(docker ps -q -f status=paused -f status=restarting -f status=running)'
+alias docker-kill-running='docker ps -q | xargs -I {} docker kill {}'
 
-# Remove all dead containers
-alias docker-rm-old='while read -r REPLY
-do
-    docker rm "${REPLY}"
-done < <(docker ps -q -f status=dead -f status=exited)'
+# Remove exited containers
+alias docker-rm-running='docker ps -q | xargs -I {} docker kill {} | xargs -L 1 docker rm {}'
+
+# Remove exited containers
+alias docker-rm-exited='docker ps -q -f status=dead -f status=exited | xargs -I {} docker rm {}'
 
 # Remove all containers
 alias docker-rm-all='{
-while read -r REPLY
-do
-    docker kill "${REPLY}"
-done < <(docker ps -q -f status=paused -f status=restarting -f status=running)
-while read -r REPLY
-do
-    docker rm "${REPLY}"
-done < <(docker ps -q -f status=created -f status=dead -f status=exited)
-}'
-
-
+docker ps -q -f status=created -f status=dead -f status=exited
+docker ps -q | xargs -I {} docker kill {}
+} | xargs -I {} docker rm {}'
 
 # Create a new jupyter notebook container
 # usage: docker-jupyter [-d] [--rm] [-p host-port] [-v host-directory]
 docker-jupyter()
 {
-    local cmd help || return
-
-    help="${FUNCNAME[0]} [-d] [--rm] [-p host-port] [-v host-dir] [image]"
+    local cmd usage || return
 
     cmd=( docker run --tty )
 
+    usage="[-d] [--rm] [-p host-port] [-v host-volume] [image]"
+
     while [[ $1 == -?* ]]
     do
-        case $1 in
+        case "$1" in
             -h|--help)
-                printf 'usage: %s\n' "${help}"
+                printf 'usage: %s %s\n' "${FUNCNAME[0]}" "${usage}"
                 return 2
                 ;;
             -p|--port)
                 shift
-                cmd+=( -p "${1:-"${JUPYTERPORT:-8888}"}:8888" )
+                cmd+=( -p "${1:-${JUPYTERPORT:-8888}}:8888" )
                 shift || break
                 ;;
             -v|--volume)
                 shift
-                cmd+=( -v "${1:-"${JUPYTERDIR:-${PWD}}"}:/home/jovyan/work" )
+                cmd+=( -v "${1:-${JUPYTERHOME:-$(pwd)}}:/home/jovyan/work" )
                 shift || break
                 ;;
             -d|--detach)
@@ -75,42 +63,44 @@ docker-jupyter()
                 break
                 ;;
             *)
-                printf 'usage: %s\n' "${help}" 1>&2
+                printf 1>&2 '%s: %s: invalid option\n' "${FUNCNAME[0]}" "$1"
+                printf 1>&2 'usage: %s %s\n' "${FUNCNAME[0]}" "${usage}"
                 return 2
         esac
     done
-
     if (( $# > 1 ))
     then
-        printf "%s: too many arguments\n" "${FUNCNAME[0]}"
+        printf 1>&2 '%s: too many arguments\n' "${FUNCNAME[0]}"
+        printf 1>&2 'usage: %s %s\n' "${FUNCNAME[0]}" "${usage}"
         return 2
     fi
-
     if (( $# ))
     then
-        if [[ $1 == */* ]]
+        if [[ $1 != */* ]]
         then
-            "${cmd[@]}" "$1"
-        else
             "${cmd[@]}" "jupyter/$1"
+        else
+            "${cmd[@]}" "$1"
         fi
-    else
-        read -r "cmd[${#cmd[@]}]" < <( 
-        docker image ls --format='{{.Repository}}' 'jupyter/*-notebook'
-        ) && "${cmd[@]}"
+        return
     fi
+    if { exec {_}<&- && wait "$!" && read -r "cmd[${#cmd[@]}]"; } <&"${_}"
+    then
+        "${cmd[@]}"
+    fi {_}< <(docker image ls --format='{{.Repository}}' 'jupyter/*-notebook')
 }
-
 
 # Find and print the tokens for all running jupyter containers
 # usage: docker-jupyter-tokens
 docker-jupyter-tokens()
 {
-    local id=( ) port=( ) token=( ) || return
+    local id port token || return
+
+    id=( ) port=( ) token=( )
 
     while IFS='-/:' read -r "id[${#id[@]}]" _ "port[${#port[@]}]" _
     do
-        if [[ "$(docker ps -aq -f "id=${id[-1]}" --format='{{.Image}}')" == jupyter/*-notebook ]]
+        if [[ $(docker ps -aq -f "id=${id[-1]}" --format='{{.Image}}') == jupyter/*-notebook ]]
         then
             if [[ $(docker logs "${id[-1]}") =~ https?://[^/]*/\?token=([[:alnum:]]+) ]]
             then
