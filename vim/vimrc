@@ -76,7 +76,7 @@ set nrformats=bin,hex
 set number
 
 "" Display line numbers relative to current line
-"set relativenumber
+set relativenumber
 
 "" Display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
