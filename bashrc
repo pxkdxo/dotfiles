@@ -3,14 +3,14 @@
 # Stop if this is a non-interactive shell
 [[ $- == *i* ]] || return 0
 
+
 # Make a cache directory for shell data (e.g. history, hash table, etc.)
-[[ -z ${BASH_CACHE_DIR=${XDG_CACHE_HOME:-${HOME}/.cache}/bash} ]] ||
-  if [[ -d ${BASH_CACHE_DIR} ]] || mkdir -m 0700 -p -- "${BASH_CACHE_DIR}"
-  then
-    export BASH_CACHE_DIR
-  else
-    unset 'BASH_CACHE_DIR'
-  fi
+if mkdir -p -- "${BASH_CACHE_DIR:=${XDG_CACHE_HOME:-${HOME}/.cache}/bash}"
+then
+  export BASH_CACHE_DIR
+else
+  unset -v BASH_CACHE_DIR
+fi 2> /dev/null
 
 # Synchronize LINES and COLUMNS with window after each command
 shopt -s checkwinsize
@@ -54,6 +54,7 @@ EXECIGNORE='?(/usr?(/local))/lib?(?(x)@(32|64))/**/*.so*(.+([[:digit:]]))'
 
 # Don't match paths with basename `.' or `..'
 GLOBIGNORE='*(?(.)*/).?(.)*(/)'
+
 # Setting GLOBIGNORE sets 'dotglob' so unset it
 shopt -u dotglob
 
@@ -85,17 +86,6 @@ shopt -s histreedit
 # With readline, load history sub results into buffer for editing
 shopt -s histverify
 
-lower=( {a..z} )
-upper=( {A..Z} )
-digit=( {0..9} )
-letter=( "${lower[@]}" "${upper[@]}" )
-word=( "${digit[@]}" "${letter[@]}" '_' )
-punct=(
-'!' '"' '#' '$' '%' '&' "'" '(' ')' '*' '+'
-',' '-' '.' '/' ':' ';' '<' '=' '>' '?' '@'
-'[' '\' ']' '^' '_' '`' '{' '|' '}' '~' 
-)
-
 # Match and remove debug traps from bash-preexec 
 __bp_preexec_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
 if [[ $(trap -p DEBUG) =~ ${__bp_preexec_re} ]]
@@ -126,7 +116,7 @@ preexec_functions=( "${preexec_functions[@]}" )
 
 # Invoke precmd functions
 __pc_precmd() {
-  __pc_set_exit_status
+  __pc_set_exit_status "$?"
   __pc_invoke "${precmd_functions[@]}"
 }
 
@@ -144,9 +134,9 @@ __pc_set_exit_status() {
 __pc_invoke() {
   while (( $# ))
   do
-    if command -v "$1" 1>/dev/null
+    if command -v -- "$1" 1> /dev/null
     then
-      __pc_set_exit_status __pc_last_exit_status
+      __pc_set_exit_status "${__pc_last_exit_status}"
       "$1"
     fi
     shift
@@ -219,9 +209,10 @@ declare -A ti=( )
 # Limit depth of paths produced by '\w' upon prompt expansion
 PROMPT_DIRTRIM=2
 
-# Set the pre-execution prompt
+# Set the pre-execution prompt to trigger SIGUSR1
 __PS0_update() {
   PS0='$(kill -s SIGUSR1 "$$")'
+  return "$(($1))"
 }
 
 # Set the primary prompt
@@ -229,17 +220,17 @@ __PS1_update() {
   PS1=\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 '\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\['"${ti[dim]:=$( tput dim )}"'\]'\
-'\['"$*"'\]'\
+'\u'\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 '\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\u'\
-'\['"${ti[dim]:=$(tput dim || tput setaf 245)}"'\]'\
+'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'\
 '@'\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 '\['"${ti[bold]:=$(tput bold)}"'\]'\
 '\h'\
-'\['"${ti[dim]:=$(tput dim || tput setaf 245)}"'\]'\
+'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
+'\['"${ti[bold]:=$(tput bold)}"'\]'\
+'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'\
 ':'\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 '\['"${ti[bold]:=$(tput bold)}"'\]'\
@@ -248,10 +239,10 @@ __PS1_update() {
 '\n'\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 '\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\['"$*"'\]'\
 '\$>'\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 ' '
+  return "$(($1))"
 }
 
 # Set the secondary prompt
@@ -259,36 +250,31 @@ __PS2_update() {
   PS2=\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 '\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\['"$*"'\]'\
 '$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'\
 '$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'\
 '\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
 ' '
+  return "$(($1))"
 }
 
 # Set the select prompt
 __PS3_update() {
-  PS3='?> '
+  PS3='*) '
+  return "$(($1))"
 }
 
 # Set the execution-trace prompt
 __PS4_update() {
   PS4='.> '
+  return "$(($1))"
 }
 
 # Update the prompt strings
 __PS_update() {
-  set -- "$?" "$(
-    case "$?" in
-      (0) ;;
-      (*) tput setaf "$(( ($? - 1) % 8 + 1 ))" 2>/dev/null
-    esac
-  )"
-  __PS0_update "$2"
-  __PS1_update "$2"
-  __PS2_update "$2"
-  __PS3_update "$2"
-  __PS4_update "$2"
+  for _ in {0..4}
+  do
+    "__PS${_}_update" "${?#0}"
+  done
 }
 
 # Add to precmd functions
@@ -334,21 +320,21 @@ fi
 
 
 # Set GPG_TTY to device on stdin and add it to the environment
-GPG_TTY="$(tty)" || GPG_TTY="" && export GPG_TTY || unset -v GPG_TTY
+export GPG_TTY="$(tty)" || unset -v GPG_TTY
 
 # Refresh gpg-agent in case we switched to an Xsession
-gpg-connect-agent updatestartuptty /bye &>/dev/null
+gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
 
 
 # Load thefuck
-if command -v thefuck 1>/dev/null
+if command -v thefuck 1> /dev/null
 then
   eval "$(thefuck --alias)"
 fi
 
 
 # Make less more friendly for non-text input files
-if command -v lesspipe 1>/dev/null
+if command -v lesspipe 1> /dev/null
 then
   eval "$(SHELL="${SHELL:-$(type -P bash)}" lesspipe)"
 fi
@@ -383,12 +369,9 @@ sourcedir()
     do
       "${FUNCNAME[0]}" "${_}" "${@:2}"
     done
-    return
-  fi
-  if [[ -f $1 ]]
+  elif [[ -f $1 ]]
   then
     source -- "$@"
-    return
   fi
 }
 

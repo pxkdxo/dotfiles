@@ -1,7 +1,6 @@
 # gpg-agent.sh : gpg-agent config
 # see gpg-agent(1)
 
-
 # Set GPG_TTY to the tty on stdin
 GPG_TTY="$(tty)" || GPG_TTY="" && export GPG_TTY
 
@@ -19,6 +18,5 @@ then
             export SSH_AUTH_SOCK
     fi
 fi
-
 
 # vi:ft=sh

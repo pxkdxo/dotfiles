@@ -60,6 +60,20 @@ XTerm*cursorBlink: true
 
 ! Fonts
 
+*VT100*faceName: \
+xft:mononoki Nerd Font Mono:style=Regular, \
+xft:SauceCodePro Nerd Font Mono:style=Medium,Regular, \
+xft:FantasqueSansMono Nerd Font Mono:style=Regular, \
+xft:Ubuntu Mono-16:style=Regular
+
+*VT100*faceSize : 16
+*VT100*faceSize1: 10
+*VT100*faceSize2: 12
+*VT100*faceSize3: 14
+*VT100*faceSize4: 18
+*VT100*faceSize5: 20
+*VT100*faceSize6: 22
+
 *VT100.font:  -misc-fixed-medium-r-normal--15-*-100-100-*-*-iso10646-1
 *VT100.font1: -misc-fixed-medium-r-normal--10-*-100-100-*-*-iso10646-1
 *VT100.font2: -misc-fixed-medium-r-normal--12-*-100-100-*-*-iso10646-1
@@ -75,19 +89,6 @@ XTerm*cursorBlink: true
 *VT100*utf8Fonts.font4: -*-terminus-medium-*-*-*-15-*-*-*-*-*-iso10646-1
 *VT100*utf8Fonts.font5: -*-terminus-medium-*-*-*-18-*-*-*-*-*-iso10646-1
 *VT100*utf8Fonts.font6: -*-terminus-medium-*-*-*-20-*-*-*-*-*-iso10646-1
-
-*VT100*faceName: \
-xft:FantasqueSansMono Nerd Font Mono:style=Regular, \
-xft:SauceCodePro Nerd Font Mono:style=Regular, \
-xft:Monofur Nerd Font Mono:style=Regular
-
-*VT100*faceSize : 18
-*VT100*faceSize1: 12
-*VT100*faceSize2: 14
-*VT100*faceSize3: 16
-*VT100*faceSize4: 20
-*VT100*faceSize5: 22
-*VT100*faceSize6: 24
 
 *VT100*forceBoxChars: true
 *VT100*renderFont: true

@@ -20,35 +20,44 @@ URxvt.cursorBlink: true
 URxvt.cursorUnderline: false
 
 ! fonts
-URxvt.letterSpace: -1
 URxvt.font: \
-xft:FantasqueSansMono Nerd Font Mono-18:style=Regular, \
-xft:SauceCodePro Nerd Font Mono-15:style=Regular, \
-xft:Monofur Nerd Font Mono-19:style=Regular
+xft:mononoki Nerd Font Mono-16:style=Regular, \
+xft:SauceCodePro Nerd Font Mono-15:style=Medium,Regular, \
+xft:FantasqueSansMono Nerd Font Mono-17:style=Regular, \
+xft:Ubuntu Mono-16:style=Regular
+
 URxvt.boldFont: \
-xft:FantasqueSansMono Nerd Font Mono-18:style=Bold, \
+xft:mononoki Nerd Font Mono-16:style=Bold, \
 xft:SauceCodePro Nerd Font Mono-15:style=Bold, \
-xft:Monofurbold Nerd Font Mono-19:style=bold
+xft:FantasqueSansMono Nerd Font Mono-17:style=Bold, \
+xft:Ubuntu Mono-16:style=Bold
+
 URxvt.italicFont: \
-xft:FantasqueSansMono Nerd Font Mono-18:style=Italic, \
-xft:SauceCodePro Nerd Font Mono-15:style=Italic, \
-xft:Monofuritalic Nerd Font Mono-19:style=italic
+xft:mononoki Nerd Font Mono-16:style=Italic, \
+xft:SauceCodePro Nerd Font Mono-15:style=Medium Italic,Italic, \
+xft:FantasqueSansMono Nerd Font Mono-17:style=Italic, \
+xft:Ubuntu Mono-16:style=Italic
+
 URxvt.boldItalicFont: \
-xft:FantasqueSansMono Nerd Font Mono-18:style=Bold Italic, \
+xft:mononoki Nerd Font Mono-16:style=BoldItalic, \
 xft:SauceCodePro Nerd Font Mono-15:style=Bold Italic, \
-xft:Monofur Nerd Font Mono-19:style=Regular
+xft:FantasqueSansMono Nerd Font Mono-17:style=Bold Italic, \
+xft:Ubuntu Mono-16:style=Bold Italic
+
+! reduce space between characters
+URxvt.letterSpace: -1
 
 ! use font glyphs 
 URxvt*skipBuiltinGlyphs: true
 
 ! general settings
-URxvt.saveLines: 10000
+URxvt.saveLines: 65536
 URxvt.scrollBar: False
 URxvt.scrollstyle: rxvt
 URxvt.urgentOnBell: True
 
 ! disable printing terminal contents with PrtSc
-URxvt.print-pipe: "cat 1>/dev/null 2>&1"
+URxvt.print-pipe: "cat 1> /dev/null 2>&1"
 
 ! disable ctrl-shift bindings
 URxvt.iso14755: false
@@ -70,5 +79,11 @@ URxvt.keysym.M-Delete: perl:matcher:list
 ! bind copy/paste to ctrl-shift-c/ctrl-shift-v
 !URxvt.keysym.Shift-Control-V: eval:paste_clipboard
 !URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
+
+! ctrl + arrow keys match xterm key sequences
+URxvt.keysym.Control-Up:    \033[1;5A
+URxvt.keysym.Control-Down:  \033[1;5B
+URxvt.keysym.Control-Left:  \033[1;5D
+URxvt.keysym.Control-Right: \033[1;5C
 
 ! vim: ft=xdefaults
