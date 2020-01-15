@@ -39,7 +39,10 @@
 !/ncmpcpp/config
 !/nvim
 !/nvim/init.vim
-!/nvim/colors
+!/oh-my-zsh
+!/oh-my-zsh/custom
+!/oh-my-zsh/custom/themes
+!/oh-my-zsh/custom/themes/hello-world.zsh-theme
 !/pam_environment
 !/profile
 !/profile.d
@@ -62,11 +65,11 @@
 !/user-tmpfiles.d
 !/user-tmpfiles.d/**
 !/vim
-!/vim/vimrc
 !/vim/colors
 !/vim/colors/**
 !/vim/syntax
 !/vim/syntax/**
+!/vim/vimrc
 !/w3m
 !/xinitrc
 !/xinitrc.d
@@ -76,4 +79,5 @@
 !/Xresources.d/**
 !/xserverrc
 !/zsh
-!/zsh/zshrc
+!/zshenv
+!/zshrc

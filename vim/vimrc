@@ -1,14 +1,14 @@
 "" vimrc : vim startup script
 
 
-"" Unset 'compatible' to use vim defaults (instead of vi)
+"" Use vim defaults (instead of vi)
 if &compatible
-    set nocompatible
+  set nocompatible
 endif
 
-"" If the +eval feature is missing, this unsets 'compatible'
+"" If the +eval feature is missing, unset 'compatible'
 silent! while 0
-    set nocompatible
+set nocompatible
 silent! endwhile
 
 "" Always use utf-8
@@ -20,18 +20,18 @@ filetype plugin indent on
 
 "" Perform syntax highlighting
 if has("syntax")
-    syntax enable
+  syntax enable
 endif
 
 
 "" Load custom plugins
 try
-    execute pathogen#infect()
+  execute pathogen#infect()
 catch /^Vim(execute):.*/
 endtry
 
 
-"" -- Tabs & Spacing --
+"" Tabs & Spacing
 
 "" Insert spaces insted of tab characters
 set expandtab
@@ -46,13 +46,13 @@ set shiftwidth=2
 set softtabstop=2
 
 "" Visual width of a tab character (ASCII 0x09)
-set tabstop=4
+set tabstop=8
 
 "" Length past which lines will be broken automatically
 set textwidth=79
 
 
-"" -- Patterns & Searching --
+"" Patterns & Searching
 
 "" Do not highlight search results
 set nohlsearch
@@ -70,7 +70,7 @@ set smartcase
 set nrformats=bin,hex
 
 
-"" -- Verbosity --
+"" Verbosity
 
 "" Display line numbers
 set number
@@ -89,7 +89,7 @@ set showmatch
 
 "" @@@ in place of lines that don't fit, hex in place of nonprintable chars
 if v:version >= 800
-    set display=truncate,uhex
+  set display=truncate,uhex
 endif
 
 "" Always show status line
@@ -97,10 +97,10 @@ set laststatus=2
 
 "" Highlight specified columns relative to 'textwidth'
 let &colorcolumn =
-    \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
+      \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
 
 autocmd VimResized * let &colorcolumn =
-    \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
+      \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
 
 "" Show window titles
 set title
@@ -109,22 +109,25 @@ set title
 let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 
 
-"" -- Line Wrapping --
+"" Line Wrapping
 
-"" Indent wrapped line continuations
-set breakindent
+"" Do not wrap lines
+"set nowrap
 
-"" Characters after which lines should be wrapped
-let &breakat = " \t;&|\\({"
+"" Break lines before window edge
+"set linebreak
 
-"" Indentation options for wrapped line continuations
-let &breakindentopt  = "shift:" . &shiftwidth . ",sbr"
+"" Indent wrapped lines
+"set breakindent
 
-"" String to prefix wrapped line continuations
-let &showbreak = "..> "
+"" Break lines at these characters
+"let &breakat = " \t;:"
+
+"" Prefix wrapped lines
+"let &showbreak = "> "
 
 
-"" -- Cursor Movement --
+"" Cursor Movement
 
 "" Attempt to preserve cursor position when moving linewise
 set nostartofline
@@ -139,16 +142,13 @@ set scrolloff=3
 set sidescroll=1
 
 "" If 'nowrap' is set, columns of padding between cursor and edge of window
-set sidescrolloff=4
+set sidescrolloff=3
 
 "" Allow visual-block selection of empty columns
 set virtualedit=block
 
-"" Allow <Left> / <Right> to move between lines
-set whichwrap=b,s,[,]
 
-
-"" -- Buffers --
+"" Buffers
 
 "" Re-read file if it was changed, unless it was deleted
 set autoread
@@ -157,7 +157,7 @@ set autoread
 set hidden
 
 
-"" -- Completion --
+"" Completion
 
 "" Enable command completion
 set wildmenu
@@ -176,7 +176,7 @@ cnoremap <Left>  <Space><BS><Left>
 cnoremap <Right> <Space><BS><Right>
 
 
-"" -- Key Timeout --
+"" Key Timeout
 
 "" Time out on mappings and keycodes
 set timeout
@@ -188,13 +188,13 @@ set timeoutlen=987
 set ttimeoutlen=89
 
 
-"" -- History  --
+"" History
 
 "" Number of search patterns and ``:'' commands to remember (max: 10000)
-set history=4096
+set history=10000
 
 "" Number of modifications to remember for any given file
-set undolevels=2048
+set undolevels=2500
 
 "" Always save the whole buffer for undo when reloading it
 set undoreload=-1
@@ -203,47 +203,41 @@ set undoreload=-1
 set updatecount=80
 
 
-"" -- Swap / Undo --
+"" Swap / Undo
 
 "" Check undofile capability and use if using swapfile
 if has('persistent_undo')
-    let &undofile = &swapfile
+  let &undofile = &swapfile
 endif
 
 "" Clear swap / undo directory preferences
 set directory=
 set   undodir=
 
-"" Append MYVIMRUNTIME if non-null
-if $MYVIMRUNTIME != ''
-    set directory+=$MYVIMRUNTIME/swap/
-    set   undodir+=$MYVIMRUNTIME/undo/
+"" Append XDG_DATA_HOME if non-null
+if $XDG_DATA_HOME != ''
+  set directory+=$XDG_DATA_HOME/vim/swap/
+  set   undodir+=$XDG_DATA_HOME/vim/undo/
 endif
 
 "" Append XDG_CACHE_HOME if non-null
 if $XDG_CACHE_HOME != ''
-    set directory+=$XDG_CACHE_HOME/vim/swap/
-    set   undodir+=$XDG_CACHE_HOME/vim/undo/
+  set directory+=$XDG_CACHE_HOME/vim/swap/
+  set   undodir+=$XDG_CACHE_HOME/vim/undo/
 endif
 
 "" Append first element of 'runtimepath'
-if ! empty(split(&runtimepath, ','))
-    if &directory == ''
-        let &directory = split(&runtimepath, ',')[0] . '/swap/'
-    else
-        let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
-    endif
-    if &undodir == ''
-        let &undodir = split(&runtimepath, ',')[0] . '/undo/'
-    else
-        let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
-    endif
-endif
-
-"" Append TMPDIR if non-null
-if $TMPDIR != ''
-    set directory+=$TMPDIR/
-    set   undodir+=$TMPDIR/
+if !empty(split(&runtimepath, ','))
+  if &directory == ''
+    let &directory = split(&runtimepath, ',')[0] . '/swap/'
+  else
+    let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
+  endif
+  if &undodir == ''
+    let &undodir = split(&runtimepath, ',')[0] . '/undo/'
+  else
+    let &undodir .= ',' . split(&runtimepath, ',')[0] . '/undo/'
+  endif
 endif
 
 "" Append default tmp directories
@@ -251,100 +245,93 @@ set directory+=/var/tmp/,/tmp/
 set   undodir+=/var/tmp/,/tmp/
 
 "" Make the primary swap directory
-if ! isdirectory(split(&directory, ',')[0])
-    silent! call system('/usr/bin/env mkdir -pm 700 '
-        \ . shellescape(split(&directory, ',')[0]))
+if !isdirectory(split(&directory, ',')[0])
+  silent! call mkdir(split(&directory, ',')[0], 'p', 0700)
 endif
 
 "" Make the primary undo directory
-if ! isdirectory(split(&undodir, ',')[0])
-    silent! call system('/usr/bin/env mkdir -pm 700 '
-        \ . shellescape(split(&undodir, ',')[0]))
+if !isdirectory(split(&undodir, ',')[0])
+  silent! call mkdir(split(&undodir, ',')[0], 'p', 0700)
 endif
 
 
-"" -- Terminal --
+"" Terminal
 
 "" F**k terminal bells
-set belloff=backspace,cursor,complete,error,esc,showmatch,wildmode
+set belloff=all
 
 
-"" -- Mouse --
+"" Mouse
 
 "" Enable the mouse
 if has('mouse')
-    set mouse=a
-    if has('mouse_sgr')
-        set ttymouse=sgr
-    endif
+  set mouse=a
+  if has('mouse_sgr')
+    set ttymouse=sgr
+  endif
 endif
 
 
-"" -- Colors --
+"" Colors
 
 "" Try to guess color capabilities
 if exists('+termguicolors')
-    if $TERM =~ '\v^(putty|rxvt|screen)(-.*)?$'
-        let &termguicolors = 0
-    elseif ($TERM =~ '\v^(gnome|iterm|st|vte)(-.*)?$'
-        \   || ($TERM =~ '\v^(tmux|xterm)(-.*)?$'
-        \       && ! (empty($XTERM_VERSION) && empty($VTE_VERSION))))
-        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-        let &termguicolors = 1
-    endif
+  if $TERM =~ '\v^(putty|rxvt|screen)(-.*)?$'
+    let &termguicolors = 0
+  elseif ($TERM =~ '\v^(gnome|iterm|st|vte)(-.*)?$')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    let &termguicolors = 1
+  elseif $TERM =~ '\v^(tmux|xterm)(-.*)?$'
+        \ && $XTERM_VERSION != ''
+        \ && $VTE_VERSION != ''
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    let &termguicolors = 1
+  endif
 endif
 
 "" Interpret the value of COLORTERM
-if $COLORTERM =~? '\v^(truecolor|24-bit)$'
-    let &t_Co = 16777216
-elseif $COLORTERM =~ '\v^[^[:digit:]]*256[^[:digit:]]*$'
-    let &t_Co = 256
+if $COLORTERM =~? '^\(truecolor\|24-bit\)$'
+  let &t_Co = 16777216
+elseif $COLORTERM =~ '^[^[:digit:]]*256[^[:digit:]]*$'
+  let &t_Co = 256
 endif
 
 "" Set a colorscheme
-if &t_Co >= 256 && &termguicolors
-    try
-        colorscheme vice
-    catch /^Vim(colorscheme):.*/
-        colorscheme candyP
-    endtry
-    highlight ColorColumn ctermbg=235 guibg=#303030
-elseif &t_Co >= 16
-    try
-        colorscheme vice
-    catch /^Vim(colorscheme):.*/
-        colorscheme candyP
-    endtry
-    highlight ColorColumn ctermbg=235 guibg=#303030
+if &t_Co >= 256
+  try
+    colorscheme 1989
+  catch /^Vim(colorscheme):.*/
+  endtry
 else
-    colorscheme peachpuff
+  colorscheme peachpuff
 endif
 
 
-"" -- C / C++ --
+"" C / C++
 let g:c_comment_strings = 1 " Allow strings & numbers inside comments
 let g:c_gnu             = 1 " Highlight GNU specific items
 let g:c_space_errors    = 1 " Highlight space errors
 
 "" Set local options upon opening a C or C++ file
 autocmd FileType c,cpp
-    \ setlocal cin noet sts=0 sw=4 ts=4|
-    \ let &l:cino = ":0,(" . &l:tabstop
+      \ setlocal cin noet sts=0 sw=4 ts=4|
+      \ let &l:cino = ":0,(" . &l:tabstop
 
 
-"" -- Git --
+"" Git
 
 "" Set textwidth for commit messages
 autocmd FileType gitcommit setlocal tw=50
 
 
-"" -- Man --
+"" Man
 
 "" Set local options for man pages
 autocmd FileType man
-    \ setlocal cc= noma nonu nornu nohid noro noswf noudf|
-    \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
+      \ setlocal cc= noma nonu nornu nohid noro noswf noudf|
+      \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
 
 "" Load the Man plugin
 runtime ftplugin/man.vim
@@ -353,47 +340,48 @@ runtime ftplugin/man.vim
 set keywordprg=:Man
 
 
-"" -- Markdown --
+"" Markdown
 
 "" Set local options for markdown documents (e.g. README, etc.)
 autocmd FileType markdown
-    \ setlocal cc= nonu nornu linebreak breakindent|
-    \ let &l:breakat = " \t+-*/&|:.;,({"|
-    \ let &l:showbreak = "..> "|
-    \ let &l:breakindentopt = "shift:" . &shiftwidth . ",sbr"
+      \ setlocal cc= nonu nornu wrap linebreak breakindent|
+      \ let &l:breakat = " \t!@?({+-*/;:,."
 
 
-"" -- Python --
+"" Python
 
-"" Set the default version for pyx commands
-if has('pythonx')
-    if has('python3')
-        set pyxversion=3
-    elseif has('python2')
-        set pyxversion=2
-    endif
-endif
+"" Set local options for python scripts
+autocmd FileType man setlocal et sts=4 sw=4 ts=8
 
 "" Enable all available highlighting
 let g:python_highlight_all = 1
 
 "" Enable syntastic plugins
-let g:syntastic_python_checkers = ['pep8', 'python']
+let g:syntastic_python_checkers = ['pep8', 'python3']
+
+"" Set the default version for pyx commands
+if has('pythonx')
+  if has('python3')
+    set pyxversion=3
+  elseif has('python2')
+    set pyxversion=2
+  endif
+endif
 
 
-"" -- Readline --
+"" Readline
 
 "" Highlight bash additions
 let g:readline_has_bash = 1
 
 
-"" -- Sed --
+"" Sed
 
 "" Highlight real tab characters in sed scripts
 let g:highlight_sedtabs = 1
 
 
-"" -- Sh --
+"" Sh
 
 "" Default highlighting for shell scripts
 let g:is_posix = 1
@@ -405,193 +393,157 @@ let g:sh_fold_enabled = 3
 let g:sh_no_error = 1
 
 "" Set local options when opening a shell script
-autocmd FileType bash,sh,zsh setlocal et sts=4 sw=4 ts=4
+autocmd FileType bash,sh,zsh setlocal et sts=2 sw=2 ts=2
 
 "" Set filetype to sh when editing a shell command line
 if $TMPDIR == ''
-    autocmd BufRead /tmp/bash-fc.*
+  autocmd BufRead /tmp/bash-fc.*
         \ setlocal ft=sh noswf noudf|
         \ let b:is_bash = 1|
         \ syntax enable
 else
-    autocmd BufRead $TMPDIR/bash-fc.*
+  autocmd BufRead $TMPDIR/bash-fc.*
         \ setlocal ft=sh noswf noudf|
         \ let b:is_bash = 1|
         \ syntax enable
 endif
 
 
-"" -- help --
+"" help
 
 "" Set local options when opening a manpage
 autocmd FileType help setlocal noswf noudf
 
 
-"" -- Syntastic --
+"" -- CtrlSpace
+"
+let g:CtrlSpaceDefaultMappingKey = "<C-Space>"
+
+"" Syntastic
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 0
 
 
-"" -- Airline / Promptline / Tmuxline --
+"" Airline / Promptline / Tmuxline
 
-let g:airline_theme = 'vice'
+"" Airline theme settings
+let g:airline_theme = 'atomic'
 let g:airline_powerline_fonts = 1
+
+"" Airline general settings
+"let g:airline_highlighting_cache = 0
+
+"" Airline extension whitelist 
+"let g:airline_extensions = ['branch', 'syntastic', 'tabline']
+
+"" Branch extension settings
+"let g:airline#extensions#branch#format = 2
+
+"" Tabline extenstion settings
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline#extensions#tmuxline#enabled = 0
-let g:airline_symbols = {
-    \'space': ' ',
-    \'paste': '',
-    \'maxlinenr': '',
-    \'dirty': 'ﯓ',
-    \'crypt': '',
-    \'linenr': '',
-    \'readonly': 'ﰸ',
-    \'spell': 'ﮜ',
-    \'modified': '',
-    \'notexists': '',
-    \'keymap': 'הּ',
-    \'ellipsis': '…',
-    \'branch': '',
-    \'whitespace': ''
-    \}
+let g:airline#extensions#tabline#show_tabs = 1
+
+"" Airline symbol settings
+"if !exists('g:airline_symbols')
+"  let g:airline_symbols = {}
+"endif
+"let g:airline_symbols.branch      = ''
+"let g:airline_symbols.crypt       = ''
+"let g:airline_symbols.dirty       = ''
+"let g:airline_symbols.ellipsis    = ''
+"let g:airline_symbols.keymap      = ''
+"let g:airline_symbols.linenr      = '☰'
+"let g:airline_symbols.maxlinenr   = ''
+"let g:airline_symbols.modified    = ''
+"let g:airline_symbols.notexists   = 'ﮊ'
+"let g:airline_symbols.paste       = ''
+"let g:airline_symbols.readonly    = ''
+"let g:airline_symbols.space       = ' '
+"let g:airline_symbols.spell       = 'ﮜ'
+"let g:airline_symbols.whitespace  = 'Ξ'
 
 
-"" -- Mappings--
+"" Mappings
 
 "" Set a key to act as <leader> in mappings
 let g:mapleader = ','
 
 "" Create tab
-nnoremap <silent><leader>tc
-    \ :tabnew<CR>
+nnoremap <silent><leader>c
+      \ :tabnew<CR>
 "" Next tab
-nnoremap <silent><leader>tn
-    \ :tabnext<CR>
+nnoremap <silent><leader>n
+      \ :tabnext<CR>
 "" Previous tab
-nnoremap <silent><leader>tp
-    \ :tabprev<CR>
-
-"" Toggle paste mode
-nnoremap <silent><F3>
-    \ :set paste!<CR>
+nnoremap <silent><leader>p
+      \ :tabprev<CR>
+"" Destroy tab
+nnoremap <silent><leader>x
+      \ :tabprev<CR>
 
 "" Toggle search highlighting
 nnoremap <silent><F6>
-    \ :set hlsearch!<CR>
+      \ :set hlsearch!<CR>
 
 "" Toggle syntax highlighting
 nnoremap <silent><F7>
-    \ :if exists('g:syntax_on')<Bar>
-    \ syntax off<Bar>
-    \ else<Bar>
-    \ syntax enable<Bar>
-    \ endif<CR>
+      \ :if exists('g:syntax_on')<Bar>
+      \ syntax off<Bar>
+      \ else<Bar>
+      \ syntax enable<Bar>
+      \ endif<CR>
 
 "" Toggle line numbers
 nnoremap <silent><F8>
-    \ :set nu!<Bar>let &rnu = &nu<CR>
+      \ :let &l:number = !&l:number|let &l:relativenumber = &l:number
+
+"" Toggle paste mode
+nnoremap <silent><F9>
+      \ :set paste!<CR>
 
 "" Insert a shebang as the first line
 autocmd FileType * nnoremap <silent><leader>#!
-    \ ggI<C-R>=
-    \ substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
-    \ <ESC>``
-
-"" Quote word before or at the cursor (see :help word)
-"" Note: 'selection' must be set to inclusive or exclusive for this to work
-"nnoremap <leader>' vl<ESC>bi'<ESC>ea'<ESC>l
-"nnoremap <leader>" vl<ESC>bi"<ESC>ea"<ESC>l
-"nnoremap <leader>[ vl<ESC>bi[<ESC>ea]<ESC>l
-"nnoremap <leader>{ vl<ESC>bi{<ESC>ea}<ESC>l
-"nnoremap <leader>( vl<ESC>bi(<ESC>ea)<ESC>l
-"nnoremap <leader>< vl<ESC>bi<<ESC>ea><ESC>l
-"nnoremap <leader>` vl<ESC>bi`<ESC>ea`<ESC>l
-
-"" Quote WORD before or at the cursor (see :help WORD)
-"" Note: 'selection' must be set to inclusive or exclusive for this to work
-"nnoremap <leader><leader>' vl<ESC>Bi'<ESC>Ea'<ESC>l
-"nnoremap <leader><leader>" vl<ESC>Bi"<ESC>Ea"<ESC>l
-"nnoremap <leader><leader>[ vl<ESC>Bi[<ESC>Ea]<ESC>l
-"nnoremap <leader><leader>{ vl<ESC>Bi{<ESC>Ea}<ESC>l
-"nnoremap <leader><leader>( vl<ESC>Bi(<ESC>Ea)<ESC>l
-"nnoremap <leader><leader>< vl<ESC>Bi<<ESC>Ea><ESC>l
-"nnoremap <leader><leader>` vl<ESC>Bi`<ESC>Ea`<ESC>l
+      \ ggI<C-R>=
+      \ substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
+      \ <ESC>``
 
 "" Search forward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> *
-    \ :<C-U>let old_reg=getreg('"')<Bar>
-    \ let old_regtype=getregtype('"')<CR>
-    \ gvy/<C-R><C-R>=
-    \ substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-    \ gV:call setreg('"',old_reg,old_regtype)<CR>
+      \ :<C-U>let old_reg=getreg('"')<Bar>
+      \ let old_regtype=getregtype('"')<CR>
+      \ gvy/<C-R><C-R>=
+      \ substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+      \ gV:call setreg('"',old_reg,old_regtype)<CR>
 
 "" Search backward for the current visual selection
 "" Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> #
-    \ :<C-U>let old_reg=getreg('"')<Bar>
-    \ let old_regtype=getregtype('"')<CR>
-    \ gvy?<C-R><C-R>=
-    \ substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-    \ gV:call setreg('"',old_reg,old_regtype)<CR>
-
-"" Fix Alt-Up/Down/Right/Left
-map! <ESC><ESC>[A <M-Up>
-map! <ESC><ESC>[B <M-Down>
-map! <ESC><ESC>[C <M-Right>
-map! <ESC><ESC>[D <M-Left>
-map! <ESC>[1;3A   <M-Up>
-map! <ESC>[1;3B   <M-Down>
-map! <ESC>[1;3C   <M-Right>
-map! <ESC>[1;3D   <M-Left>
-nmap <ESC><ESC>[A <M-Up>
-nmap <ESC><ESC>[B <M-Down>
-nmap <ESC><ESC>[C <M-Right>
-nmap <ESC><ESC>[D <M-Left>
-nmap <ESC>[1;3A   <M-Up>
-nmap <ESC>[1;3B   <M-Down>
-nmap <ESC>[1;3C   <M-Right>
-nmap <ESC>[1;3D   <M-Left>
-vmap <ESC><ESC>[A <M-Up>
-vmap <ESC><ESC>[B <M-Down>
-vmap <ESC><ESC>[C <M-Right>
-vmap <ESC><ESC>[D <M-Left>
-vmap <ESC>[1;3A   <M-Up>
-vmap <ESC>[1;3B   <M-Down>
-vmap <ESC>[1;3C   <M-Right>
-vmap <ESC>[1;3D   <M-Left>
+      \ :<C-U>let old_reg=getreg('"')<Bar>
+      \ let old_regtype=getregtype('"')<CR>
+      \ gvy?<C-R><C-R>=
+      \ substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+      \ gV:call setreg('"',old_reg,old_regtype)<CR>
 
 "" Fix Ctrl-Up/Down/Right/Left
-map! <ESC>Oa    <C-Up>
-map! <ESC>Ob    <C-Down>
-map! <ESC>Oc    <C-Right>
-map! <ESC>Od    <C-Left>
 map! <ESC>[1;5A <C-Up>
 map! <ESC>[1;5B <C-Down>
 map! <ESC>[1;5C <C-Right>
 map! <ESC>[1;5D <C-Left>
-nmap <ESC>Oa    <C-Up>
-nmap <ESC>Ob    <C-Down>
-nmap <ESC>Oc    <C-Right>
-nmap <ESC>Od    <C-Left>
 nmap <ESC>[1;5A <C-Up>
 nmap <ESC>[1;5B <C-Down>
 nmap <ESC>[1;5C <C-Right>
 nmap <ESC>[1;5D <C-Left>
-vmap <ESC>Oa    <C-Up>
-vmap <ESC>Ob    <C-Down>
-vmap <ESC>Oc    <C-Right>
-vmap <ESC>Od    <C-Left>
 vmap <ESC>[1;5A <C-Up>
 vmap <ESC>[1;5B <C-Down>
 vmap <ESC>[1;5C <C-Right>
 vmap <ESC>[1;5D <C-Left>
 
 
-"" -- Lastly --
+"" Finalize Configuration
 
 "" Allow options to be set from a modeline
 set modeline

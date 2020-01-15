@@ -19,8 +19,7 @@ fork()
 {
   if (( $# ))
   then
-    exec "$@" 0</dev/null 1>/dev/null 2>&1 &
-    disown %+
+    exec -- "$@" 0< /dev/null 1> /dev/null 2>&1 & disown "$!"
   else
     msg::err "${FUNCNAME[0]}" "usage" "${FUNCNAME[0]} command [args ...]"
     return 2
@@ -42,7 +41,7 @@ cdls()
   then
     cd -- "${!#}" && ls "${@:1:($# ? ($# - 1) : 0)}"
   else
-    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [ls-options] directory"
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [ls-opts] directory"
     return 2
   fi
 }
@@ -62,9 +61,56 @@ mkcd()
   then
     mkdir "$@" && cd -- "${!#}"
   else
-    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [mkdir-options] directory"
+    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [mkdir-opts] directory"
     return 2
   fi
+}
+
+
+#######################################
+# up - ascend through a directory tree
+#
+# usage: up [DEPTH]
+#
+# @DEPTH : number of levels to ascend
+#######################################
+up()
+{
+  if (( $# ))
+  then
+    if (( $# > 1 ))
+    then
+      printf 1>&2 '%s: usage: %s [depth]\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
+      return 2
+    fi
+    if ! (( $1 == $1 )) 2>/dev/null || (( $1 < 1 ))
+    then
+      printf 1>&2 '%s: %s: depth must be a positive integer\n' "${FUNCNAME[0]}" "$1"
+      return 1
+    fi
+    cd "$(
+    PWD="${PWD//[^/]}"
+    eval 'printf %.s../ {1..'"$(( ${#PWD} < $1 ? ${#PWD} : $1 ))"'}'
+    )"
+  else
+    cd ..
+  fi
+}
+
+
+#######################################
+# strftime - print date and time
+#
+# usage: strftime format
+#
+# @format: output format
+#######################################
+strftime()
+{
+  # shellcheck disable=SC2016
+  set -- "${1@Q}" '\\D{${1@Q}}'
+  set -- "${2@P}"
+  eval "printf '"'%s\n'"' ${1@P}"
 }
 
 
@@ -88,26 +134,6 @@ lswhich()
     shift
   done
 }
-
-
-#######################################
-# putlist - print a comma-separated list
-#
-# usage: [end=[END]] [sep=[SEP]] putlist VALUE ...
-#######################################
-putlist()
-{
-  local MAPFILE || return
-
-  if ! (( $# ))
-  then
-    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [value] ..."
-    return 2
-  fi
-  # shellcheck disable=SC2016
-  mapfile -c 1 -C 'fn '"'"'(( $1 )) && MAPFILE[-1]+=${sep-, }'"'" -d '' -t
-  printf '%s' "${MAPFILE[@]}" "${end-$'\n'}"
-} < <(printf '%s\0' "$@")
 
 
 #######################################
@@ -141,37 +167,6 @@ abspath()
     fi < <(CDPATH='' cd -- "${pathname%/*}/" && pwd && printf '\0')
     shift
   done
-}
-
-
-#######################################
-# up - ascend through a directory tree
-#
-# usage: up [DEPTH]
-#
-# @DEPTH : number of levels to ascend
-#######################################
-up()
-{
-  if (( $# ))
-  then
-    if (( $# > 1 ))
-    then
-      printf 1>&2 '%s: usage: %s [depth]\n' "${FUNCNAME[0]}" "${FUNCNAME[0]}"
-      return 2
-    fi
-    if ! (( $1 == $1 )) 2>/dev/null || (( $1 < 1 ))
-    then
-      printf 1>&2 '%s: %s: depth must be a positive integer\n' "${FUNCNAME[0]}" "$1"
-      return 1
-    fi
-    cd "$(
-    PWD="${PWD//[^/]}"
-    eval 'printf %.s../ {1..'"$(( ${#PWD} < $1 ? ${#PWD} : $1 ))"'}'
-    )"
-  else
-    cd ..
-  fi
 }
 
 
@@ -222,23 +217,30 @@ addalias()
 
 
 #######################################
-# pushtemp - make a temp directory and push it onto the directory stack
+# pushtempd - make a temp directory and push it onto the directory stack
 #
 # usage: pushtemp [TEMPLATE]
 #
 # @TEMPLATE: directory name template (must contain 3 or more consecutive X's)
 #######################################
-pushtemp()
+pushtempd()
 {
-  if (( $# > 1 ))
-  then
-    msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [template]"
-    return 2
-  fi
+  case "$#" in
+    1)
+      set -- "${1@Q}"
+      ;;
+    0)
+      set -- '\l-$$-\s-\D{%Y%m%dT%H%M%S}-XXXXXX'
+      ;;
+    *)
+      msg::err "${FUNCNAME[0]}" 'usage' "${FUNCNAME[0]} [template]"
+      return 2
+      ;;
+  esac
   if wait "$!"
   then
     pushd -- "$(cat)"
-  fi < <(mktemp -d --tmpdir -- "${1:-${FUNCNAME[0]}-XXXX}")
+  fi < <(mktemp -d -- "${1@P}")
 }
 
 

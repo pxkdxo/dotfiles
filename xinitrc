@@ -11,7 +11,7 @@ USERRESOURCES="${HOME}/.Xresources"
 SYSXINITRCDIR='/etc/X11/xinit/xinitrc.d'
 USERXINITRCDIR="${HOME}/.xinitrc.d"
 
-WM='awesome'
+WM="${WM:-awesome}"
 
 
 # Merge in system resources.

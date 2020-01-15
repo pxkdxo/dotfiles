@@ -6,7 +6,7 @@
     background-color:   rgba(  34,  34,  34, 100 % );
     border-color:       rgba( 248, 248, 255, 100 % );
     text-color:         rgba( 248, 248, 255, 100 % );
-    font:               "Monofurbold NF bold 14";
+    font:               "FuraCode Nerd Font Mono 14";
 }
 
 configuration {
