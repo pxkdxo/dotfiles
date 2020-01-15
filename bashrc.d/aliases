@@ -50,8 +50,7 @@ fmtalias()
 }
 
 
-# default options
-#
+# general defaults
 alias gdb='gdb -q'
 alias ls='ls -Cp'
 alias mkdir='mkdir -pv'
@@ -68,13 +67,7 @@ fmtalias '%' '% ' nohup sudo unbuffer
 fmtalias '%' '% --color=auto' egrep fgrep grep ls
 
 # go back to previous directory
-BASH_ALIASES['-']='cd -'
-
-# thefuck
-if command -v fuck 1> /dev/null
-then
-    alias fk='fuck'
-fi
+alias -- -='cd -'
 
 # clear
 alias c='clear'
@@ -89,6 +82,12 @@ alias j='jobs'
 alias jl='jobs -l'
 alias jx='jobs -x'
 
+# thefuck
+if command -v fuck 1> /dev/null
+then
+    alias fk='fuck'
+fi
+
 # ls
 alias l='ls'
 alias ll='ls -l'
@@ -96,7 +95,6 @@ alias la='ls -A'
 alias lla='ls -lA'
 
 # python
-alias p='python'
 alias py='python'
 alias py2='python2'
 alias py3='python3'
@@ -143,20 +141,20 @@ alias v='vim'
 # xclip
 if command -v xclip 1> /dev/null
 then
-  alias xb='xclip -sel clipboard'
-  alias xb-lstrip='xb -o | sed '"'"'s/^[ \t]*//'"'"' | xb'
-  alias xb-rstrip='xb -o | sed '"'"'s/[ \t]*$//'"'"' | xb'
-  alias xb-strip='xb -o | sed '"'"'s/^[ \t]*\|[ \t]*$//'"'"' | xb'
+  alias cb='xclip -sel clipboard'
+  alias cb-lstrip='cb -o | sed '"'"'s/^[ \t]*//'"'"' | cb'
+  alias cb-rstrip='cb -o | sed '"'"'s/[ \t]*$//'"'"' | cb'
+  alias cb-strip='cb -o | sed '"'"'s/^[ \t]*\|[ \t]*$//'"'"' | cb'
   
-  alias xb1='xclip -sel primary'
-  alias xb1-lstrip='xb1 -o | sed '"'"'s/^[ \t]*//'"'"' | xb1'
-  alias xb1-rstrip='xb1 -o | sed '"'"'s/[ \t]*$//'"'"' | xb1'
-  alias xb1-strip='xb1 -o | sed '"'"'s/^[ \t]*\|[ \t]*$//'"'"' | xb1'
+  alias cb1='xclip -sel primary'
+  alias cb1-lstrip='cb1 -o | sed '"'"'s/^[ \t]*//'"'"' | cb1'
+  alias cb1-rstrip='cb1 -o | sed '"'"'s/[ \t]*$//'"'"' | cb1'
+  alias cb1-strip='cb1 -o | sed '"'"'s/^[ \t]*\|[ \t]*$//'"'"' | cb1'
   
-  alias xb2='xclip -sel secondary'
-  alias xb2-lstrip='xb2 -o | sed '"'"'s/^[ \t]*//'"'"' | xb2'
-  alias xb2-rstrip='xb2 -o | sed '"'"'s/[ \t]*$//'"'"' | xb2'
-  alias xb2-strip='xb2 -o | sed '"'"'s/^[ \t]*\|[ \t]*$//'"'"' | xb2'
+  alias cb2='xclip -sel secondary'
+  alias cb2-lstrip='cb2 -o | sed '"'"'s/^[ \t]*//'"'"' | cb2'
+  alias cb2-rstrip='cb2 -o | sed '"'"'s/[ \t]*$//'"'"' | cb2'
+  alias cb2-strip='cb2 -o | sed '"'"'s/^[ \t]*\|[ \t]*$//'"'"' | cb2'
 fi
 
 # remove a trailing newline from a file

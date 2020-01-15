@@ -114,6 +114,18 @@ let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 "" Do not wrap lines
 "set nowrap
 
+"" Break lines before window edge
+"set linebreak
+
+"" Indent wrapped lines
+"set breakindent
+
+"" Break lines at these characters
+"let &breakat = " \t;:"
+
+"" Prefix wrapped lines
+"let &showbreak = "> "
+
 
 "" Cursor Movement
 
@@ -345,7 +357,7 @@ autocmd FileType man setlocal et sts=4 sw=4 ts=8
 let g:python_highlight_all = 1
 
 "" Enable syntastic plugins
-let g:syntastic_python_checkers = ['pep8', 'python', 'pylint']
+let g:syntastic_python_checkers = ['pep8', 'python3']
 
 "" Set the default version for pyx commands
 if has('pythonx')
@@ -421,13 +433,13 @@ let g:airline_theme = 'atomic'
 let g:airline_powerline_fonts = 1
 
 "" Airline general settings
-let g:airline_highlighting_cache = 0
+"let g:airline_highlighting_cache = 0
 
 "" Airline extension whitelist 
-let g:airline_extensions = ['branch', 'syntastic', 'tabline']
+"let g:airline_extensions = ['branch', 'syntastic', 'tabline']
 
 "" Branch extension settings
-let g:airline#extensions#branch#format = 2
+"let g:airline#extensions#branch#format = 2
 
 "" Tabline extenstion settings
 let g:airline#extensions#tabline#enabled = 1
@@ -435,34 +447,23 @@ let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#show_tabs = 1
 
 "" Airline symbol settings
-if exists("g:airline_powerline_fonts") && g:airline_powerline_fonts
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-else
-  let g:airline_left_sep = '»'
-  let g:airline_left_alt_sep = '▶'
-  let g:airline_right_sep = '«'
-  let g:airline_right_alt_sep = '◀'
-endif
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-let g:airline_symbols.branch      = ''
-let g:airline_symbols.crypt       = ''
-let g:airline_symbols.dirty       = ''
-let g:airline_symbols.ellipsis    = ''
-let g:airline_symbols.keymap      = ''
-let g:airline_symbols.linenr      = '☰'
-let g:airline_symbols.maxlinenr   = ''
-let g:airline_symbols.modified    = ''
-let g:airline_symbols.notexists   = 'ﮊ'
-let g:airline_symbols.paste       = ''
-let g:airline_symbols.readonly    = ''
-let g:airline_symbols.space       = ' '
-let g:airline_symbols.spell       = 'ﮜ'
-let g:airline_symbols.whitespace  = 'Ξ'
+"if !exists('g:airline_symbols')
+"  let g:airline_symbols = {}
+"endif
+"let g:airline_symbols.branch      = ''
+"let g:airline_symbols.crypt       = ''
+"let g:airline_symbols.dirty       = ''
+"let g:airline_symbols.ellipsis    = ''
+"let g:airline_symbols.keymap      = ''
+"let g:airline_symbols.linenr      = '☰'
+"let g:airline_symbols.maxlinenr   = ''
+"let g:airline_symbols.modified    = ''
+"let g:airline_symbols.notexists   = 'ﮊ'
+"let g:airline_symbols.paste       = ''
+"let g:airline_symbols.readonly    = ''
+"let g:airline_symbols.space       = ' '
+"let g:airline_symbols.spell       = 'ﮜ'
+"let g:airline_symbols.whitespace  = 'Ξ'
 
 
 "" Mappings
@@ -497,9 +498,8 @@ nnoremap <silent><F7>
 
 "" Toggle line numbers
 nnoremap <silent><F8>
-      \ :let [&l:number, &l:relativenumber] = [!&l:number, !&l:number]
-      \ let &l:rnu = &nu<CR>
-"
+      \ :let &l:number = !&l:number|let &l:relativenumber = &l:number
+
 "" Toggle paste mode
 nnoremap <silent><F9>
       \ :set paste!<CR>

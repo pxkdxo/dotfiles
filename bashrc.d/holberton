@@ -70,32 +70,4 @@ __hbtn-project-set()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export hbtn_project='/home/pat/Documents/Holberton/Projects/holberton-system_engineering-devops/0x0F-load_balancer'
+export hbtn_project='/home/pat/Documents/Holberton/Projects/holbertonschool-higher_level_programming/0x11-python-network_1'

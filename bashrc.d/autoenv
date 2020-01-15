@@ -54,9 +54,9 @@ autoenv::EDITOR()
 autoenv::GCC_COLORS()
 {
     local -A GCC_COLORS=(
-        [caret]='01;34' [error]='01;31'
-        [locus]='01'    [note]='33'
-        [quote]='01;32' [warning]='01;35'
+        ['caret']='01;34' ['error']='01;31'
+        ['locus']='01'    ['note']='33'
+        ['quote']='01;32' ['warning']='01;35'
     ) || return
 
     while (( $# )); do
