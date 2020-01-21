@@ -1,4 +1,7 @@
-# rust.sh : rust configuration
+# rust.sh: rust configuration
 
-PATH="${CARGO_HOME:-${HOME}/.cargo/bin}${PATH:+:${PATH}}"
-export PATH
+if test -d "${CARGO_HOME:-${HOME}/.cargo/bin}"
+then export PATH="${CARGO_HOME:-${HOME}/.cargo/bin}${PATH:+:${PATH}}"
+fi
+
+# vim:ft=sh

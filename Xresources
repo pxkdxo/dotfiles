@@ -1,10 +1,10 @@
 ! ~/.Xresources: X resources user config
 
+#include ".Xresources.d/colors/electricity"
+#include ".Xresources.d/urxvt"
 #include ".Xresources.d/xcursor"
 #include ".Xresources.d/xft"
 #include ".Xresources.d/xterm"
-#include ".Xresources.d/urxvt"
-#include ".Xresources.d/colors/electricity"
 
 *locale: true
 *customization: -color

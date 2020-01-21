@@ -3,7 +3,7 @@
 # xinit initialization script
 
 
-# Initialize global variables.
+# Define globals
 
 SYSRESOURCES='/etc/X11/Xresources'
 USERRESOURCES="${HOME}/.Xresources"
@@ -14,7 +14,7 @@ USERXINITRCDIR="${HOME}/.xinitrc.d"
 WM="${WM:-awesome}"
 
 
-# Merge in system resources.
+# Merge in system resources
 
 if test -f "${SYSRESOURCES}"
 then
@@ -22,17 +22,18 @@ then
 
 elif test -d "${SYSRESOURCES}"
 then
-    for _ in "${SYSRESOURCES}"/*
+    for f in "${SYSRESOURCES}"/*
     do
-        if test -f "$_" && test -r "$_"
+        if test -f "${f}"
         then
-            xrdb -merge "$_"
+            xrdb -merge "${f}"
         fi
     done
 fi
+unset -v f
 
 
-# Merge in user resources.
+# Merge in user resources
 
 if test -f "${USERRESOURCES}"
 then
@@ -40,47 +41,50 @@ then
 
 elif test -d "${USERRESOURCES}"
 then
-    for _ in "${USERRESOURCES}"/*
+    for f in "${USERRESOURCES}"/*
     do
-        if test -f "$_" && test -r "$_"
+        if test -f "${f}"
         then
-            xrdb -merge -I"${HOME}" "$_"
+            xrdb -merge -I"${HOME}" "${f}"
         fi
     done
 fi
+unset -v f
 
 
-# Run system config scripts.
+# Run system config scripts
 
 if test -d "${SYSXINITRCDIR}"
 then
-    for _ in "${SYSXINITRCDIR}"/*
+    for f in "${SYSXINITRCDIR}"/*
     do
-        if test -f "$_" && test -r "$_"
+        if test -f "${f}"
         then
-            . "$_"
+            . "${f}"
         fi
     done
 fi
+unset -v f
 
 
-# Run user config scripts.
+# Run user config scripts
 
 if test -d "${USERXINITRCDIR}"
 then
-    for _ in "${USERXINITRCDIR}"/*
+    for f in "${USERXINITRCDIR}"/*
     do
-        if test -f "$_" && test -r "$_"
+        if test -f "${f}"
         then
-            . "$_"
+            . "${f}"
         fi
     done
 fi
+unset -v f
 
 
-# Pass control to window manager.
+# Pass control to window manager
 
-if command -v "${WM}" 1> /dev/null
+if test -x "$((command -v -- "${WM}"))" > /dev/null
 then
   exec "${WM}"
 fi

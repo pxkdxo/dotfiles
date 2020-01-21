@@ -8,5 +8,4 @@ Xft.antialias: 1
 Xft.rgba: rgb
 !Xft.dpi: 96
 
-
 ! vim:ft=xdefaults

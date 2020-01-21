@@ -498,7 +498,7 @@ nnoremap <silent><F7>
 
 "" Toggle line numbers
 nnoremap <silent><F8>
-      \ :let &l:number = !&l:number|let &l:relativenumber = &l:number
+      \ :let &l:number = !&l:number<Bar>let &l:relativenumber = &l:number<CR>
 
 "" Toggle paste mode
 nnoremap <silent><F9>

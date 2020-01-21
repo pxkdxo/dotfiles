@@ -2,10 +2,9 @@
 #
 # Disable client side decorations
 
-if test 'awesome' = "${WM}"
+if test "${WM}" = awesome
 then
     export GTK_CSD=0
 fi
-
 
 # vi:ft=sh

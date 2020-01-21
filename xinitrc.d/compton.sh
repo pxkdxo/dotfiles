@@ -2,15 +2,9 @@
 #
 # Start compton as a daemon
 
-#if command -v compton 1>/dev/null
-#then
-#    pidof compton |
-#        while read -r REPLY
-#        do
-#            kill -s TERM "${REPLY}"
-#        done
-#    compton --daemon --write-pid-path "${XDG_RUNTIME_DIR}/compton.pid"
-#fi
-
+if command -v compton
+then
+  pgrep -fxu "${USER:-$(id -un)}" compton || exec compton &
+fi 1> /dev/null 2>&1
 
 # vi:ft=sh

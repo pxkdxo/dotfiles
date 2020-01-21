@@ -7,11 +7,12 @@ do
       ;;
     ?*)
       if eval test -z '"${'"${REPLY%%=*}"'+_}"'
-      then
-        eval export "${REPLY}"
+      then eval export "${REPLY}"
       fi
       ;;
   esac
 done << STOP
 $(systemctl --user show-environment 2> /dev/null)
 STOP
+
+# vim:ft=sh

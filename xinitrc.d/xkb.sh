@@ -19,5 +19,4 @@ setxkbmap -option terminate:ctrl_alt_bksp
 #setxkbmap -option lv3:menu_switch
 #setxkbmap -option numpad:shift3
 
-
 # vi:ft=sh
