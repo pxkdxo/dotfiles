@@ -7,13 +7,10 @@ debug_print("")
 
 -- Set window opacity
 if get_window_class() == "XTerm" then
-
     --[[ QuakeDD dropdown terminal
     if get_class_instance_name() == "QuakeDD" then
         set_window_opacity(0.88)
     end
     --]]
-
     set_window_opacity(0.90)
-
 end

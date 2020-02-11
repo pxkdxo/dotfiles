@@ -8,8 +8,8 @@
 SYSRESOURCES='/etc/X11/Xresources'
 USERRESOURCES="${HOME}/.Xresources"
 
-SYSXINITRCDIR='/etc/X11/xinit/xinitrc.d'
-USERXINITRCDIR="${HOME}/.xinitrc.d"
+SYSXINITDIR='/etc/X11/xinit/xinitrc.d'
+USERXINITDIR="${HOME}/.xinitrc.d"
 
 WM="${WM:-awesome}"
 
@@ -54,9 +54,9 @@ unset -v f
 
 # Run system config scripts
 
-if test -d "${SYSXINITRCDIR}"
+if test -d "${SYSXINITDIR}"
 then
-    for f in "${SYSXINITRCDIR}"/*
+    for f in "${SYSXINITDIR}"/*
     do
         if test -f "${f}"
         then
@@ -69,9 +69,9 @@ unset -v f
 
 # Run user config scripts
 
-if test -d "${USERXINITRCDIR}"
+if test -d "${USERXINITDIR}"
 then
-    for f in "${USERXINITRCDIR}"/*
+    for f in "${USERXINITDIR}"/*
     do
         if test -f "${f}"
         then
@@ -84,7 +84,7 @@ unset -v f
 
 # Pass control to window manager
 
-if test -x "$((command -v -- "${WM}"))" > /dev/null
+if command -v "${WM}" > /dev/null
 then
   exec "${WM}"
 fi

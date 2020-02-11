@@ -1,4 +1,3 @@
 #!/usr/bin/env sh
-
-command -pv X 1>/dev/null &&
-  exec "$(command -pv X)" -nolisten tcp "$@" 2>&1
+# Start X
+command -v X >/dev/null && exec "$(command -v X)" -nolisten tcp "$@" 2>&1

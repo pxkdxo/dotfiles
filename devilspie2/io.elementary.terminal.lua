@@ -7,5 +7,5 @@ debug_print("")
 
 -- Set window opacity
 if get_window_class() == "Io.elementary.terminal" then
-    set_window_opacity(0.95)
+    set_window_opacity(0.90)
 end
