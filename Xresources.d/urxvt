@@ -1,89 +1,110 @@
 ! Xresources.d/URxvt : URxvt config
 
-! enabled extensions
+! extensions
 URxvt.perl-ext-common: default,matcher,font-size
 
-! do not scroll with output
-URxvt.scrollTtyOutput: false
-
-! scroll in relation to buffer (with mouse scroll or Shift+Page Up)
-URxvt.scrollWithBuffer: true
-
-! scroll back to the bottom on keypress
-URxvt.scrollTtyKeypress: true
-
-! pointer
-!URxvt.pointerBlank: true
-
+! icon
+URxvt.iconFile: /usr/share/icons/Humanity/apps/128/gnome-terminal.svg
 ! cursor
 URxvt.cursorBlink: true
-URxvt.cursorUnderline: false
 
 ! fonts
 URxvt.font: \
-xft:mononoki Nerd Font Mono-16:style=Regular, \
-xft:SauceCodePro Nerd Font Mono-15:style=Medium,Regular, \
-xft:FantasqueSansMono Nerd Font Mono-17:style=Regular, \
-xft:Ubuntu Mono-16:style=Regular
+xft:FantasqueSansMono Nerd Font-16:style=Regular, \
+xft:SpaceMono Nerd Font-14:style=Regular, \
+xft:mononoki Nerd Font-14:style=Regular, \
+xft:FiraCode Nerd Font-14:style=Retina, \
+xft:SauceCodePro Nerd Font-14:style=Regular, \
+xft:Ubuntu Mono-14:style=Regular
 
 URxvt.boldFont: \
-xft:mononoki Nerd Font Mono-16:style=Bold, \
-xft:SauceCodePro Nerd Font Mono-15:style=Bold, \
-xft:FantasqueSansMono Nerd Font Mono-17:style=Bold, \
-xft:Ubuntu Mono-16:style=Bold
+xft:FantasqueSansMono Nerd Font-16:style=Bold, \
+xft:SpaceMono Nerd Font-14:style=Bold, \
+xft:mononoki Nerd Font-14:style=Bold, \
+xft:FiraCode Nerd Font-14:style=Bold, \
+xft:SauceCodePro Nerd Font-14:style=Semibold,Regular, \
+xft:Ubuntu Mono-14:style=Bold
 
 URxvt.italicFont: \
-xft:mononoki Nerd Font Mono-16:style=Italic, \
-xft:SauceCodePro Nerd Font Mono-15:style=Medium Italic,Italic, \
-xft:FantasqueSansMono Nerd Font Mono-17:style=Italic, \
-xft:Ubuntu Mono-16:style=Italic
+xft:FantasqueSansMono Nerd Font-16:style=Italic, \
+xft:SpaceMono Nerd Font-14:style=Italic, \
+xft:mononoki Nerd Font-14:style=Italic, \
+xft:FiraCode Nerd Font-14:style=Retina, \
+xft:SauceCodePro Nerd Font-14:style=Medium Italic,Italic, \
+xft:Ubuntu Mono-14:style=Italic
 
 URxvt.boldItalicFont: \
-xft:mononoki Nerd Font Mono-16:style=BoldItalic, \
-xft:SauceCodePro Nerd Font Mono-15:style=Bold Italic, \
-xft:FantasqueSansMono Nerd Font Mono-17:style=Bold Italic, \
-xft:Ubuntu Mono-16:style=Bold Italic
+xft:FantasqueSansMono Nerd Font-16:style=Bold Italic, \
+xft:SpaceMono Nerd Font-14:style=Bold Italic, \
+xft:mononoki Nerd Font-14:style=BoldItalic, \
+xft:FiraCode Nerd Font-14:style=Retina, \
+xft:SauceCodePro Nerd Font-14:style=Semibold Italic,Italic, \
+xft:Ubuntu Mono-14:style=Bold Italic
 
-! reduce space between characters
+! spacing
 URxvt.letterSpace: -1
 
-! use font glyphs 
-URxvt*skipBuiltinGlyphs: true
+! glyphs 
+URxvt.skipBuiltinGlyphs: true
 
-! general settings
-URxvt.saveLines: 65536
-URxvt.scrollBar: False
-URxvt.scrollstyle: rxvt
+! bell
 URxvt.urgentOnBell: True
+URxvt.visualBell:   True
+!
+! scrolling
+URxvt.saveLines:          32768
+URxvt.scrollBar:          False
+URxvt.scrollstyle:        rxvt
+URxvt.scrollTtyKeypress:  true
+URxvt.scrollTtyOutput:    false
+URxvt.scrollWithBuffer:   true
+
+! clickable URLs
+URxvt.url-launcher:   /usr/bin/xdg-open
+URxvt.underlineURLs:  True
+URxvt.matcher.button: 1
 
 ! disable printing terminal contents with PrtSc
 URxvt.print-pipe: "cat 1> /dev/null 2>&1"
 
 ! disable ctrl-shift bindings
-URxvt.iso14755: false
-URxvt.iso14755_52: false
+URxvt.iso14755:     false
+URxvt.iso14755_52:  false
 
 ! scroll up/down using shift-up/shift-down
 URxvt.keysym.Shift-Up: command:\033]720;1\007
 URxvt.keysym.Shift-Down: command:\033]721;1\007
 
-! clickable URLs
-URxvt.url-launcher: /usr/bin/xdg-open
-URxvt.underlineURLs:  True
-URxvt.matcher.button: 1
-
 ! open and list recent URLs via keyboard
 URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
 
-! bind copy/paste to ctrl-shift-c/ctrl-shift-v
-!URxvt.keysym.Shift-Control-V: eval:paste_clipboard
-!URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
-
-! ctrl + arrow keys match xterm key sequences
-URxvt.keysym.Control-Up:    \033[1;5A
-URxvt.keysym.Control-Down:  \033[1;5B
-URxvt.keysym.Control-Left:  \033[1;5D
-URxvt.keysym.Control-Right: \033[1;5C
+! bind arrowkeys + modifiers to xterm sequences
+URxvt.keysym.Shift-Right:               \033[1;2C
+URxvt.keysym.Shift-Left:                \033[1;2D
+URxvt.keysym.Meta-Up:                   \033[1;3A
+URxvt.keysym.Meta-Down:                 \033[1;3B
+URxvt.keysym.Meta-Right:                \033[1;3C
+URxvt.keysym.Meta-Left:                 \033[1;3D
+URxvt.keysym.Meta-Shift-Up:             \033[1;4A
+URxvt.keysym.Meta-Shift-Down:           \033[1;4B
+URxvt.keysym.Meta-Shift-Right:          \033[1;4C
+URxvt.keysym.Meta-Shift-Left:           \033[1;4D
+URxvt.keysym.Control-Up:                \033[1;5A
+URxvt.keysym.Control-Down:              \033[1;5B
+URxvt.keysym.Control-Right:             \033[1;5C
+URxvt.keysym.Control-Left:              \033[1;5D
+URxvt.keysym.Control-Shift-Up:          \033[1;6A
+URxvt.keysym.Control-Shift-Down:        \033[1;6B
+URxvt.keysym.Control-Shift-Right:       \033[1;6C
+URxvt.keysym.Control-Shift-Left:        \033[1;6D
+URxvt.keysym.Control-Meta-Up:           \033[1;7A
+URxvt.keysym.Control-Meta-Down:         \033[1;7B
+URxvt.keysym.Control-Meta-Right:        \033[1;7C
+URxvt.keysym.Control-Meta-Left:         \033[1;7D
+URxvt.keysym.Control-Meta-Shift-Up:     \033[1;8A
+URxvt.keysym.Control-Meta-Shift-Down:   \033[1;8B
+URxvt.keysym.Control-Meta-Shift-Right:  \033[1;8C
+URxvt.keysym.Control-Meta-Shift-Left:   \033[1;8D
 
 ! vim: ft=xdefaults

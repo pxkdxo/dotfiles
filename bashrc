@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ~/.bashrc: bash(1) startup script for interactive shells
 
 # Stop if this is a non-interactive shell
@@ -87,7 +88,7 @@ shopt -s histreedit
 # With readline, load history sub results into buffer for editing
 shopt -s histverify
 
-# Match and remove debug traps from bash-preexec 
+# Match and remove debug traps from bash-preexec
 __bp_preexec_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
 if [[ $(trap -p DEBUG) =~ ${__bp_preexec_re} ]]
 then

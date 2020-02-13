@@ -11,7 +11,7 @@ silent! while 0
 set nocompatible
 silent! endwhile
 
-"" Always use utf-8
+"" Always use UTF-8
 set encoding=utf-8
 
 
@@ -31,7 +31,45 @@ catch /^Vim(execute):.*/
 endtry
 
 
-"" Tabs & Spacing
+"" Editor Info
+
+"" Display line numbers
+set number
+
+"" Display line numbers relative to current line
+set relativenumber
+
+"" Display cursor coordinates (e.g. LINE,COLUMN)
+set ruler
+
+"" Display most recent command below window
+set showcmd
+
+"" Briefly jump to match upon completing pair in 'matchpairs'
+set showmatch
+
+"" Never hide status line
+set laststatus=2
+
+"" Update terminal titles
+set title
+
+"" Define terminal titles
+let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
+
+"" Highlight specified columns relative to 'textwidth'
+let &colorcolumn =
+      \ join(range(80, max([81, winwidth(0) - &numberwidth])), ',')
+autocmd VimResized * let &colorcolumn =
+      \ join(range(80, max([81, winwidth(0) - &numberwidth])), ',')
+
+"" @@@ in place of lines that don't fit, hex in place of nonprintable chars
+if v:version >= 800
+  set display=truncate,uhex
+endif
+
+
+"" Spacing
 
 "" Insert spaces insted of tab characters
 set expandtab
@@ -49,67 +87,28 @@ set softtabstop=2
 set tabstop=8
 
 "" Length past which lines will be broken automatically
-set textwidth=79
+set textwidth=0
 
 
-"" Patterns & Searching
+"" Windows
 
-"" Do not highlight search results
-set nohlsearch
+"" Split windows off toward to right
+set splitright
 
-"" Search forward as pattern is typed
-set incsearch
-
-"" Ignore case by default
-set ignorecase
-
-"" Respect case if pattern contains uppercase
-set smartcase
-
-"" Additional bases recognized for increment/decrement
-set nrformats=bin,hex
+"" Split windows off down below
+set splitbelow
 
 
-"" Verbosity
+"" Buffers
 
-"" Display line numbers
-set number
+"" Re-read file if it was changed, unless it was deleted
+set autoread
 
-"" Display line numbers relative to current line
-set relativenumber
-
-"" Display cursor coordinates (e.g. LINE,COLUMN)
-set ruler
-
-"" Display most recent command below window
-set showcmd
-
-"" Briefly jump to match upon completing pair in 'matchpairs'
-set showmatch
-
-"" @@@ in place of lines that don't fit, hex in place of nonprintable chars
-if v:version >= 800
-  set display=truncate,uhex
-endif
-
-"" Always show status line
-set laststatus=2
-
-"" Highlight specified columns relative to 'textwidth'
-let &colorcolumn =
-      \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
-
-autocmd VimResized * let &colorcolumn =
-      \ join(map(range(1, winwidth(0) - &numberwidth), '"+" . v:val'), ',')
-
-"" Show window titles
-set title
-
-"" Define window titles
-let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
+"" Hide closed buffers rather than unloading them
+set hidden
 
 
-"" Line Wrapping
+"" Lines
 
 "" Do not wrap lines
 "set nowrap
@@ -127,7 +126,25 @@ let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 "let &showbreak = "> "
 
 
-"" Cursor Movement
+"" Patterns
+
+"" Do not highlight search results
+set nohlsearch
+
+"" Search forward as pattern is typed
+set incsearch
+
+"" Ignore case by default
+set ignorecase
+
+"" Respect case if pattern contains uppercase
+set smartcase
+
+"" Additional bases recognized for increment/decrement
+set nrformats=bin,hex
+
+
+"" Cursor
 
 "" Attempt to preserve cursor position when moving linewise
 set nostartofline
@@ -146,15 +163,6 @@ set sidescrolloff=3
 
 "" Allow visual-block selection of empty columns
 set virtualedit=block
-
-
-"" Buffers
-
-"" Re-read file if it was changed, unless it was deleted
-set autoread
-
-"" Hide closed buffers rather than unloading them
-set hidden
 
 
 "" Completion
@@ -300,13 +308,19 @@ endif
 
 "" Set a colorscheme
 if &t_Co >= 256
-  try
-    colorscheme 1989
-  catch /^Vim(colorscheme):.*/
-  endtry
+  let colorschemes = ['1989', 'lightning', 'pink', 'desertEx']
 else
-  colorscheme peachpuff
+  let colorschemes = ['elflord', 'peachpuff', 'delek', 'desert', 'default']
 endif
+for colors in colorschemes
+  try
+    execute join(['colorscheme', colors])
+  catch /^Vim(colorscheme):.*/
+    continue
+  endtry
+  break
+endfor
+unlet colors
 
 
 "" C / C++
@@ -316,48 +330,48 @@ let g:c_space_errors    = 1 " Highlight space errors
 
 "" Set local options upon opening a C or C++ file
 autocmd FileType c,cpp
-      \ setlocal cin noet sts=0 sw=4 ts=4|
+      \ setlocal cin noet sts=0 sw=8 ts=8|
       \ let &l:cino = ":0,(" . &l:tabstop
 
 
 "" Git
 
 "" Set textwidth for commit messages
-autocmd FileType gitcommit setlocal tw=50
-
-
-"" Man
-
-"" Set local options for man pages
-autocmd FileType man
-      \ setlocal cc= noma nonu nornu nohid noro noswf noudf|
-      \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
-
-"" Load the Man plugin
-runtime ftplugin/man.vim
-
-"" K command opens man pages in vim
-set keywordprg=:Man
+autocmd FileType gitcommit setlocal cc=50
 
 
 "" Markdown
 
 "" Set local options for markdown documents (e.g. README, etc.)
 autocmd FileType markdown
-      \ setlocal cc= nonu nornu wrap linebreak breakindent|
-      \ let &l:breakat = " \t!@?({+-*/;:,."
+      \ setlocal cc=80 nonu nornu wrap lbr bri|
+      \ let &l:brk = " \t!@?({+-*/;:,."
+
+
+"" Man
+
+"" Load the Man plugin
+runtime ftplugin/man.vim
+
+"" Use K to open man pages
+set keywordprg=:Man
+
+"" Set local options for man pages
+autocmd FileType man
+      \ setlocal cc= noma nonu nornu nohid noswf noudf|
+      \ autocmd VimResized <buffer> execute join([":Man", expand("%:t")])
 
 
 "" Python
 
 "" Set local options for python scripts
-autocmd FileType man setlocal et sts=4 sw=4 ts=8
+autocmd FileType python setlocal et cc=80 sts=4 sw=4 ts=8
 
 "" Enable all available highlighting
 let g:python_highlight_all = 1
 
 "" Enable syntastic plugins
-let g:syntastic_python_checkers = ['pep8', 'python3']
+let g:syntastic_python_checkers = ['pep8', 'pylint', 'python3']
 
 "" Set the default version for pyx commands
 if has('pythonx')
@@ -393,7 +407,7 @@ let g:sh_fold_enabled = 3
 let g:sh_no_error = 1
 
 "" Set local options when opening a shell script
-autocmd FileType bash,sh,zsh setlocal et sts=2 sw=2 ts=2
+autocmd FileType bash,sh,zsh setlocal et sts=2 sw=2 ts=8
 
 "" Set filetype to sh when editing a shell command line
 if $TMPDIR == ''
@@ -435,7 +449,7 @@ let g:airline_powerline_fonts = 1
 "" Airline general settings
 "let g:airline_highlighting_cache = 0
 
-"" Airline extension whitelist 
+"" Airline extension whitelist
 "let g:airline_extensions = ['branch', 'syntastic', 'tabline']
 
 "" Branch extension settings
@@ -447,23 +461,24 @@ let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#show_tabs = 1
 
 "" Airline symbol settings
-"if !exists('g:airline_symbols')
-"  let g:airline_symbols = {}
-"endif
-"let g:airline_symbols.branch      = ''
-"let g:airline_symbols.crypt       = ''
-"let g:airline_symbols.dirty       = ''
-"let g:airline_symbols.ellipsis    = ''
-"let g:airline_symbols.keymap      = ''
-"let g:airline_symbols.linenr      = '☰'
-"let g:airline_symbols.maxlinenr   = ''
-"let g:airline_symbols.modified    = ''
-"let g:airline_symbols.notexists   = 'ﮊ'
-"let g:airline_symbols.paste       = ''
-"let g:airline_symbols.readonly    = ''
-"let g:airline_symbols.space       = ' '
-"let g:airline_symbols.spell       = 'ﮜ'
-"let g:airline_symbols.whitespace  = 'Ξ'
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.branch      = ''
+let g:airline_symbols.crypt       = ''
+let g:airline_symbols.dirty       = ''
+let g:airline_symbols.ellipsis    = ''
+let g:airline_symbols.keymap      = '⌘'
+"let g:airline_symbols.linenr      = ''
+let g:airline_symbols.linenr      = '№'
+let g:airline_symbols.maxlinenr   = ''
+let g:airline_symbols.modified    = '±'
+let g:airline_symbols.notexists   = 'ﰄ'
+let g:airline_symbols.paste       = ''
+let g:airline_symbols.readonly    = ''
+let g:airline_symbols.space       = ' '
+let g:airline_symbols.spell       = 'ﮜ'
+let g:airline_symbols.whitespace  = ''
 
 
 "" Mappings
@@ -484,11 +499,7 @@ nnoremap <silent><leader>p
 nnoremap <silent><leader>x
       \ :tabprev<CR>
 
-"" Toggle search highlighting
-nnoremap <silent><F6>
-      \ :set hlsearch!<CR>
-
-"" Toggle syntax highlighting
+"" F7: Toggle syntax highlighting
 nnoremap <silent><F7>
       \ :if exists('g:syntax_on')<Bar>
       \ syntax off<Bar>
@@ -496,13 +507,14 @@ nnoremap <silent><F7>
       \ syntax enable<Bar>
       \ endif<CR>
 
-"" Toggle line numbers
-nnoremap <silent><F8>
-      \ :let &l:number = !&l:number|let &l:relativenumber = &l:number
+"" F8: Toggle line numbers
+nnoremap <silent><F8> :let &l:nu = !&l:nu<Bar>let &l:rnu = &l:nu<CR>
 
-"" Toggle paste mode
-nnoremap <silent><F9>
-      \ :set paste!<CR>
+"" F9: Toggle paste mode
+nnoremap <silent><F9> :setlocal paste!<CR>
+
+"" F10: Toggle search highlighting
+nnoremap <silent><F10> :setlocal hlsearch!<CR>
 
 "" Insert a shebang as the first line
 autocmd FileType * nnoremap <silent><leader>#!
@@ -528,7 +540,7 @@ vnoremap <silent> #
       \ substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
       \ gV:call setreg('"',old_reg,old_regtype)<CR>
 
-"" Fix Ctrl-Up/Down/Right/Left
+"" Map xterm sequences for Ctrl + ArrowKeys
 map! <ESC>[1;5A <C-Up>
 map! <ESC>[1;5B <C-Down>
 map! <ESC>[1;5C <C-Right>

@@ -1,11 +1,6 @@
-## xdg_user_dirs.sh : load xdg-user-dirs variable definitions
+# xdg_user_dirs.sh : load xdg-user-dirs variable definitions
 
-
-if test -f "${XDG_CONFIG_HOME:-${HOME-}/.config}/user-dirs.dirs" &&
-   test -r "${XDG_CONFIG_HOME:-${HOME-}/.config}/user-dirs.dirs"
-then
-  . "${XDG_CONFIG_HOME:-${HOME-}/.config}/user-dirs.dirs"
-fi
-
+[ -f "${XDG_CONFIG_HOME:-${HOME-}/.config}/user-dirs.dirs" ] &&
+  .  "${XDG_CONFIG_HOME:-${HOME-}/.config}/user-dirs.dirs"
 
 # vim:ft=sh

@@ -7,15 +7,15 @@ then
 fi
 
 # Load config for interactive shells
-if [[ $- == *i*  && -f ~/.bashrc ]]
+if [[ $- == *i*  && -f ~/.bashrc && -r ~/.bashrc ]]
 then
   source ~/.bashrc
 fi
 
 # Upon login in at tty1, start an Xsession
-if [[ -z ${DISPLAY-} && $((XDG_VTNR)) -eq 1 ]]
+if [[ -z ${DISPLAY-} ]] && ((XDG_VTNR == 1 )) && command -v startx > /dev/null
 then
-  command -v startx 1>/dev/null && exec startx
+  exec startx
 fi
 
 # vi:ft=sh

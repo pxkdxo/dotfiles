@@ -79,5 +79,9 @@
 !/Xresources.d/**
 !/xserverrc
 !/zsh
+!/zsh/.zshenv
+!/zsh/.zshrc
+!/zsh/zshenv
+!/zsh/zshrc
 !/zshenv
 !/zshrc

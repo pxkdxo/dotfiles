@@ -1,37 +1,31 @@
-! Xresources.d/XTerm: XTerm config
+! Xresources.d/XTerm: XTerm resources
 
 ! Term
-
 XTerm*termName: xterm-256color
 XTerm*ttyModes: erase ^?
 
 ! Window
-
 XTerm*allowWindowOps: true
 XTerm*signalInhibit: true
 XTerm*tekInhibit: true
 
 ! Locale
-
-*VT100.utf8: true
+XTerm*VT100.utf8: true
 XTerm*utf8Title: true
 
 ! Keyboard
-
 XTerm*backarrowKey: false
 XTerm*metaSendsEscape: true
 !xterm*altIsNotMeta: true
 !xterm*altSendsEscape: true
 
 ! 8-Bit
-
 XTerm*eightBitControl: false
 XTerm*eightBitInput: true
 XTerm*eightBitOutput: true
 !xterm*eightBitMeta: false
 
 ! Selections
-
 XTerm*charClass: 33:48,37-38:48,45-47:48,64:48,58:48,126:48,61:48,63:48,43:48,35:48
 XTerm*on2Clicks: regex [[:alpha:]]+://([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
 XTerm*on3Clicks: word
@@ -39,13 +33,11 @@ XTerm*on4Clicks: line
 XTerm*on5Clicks: group
 
 ! Clipboard
-
 XTerm*cutNewline: false
 XTerm*selectToClipboard: false
 XTerm*trimSelection: true
 
 ! Video
-
 *VT100*colorMode: true
 *VT100*colorAttrMode: true
 *VT100*dynamicColors: true
@@ -53,27 +45,37 @@ XTerm*trimSelection: true
 *VT100*veryBoldColors: 6
 
 ! Cursor
-
 XTerm*cursorBlink: true
 !XTerm*cursorOffTime: 610
 !XTerm*cursorOnTime: 987
 
-! Fonts
-
+! Fonts (TrueType)
 *VT100*faceName: \
-xft:mononoki Nerd Font Mono:style=Regular, \
-xft:SauceCodePro Nerd Font Mono:style=Medium,Regular, \
-xft:FantasqueSansMono Nerd Font Mono:style=Regular, \
-xft:Ubuntu Mono-16:style=Regular
+xft:FantasqueSansMono Nerd Font:style=Regular, \
+xft:SpaceMono Nerd Font:style=Regular, \
+xft:FiraCode Nerd Font:style=Retina, \
+xft:mononoki Nerd Font:style=Regular, \
+xft:SauceCodePro Nerd Font:style=Regular, \
+xft:Ubuntu Mono-15:style=Regular
 
 *VT100*faceSize : 16
-*VT100*faceSize1: 10
-*VT100*faceSize2: 12
-*VT100*faceSize3: 14
-*VT100*faceSize4: 18
-*VT100*faceSize5: 20
-*VT100*faceSize6: 22
+*VT100*faceSize1: 11
+*VT100*faceSize2: 13
+*VT100*faceSize3: 15
+*VT100*faceSize4: 17
+*VT100*faceSize5: 19
+*VT100*faceSize6: 21
 
+! Fonts (UTF-8)
+*VT100*utf8Fonts.font:  -*-terminus-medium-*-*-*-15-*-*-*-*-*-iso10646-1
+*VT100*utf8Fonts.font1: -*-terminus-medium-*-*-*-10-*-*-*-*-*-iso10646-1
+*VT100*utf8Fonts.font2: -*-terminus-medium-*-*-*-12-*-*-*-*-*-iso10646-1
+*VT100*utf8Fonts.font3: -*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-1
+*VT100*utf8Fonts.font4: -*-terminus-medium-*-*-*-16-*-*-*-*-*-iso10646-1
+*VT100*utf8Fonts.font5: -*-terminus-medium-*-*-*-18-*-*-*-*-*-iso10646-1
+*VT100*utf8Fonts.font6: -*-terminus-medium-*-*-*-20-*-*-*-*-*-iso10646-1
+
+! Fonts (fallback)
 *VT100.font:  -misc-fixed-medium-r-normal--15-*-100-100-*-*-iso10646-1
 *VT100.font1: -misc-fixed-medium-r-normal--10-*-100-100-*-*-iso10646-1
 *VT100.font2: -misc-fixed-medium-r-normal--12-*-100-100-*-*-iso10646-1
@@ -82,30 +84,21 @@ xft:Ubuntu Mono-16:style=Regular
 *VT100.font5: -misc-fixed-medium-r-normal--18-*-100-100-*-*-iso10646-1
 *VT100.font6: -misc-fixed-medium-r-normal--20-*-100-100-*-*-iso10646-1
 
-*VT100*utf8Fonts.font:  -*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-1
-*VT100*utf8Fonts.font1: -*-terminus-medium-*-*-*-8-*-*-*-*-*-iso10646-1
-*VT100*utf8Fonts.font2: -*-terminus-medium-*-*-*-10-*-*-*-*-*-iso10646-1
-*VT100*utf8Fonts.font3: -*-terminus-medium-*-*-*-13-*-*-*-*-*-iso10646-1
-*VT100*utf8Fonts.font4: -*-terminus-medium-*-*-*-15-*-*-*-*-*-iso10646-1
-*VT100*utf8Fonts.font5: -*-terminus-medium-*-*-*-18-*-*-*-*-*-iso10646-1
-*VT100*utf8Fonts.font6: -*-terminus-medium-*-*-*-20-*-*-*-*-*-iso10646-1
-
+! Fonts (general)
 *VT100*forceBoxChars: true
 *VT100*renderFont: true
 *VT100*showMissingGlyphs: true
 
 ! Scrolling 
-
 XTerm*fastScroll: true
 XTerm*jumpScroll: true
 XTerm*multiScroll: true
-XTerm*saveLines: 10000
+XTerm*saveLines: 32768
 XTerm*scrollBar: false
 XTerm*scrollKey: true
 XTerm*scrollTtyOutput: false
 
 ! Bell
-
 XTerm*bellIsUrgent: true
 XTerm*bellSuppressTime: 89
 XTerm*visualBell: true
@@ -113,7 +106,6 @@ XTerm*visualBellDelay: 0
 XTerm*visualBellLine: true
 
 ! Mappings
-
 XTerm*translations: #override                                       \n\
 Ctrl Shift <Key> C: copy-selection(CLIPBOARD)                       \n\
 Ctrl Shift <Key> V: insert-selection(CLIPBOARD)                     \n\
