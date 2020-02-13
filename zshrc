@@ -72,7 +72,7 @@ fi
 HISTSIZE=32767
 SAVEHIST=30000
 
-bindkey -v
+#bindkey -v
 
 setopt AlwaysToEnd
 setopt AutoCd
