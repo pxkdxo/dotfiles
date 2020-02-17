@@ -229,3 +229,8 @@ getent passwd -- "${USER:-${UID:-$(id -u)}}"
 ))}/.cache}/vim/swap"'
 alias rm-pycache='rm -rf -- **/__pycache__'
 alias pep8ck='pep8 -- **/*.py'
+
+# Hipposcraper
+alias hippoproject='/home/pat/Code/holberton/hipposcraper/hippoproject.py'
+alias hipporead='/home/pat/Code/holberton/hipposcraper/hipporead.py'
+alias hipposcrape='/home/pat/Code/holberton/hipposcraper/hipposcrape.sh'

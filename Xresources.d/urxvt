@@ -3,54 +3,61 @@
 ! extensions
 URxvt.perl-ext-common: default,matcher,font-size
 
-! icon
-URxvt.iconFile: /usr/share/icons/Humanity/apps/128/gnome-terminal.svg
 ! cursor
 URxvt.cursorBlink: true
 
 ! fonts
 URxvt.font: \
-xft:FantasqueSansMono Nerd Font-16:style=Regular, \
-xft:SpaceMono Nerd Font-14:style=Regular, \
-xft:mononoki Nerd Font-14:style=Regular, \
-xft:FiraCode Nerd Font-14:style=Retina, \
-xft:SauceCodePro Nerd Font-14:style=Regular, \
-xft:Ubuntu Mono-14:style=Regular
+xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
+xft:FantasqueSansMono Nerd Font Mono-16:style=Regular, \
+xft:Monofur Nerd Font Mono-16:style=Book, \
+xft:mononoki Nerd Font Mono-16:style=Regular, \
+xft:SpaceMono Nerd Font Mono-16:style=Regular, \
+xft:SauceCodePro Nerd Font Mono-16:style=Regular, \
+xft:Ubuntu Mono-16:style=Regular
 
 URxvt.boldFont: \
-xft:FantasqueSansMono Nerd Font-16:style=Bold, \
-xft:SpaceMono Nerd Font-14:style=Bold, \
-xft:mononoki Nerd Font-14:style=Bold, \
-xft:FiraCode Nerd Font-14:style=Bold, \
-xft:SauceCodePro Nerd Font-14:style=Semibold,Regular, \
-xft:Ubuntu Mono-14:style=Bold
+xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
+xft:FantasqueSansMono Nerd Font Mono-16:style=Bold, \
+xft:Monofurbold Nerd Font Mono-16:style=bold, \
+xft:mononoki Nerd Font Mono-16:style=Bold, \
+xft:SpaceMono Nerd Font Mono-16:style=Bold, \
+xft:SauceCodePro Nerd Font Mono-16:style=Semibold,Regular, \
+xft:Ubuntu Mono-16:style=Bold
 
 URxvt.italicFont: \
-xft:FantasqueSansMono Nerd Font-16:style=Italic, \
-xft:SpaceMono Nerd Font-14:style=Italic, \
-xft:mononoki Nerd Font-14:style=Italic, \
-xft:FiraCode Nerd Font-14:style=Retina, \
-xft:SauceCodePro Nerd Font-14:style=Medium Italic,Italic, \
-xft:Ubuntu Mono-14:style=Italic
+xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
+xft:FantasqueSansMono Nerd Font Mono-16:style=Italic, \
+xft:Monofuritalic Nerd Font Mono-16:style=italic, \
+xft:mononoki Nerd Font Mono-16:style=Italic, \
+xft:SpaceMono Nerd Font Mono-16:style=Italic, \
+xft:SauceCodePro Nerd Font Mono-16:style=Medium Italic,Italic, \
+xft:Ubuntu Mono-16:style=Italic
 
 URxvt.boldItalicFont: \
-xft:FantasqueSansMono Nerd Font-16:style=Bold Italic, \
-xft:SpaceMono Nerd Font-14:style=Bold Italic, \
-xft:mononoki Nerd Font-14:style=BoldItalic, \
-xft:FiraCode Nerd Font-14:style=Retina, \
-xft:SauceCodePro Nerd Font-14:style=Semibold Italic,Italic, \
-xft:Ubuntu Mono-14:style=Bold Italic
+xft:JetBrainsMono Nerd Font Mono-16:style=Bold Italic, \
+xft:HeavyData Nerd Font-16, \
+xft:FantasqueSansMono Nerd Font Mono-16:style=Bold Italic, \
+xft:SpaceMono Nerd Font Mono-16:style=Bold Italic, \
+xft:SauceCodePro Nerd Font Mono-16:style=Semibold Italic,Italic, \
+xft:Ubuntu Mono-16:style=Bold Italic
 
-! spacing
-URxvt.letterSpace: -1
-
-! glyphs 
+! some efficiency thing
 URxvt.skipBuiltinGlyphs: true
 
-! bell
+! horizontal spacing
+URxvt.letterSpace: -1
+
+! word delimiters?
+URxvt.cutchars: "()*,<>[]{}|'"
+
+! taken from author (but why?)
+URxvt.internalborder: 0
+
+! terminal bell
 URxvt.urgentOnBell: True
 URxvt.visualBell:   True
-!
+
 ! scrolling
 URxvt.saveLines:          32768
 URxvt.scrollBar:          False
@@ -79,7 +86,7 @@ URxvt.keysym.Shift-Down: command:\033]721;1\007
 URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
 
-! bind arrowkeys + modifiers to xterm sequences
+! bind arrowkeys and modifiers to xterm sequences (ugh...)
 URxvt.keysym.Shift-Right:               \033[1;2C
 URxvt.keysym.Shift-Left:                \033[1;2D
 URxvt.keysym.Meta-Up:                   \033[1;3A

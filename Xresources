@@ -1,6 +1,7 @@
 ! ~/.Xresources: X resources user config
 
-#include ".Xresources.d/colors/splash"
+!#include ".Xresources.d/colors/1984"
+#include ".Xresources.d/colors/1984"
 #include ".Xresources.d/urxvt"
 #include ".Xresources.d/xcursor"
 #include ".Xresources.d/xft"

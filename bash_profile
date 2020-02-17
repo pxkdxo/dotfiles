@@ -7,7 +7,7 @@ then
 fi
 
 # Load config for interactive shells
-if [[ $- == *i*  && -f ~/.bashrc && -r ~/.bashrc ]]
+if [[ -f ~/.bashrc && -r ~/.bashrc ]]
 then
   source ~/.bashrc
 fi

@@ -88,20 +88,25 @@ shopt -s histreedit
 # With readline, load history sub results into buffer for editing
 shopt -s histverify
 
-# Match and remove debug traps from bash-preexec
-__bp_preexec_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
-if [[ $(trap -p DEBUG) =~ ${__bp_preexec_re} ]]
+# Match and remove debug traps set by bash-preexec
+__disable_bp_debug_trap() {
+  # shellcheck disable=SC2064
+  trap "
+  $(: "$(trap -p RETURN)"
+    printf '%s\n' "${_:-trap RETURN}")
+  $(__bp_debug_trap_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
+    __bp_debug_trap_context_re=$'^[ \t\n]*((.*[[:graph:]])?)[ \t\n]*\n[ \t\n]*((.*[[:graph:]])?)[ \t\n]*$'
+    [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_re} && ${BASH_REMATCH[2]}$'\n'${BASH_REMATCH[4]} =~ ${__bp_debug_trap_context_re} ]]
+    # shellcheck disable=SC2064
+    printf 'trap %q DEBUG\n' "${BASH_REMATCH[1]:+${BASH_REMATCH[1]$'\n'}}${BASH_REMATCH[3]:+${BASH_REMATCH[3]$'\n'}}")
+  " RETURN
+}
+declare -ft __disable_bp_debug_trap
+if [[ $- == *T* ]]
 then
-  case "${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}" in
-    ?*$'\n'?*)
-      trap "${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}" DEBUG ;;
-    ?*$'\n')
-      trap "${BASH_REMATCH[2]}" DEBUG ;;
-    $'\n'?*)
-      trap "${BASH_REMATCH[4]}" DEBUG ;;
-    $'\n')
-      trap DEBUG ;;
-  esac
+  __disable_debug_trap
+else
+  trap '' DEBUG
 fi
 
 # Remove bash-prexec from PROMPT_COMMAND
@@ -213,49 +218,50 @@ PROMPT_DIRTRIM=2
 
 # Set the pre-execution prompt to trigger SIGUSR1
 __PS0_update() {
+  # shellcheck disable=SC2016,SC2034
   PS0='$(kill -s SIGUSR1 "$$")'
   return "$(($1))"
 }
 
 # Set the primary prompt
 __PS1_update() {
-  PS1=\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\u'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'\
-'@'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\h'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'\
-':'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\w'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\n'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'\$>'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-' '
+  PS1="\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\u'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
+"'@'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\h'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
+"':'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\w'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\n'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\$>'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"' '
   return "$(($1))"
 }
 
 # Set the secondary prompt
 __PS2_update() {
-  PS2=\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-'\['"${ti[bold]:=$(tput bold)}"'\]'\
-'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'\
-'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'\
-'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'\
-' '
+  PS2="\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'"\
+"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"' '
   return "$(($1))"
 }
 
@@ -286,44 +292,43 @@ add_precmd_functions __PS_update
 # Configure window title
 if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]
 then
-  __window_title_precmd()
-  {
+  __window_title_precmd() {
     TTY="$(tty)"
     WINDOW_TITLE="${TTY##/dev/}) \\u@\\h (\${0##*/})"
   }
-
-  __window_title_preexec()
-  {
+  __window_title_preexec() {
     TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\e]0;%s\a' "${WINDOW_TITLE@P}"
   }
-  add_precmd_functions __window_title_precmd
+  #add_precmd_functions __window_title_precmd
   add_preexec_functions __window_title_preexec
 
 elif [[ ${TERM} == @(screen|tmux)?(-*) ]]
 then
-  __window_title_precmd()
-  {
+  # shellcheck disable=SC1003
+  __window_title_precmd() {
     TTY="$(tty)"
     WINDOW_TITLE="${TTY##/dev/}) \\u@\\h (\${0##*/})"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
-
-  __window_title_preexec()
-  {
+  # shellcheck disable=SC1003
+  __window_title_preexec() {
     TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
-  add_precmd_functions __window_title_precmd
+  #add_precmd_functions __window_title_precmd
   add_preexec_functions __window_title_preexec
 fi
 
-# -- GnuPG 
-
 # Set GPG_TTY to device on stdin and add it to the environment
-export GPG_TTY="$(tty)" || unset -v GPG_TTY
+if GPG_TTY=$(tty)
+then
+  export GPG_TTY
+else
+  export GPG_TTY=''
+fi
 
 # Refresh gpg-agent in case we switched to an Xsession
 gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
