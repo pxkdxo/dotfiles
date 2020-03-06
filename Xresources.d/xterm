@@ -51,14 +51,14 @@ XTerm*cursorBlink: true
 
 ! Fonts (TrueType)
 XTerm*VT100*faceName: \
-xft:JetBrainsMono Nerd Font Mono:style=Regular, \
-xft:FantasqueSansMono Nerd Font Mono:style=Regular, \
-xft:DaddyTimeMono Nerd Font Mono:style=Book, \
-xft:Monofur Nerd Font Mono:style=Book, \
-xft:mononoki Nerd Font Mono:style=Regular, \
-xft:SpaceMono Nerd Font Mono:style=Regular, \
-xft:SauceCodePro Nerd Font Mono:style=Regular, \
-xft:Ubuntu Mono:style=Regular
+xft:Fantasque Sans Mono:style=Regular
+!xft:JetBrainsMono Nerd Font Mono:style=Regular, \
+!xft:DaddyTimeMono Nerd Font Mono:style=Book, \
+!xft:Monofur Nerd Font Mono:style=Book, \
+!xft:mononoki Nerd Font Mono:style=Regular, \
+!xft:SpaceMono Nerd Font Mono:style=Regular, \
+!xft:SauceCodePro Nerd Font Mono:style=Regular, \
+!xft:Ubuntu Mono:style=Regular
 
 XTerm*VT100*faceSize : 16
 XTerm*VT100*faceSize1: 11
@@ -87,7 +87,7 @@ XTerm*VT100.font5: -misc-fixed-medium-r-normal--18-*-100-100-*-*-iso10646-1
 XTerm*VT100.font6: -misc-fixed-medium-r-normal--20-*-100-100-*-*-iso10646-1
 
 ! Fonts (general)
-XTerm*forceBoxChars: true
+XTerm*forceBoxChars: false
 XTerm*renderFont: true
 XTerm*showMissingGlyphs: true
 

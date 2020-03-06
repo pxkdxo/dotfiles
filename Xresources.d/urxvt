@@ -8,38 +8,38 @@ URxvt.cursorBlink: true
 
 ! fonts
 URxvt.font: \
-xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
 xft:FantasqueSansMono Nerd Font Mono-16:style=Regular, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
 xft:Monofur Nerd Font Mono-16:style=Book, \
 xft:mononoki Nerd Font Mono-16:style=Regular, \
+xft:SauceCodePro Nerd Font Mono-15:style=Regular, \
 xft:SpaceMono Nerd Font Mono-16:style=Regular, \
-xft:SauceCodePro Nerd Font Mono-16:style=Regular, \
 xft:Ubuntu Mono-16:style=Regular
 
 URxvt.boldFont: \
-xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
 xft:FantasqueSansMono Nerd Font Mono-16:style=Bold, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
 xft:Monofurbold Nerd Font Mono-16:style=bold, \
 xft:mononoki Nerd Font Mono-16:style=Bold, \
+xft:SauceCodePro Nerd Font Mono-15:style=Semibold,Regular, \
 xft:SpaceMono Nerd Font Mono-16:style=Bold, \
-xft:SauceCodePro Nerd Font Mono-16:style=Semibold,Regular, \
 xft:Ubuntu Mono-16:style=Bold
 
 URxvt.italicFont: \
-xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
 xft:FantasqueSansMono Nerd Font Mono-16:style=Italic, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
 xft:Monofuritalic Nerd Font Mono-16:style=italic, \
 xft:mononoki Nerd Font Mono-16:style=Italic, \
+xft:SauceCodePro Nerd Font Mono-15:style=Medium Italic,Italic, \
 xft:SpaceMono Nerd Font Mono-16:style=Italic, \
-xft:SauceCodePro Nerd Font Mono-16:style=Medium Italic,Italic, \
 xft:Ubuntu Mono-16:style=Italic
 
 URxvt.boldItalicFont: \
-xft:JetBrainsMono Nerd Font Mono-16:style=Bold Italic, \
-xft:HeavyData Nerd Font-16, \
 xft:FantasqueSansMono Nerd Font Mono-16:style=Bold Italic, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Bold Italic, \
+xft:SauceCodePro Nerd Font Mono-15:style=Semibold Italic,Italic, \
+xft:HeavyData Nerd Font-14, \
 xft:SpaceMono Nerd Font Mono-16:style=Bold Italic, \
-xft:SauceCodePro Nerd Font Mono-16:style=Semibold Italic,Italic, \
 xft:Ubuntu Mono-16:style=Bold Italic
 
 ! some efficiency thing

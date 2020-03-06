@@ -1,4 +1,4 @@
-# If you come from bash you might have to change your $PATH.
+# I you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
@@ -71,7 +71,7 @@ ZSH_THEME="space-travel"
 plugins=(
   aliases
   command-not-found
-  completion
+  cargo
   copybuffer
   copydir
   copyfile
@@ -79,21 +79,22 @@ plugins=(
   extract
   fancy-ctrl-z
   git
-  globalias
   gpg-agent
   history-substring-search
+  jsontools
   keybindings
   nmap
   npm
-  options
   pass
   pip
+  ripgrep
   rsync
+  rust
   systemadmin
   systemd
   tmux
-  transfer
-#  zsh-autosuggestions
+  ufw
+  virtualenv
   zsh-completions
   zsh-syntax-highlighting
 )
@@ -101,8 +102,6 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
-LISTMAX=50
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -127,3 +126,266 @@ LISTMAX=50
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+
+# Zsh Options
+
+setopt NO_ALWAYS_TO_END
+setopt APPEND_CREATE
+setopt APPEND_HISTORY
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt AUTO_NAME_DIRS
+setopt NO_BEEP
+setopt BRACE_CCL
+setopt C_BASES
+setopt C_PRECEDENCES
+setopt CDABLE_VARS
+setopt CHASE_LINKS
+setopt NO_CLOBBER
+setopt COMPLETE_ALIASES
+setopt COMPLETE_IN_WORD
+setopt GLOB_COMPLETE
+setopt CORRECT
+setopt EXTENDED_GLOB
+setopt EXTENDED_HISTORY
+setopt NO_GLOB_DOTS
+setopt GLOB_STAR_SHORT
+setopt NO_GLOBAL_EXPORT
+setopt HASH_EXECUTABLES_ONLY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_FCNTL_LOCK
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_LEX_WORDS
+setopt HIST_NO_STORE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_SUBST_PATTERN
+setopt HIST_VERIFY
+setopt INC_APPEND_HISTORY
+#setopt KSH_GLOB
+setopt LONG_LIST_JOBS
+setopt MAGIC_EQUAL_SUBST
+setopt NOHUP
+setopt NOTIFY
+setopt NUMERIC_GLOB_SORT
+setopt OCTAL_ZEROES
+setopt PROMPT_BANG
+setopt PROMPT_SUBST
+setopt PUSHD_IGNORE_DUPS
+setopt RC_QUOTES
+setopt REMATCH_PCRE
+setopt RM_STAR_SILENT
+setopt NO_SH_WORD_SPLIT
+setopt SHARE_HISTORY
+setopt UNSET
+setopt WARN_CREATE_GLOBAL
+
+
+# Zsh Variables
+
+DIRSTACKSIZE=20
+LISTMAX=0
+HISTORY_IGNORE='([bf]g)'
+HISTSIZE=20000
+SAVEHIST=10000
+NULLCMD=':'
+PROMPT_EOL_MARK='%B%S^@%s%b'
+if VIMRUNTIME="$(nvim --headless --cmd ':echo $VIMRUNTIME|:q' 2>&1)"
+then
+  READNULLCMD="${VIMRUNTIME}/macros/less.sh"
+else
+  READNULLCMD="${PAGER:-${READNULLCMD:-less}}"
+fi
+unset -v VIMRUNTIME
+
+
+# Zsh Completion
+
+# Rehash upon completion so programs are found immediately after installation
+function _force_rehash
+{
+  if (( CURRENT == 1 ))
+  then
+    rehash
+  fi
+  return 1
+}
+
+zstyle ':completion:*' completer _oldlist _expand _force_rehash _complete _match _approximate _ignored _files
+zstyle ':completion:*' completions true
+zstyle ':completion:*' condition false
+zstyle ':completion:*' expand prefix suffix
+zstyle ':completion:*' file-sort name
+zstyle ':completion:*' glob true
+zstyle ':completion:*' ignore-parents parent pwd .. directory
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS%:}"
+zstyle ':completion:*' list-prompt '%S[%p] -- TAB for more --%s'
+zstyle ':completion:*' match-original both
+zstyle ':completion:*' matcher-list '' '+m:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+r:|[._-]=* r:|=*'
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' old-menu false
+zstyle ':completion:*' original true
+zstyle ':completion:*' preserve-prefix '//[^/]##/'
+zstyle ':completion:*' select-prompt '%S[%m]%s'
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' substitute true
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' word true
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+zstyle ':completion:*:correct:*' original true
+zstyle ':completion:*:expand:*' tag-order all-expansions
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:matches' group yes
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:options' description yes
+zstyle ':completion:*:sudo:*' environ PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+zstyle ':completion:*:warnings' format $'%{\e[0;31m%}No matches%{\e[0m%}'
+zstyle ':completion:*:*:zcompile:*' ignored-patterns '(*~|*.zwc)'
+zstyle ':completion:*:*:-command-:*:commands' ignored-patterns '*\~'
+zstyle ':completion::(^approximate*):*:functions' ignored-patterns '[_.]*'
+zstyle -e ':completion:*:' max-errors 'reply=( $(( (${#PREFIX//._-/} + ${#SUFFIX//.}) / 5 )) numeric )'
+
+zstyle ':compinstall' filename "$0"
+autoload -U -z compinit
+compinit -i -C
+
+
+# fzf
+if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]
+then
+  # fzf executable
+  if [[ :${PATH}: != *:${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin:* ]]
+  then
+    export PATH="${PATH:+${PATH}:}${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin"
+  fi
+  # fzf completions
+  if [[ $- == *i* ]]
+  then
+    source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/completion.zsh" 2> /dev/null
+  fi
+  # fzf key bindings
+  source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
+fi
+
+
+# docker
+
+function docker-kill-all
+{
+  local containers=( )
+  IFS=' \t' read -r -A containers < <(docker ps -aq)
+  (( $#containers == 0 )) || docker kill "$containers[@]" 2> /dev/null
+}
+
+function docker-rm-all
+{
+  local containers=( )
+  IFS=' \t' read -r -A containers < <(docker ps -aq)
+  (( $#containers == 0 )) || docker rm "$containers[@]" 2> /dev/null
+}
+
+function docker-krm
+{
+  docker kill "$@" &> /dev/null
+  docker rm "$@"
+}
+
+function docker-krm-all
+{
+  local containers=( )
+  IFS=' \t' read -r -A containers < <(docker ps -aq)
+  (( $#containers == 0 )) || docker-krm "$containers[@]" 2> /dev/null
+}
+
+
+# Find the nearest ancestor of the directory given as an argument that
+# has a virtual environment as one of its immediate children (if any).
+# If no arguments are given, operate on the current working directory.
+# Return the results by reference through the parameter `REPLY`.
+function __find_nearest_venv_parent
+{
+  emulate -L zsh
+  setopt extendedglob globassign
+  REPLY="${1-.}"/(../)#(|.)venv/bin/activate(.NY1:A)
+  if [[ -n $REPLY ]]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
+
+# venv cd hook
+#
+function __chpwd_venv_activate
+{
+  emulate -L zsh
+  setopt extendedglob
+  local venv
+
+  if [[ -v VIRTUAL_ENV ]]
+  then
+    return
+  fi
+  if ! __find_nearest_venv_parent
+  then
+    if command -v activate > /dev/null
+    then
+      unset -f activate
+    fi
+    return
+  fi
+  venv="$REPLY"
+  if command -v activate > /dev/null
+  then
+    if [[ -v OLDPWD ]]
+    then
+      __find_nearest_venv_parent "${OLDPWD}"
+      if [[ $venv = $REPLY ]]
+      then
+        return
+      fi
+    fi
+    unset -f activate
+  fi
+  trap '
+  case $? in
+    (*)
+      print
+      PROMPT_EOL_MARK='"${(q)PROMPT_EOL_MARK}"'
+      ;|
+    (0)
+      print source -- '"${(q)venv}"'
+      source -- '"${(q)venv}"'
+      ;;
+    (1)
+      function activate
+      {
+        unset -f activate
+        emulate -L zsh
+        print source -- '"${(q)venv}"'
+        source '"${(q)venv}"'
+      }
+      print "Run '\''activate'\'' to load the virtual environment"
+      ;;
+  esac
+  ' EXIT
+  PROMPT_EOL_MARK=$'\n'
+  print 'Found virtual environment in' "${(q)venv:h:h}"
+  print -n "Activate? [Y/n] "
+  read -qr
+}
+
+chpwd_functions+=(__chpwd_venv_activate)
+
+
+# vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0

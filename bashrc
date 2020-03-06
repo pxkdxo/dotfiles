@@ -323,12 +323,7 @@ then
 fi
 
 # Set GPG_TTY to device on stdin and add it to the environment
-if GPG_TTY=$(tty)
-then
-  export GPG_TTY
-else
-  export GPG_TTY=''
-fi
+[[ -t 0 ]] && GPG_TTY=$(tty) || export GPG_TTY=''
 
 # Refresh gpg-agent in case we switched to an Xsession
 gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1

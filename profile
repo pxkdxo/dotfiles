@@ -1,10 +1,17 @@
 # ~/.profile: login shell initialization script
-# see sh(1), bash(1), dash(1), ...
+# see bash(1), dash(1), sh(1), zsh(1), ...
 
 # Initialize terminal
-if test -t 1 && command -v tput 1> /dev/null
+if test -t 1
 then
-  tput init
+  if command -v tput 1> /dev/null
+  then
+    tput init
+  fi
+  if command -v stty 1> /dev/null
+  then
+    stty start '^-' stop '^-'
+  fi
 fi
 
 # Set file creation mode mask
@@ -19,19 +26,38 @@ fi
 if test -z "${HOME-}"
 then
   IFS=':' read -r _ _ _ _ _ HOME _
-fi << STOP
-$(getent passwd -- "${UID:-$(id -u)}" 2> /dev/null)
+fi << END
+$(getent passwd -- "${USER:-$(id -u)}" 2> /dev/null)
+END
+export HOME
+
+# Import user environment from systemd
+while read -r REPLY
+do
+  case "${REPLY%%=*}" in
+    *[!0-9A-Za-z_]*)
+      ;;
+    ?*)
+      if eval test -z '"${'"${REPLY%%=*}"'+_}"'
+      then
+        eval export "${REPLY}"
+      fi
+      ;;
+  esac
+done << STOP
+$(systemctl --user show-environment 2>/dev/null)
 STOP
+unset -v REPLY
 
 # Prepend executable paths
-if test -d "${HOME}/.local/bin"
-then
-  export PATH="${HOME}/.local/bin${PATH:+:${PATH}}"
-fi
-if test -d "${HOME}/.bin"
-then
-  export PATH="${HOME}/.bin${PATH:+:${PATH}}"
-fi
+for dir in .local/bin .bin
+do
+  if test -d "${HOME}/${dir}"
+  then
+    export PATH="${HOME:+${HOME}/${dir}${PATH:+:}}${PATH}"
+  fi
+done
+unset -v dir
 
 # Load additional profile config
 if test -d "${HOME}/.profile.d"
@@ -45,11 +71,5 @@ then
   done
 fi
 unset -v file
-
-## Termcap should be dead; kill it
-unset -v TERMCAP
-
-## Man is much better at figuring this out than we are
-unset -v MANPATH
 
 # vi:ft=sh
