@@ -27,49 +27,49 @@ if test -z "${HOME-}"
 then
   IFS=':' read -r _ _ _ _ _ HOME _
 fi << END
-$(getent passwd -- "${USER:-$(id -u)}" 2> /dev/null)
+$(getent passwd -- "${USER:-${UID:-$(id -u)}}" 2> /dev/null)
 END
 export HOME
 
-# Import user environment from systemd
-while read -r REPLY
-do
-  case "${REPLY%%=*}" in
-    *[!0-9A-Za-z_]*)
-      ;;
-    ?*)
-      if eval test -z '"${'"${REPLY%%=*}"'+_}"'
-      then
-        eval export "${REPLY}"
-      fi
-      ;;
-  esac
-done << STOP
-$(systemctl --user show-environment 2>/dev/null)
-STOP
-unset -v REPLY
+# # Import user environment from systemd
+# while read -r REPLY
+# do
+#   case "${REPLY%%=*}" in
+#     *[!0-9A-Za-z_]*)
+#       ;;
+#     ?*)
+#       if eval test -z '"${'"${REPLY%%=*}"'+_}"'
+#       then
+#         eval export "${REPLY}"
+#       fi
+#       ;;
+#   esac
+# done << STOP
+# $(systemctl --user show-environment 2>/dev/null)
+# STOP
+# unset -v REPLY
 
 # Prepend executable paths
-for dir in .local/bin .bin
-do
-  if test -d "${HOME}/${dir}"
-  then
-    export PATH="${HOME:+${HOME}/${dir}${PATH:+:}}${PATH}"
-  fi
-done
-unset -v dir
-
+if test -d "${HOME}/.bin"
+then
+  export PATH="${HOME}/.bin${PATH:+:${PATH}}"
+fi
+if test -d "${HOME}/.local/bin"
+then
+  export PATH="${HOME}/.local/bin${PATH:+:${PATH}}"
+fi
+ 
 # Load additional profile config
 if test -d "${HOME}/.profile.d"
 then
-  for file in "${HOME}/.profile.d"/*.sh
+  for name in "${HOME}/.profile.d"/*.sh
   do
-    if test -f "${file}" && test -r "${file}"
+    if test -f "${name}" && test -r "${name}"
     then
-      . "${file}"
+      . "${name}"
     fi
   done
 fi
-unset -v file
+unset -v name
 
 # vi:ft=sh

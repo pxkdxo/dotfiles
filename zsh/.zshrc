@@ -75,7 +75,10 @@ plugins=(
   copybuffer
   copydir
   copyfile
+  django
   docker
+  docker-shortcuts
+  encode64
   extract
   fancy-ctrl-z
   git
@@ -94,8 +97,11 @@ plugins=(
   systemd
   tmux
   ufw
+  urltools
+  venv
   virtualenv
   zsh-completions
+  zsh-navigation-tools
   zsh-syntax-highlighting
 )
 
@@ -165,7 +171,6 @@ setopt HIST_SAVE_NO_DUPS
 setopt HIST_SUBST_PATTERN
 setopt HIST_VERIFY
 setopt INC_APPEND_HISTORY
-#setopt KSH_GLOB
 setopt LONG_LIST_JOBS
 setopt MAGIC_EQUAL_SUBST
 setopt NOHUP
@@ -190,7 +195,7 @@ DIRSTACKSIZE=20
 LISTMAX=0
 HISTORY_IGNORE='([bf]g)'
 HISTSIZE=20000
-SAVEHIST=10000
+SAVEHIST=15000
 NULLCMD=':'
 PROMPT_EOL_MARK='%B%S^@%s%b'
 if VIMRUNTIME="$(nvim --headless --cmd ':echo $VIMRUNTIME|:q' 2>&1)"
@@ -207,10 +212,8 @@ unset -v VIMRUNTIME
 # Rehash upon completion so programs are found immediately after installation
 function _force_rehash
 {
-  if (( CURRENT == 1 ))
-  then
-    rehash
-  fi
+  emulate -L zsh
+  if (( CURRENT == 1 )) rehash
   return 1
 }
 
@@ -255,7 +258,8 @@ zstyle -e ':completion:*:' max-errors 'reply=( $(( (${#PREFIX//._-/} + ${#SUFFIX
 
 zstyle ':compinstall' filename "$0"
 autoload -U -z compinit
-compinit -i -C
+
+compinit -C -d "${ZDOTDIR}/.zcompdump"
 
 
 # fzf
@@ -275,117 +279,30 @@ then
   source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
 fi
 
+export -T FZF_DEFAULT_OPTS fzf_default_opts ' '
 
-# docker
-
-function docker-kill-all
-{
-  local containers=( )
-  IFS=' \t' read -r -A containers < <(docker ps -aq)
-  (( $#containers == 0 )) || docker kill "$containers[@]" 2> /dev/null
-}
-
-function docker-rm-all
-{
-  local containers=( )
-  IFS=' \t' read -r -A containers < <(docker ps -aq)
-  (( $#containers == 0 )) || docker rm "$containers[@]" 2> /dev/null
-}
-
-function docker-krm
-{
-  docker kill "$@" &> /dev/null
-  docker rm "$@"
-}
-
-function docker-krm-all
-{
-  local containers=( )
-  IFS=' \t' read -r -A containers < <(docker ps -aq)
-  (( $#containers == 0 )) || docker-krm "$containers[@]" 2> /dev/null
-}
-
-
-# Find the nearest ancestor of the directory given as an argument that
-# has a virtual environment as one of its immediate children (if any).
-# If no arguments are given, operate on the current working directory.
-# Return the results by reference through the parameter `REPLY`.
-function __find_nearest_venv_parent
-{
-  emulate -L zsh
-  setopt extendedglob globassign
-  REPLY="${1-.}"/(../)#(|.)venv/bin/activate(.NY1:A)
-  if [[ -n $REPLY ]]
-  then
-    return 0
-  else
-    return 1
-  fi
-}
-
-
-# venv cd hook
-#
-function __chpwd_venv_activate
-{
-  emulate -L zsh
-  setopt extendedglob
-  local venv
-
-  if [[ -v VIRTUAL_ENV ]]
-  then
-    return
-  fi
-  if ! __find_nearest_venv_parent
-  then
-    if command -v activate > /dev/null
-    then
-      unset -f activate
-    fi
-    return
-  fi
-  venv="$REPLY"
-  if command -v activate > /dev/null
-  then
-    if [[ -v OLDPWD ]]
-    then
-      __find_nearest_venv_parent "${OLDPWD}"
-      if [[ $venv = $REPLY ]]
-      then
-        return
-      fi
-    fi
-    unset -f activate
-  fi
-  trap '
-  case $? in
-    (*)
-      print
-      PROMPT_EOL_MARK='"${(q)PROMPT_EOL_MARK}"'
-      ;|
-    (0)
-      print source -- '"${(q)venv}"'
-      source -- '"${(q)venv}"'
-      ;;
-    (1)
-      function activate
-      {
-        unset -f activate
-        emulate -L zsh
-        print source -- '"${(q)venv}"'
-        source '"${(q)venv}"'
-      }
-      print "Run '\''activate'\'' to load the virtual environment"
-      ;;
-  esac
-  ' EXIT
-  PROMPT_EOL_MARK=$'\n'
-  print 'Found virtual environment in' "${(q)venv:h:h}"
-  print -n "Activate? [Y/n] "
-  read -qr
-}
-
-chpwd_functions+=(__chpwd_venv_activate)
-
+fzf_default_opts=(
+  '--ansi'
+  '--bind ctrl-\\:cancel'
+  '--bind ctrl-space:jump'
+  '--bind ctrl-b:page-up'
+  '--bind ctrl-f:page-down'
+  '--bind ctrl-j:accept'
+  '--bind ctrl-k:kill-line'
+  '--bind alt-b:backward-word'
+  '--bind alt-f:forward-word'
+  '--bind alt-j:down'
+  '--bind alt-k:up'
+  '--bind alt-w:forward-word'
+  '--border'
+  '--color=dark'
+  '--cycle'
+  '--filepath-word'
+  '--jump-labels=qwertyuiop\[]'
+  '--literal'
+  '--no-info'
+  '--reverse'
+  '--tabstop=4'
+)
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0
