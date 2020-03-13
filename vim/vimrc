@@ -228,8 +228,11 @@ set undolevels=2500
 " Always save entire buffer for undo when reloading it
 set undoreload=-1
 
-" Max number of characters that can be typed between swapfile syncs
+" Max characters typed between swapfile syncs
 set updatecount=80
+
+" Max milliseconds elapsed between swapfile syncs (also used by gitgutter)
+set updatetime=250
 
 
 " Swapfile and Undofile
@@ -329,7 +332,7 @@ endif
 
 " Set a colorscheme
 if &t_Co >= 256
-  let g:colorschemes = [ 'desertink', 'Benokai', '1989', 'dracula']
+  let g:colorschemes = ['desertink', 'Benokai', '1989', 'dracula']
 else
   let g:colorschemes = ['elflord', 'peachpuff', 'delek', 'desert', 'default']
 endif
@@ -430,8 +433,6 @@ if (has('pythonx'))
   elseif (has('python2'))
     set pyxversion=2
   endif
-elseif (has('python3'))
-  set pyxversion=2
 endif
 
 
@@ -517,21 +518,49 @@ let g:airline_symbols.paste = ""
 let g:airline_symbols.space = " "
 let g:airline_symbols.spell = ""
 let g:airline_symbols.whitespace = ""
-"let g:airline_symbols.readonly = ""
+"let g:airline_symbols.readonly   = ''
 "let g:airline_symbols.dirty      = ''
 "let g:airline_symbols.crypt      = ''
 "let g:airline_symbols.linenr     = ''
 "let g:airline_symbols.maxlinenr  = ''
-"let g:airline_symbols.maxlinenr  = '☰'
 "let g:airline_symbols.whitespace = ''
 "let g:airline_symbols.whitespace = ''
-
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline#extensions#tabline#overflow_marker = '…'
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
+
+" DevIcons
+let g:webdevicons_enable = 1
+let g:webdevicons_enable_nerdtree = 1
+let g:webdevicons_enable_airline_tabline = 1
+let g:webdevicons_enable_airline_statusline = 1
+let g:webdevicons_enable_startify = 1
+let g:webdevicons_gui_glyph_fix = 1
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+" Disable arrow icons at the left side of folder icons
+let g:NERDTreeDirArrowExpandable  = "\u202f"
+let g:NERDTreeDirArrowCollapsible = "\u202f"
+
+" NERDTree git icons
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "",
+    \ "Staged"    : "",
+    \ "Untracked" : "",
+    \ "Renamed"   : "",
+    \ "Unmerged"  : "",
+    \ "Deleted"   : "",
+    \ "Dirty"     : "",
+    \ "Clean"     : "",
+    \ 'Ignored'   : '',
+    \ "Unknown"   : ""
+    \ }
 
 " Put some Airline themes in a list
 let g:airline_themes = [
@@ -582,72 +611,6 @@ nnoremap <silent><C-Down>
 
 " Refresh Airline when the colorscheme changes
 autocmd ColorScheme * silent! AirlineRefresh
-
-
-" DevIcons
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:DevIconsEnableFoldersOpenClose = 1
-let g:webdevicons_gui_glyph_fix = 1
-let g:webdevicons_enable_nerdtree = 1
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:webdevicons_conceal_nerdtree_brackets = 1
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
-
-" Disable arrow icons at the left side of folders for NERDTree.
-"let g:NERDTreeDirArrowExpandable = "\u00a0"
-"let g:NERDTreeDirArrowCollapsible = "\u00a0"
-
-"if !(exists('g:xtabline_settings'))
-"  let g:xtabline_settings = {}
-"  if !(exists('g:xtabline_settings.icons'))
-"    let g:xtabline_settings.icons = {}
-"  endif
-"endif
-"let g:xtabline_settings.icons.apple     = ''
-"let g:xtabline_settings.icons.arrow     = '▶'
-""let g:xtabline_settings.icons.arrow     = ''
-"let g:xtabline_settings.icons.bomb      = ''
-"let g:xtabline_settings.icons.book      = ''
-"let g:xtabline_settings.icons.cross     = ''
-"let g:xtabline_settings.icons.fire      = ''
-"let g:xtabline_settings.icons.flag      = ''
-"let g:xtabline_settings.icons.flag2     = ''
-"let g:xtabline_settings.icons.git       = ''
-"let g:xtabline_settings.icons.git2      = ''
-"let g:xtabline_settings.icons.hammer    = ''
-"let g:xtabline_settings.icons.home      = ''
-"let g:xtabline_settings.icons.lens      = ''
-"let g:xtabline_settings.icons.linux     = ''
-""let g:xtabline_settings.icons.linux     = ''
-"let g:xtabline_settings.icons.lock      = ''
-"let g:xtabline_settings.icons.mail      = ''
-"let g:xtabline_settings.icons.menu      = ''
-"let g:xtabline_settings.icons.netrw     = ''
-"let g:xtabline_settings.icons.palette   = ''
-"let g:xtabline_settings.icons.pin       = ''
-"let g:xtabline_settings.icons.star      = ''
-"let g:xtabline_settings.icons.terminal  = ''
-""let g:xtabline_settings.icons.terminal  = ''
-""let g:xtabline_settings.icons.terminal  = ''
-"let g:xtabline_settings.icons.tick      = ''
-"let g:xtabline_settings.icons.warning   = ''
-"let g:xtabline_settings.icons.windows   = ''
-
-
-" NERDTree git icons
-let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "",
-    \ "Staged"    : "",
-    \ "Untracked" : "",
-    \ "Renamed"   : "",
-    \ "Unmerged"  : "",
-    \ "Deleted"   : "",
-    \ "Dirty"     : "",
-    \ "Clean"     : "",
-    \ 'Ignored'   : '',
-    \ "Unknown"   : ""
-    \ }
 
 
 " Mappings

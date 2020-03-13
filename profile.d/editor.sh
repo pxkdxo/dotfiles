@@ -1,7 +1,7 @@
 # editor.sh: configure the EDITOR environment variable
 # see environ(7) and select-editor(1)
 
-while read REPLY
+while read -r REPLY
 do
   REPLY="${REPLY#"${REPLY%%[![:blank:]]*}"}"
   REPLY="${REPLY%"${REPLY##*[![:blank:]]}"}"

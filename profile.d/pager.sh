@@ -1,16 +1,22 @@
 # pager.sh: configure the PAGER environment variable
 # see environ(7) and select-editor(1)
 
-while IFS=$': \t' read k v
+#command -v nvim > /dev/null && {
+#  export PAGER="nvim +'set ft=man' +'set ft=' +'filetype off' +'syntax on' -"
+#} || {
+while read -r REPLY
 do
-  if test "${k}" = 'Value'
+  REPLY="${REPLY#"${REPLY%%[![:blank:]]*}"}"
+  REPLY="${REPLY%"${REPLY##*[![:blank:]]}"}"
+  if test "${REPLY%%[[:blank:]]*}" = 'Value:'
   then
-    if test -x "${v}"
-    then export PAGER="${v}"
+    if test -x "${REPLY##*[[:blank:]]}"
+    then
+      export PAGER="${REPLY##*[[:blank:]]}"
     fi
-    break;
+    break
   fi
 done << STOP
 $(update-alternatives --query pager)
 STOP
-unset k v
+unset REPLY

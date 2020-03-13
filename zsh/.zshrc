@@ -1,5 +1,12 @@
+# zshrc: zsh initialization script for interactive shells
 # I you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# If this is not an interactive shell, abort.
+case $- in
+  (*i*) ;;
+    (*) return ;;
+esac
 
 # Path to your oh-my-zsh installation.
 export ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/oh-my-zsh"
@@ -72,20 +79,26 @@ plugins=(
   aliases
   command-not-found
   cargo
+  cdls
   copybuffer
   copydir
   copyfile
+  dircolors
   django
   docker
   docker-shortcuts
   encode64
   extract
   fancy-ctrl-z
+  fzf-extensions
   git
   gpg-agent
   history-substring-search
   jsontools
   keybindings
+  mkcd
+  mkmv
+  mvcd
   nmap
   npm
   pass
@@ -105,7 +118,7 @@ plugins=(
   zsh-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
@@ -133,9 +146,9 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-
 # Zsh Options
-
+# see zshoptions(1)
+#
 setopt NO_ALWAYS_TO_END
 setopt APPEND_CREATE
 setopt APPEND_HISTORY
@@ -189,26 +202,37 @@ setopt UNSET
 setopt WARN_CREATE_GLOBAL
 
 
-# Zsh Variables
-
-DIRSTACKSIZE=20
+# Zsh Params
+# see zshparam(1)
+#
+DIRSTACKSIZE=25
 LISTMAX=0
 HISTORY_IGNORE='([bf]g)'
-HISTSIZE=20000
-SAVEHIST=15000
-NULLCMD=':'
-PROMPT_EOL_MARK='%B%S^@%s%b'
-if VIMRUNTIME="$(nvim --headless --cmd ':echo $VIMRUNTIME|:q' 2>&1)"
-then
-  READNULLCMD="${VIMRUNTIME}/macros/less.sh"
-else
-  READNULLCMD="${PAGER:-${READNULLCMD:-less}}"
-fi
-unset -v VIMRUNTIME
+HISTSIZE=25000
+SAVEHIST=20000
 
+if command -v bat > /dev/null
+then
+  export BAT_STYLE='full'
+  export BAT_THEME='Sublime Snazzy'
+  export PAGER='bat --paging=always'
+  alias pat='bat --paging=always'
+fi
+
+NULLCMD=':'
+READNULLCMD="${PAGER:-${READNULLCMD:-less}}"
+PROMPT_EOL_MARK='%B%S^@%s%b'
+
+if command -v nvim > /dev/null
+then
+  function ness {
+    nvim -c 'set ft=man' -c 'filetype off' -c 'syntax on' -- "${@:--}"
+  }
+fi
 
 # Zsh Completion
-
+# see zshcompsys(1)
+#
 # Rehash upon completion so programs are found immediately after installation
 function _force_rehash
 {
@@ -228,7 +252,7 @@ zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS%:}"
 zstyle ':completion:*' list-prompt '%S[%p] -- TAB for more --%s'
 zstyle ':completion:*' match-original both
-zstyle ':completion:*' matcher-list '' '+m:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+r:|[._-]=* r:|=*'
+zstyle ':completion:*' matcher-list '+m:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+r:|[._-]=* r:|=*'
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' old-menu false
 zstyle ':completion:*' original true
@@ -254,15 +278,16 @@ zstyle ':completion:*:warnings' format $'%{\e[0;31m%}No matches%{\e[0m%}'
 zstyle ':completion:*:*:zcompile:*' ignored-patterns '(*~|*.zwc)'
 zstyle ':completion:*:*:-command-:*:commands' ignored-patterns '*\~'
 zstyle ':completion::(^approximate*):*:functions' ignored-patterns '[_.]*'
-zstyle -e ':completion:*:' max-errors 'reply=( $(( (${#PREFIX//._-/} + ${#SUFFIX//.}) / 5 )) numeric )'
+zstyle -e ':completion:*' max-errors 'reply=( $(( (${#PREFIX//[._-]} + ${#SUFFIX//[._-]}) / 5 )) numeric )'
 
 zstyle ':compinstall' filename "$0"
 autoload -U -z compinit
 
-compinit -C -d "${ZDOTDIR}/.zcompdump"
-
+compinit -d "${ZDOTDIR}/.zcompdump"
 
 # fzf
+# see fzf(1)
+#
 if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]
 then
   # fzf executable
@@ -273,36 +298,109 @@ then
   # fzf completions
   if [[ $- == *i* ]]
   then
-    source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/completion.zsh" 2> /dev/null
-  fi
+    source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/completion.zsh"
+  fi 2> /dev/null
   # fzf key bindings
   source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
 fi
 
-export -T FZF_DEFAULT_OPTS fzf_default_opts ' '
-
+typeset -xT 'FZF_DEFAULT_OPTS' 'fzf_default_opts' ' '
 fzf_default_opts=(
-  '--ansi'
-  '--bind ctrl-\\:cancel'
-  '--bind ctrl-space:jump'
-  '--bind ctrl-b:page-up'
-  '--bind ctrl-f:page-down'
-  '--bind ctrl-j:accept'
-  '--bind ctrl-k:kill-line'
-  '--bind alt-b:backward-word'
-  '--bind alt-f:forward-word'
-  '--bind alt-j:down'
-  '--bind alt-k:up'
-  '--bind alt-w:forward-word'
-  '--border'
-  '--color=dark'
-  '--cycle'
-  '--filepath-word'
-  '--jump-labels=qwertyuiop\[]'
-  '--literal'
-  '--no-info'
-  '--reverse'
-  '--tabstop=4'
+  "--bind 'ctrl-\\:cancel'"
+  "--bind 'ctrl-space:jump'"
+  "--bind 'ctrl-b:page-up'"
+  "--bind 'ctrl-f:page-down'"
+  "--bind 'ctrl-j:accept'"
+  "--bind 'ctrl-k:kill-line'"
+  "--bind 'alt-b:backward-word'"
+  "--bind 'alt-f:forward-word'"
+  "--bind 'alt-j:down'"
+  "--bind 'alt-k:up'"
+  "--bind 'alt-w:forward-word'"
+  "--bind 'alt-c:execute-silent(print -f %s {2..} | xclip -sel c)+abort'"
+  "--border"
+  "--color='header:228,info:212,pointer:121,prompt:141,gutter:232'"
+  "--color='bg:232,bg+:232,fg:141,fg+:121,hl:121,hl+:212'"
+  "--color='border:117,marker:212,spinner:215,preview-bg:232,preview-fg:121'"
+  "--filepath-word"
+  "--jump-labels='qwertyuiop[]'"
+  "--no-hscroll"
+  "--no-info"
+  "--literal"
+  "--reverse"
+  "--tabstop=4"
 )
+
+typeset -xT 'FZF_CTRL_R_OPTS' 'fzf_ctrl_r_opts' ' '
+fzf_ctrl_r_opts=(
+  "--ansi"
+  "--bind 'alt-enter:execute(${${(@s. -> .)$(whence -sp x-terminal-emulator)}[-1]} -e zsh -c {2..} &)+abort'"
+  "--exact"
+  "--no-sort"
+  # "--header='Press <Alt-C> to copy the current selection'"
+)
+
+typeset -xT 'FZF_DEFAULT_COMMAND' 'fzf_default_command' ' '
+fzf_default_command=(
+  "rg"
+  "--files"
+  "--follow"
+  "--hidden"
+  "--no-ignore"
+  "--smart-case"
+)
+
+# brackets
+ZSH_HIGHLIGHT_STYLES[bracket-error]=fg=red
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]=fg=cyan,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]=fg=yellow,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]=fg=blue,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]=fg=magenta,bold
+ZSH_HIGHLIGHT_STYLES[bracket-level-5]=fg=green,bold
+ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]=standout
+
+# cursor
+ZSH_HIGHLIGHT_STYLES[cursor]=standout
+
+# line
+ZSH_HIGHLIGHT_STYLES[line]=
+
+# main
+ZSH_HIGHLIGHT_STYLES[default]=none
+#ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=red,bold
+ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=red
+ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=green,bold
+ZSH_HIGHLIGHT_STYLES[suffix-alias]=fg=green,underline
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=green,underline
+#ZSH_HIGHLIGHT_STYLES[commandseparator]=none
+ZSH_HIGHLIGHT_STYLES[commandseparator]=fg=white,bold
+ZSH_HIGHLIGHT_STYLES[path]=underline
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]=
+ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=
+ZSH_HIGHLIGHT_STYLES[globbing]=fg=blue
+ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=blue
+ZSH_HIGHLIGHT_STYLES[command-substitution]=none
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]=fg=yellow,bold
+ZSH_HIGHLIGHT_STYLES[process-substitution]=none
+ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]=fg=cyan,bold
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=none
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=none
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=fg=cyan
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]=fg=magenta
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=yellow
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=cyan,bold
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]=fg=magenta
+ZSH_HIGHLIGHT_STYLES[rc-quote]=fg=cyan
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=magenta
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=red,bold
+ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]=fg=red,bold
+ZSH_HIGHLIGHT_STYLES[assign]=fg=red,bold
+ZSH_HIGHLIGHT_STYLES[redirection]=fg=white,underline
+ZSH_HIGHLIGHT_STYLES[comment]=fg=black,bg=white
+ZSH_HIGHLIGHT_STYLES[named-fd]=underline
+ZSH_HIGHLIGHT_STYLES[arg0]=fg=blue,bold
+
+# root
+ZSH_HIGHLIGHT_STYLES[root]=standout
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0

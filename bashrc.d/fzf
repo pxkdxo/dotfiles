@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# fzf: configure fzf
+# see fzf(1)
+
+if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]
+then
+  # fzf executable
+  if [[ :${PATH}: != *:${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin:* ]]
+  then
+    export PATH="${PATH:+${PATH}:}${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin"
+  fi
+  # fzf completions
+  if [[ $- == *i* ]]
+  then
+    source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/completion.bash"
+  fi 2> /dev/null 
+  # fzf key bindings
+  source "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.bash"
+fi
+
+fzf_default_opts=(
+  "--bind 'ctrl-r:toggle'"
+  "--bind 'ctrl-\\:cancel'"
+  "--bind 'ctrl-space:jump'"
+  "--bind 'ctrl-b:page-up'"
+  "--bind 'ctrl-f:page-down'"
+  "--bind 'ctrl-j:accept'"
+  "--bind 'ctrl-k:kill-line'"
+  "--bind 'alt-b:backward-word'"
+  "--bind 'alt-f:forward-word'"
+  "--bind 'alt-j:down'"
+  "--bind 'alt-k:up'"
+  "--bind 'alt-w:forward-word'"
+  "--bind 'alt-c:execute-silent(print -f %s {2..} | xclip -sel c)'"
+  "--border"
+  "--color='header:228,info:212,pointer:121,prompt:117'"
+  "--color='bg:234,bg+:234,fg:141,fg+:121,hl:121,hl+:212'"
+  "--color='border:117,marker:212,spinner:215'"
+  "--filepath-word"
+  "--jump-labels='qwertyuiop[]'"
+  "--no-hscroll"
+  "--no-info"
+  "--literal"
+  "--reverse"
+  "--tabstop=4"
+)
+IFS=' ' eval export FZF_DEFAULT_OPTS='"${fzf_default_opts[*]}"'
+unset fzf_default_opts
+
+fzf_ctrl_r_opts=(
+  "--ansi"
+  "--bind 'alt-enter:execute(x-terminal-emulator -e zsh -c {2..} &)'"
+  "--exact"
+  "--no-sort"
+  # "--header='Press <Alt-C> to copy the current selection'"
+)
+IFS=' ' eval export FZF_CTRL_R_OPTS='"${fzf_ctrl_r_opts[*]}"'
+unset fzf_ctrl_r_opts
+
+fzf_default_command=(
+  "rg"
+  "--files"
+  "--follow"
+  "--hidden"
+  "--no-ignore"
+  "--smart-case"
+)
+IFS=' ' eval export FZF_DEFAULT_COMMAND='"${fzf_default_command[*]}"'
+unset fzf_default_command
+
+# vi:et:ft=bash:sts=2:sw=2:ts=8:tw=80

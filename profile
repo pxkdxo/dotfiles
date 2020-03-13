@@ -22,15 +22,15 @@ else
   umask 0022
 fi
 
-# If HOME is unset or NULL, try to set it
-if test -z "${HOME-}"
-then
-  IFS=':' read -r _ _ _ _ _ HOME _
-fi << END
-$(getent passwd -- "${USER:-${UID:-$(id -u)}}" 2> /dev/null)
-END
-export HOME
-
+# # If HOME is unset or NULL, try to set it
+# if test -z "${HOME-}"
+# then
+#   IFS=':' read -r _ _ _ _ _ HOME _
+# fi << END
+# $(getent passwd -- "${USER:-${UID:-$(id -u)}}" 2> /dev/null)
+# END
+# export HOME
+# 
 # # Import user environment from systemd
 # while read -r REPLY
 # do

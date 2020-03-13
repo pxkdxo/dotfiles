@@ -8,58 +8,50 @@ URxvt.cursorBlink: true
 
 ! fonts
 URxvt.font: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Regular, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
 xft:Monofur Nerd Font Mono-16:style=Book, \
+xft:Fantasque Sans Mono-16:style=Regular, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
 xft:mononoki Nerd Font Mono-16:style=Regular, \
 xft:SauceCodePro Nerd Font Mono-15:style=Regular, \
 xft:SpaceMono Nerd Font Mono-16:style=Regular, \
 xft:Ubuntu Mono-16:style=Regular
 
 URxvt.boldFont: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Bold, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
 xft:Monofurbold Nerd Font Mono-16:style=bold, \
+xft:Fantasque Sans Mono-16:style=Bold, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
 xft:mononoki Nerd Font Mono-16:style=Bold, \
 xft:SauceCodePro Nerd Font Mono-15:style=Semibold,Regular, \
 xft:SpaceMono Nerd Font Mono-16:style=Bold, \
 xft:Ubuntu Mono-16:style=Bold
 
 URxvt.italicFont: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Italic, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
 xft:Monofuritalic Nerd Font Mono-16:style=italic, \
+xft:Fantasque Sans Mono-16:style=Italic, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
 xft:mononoki Nerd Font Mono-16:style=Italic, \
 xft:SauceCodePro Nerd Font Mono-15:style=Medium Italic,Italic, \
 xft:SpaceMono Nerd Font Mono-16:style=Italic, \
 xft:Ubuntu Mono-16:style=Italic
 
 URxvt.boldItalicFont: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Bold Italic, \
+xft:HeavyData Nerd Font-16, \
+xft:Fantasque Sans Mono-16:style=Bold Italic, \
 xft:JetBrainsMono Nerd Font Mono-16:style=Bold Italic, \
 xft:SauceCodePro Nerd Font Mono-15:style=Semibold Italic,Italic, \
-xft:HeavyData Nerd Font-14, \
 xft:SpaceMono Nerd Font Mono-16:style=Bold Italic, \
 xft:Ubuntu Mono-16:style=Bold Italic
 
-! some efficiency thing
-URxvt.skipBuiltinGlyphs: true
+URxvt.skipBuiltinGlyphs: True
 
-! horizontal spacing
-URxvt.letterSpace: -1
+URxvt.letterSpace: 0
 
-! word delimiters?
-URxvt.cutchars: "()*,<>[]{}|'"
+URxvt.cutchars: "[]{}()<>|*;,'"
 
-! taken from author (but why?)
 URxvt.internalborder: 0
 
-! terminal bell
-URxvt.urgentOnBell: True
-URxvt.visualBell:   True
-
 ! scrolling
-URxvt.saveLines:          32768
+URxvt.saveLines:          16384
 URxvt.scrollBar:          False
 URxvt.scrollstyle:        rxvt
 URxvt.scrollTtyKeypress:  true
@@ -70,6 +62,10 @@ URxvt.scrollWithBuffer:   true
 URxvt.url-launcher:   /usr/bin/xdg-open
 URxvt.underlineURLs:  True
 URxvt.matcher.button: 1
+
+! terminal bells
+URxvt.urgentOnBell: True
+URxvt.visualBell:   True
 
 ! disable printing terminal contents with PrtSc
 URxvt.print-pipe: "cat 1> /dev/null 2>&1"
