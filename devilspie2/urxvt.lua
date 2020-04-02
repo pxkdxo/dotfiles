@@ -12,5 +12,5 @@ if get_window_class() == "URxvt" then
         set_window_opacity(0.88)
     end
     --]]
-    set_window_opacity(0.90)
+    set_window_opacity(0.91)
 end

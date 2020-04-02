@@ -1,0 +1,40 @@
+! Dazed
+
+! special
+*.foreground:   #f4f4f4
+*.background:   #1e1e1e
+*.cursorColor:  #f4f4f4
+                       
+! black                
+*.color0:       #0a0a0a
+*.color8:       #808080
+                       
+! red                   
+*.color1:       #ff6685
+*.color9:       #ff66a7
+                       
+! green                
+*.color2:       #8ddfa3
+*.color10:      #66ffbe
+                       
+! yellow               
+*.color3:       #f7e561
+*.color11:      #f3ff66
+                       
+! blue                 
+*.color4:       #00dcff
+*.color12:      #66f3ff
+                       
+! magenta              
+*.color5:       #e066ff
+*.color13:      #e184e4
+                       
+! cyan                 
+*.color6:       #00edc9
+*.color14:      #66ffe0
+                       
+! white                
+*.color7:       #cccccc
+*.color15:      #ffffff
+
+! vi:ft=xresources

@@ -3,12 +3,14 @@
 
 if command -v dircolors > /dev/null
 then
-  if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors"
-  then eval "$(dircolors -- "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors")"
-  elif test -f "${HOME}/.dircolors"
-  then eval "$(dircolors -- "${HOME}/.dircolors")"
-  else eval "$(dircolors)"
-  fi
-fi
+  { test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors" &&
+    eval "$(dircolors -- "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors")"
+  } ||
+  { test -f "${HOME}/.dircolors" &&
+    eval "$(dircolors -- "${HOME}/.dircolors")"
+  } ||
+  { eval "$(dircolors)"
+  }
+fi 2> /dev/null
 
 # vim:ft=sh

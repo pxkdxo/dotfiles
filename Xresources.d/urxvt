@@ -1,65 +1,49 @@
 ! Xresources.d/URxvt : URxvt config
 
 ! extensions
-URxvt.perl-ext-common: default,matcher,font-size
+URxvt.perl-ext-common: default,matcher,font-size,-selection-popup,-option-popup
 
 ! cursor
 URxvt.cursorBlink: true
 
 ! fonts
 URxvt.font: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Regular, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
 xft:Monofur Nerd Font Mono-16:style=Book, \
+xft:Fantasque Sans Mono-16:style=Regular, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Regular, \
 xft:mononoki Nerd Font Mono-16:style=Regular, \
-xft:SauceCodePro Nerd Font Mono-15:style=Regular, \
+xft:SauceCodePro Nerd Font Mono-16:style=Regular, \
 xft:SpaceMono Nerd Font Mono-16:style=Regular, \
 xft:Ubuntu Mono-16:style=Regular
 
 URxvt.boldFont: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Bold, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
 xft:Monofurbold Nerd Font Mono-16:style=bold, \
+xft:Fantasque Sans Mono-16:style=Bold, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Bold, \
 xft:mononoki Nerd Font Mono-16:style=Bold, \
-xft:SauceCodePro Nerd Font Mono-15:style=Semibold,Regular, \
+xft:SauceCodePro Nerd Font Mono-16:style=Semibold,Regular, \
 xft:SpaceMono Nerd Font Mono-16:style=Bold, \
 xft:Ubuntu Mono-16:style=Bold
 
 URxvt.italicFont: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Italic, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
 xft:Monofuritalic Nerd Font Mono-16:style=italic, \
+xft:Fantasque Sans Mono-16:style=Italic, \
+xft:JetBrainsMono Nerd Font Mono-16:style=Italic, \
 xft:mononoki Nerd Font Mono-16:style=Italic, \
-xft:SauceCodePro Nerd Font Mono-15:style=Medium Italic,Italic, \
+xft:SauceCodePro Nerd Font Mono-16:style=Medium Italic,Italic, \
 xft:SpaceMono Nerd Font Mono-16:style=Italic, \
 xft:Ubuntu Mono-16:style=Italic
 
-URxvt.boldItalicFont: \
-xft:FantasqueSansMono Nerd Font Mono-16:style=Bold Italic, \
-xft:JetBrainsMono Nerd Font Mono-16:style=Bold Italic, \
-xft:SauceCodePro Nerd Font Mono-15:style=Semibold Italic,Italic, \
-xft:HeavyData Nerd Font-14, \
-xft:SpaceMono Nerd Font Mono-16:style=Bold Italic, \
-xft:Ubuntu Mono-16:style=Bold Italic
+URxvt.skipBuiltinGlyphs: True
 
-! some efficiency thing
-URxvt.skipBuiltinGlyphs: true
+URxvt.letterSpace: 0
 
-! horizontal spacing
-URxvt.letterSpace: -1
-
-! word delimiters?
-URxvt.cutchars: "()*,<>[]{}|'"
-
-! taken from author (but why?)
 URxvt.internalborder: 0
 
-! terminal bell
-URxvt.urgentOnBell: True
-URxvt.visualBell:   True
+URxvt.depth:  24
 
 ! scrolling
-URxvt.saveLines:          32768
+URxvt.saveLines:          16384
 URxvt.scrollBar:          False
 URxvt.scrollstyle:        rxvt
 URxvt.scrollTtyKeypress:  true
@@ -71,47 +55,61 @@ URxvt.url-launcher:   /usr/bin/xdg-open
 URxvt.underlineURLs:  True
 URxvt.matcher.button: 1
 
+! terminal bells
+URxvt.urgentOnBell: True
+URxvt.visualBell:   True
+
 ! disable printing terminal contents with PrtSc
-URxvt.print-pipe: "cat 1> /dev/null 2>&1"
+URxvt.print-pipe: "cat > /dev/null 2>&1"
 
 ! disable ctrl-shift bindings
 URxvt.iso14755:     false
 URxvt.iso14755_52:  false
 
 ! scroll up/down using shift-up/shift-down
-URxvt.keysym.Shift-Up: command:\033]720;1\007
-URxvt.keysym.Shift-Down: command:\033]721;1\007
+URxvt.keysym.S-Up: command:\033]720;1\007
+URxvt.keysym.S-Down: command:\033]721;1\007
+
+! re-bind copy and paste
+URxvt.keysym.C-S-C: eval:selection_to_clipboard
+URxvt.keysym.C-S-V: eval:paste_clipboard
+URxvt.keysym.C-S-P: eval:paste_primary
+URxvt.keysym.C-M-v: builtin-string:
+URxvt.keysym.C-M-c: builtin-string:
+
+! bind alt-s to builtin action
+Rxvt.keysym.M-s: builtin:
 
 ! open and list recent URLs via keyboard
 URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
 
 ! bind arrowkeys and modifiers to xterm sequences (ugh...)
-URxvt.keysym.Shift-Right:               \033[1;2C
-URxvt.keysym.Shift-Left:                \033[1;2D
-URxvt.keysym.Meta-Up:                   \033[1;3A
-URxvt.keysym.Meta-Down:                 \033[1;3B
-URxvt.keysym.Meta-Right:                \033[1;3C
-URxvt.keysym.Meta-Left:                 \033[1;3D
-URxvt.keysym.Meta-Shift-Up:             \033[1;4A
-URxvt.keysym.Meta-Shift-Down:           \033[1;4B
-URxvt.keysym.Meta-Shift-Right:          \033[1;4C
-URxvt.keysym.Meta-Shift-Left:           \033[1;4D
-URxvt.keysym.Control-Up:                \033[1;5A
-URxvt.keysym.Control-Down:              \033[1;5B
-URxvt.keysym.Control-Right:             \033[1;5C
-URxvt.keysym.Control-Left:              \033[1;5D
-URxvt.keysym.Control-Shift-Up:          \033[1;6A
-URxvt.keysym.Control-Shift-Down:        \033[1;6B
-URxvt.keysym.Control-Shift-Right:       \033[1;6C
-URxvt.keysym.Control-Shift-Left:        \033[1;6D
-URxvt.keysym.Control-Meta-Up:           \033[1;7A
-URxvt.keysym.Control-Meta-Down:         \033[1;7B
-URxvt.keysym.Control-Meta-Right:        \033[1;7C
-URxvt.keysym.Control-Meta-Left:         \033[1;7D
-URxvt.keysym.Control-Meta-Shift-Up:     \033[1;8A
-URxvt.keysym.Control-Meta-Shift-Down:   \033[1;8B
-URxvt.keysym.Control-Meta-Shift-Right:  \033[1;8C
-URxvt.keysym.Control-Meta-Shift-Left:   \033[1;8D
+URxvt.keysym.S-Right:     \033[1;2C
+URxvt.keysym.S-Left:      \033[1;2D
+URxvt.keysym.M-Up:        \033[1;3A
+URxvt.keysym.M-Down:      \033[1;3B
+URxvt.keysym.M-Right:     \033[1;3C
+URxvt.keysym.M-Left:      \033[1;3D
+URxvt.keysym.M-S-Up:      \033[1;4A
+URxvt.keysym.M-S-Down:    \033[1;4B
+URxvt.keysym.M-S-Right:   \033[1;4C
+URxvt.keysym.M-S-Left:    \033[1;4D
+URxvt.keysym.C-Up:        \033[1;5A
+URxvt.keysym.C-Down:      \033[1;5B
+URxvt.keysym.C-Right:     \033[1;5C
+URxvt.keysym.C-Left:      \033[1;5D
+URxvt.keysym.C-S-Up:      \033[1;6A
+URxvt.keysym.C-S-Down:    \033[1;6B
+URxvt.keysym.C-S-Right:   \033[1;6C
+URxvt.keysym.C-S-Left:    \033[1;6D
+URxvt.keysym.C-M-Up:      \033[1;7A
+URxvt.keysym.C-M-Down:    \033[1;7B
+URxvt.keysym.C-M-Right:   \033[1;7C
+URxvt.keysym.C-M-Left:    \033[1;7D
+URxvt.keysym.C-M-S-Up:    \033[1;8A
+URxvt.keysym.C-M-S-Down:  \033[1;8B
+URxvt.keysym.C-M-S-Right: \033[1;8C
+URxvt.keysym.C-M-S-Left:  \033[1;8D
 
 ! vim: ft=xdefaults

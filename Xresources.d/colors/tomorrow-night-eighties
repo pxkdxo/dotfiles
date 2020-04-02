@@ -1,0 +1,40 @@
+! Tomorrow Night Eighties
+
+! special
+*.background:   #0d0d0d
+*.foreground:   #f4f4f4
+*.cursorColor:  #f4f4f4
+                       
+! black                
+*.color0:       #2d2d2d
+*.color8:       #808080
+                       
+! red                  
+*.color1:       #f2777a
+*.color9:       #ff6699
+                       
+! green                
+*.color2:       #99cc99
+*.color10:      #77f2b2
+                       
+! yellow               
+*.color3:       #ffcc66
+*.color11:      #e6ff66
+                       
+! blue                 
+*.color4:       #6699cc
+*.color12:      #77b8f2
+                       
+! magenta              
+*.color5:       #cc99cc
+*.color13:      #ff66e6
+                       
+! cyan                 
+*.color6:       #66cccc
+*.color14:      #66e6ff
+
+! white
+*.color7:       #cccccc
+*.color15:      #f4f4f4
+
+! vi:ft=xdefaults

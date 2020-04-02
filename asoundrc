@@ -100,8 +100,8 @@ pcm.dsp0 pcm.duplex0
 
 ctl.mixer0 ctl.dsp0
 
-#ctl.!default ctl.dsp0
-#pcm.!default pcm.dsp0
+ctl.!default ctl.dsp0
+pcm.!default pcm.dsp0
 
 
 # card 1 definitions
@@ -123,8 +123,8 @@ pcm.dsp1 pcm.duplex1
 
 ctl.mixer1 ctl.dsp1
 
-ctl.!default ctl.dsp1
-pcm.!default pcm.dsp1
+#ctl.!default ctl.dsp1
+#pcm.!default pcm.dsp1
 
 
 # vim:ft=alsaconf

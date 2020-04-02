@@ -20,20 +20,59 @@ endif
 set encoding=utf-8
 
 
-" Load filetype plugins & indentation style
-filetype plugin indent on
+"" Disable filetype plugins
+" filetype off
+"
+"" Load plugins with pathogen
+" try
+"   execute pathogen#infect()
+" catch /^Vim(execute):/
+" endtry
+" 
+" " Enable filetype plugins & indentation style
+" filetype plugin indent on
+" 
+" " Perform syntax highlighting
+" if (has("syntax"))
+"   syntax enable
+" endif
 
-" Perform syntax highlighting
-if (has("syntax"))
-  syntax enable
-endif
+
+" Load plugins with vim plug
+"
+call plug#begin(join(split(&runtimepath, ',')[:0] + ['plug'], '/'))
+" NOTE: use single quotes around plugin names
+
+Plug 'jlanzarotta/bufexplorer'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'edkolev/promptline.vim'
+Plug 'rust-lang/rust.vim'
+Plug 'vim-syntastic/syntastic'
+Plug 'edkolev/tmuxline.vim'
+Plug 'rainglow/vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'flazz/vim-colorschemes'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'pangloss/vim-javascript'
+Plug 'rodjek/vim-puppet'
+Plug 'tpope/vim-repeat'
+Plug 'mhinz/vim-startify'
+Plug 'tpope/vim-surround'
 
 
-" Pathogen
-try
-  execute pathogen#infect()
-catch /^Vim(execute):/
-endtry
+call plug#end()
+
+
+" Clear vimrc autocommand group
+augroup vimrc
+  autocmd!
+augroup END
 
 
 " Tabs and Spaces
@@ -51,7 +90,7 @@ set shiftwidth=2
 set softtabstop=2
 
 " Visual width of a tab character (ASCII 0x09)
-set tabstop=8
+set tabstop=4
 
 " Length past which lines will be broken automatically
 set textwidth=79
@@ -90,13 +129,13 @@ endif
 
 " Define a function to set 'colorcolumn' to match all columns past 'texwidth'
 function UpdateColorColumn()
-  if (&textwidth)
-    if (&number || &relativenumber)
+  if &textwidth
+    if &number || &relativenumber
       let l:columns = winwidth(0) - &textwidth - &numberwidth
     else
       let l:columns = winwidth(0) - &textwidth
     endif
-    if (l:columns > 0)
+    if l:columns > 0
       let &colorcolumn = join(map(range(1, l:columns), '"+" . v:val'), ',')
     else
       let &colorcolumn = ''
@@ -108,7 +147,12 @@ endfunction
 call UpdateColorColumn()
 
 " Update 'colorcolumn' upon resizing window
-autocmd VimResized * silent! call UpdateColorColumn()
+autocmd vimrc VimEnter,VimResized * silent! call UpdateColorColumn()
+
+autocmd vimrc OptionSet * silent!
+  \ if <amatch> =~ '^\(\(no)\?relative\)\?\(number\|text\)\(width\)\?$'
+  \ |  call UpdateColorColumn()
+  \ |endif
 
 
 " Window Splitting
@@ -211,10 +255,10 @@ cnoremap <Right> <Space><BS><Right>
 set timeout
 
 " milliseconds to wait for completion of a mapping
-set timeoutlen=987
+set timeoutlen=1000
 
 " milliseconds to wait for completion of a key code
-set ttimeoutlen=89
+set ttimeoutlen=80
 
 
 " History
@@ -228,9 +272,15 @@ set undolevels=2500
 " Always save entire buffer for undo when reloading it
 set undoreload=-1
 
-" Max number of characters that can be typed between swapfile syncs
-set updatecount=80
+" Max characters typed between swapfile syncs
+set updatecount=40
 
+" Max milliseconds elapsed between swapfile syncs (also used by gitgutter)
+set updatetime=200
+
+
+" Tags File Locations
+let &tags = "./.tags,./tags,.tags,tags"
 
 " Swapfile and Undofile
 
@@ -273,12 +323,12 @@ endif
 set directory+=/var/tmp/,/tmp/
 set   undodir+=/var/tmp/,/tmp/
 
-" Make the primary swap directory
+" Create the primary swap directory
 if !(isdirectory(split(&directory, ',')[0]))
   silent! call mkdir(split(&directory, ',')[0], 'p', 0700)
 endif
 
-" Make the primary undo directory
+" Create the primary undo directory
 if !(isdirectory(split(&undodir, ',')[0]))
   silent! call mkdir(split(&undodir, ',')[0], 'p', 0700)
 endif
@@ -303,57 +353,100 @@ endif
 
 " Colors
 
-" Try to guess color capabilities
-if (exists('+termguicolors'))
-  if $TERM =~ '\v^(putty|rxvt|screen)(-.*)?$'
-    let &termguicolors = 0
-  elseif ($TERM =~ '\v^(gnome|iterm|st|vte)(-.*)?$')
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    let &termguicolors = 1
-  elseif ($TERM =~ '\v^(tmux|xterm)(-.*)?$'
-        \ && $XTERM_VERSION != ''
-        \ && $VTE_VERSION != '')
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    let &termguicolors = 1
+" Set 'colors' cap
+if !has('nvim')
+  if $COLORTERM =~? '^truecolor$'
+    let &t_Co = 16777216
+  elseif $COLORTERM =~ '^rxvt-xpm$' || $TERM =~ '^.*-256color\%(-.*\)\?$'
+    let &t_Co = 256
   endif
 endif
 
-" Interpret the value of COLORTERM
-if ($COLORTERM =~? '^\(truecolor\|24-bit\)$')
-  let &t_Co = 16777216
-elseif ($COLORTERM =~ '^[^[:digit:]]*256[^[:digit:]]*$')
-  let &t_Co = 256
+" Try to guess color capabilities
+if (exists('+termguicolors'))
+  if $TERM =~ '^\%(rxvt\|screen\|interix\|putty\)\%(-.*\)\?$'
+      set notermguicolors
+  elseif $TERM =~ '^\%(iterm\|vte\|gnome\|st\)\%(-.*\)\?$'
+    if !has('nvim')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
+    set termguicolors
+  elseif $TERM =~ '^\%(tmux\|xterm\)\%(-.*\)\?$'
+    if $XTERM_VERSION != '' || $VTE_VERSION != '' || $KONSOLE_PROFILE_NAME != ''
+      if !has('nvim')
+        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+      endif
+      set termguicolors
+    else
+      set notermguicolors
+    endif
+  else
+    set notermguicolors
+  endif
 endif
 
-" Set a colorscheme
-if &t_Co >= 256
-  let g:colorschemes = [ 'desertink', 'Benokai', '1989', 'dracula']
+" Choose some colors
+if &termguicolors
+  let g:colorschemes = [
+    \   'neverland2-darker',
+    \   'nightshimmer',
+    \   'neverness',
+    \   'candycode',
+    \   'candy',
+    \   'bubblegum',
+    \ ]
 else
-  let g:colorschemes = ['elflord', 'peachpuff', 'delek', 'desert', 'default']
+  let g:colorschemes = []
+endif
+
+if &t_Co > 255
+  let g:colorschemes = [
+    \   'skittles_berry',
+    \   'squidink',
+    \   'desertink',
+    \   'Tomorrow-Night-Eighties',
+    \   '1989',
+    \   'dracula',
+    \   'Benokai',
+    \   'vice',
+    \   'brogrammer',
+    \   'ego',
+    \   'evolution',
+    \   'lucius',
+    \   'predawn',
+    \ ]
+else
+  let g:colorschemes = [
+    \   'peachpuff',
+    \   'desert',
+    \   'delek',
+    \   'default'
+    \ ]
 endif
 execute join(['colorscheme', g:colorschemes[0]])
 
-" Define a function to rotate the current colorscheme
+" Define a function to rotate the colorscheme
 function RotateColorscheme(n)
-  if (exists('g:colorschemes'))
+  if exists('g:colorschemes')
     try
       let l:start = index(g:colorschemes, g:colors_name)
     catch /^Vim(let)\=:E121/
       let l:start = -1
     endtry
-    if (l:start > -1)
-      let l:index = (l:start + a:n) % len(g:colorschemes)
+    if l:start > -1
+      let l:index = l:start + a:n
     else
       let l:index = 0
     endif
-    while (1)
+    while 1
+      let l:index = l:index % len(g:colorschemes)
       try
         execute join(['colorscheme', g:colorschemes[l:index]])
       catch /^Vim(colorscheme):/
-        if (l:index + 1 != l:start + 1)
-          let l:index = (l:index + 1) % len(g:colorschemes)
+        if l:index != l:start + 1
+          let l:index += 1
           continue
         endif
       endtry
@@ -362,14 +455,32 @@ function RotateColorscheme(n)
   endif
 endfunction
 
-" Rotate to next colorscheme with <Alt-Up>
-nnoremap <silent><M-Up>
-      \ :call RotateColorscheme(1)<CR>
+" F8: Supercharge the current colorscheme
+nnoremap <silent><F8> :
+  \
+  \if exists('g:colors_charged')<Bar>
+  \ execute join(['colorscheme', g:colors_name])<Bar>
+  \ unlet g:colors_charged<Bar>
+  \else<Bar>
+  \ execute join(['colorscheme', 'charge'])<Bar>
+  \ let g:colors_charged = 1<Bar>
+  \endif<CR>
 
-" Rotate to prev colorscheme with <Alt-Down>
-nnoremap <silent><M-Down>
-      \ :call RotateColorscheme(-1)<CR>
+" F9: Rotate to prev colorscheme with <Alt-Down>
+nnoremap <silent><F9> :
+  \
+  \call RotateColorscheme(-1)<Bar>
+  \if exists('g:colors_charged')<Bar>
+  \ unlet g:colors_charged<Bar>
+  \endif<CR>
 
+" F10: Rotate to next colorscheme with <Alt-Up>
+nnoremap <silent><F10> :
+  \
+  \call RotateColorscheme(1)<Bar>
+  \if exists('g:colors_charged')<Bar>
+  \ unlet g:colors_charged<Bar>
+  \endif<CR>
 
 " C / C++
 " Recognize strings & numbers inside comments
@@ -382,21 +493,22 @@ let g:c_gnu = 1
 let g:c_space_errors = 1
 
 " Set local options upon opening a C or C++ file
-autocmd FileType c,cpp
-      \ silent! setlocal cin noet cino=:0,(4 sts=0 sw=4 ts=4
+autocmd vimrc FileType c,cpp
+  \ silent! setlocal cin noet cino=:0,(4 sts=0 sw=4 ts=4
 
 
 " Gitcommit
 
 " Set textwidth for commit messages
-autocmd FileType gitcommit setlocal tw=50
+autocmd vimrc FileType gitcommit
+  \ silent! setlocal tw=50
 
 
 " Markdown
 
 " Set local options for markdown documents (e.g. README, etc.)
-autocmd FileType markdown
-      \ silent! setlocal nonu nornu wrap lbr bri brk=" \t!@?({+-*/;:,."
+autocmd vimrc FileType markdown
+  \ silent! setlocal nonu nornu wrap lbr bri brk=" \t!@?({+-*/;:,."
 
 
 " Man pages
@@ -408,14 +520,15 @@ runtime ftplugin/man.vim
 set keywordprg=:Man
 
 " Set local options for man pages
-autocmd FileType man
-      \ silent! setlocal noma nonu nornu nohid noswf noudf tw=0
+autocmd vimrc FileType man
+  \ silent! setlocal noma nonu nornu nohid noswf noudf tw=0
 
 
 " Python
 
 " Set local options for python scripts
-autocmd FileType python silent! setlocal et sts=4 sw=4 ts=8
+autocmd vimrc FileType python
+  \ silent! setlocal et sts=4 sw=4 ts=8
 
 " Enable all available highlighting
 let g:python_highlight_all = 1
@@ -430,8 +543,6 @@ if (has('pythonx'))
   elseif (has('python2'))
     set pyxversion=2
   endif
-elseif (has('python3'))
-  set pyxversion=2
 endif
 
 
@@ -459,32 +570,43 @@ let g:sh_fold_enabled = 3
 let g:sh_no_error = 1
 
 " Set local options when opening a shell script
-autocmd FileType bash,sh,zsh silent! setlocal et sts=2 sw=2 ts=8
+autocmd vimrc FileType sh,zsh
+  \ silent! setlocal et sts=2 sw=2 ts=4
 
 " Set filetype to sh when editing a shell command line
-if $TMPDIR == ''
-  autocmd BufRead /tmp/bash-fc.*
-        \ setlocal ft=sh noswf noudf|
-        \ let b:is_bash = 1|
-        \ syntax enable
-else
-  autocmd BufRead $TMPDIR/bash-fc.*
-        \ setlocal ft=sh noswf noudf|
-        \ let b:is_bash = 1|
-        \ syntax enable
-endif
+autocmd vimrc BufRead bash-fc.?*
+  \ silent! setlocal ft=sh noswf noudf
+  \ |let b:is_bash = 1
+  \ |syntax enable
 
 
 " help
 
 " Set local options when opening vim help
-autocmd FileType help setlocal noswf noudf
+autocmd vimrc FileType help
+  \ silent! setlocal noswf noudf
 
 
 " CtrlSpace
 
 let g:CtrlSpaceDefaultMappingKey = "<C-Space>"
 
+" FZF
+let g:fzf_colors = {
+  \ 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'],
+  \ }
 
 " Syntastic
 
@@ -504,66 +626,97 @@ let g:airline_right_alt_sep = "\UE0B3"
 if !(exists('g:airline_symbols'))
   let g:airline_symbols = {}
 endif
-let g:airline_symbols.branch = ""
-let g:airline_symbols.crypt = ""
-let g:airline_symbols.dirty = "  "
-let g:airline_symbols.ellipsis = "…"
-let g:airline_symbols.linenr = "﬌ "
-let g:airline_symbols.maxlinenr = ""
-let g:airline_symbols.modified = "  "
-let g:airline_symbols.notexists = ""
-let g:airline_symbols.readonly = ""
-let g:airline_symbols.paste = ""
-let g:airline_symbols.space = " "
-let g:airline_symbols.spell = ""
-let g:airline_symbols.whitespace = ""
-"let g:airline_symbols.readonly = ""
+let g:airline_symbols.branch = ''
+let g:airline_symbols.crypt = ''
+let g:airline_symbols.dirty = '  '
+let g:airline_symbols.ellipsis = '…'
+let g:airline_symbols.linenr = '﬌ '
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.modified = '  '
+let g:airline_symbols.notexists = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.paste = ''
+let g:airline_symbols.space = ' '
+let g:airline_symbols.whitespace = ''
+"let g:airline_symbols.readonly   = ''
 "let g:airline_symbols.dirty      = ''
 "let g:airline_symbols.crypt      = ''
 "let g:airline_symbols.linenr     = ''
 "let g:airline_symbols.maxlinenr  = ''
-"let g:airline_symbols.maxlinenr  = '☰'
-"let g:airline_symbols.whitespace = ''
-"let g:airline_symbols.whitespace = ''
-
+"let g:airline_symbols.spell      = ''
+"let g:airline_symbols.whitespace = ''
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tabline#formatter = "unique_tail_improved"
 let g:airline#extensions#tabline#overflow_marker = '…'
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
 
+" DevIcons
+let g:webdevicons_enable = 1
+let g:webdevicons_enable_nerdtree = 1
+let g:webdevicons_enable_airline_tabline = 1
+let g:webdevicons_enable_airline_statusline = 1
+let g:webdevicons_enable_startify = 1
+let g:webdevicons_gui_glyph_fix = 1
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+" Disable arrow icons at the left side of folder icons
+let g:NERDTreeDirArrowExpandable  = "\u202f"
+let g:NERDTreeDirArrowCollapsible = "\u202f"
+
+" NERDTree git icons
+let g:NERDTreeIndicatorMapCustom = {
+    \   'Modified'  : '',
+    \   'Staged'    : '',
+    \   'Untracked' : '',
+    \   'Renamed'   : '',
+    \   'Unmerged'  : '',
+    \   'Deleted'   : '',
+    \   'Dirty'     : '',
+    \   'Clean'     : '',
+    \   'Ignored'   : '',
+    \   'Unknown'   : '',
+    \ }
+
 " Put some Airline themes in a list
 let g:airline_themes = [
-    \ 'atomic',
-    \ 'biogoo',
-    \ 'tomorrow',
-    \ 'behelit',
-    \ 'kolor',
-    \ 'owo'
+    \   'base16_ashes',
+    \   'biogoo',
+    \   'atomic',
+    \   'tomorrow',
+    \   'behelit',
+    \   'kolor',
+    \   'owo',
+    \   'base16_eighties',
     \ ]
+
 " Set an Airline theme
 let g:airline_theme = g:airline_themes[0]
 
 " Define a function to rotate the Airline theme
 function RotateAirlineTheme(n)
-  if (exists('g:colorschemes'))
+  if exists('g:airline_themes')
     try
       let l:start = index(g:airline_themes, g:airline_theme)
     catch /^Vim(let)\=:E121/
       let l:start = -1
     endtry
-    if (l:start > -1)
-      let l:index = (l:start + a:n) % len(g:airline_themes)
+    if l:start > -1
+      let l:index = l:start + a:n
     else
       let l:index = 0
     endif
-    while (1)
+    while 1
+      let l:index = l:index % len(g:airline_themes)
       try
         execute join(['AirlineTheme', g:airline_themes[l:index]])
       catch /^Vim(AirlineTheme):/
-        if (l:index + 1 != l:start + 1)
-          let l:index = (l:index + 1) % len(g:airline_themes)
+        if l:index + 1 != l:start + 1
+          let l:index += 1
           continue
         endif
       endtry
@@ -572,82 +725,20 @@ function RotateAirlineTheme(n)
   endif
 endfunction
 
-" Rotate to next colorscheme with <Alt-Up>
-nnoremap <silent><C-Up>
-      \ :call RotateAirlineTheme(1)<CR>
+" Esc F9: Rotate to prev colorscheme with <Alt-Down>
+nnoremap <silent><S-F9> :
+  \
+  \call RotateAirlineTheme(-1)<CR>
 
-" Rotate to prev colorscheme with <Alt-Down>
-nnoremap <silent><C-Down>
-      \ :call RotateAirlineTheme(-1)<CR>
+" Esc F10: Rotate to next colorscheme with <Alt-Up>
+nnoremap <silent><S-F10> :
+  \
+  \call RotateAirlineTheme(1)<CR>
 
-" Refresh Airline when the colorscheme changes
-autocmd ColorScheme * silent! AirlineRefresh
-
-
-" DevIcons
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:DevIconsEnableFoldersOpenClose = 1
-let g:webdevicons_gui_glyph_fix = 1
-let g:webdevicons_enable_nerdtree = 1
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:webdevicons_conceal_nerdtree_brackets = 1
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
-
-" Disable arrow icons at the left side of folders for NERDTree.
-"let g:NERDTreeDirArrowExpandable = "\u00a0"
-"let g:NERDTreeDirArrowCollapsible = "\u00a0"
-
-"if !(exists('g:xtabline_settings'))
-"  let g:xtabline_settings = {}
-"  if !(exists('g:xtabline_settings.icons'))
-"    let g:xtabline_settings.icons = {}
-"  endif
-"endif
-"let g:xtabline_settings.icons.apple     = ''
-"let g:xtabline_settings.icons.arrow     = '▶'
-""let g:xtabline_settings.icons.arrow     = ''
-"let g:xtabline_settings.icons.bomb      = ''
-"let g:xtabline_settings.icons.book      = ''
-"let g:xtabline_settings.icons.cross     = ''
-"let g:xtabline_settings.icons.fire      = ''
-"let g:xtabline_settings.icons.flag      = ''
-"let g:xtabline_settings.icons.flag2     = ''
-"let g:xtabline_settings.icons.git       = ''
-"let g:xtabline_settings.icons.git2      = ''
-"let g:xtabline_settings.icons.hammer    = ''
-"let g:xtabline_settings.icons.home      = ''
-"let g:xtabline_settings.icons.lens      = ''
-"let g:xtabline_settings.icons.linux     = ''
-""let g:xtabline_settings.icons.linux     = ''
-"let g:xtabline_settings.icons.lock      = ''
-"let g:xtabline_settings.icons.mail      = ''
-"let g:xtabline_settings.icons.menu      = ''
-"let g:xtabline_settings.icons.netrw     = ''
-"let g:xtabline_settings.icons.palette   = ''
-"let g:xtabline_settings.icons.pin       = ''
-"let g:xtabline_settings.icons.star      = ''
-"let g:xtabline_settings.icons.terminal  = ''
-""let g:xtabline_settings.icons.terminal  = ''
-""let g:xtabline_settings.icons.terminal  = ''
-"let g:xtabline_settings.icons.tick      = ''
-"let g:xtabline_settings.icons.warning   = ''
-"let g:xtabline_settings.icons.windows   = ''
-
-
-" NERDTree git icons
-let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "",
-    \ "Staged"    : "",
-    \ "Untracked" : "",
-    \ "Renamed"   : "",
-    \ "Unmerged"  : "",
-    \ "Deleted"   : "",
-    \ "Dirty"     : "",
-    \ "Clean"     : "",
-    \ 'Ignored'   : '',
-    \ "Unknown"   : ""
-    \ }
+" Refresh airline when the colorscheme changes
+autocmd vimrc ColorScheme *
+  \
+  \silent! AirlineRefresh
 
 
 " Mappings
@@ -655,82 +746,86 @@ let g:NERDTreeIndicatorMapCustom = {
 " Set a key to act as <leader> in mappings
 let g:mapleader = ','
 
-" Create tab
-nnoremap <silent><leader>c
-      \ :tabnew<CR>
-
 " Next tab
-nnoremap <silent><leader>n
-      \ :tabnext<CR>
-nnoremap <silent><M-Right>
-      \ :tabnext<CR>
+nnoremap <silent><M-Right> :
+  \
+  \tabnext<CR>
 
 " Previous tab
-nnoremap <silent><leader>p
-      \ :tabprev<CR>
-nnoremap <silent><M-Left>
-      \ :tabprev<CR>
+nnoremap <silent><M-Left> :
+  \
+  \tabprev<CR>
+
+" Create tab
+nnoremap <silent><leader>c :
+  \
+  \tabnew<CR>
 
 " Destroy tab
-nnoremap <silent><leader>x
-      \ :tabprev<CR>
+nnoremap <silent><leader>x :
+  \
+  \tabprev<CR>
 
-" F7: Toggle syntax highlighting
-nnoremap <silent><F7>
-      \ :if exists('g:syntax_on')<Bar>
-      \ syntax off<Bar>
-      \ else<Bar>
-      \ syntax enable<Bar>
-      \ endif<CR>
+" Insert: Toggle 'paste' mode
+nnoremap <silent><Insert> :
+  \
+  \set paste!<CR>
 
-" F8: Toggle search highlighting
-nnoremap <silent><F8> :setlocal hlsearch!<CR>
+set pastetoggle=<Insert>
 
-" F9: Toggle line numbers
-nnoremap <silent><F9> :let &l:nu = !&l:nu<Bar>let &l:rnu = &l:nu<CR>
 
-" F10: Toggle paste mode
-nnoremap <silent><F10> :setlocal paste!<CR>
+" F6: Toggle line numbers
+nnoremap <silent><F6> :
+  \
+  \let &l:nu = !&l:nu<Bar>
+  \let &l:rnu = &l:nu<CR>
+
+" F7: Toggle search highlighting
+nnoremap <silent><F7> :
+  \
+  \setlocal hlsearch!<CR>
 
 " Insert a shebang as the first line
-autocmd FileType * nnoremap <silent><leader>#!
-      \ ggI<C-R>=
-      \ substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
-      \ <ESC>``
+nnoremap <silent><leader>#! ggI<C-R>=
+  \
+  \substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
+  \<ESC>``
 
 " Search forward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern
-vnoremap <silent> *
-      \ :<C-U>let old_reg=getreg('"')<Bar>
-      \ let old_regtype=getregtype('"')<CR>
-      \ gvy/<C-R><C-R>=
-      \ substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-      \ gV:call setreg('"',old_reg,old_regtype)<CR>
+vnoremap <silent> * :
+  \
+  \<C-U>let old_reg=getreg('"')<Bar>
+  \let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=
+  \substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+  \gV:call setreg('"',old_reg,old_regtype)<CR>
 
 " Search backward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern
-vnoremap <silent> #
-      \ :<C-U>let old_reg=getreg('"')<Bar>
-      \ let old_regtype=getregtype('"')<CR>
-      \ gvy?<C-R><C-R>=
-      \ substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-      \ gV:call setreg('"',old_reg,old_regtype)<CR>
+vnoremap <silent> # :
+  \
+  \<C-U>let old_reg=getreg('"')<Bar>
+  \let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=
+  \substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+  \gV:call setreg('"',old_reg,old_regtype)<CR>
 
-" Map  xterm sequences for <C-Arrow>
-map! <ESC>[1;5A <C-Up>
-map! <ESC>[1;5B <C-Down>
-map! <ESC>[1;5C <C-Right>
-map! <ESC>[1;5D <C-Left>
-nmap <ESC>[1;5A <C-Up>
-nmap <ESC>[1;5B <C-Down>
-nmap <ESC>[1;5C <C-Right>
-nmap <ESC>[1;5D <C-Left>
-vmap <ESC>[1;5A <C-Up>
-vmap <ESC>[1;5B <C-Down>
-vmap <ESC>[1;5C <C-Right>
-vmap <ESC>[1;5D <C-Left>
+" Map xterm sequences for <S-Arrow> combinations
+map! <ESC>[1;2A <S-Up>
+map! <ESC>[1;2B <S-Down>
+map! <ESC>[1;2C <S-Right>
+map! <ESC>[1;2D <S-Left>
+nmap <ESC>[1;2A <S-Up>
+nmap <ESC>[1;2B <S-Down>
+nmap <ESC>[1;2C <S-Right>
+nmap <ESC>[1;2D <S-Left>
+vmap <ESC>[1;2A <S-Up>
+vmap <ESC>[1;2B <S-Down>
+vmap <ESC>[1;2C <S-Right>
+vmap <ESC>[1;2D <S-Left>
 
-" Map  xterm sequences for <M-Arrow>
+" Map xterm sequences for <M-Arrow> combinations
 map! <ESC>[1;3A <M-Up>
 map! <ESC>[1;3B <M-Down>
 map! <ESC>[1;3C <M-Right>
@@ -744,6 +839,151 @@ vmap <ESC>[1;3B <M-Down>
 vmap <ESC>[1;3C <M-Right>
 vmap <ESC>[1;3D <M-Left>
 
+" Map xterm sequences for <M-S-Arrow> combinations
+map! <ESC>[1;4A <M-S-Up>
+map! <ESC>[1;4B <M-S-Down>
+map! <ESC>[1;4C <M-S-Right>
+map! <ESC>[1;4D <M-S-Left>
+nmap <ESC>[1;4A <M-S-Up>
+nmap <ESC>[1;4B <M-S-Down>
+nmap <ESC>[1;4C <M-S-Right>
+nmap <ESC>[1;4D <M-S-Left>
+vmap <ESC>[1;4A <M-S-Up>
+vmap <ESC>[1;4B <M-S-Down>
+vmap <ESC>[1;4C <M-S-Right>
+vmap <ESC>[1;4D <M-S-Left>
+
+" Map xterm sequences for <C-Arrow> combinations
+map! <ESC>[1;5A <C-Up>
+map! <ESC>[1;5B <C-Down>
+map! <ESC>[1;5C <C-Right>
+map! <ESC>[1;5D <C-Left>
+nmap <ESC>[1;5A <C-Up>
+nmap <ESC>[1;5B <C-Down>
+nmap <ESC>[1;5C <C-Right>
+nmap <ESC>[1;5D <C-Left>
+vmap <ESC>[1;5A <C-Up>
+vmap <ESC>[1;5B <C-Down>
+vmap <ESC>[1;5C <C-Right>
+vmap <ESC>[1;5D <C-Left>
+
+" Map xterm sequences for <C-S-Arrow> combinations
+map! <ESC>[1;6A <C-S-Up>
+map! <ESC>[1;6B <C-S-Down>
+map! <ESC>[1;6C <C-S-Right>
+map! <ESC>[1;6D <C-S-Left>
+nmap <ESC>[1;6A <C-S-Up>
+nmap <ESC>[1;6B <C-S-Down>
+nmap <ESC>[1;6C <C-S-Right>
+nmap <ESC>[1;6D <C-S-Left>
+vmap <ESC>[1;6A <C-S-Up>
+vmap <ESC>[1;6B <C-S-Down>
+vmap <ESC>[1;6C <C-S-Right>
+vmap <ESC>[1;6D <C-S-Left>
+
+" Map xterm sequences for <C-M-Arrow> combinations
+map! <ESC>[1;7A <C-M-Up>
+map! <ESC>[1;7B <C-M-Down>
+map! <ESC>[1;7C <C-M-Right>
+map! <ESC>[1;7D <C-M-Left>
+nmap <ESC>[1;7A <C-M-Up>
+nmap <ESC>[1;7B <C-M-Down>
+nmap <ESC>[1;7C <C-M-Right>
+nmap <ESC>[1;7D <C-M-Left>
+vmap <ESC>[1;7A <C-M-Up>
+vmap <ESC>[1;7B <C-M-Down>
+vmap <ESC>[1;7C <C-M-Right>
+vmap <ESC>[1;7D <C-M-Left>
+
+" Map xterm sequences for <C-M-S-Arrow> combinations
+map! <ESC>[1;8A <C-M-S-Up>
+map! <ESC>[1;8B <C-M-S-Down>
+map! <ESC>[1;8C <C-M-S-Right>
+map! <ESC>[1;8D <C-M-S-Left>
+nmap <ESC>[1;8A <C-M-S-Up>
+nmap <ESC>[1;8B <C-M-S-Down>
+nmap <ESC>[1;8C <C-M-S-Right>
+nmap <ESC>[1;8D <C-M-S-Left>
+vmap <ESC>[1;8A <C-M-S-Up>
+vmap <ESC>[1;8B <C-M-S-Down>
+vmap <ESC>[1;8C <C-M-S-Right>
+vmap <ESC>[1;8D <C-M-S-Left>
+
+" Map xterm sequences for <Fn> keys
+map! <ESC>OP   <F1>
+map! <ESC>OQ   <F2>
+map! <ESC>OR   <F3>
+map! <ESC>OS   <F4>
+map! <ESC>[15~ <F5>
+map! <ESC>[17~ <F6>
+map! <ESC>[18~ <F7>
+map! <ESC>[19~ <F8>
+map! <ESC>[20~ <F9>
+map! <ESC>[21~ <F10>
+map! <ESC>[23~ <F11>
+map! <ESC>[24~ <F12>
+nmap <ESC>OP   <F1> 
+nmap <ESC>OQ   <F2> 
+nmap <ESC>OR   <F3> 
+nmap <ESC>OS   <F4> 
+nmap <ESC>[15~ <F5> 
+nmap <ESC>[17~ <F6> 
+nmap <ESC>[18~ <F7> 
+nmap <ESC>[19~ <F8> 
+nmap <ESC>[20~ <F9> 
+nmap <ESC>[21~ <F10>
+nmap <ESC>[23~ <F11>
+nmap <ESC>[24~ <F12>
+vmap <ESC>OP   <F1> 
+vmap <ESC>OQ   <F2> 
+vmap <ESC>OR   <F3> 
+vmap <ESC>OS   <F4> 
+vmap <ESC>[15~ <F5> 
+vmap <ESC>[17~ <F6> 
+vmap <ESC>[18~ <F7> 
+vmap <ESC>[19~ <F8> 
+vmap <ESC>[20~ <F9> 
+vmap <ESC>[21~ <F10>
+vmap <ESC>[23~ <F11>
+vmap <ESC>[24~ <F12>
+
+" Map xterm sequences for <S-Fn> combinations
+map! <ESC>[23~   <S-F1>
+map! <ESC>[24~   <S-F2>
+map! <ESC>[1;2P  <S-F3>
+map! <ESC>[1;2Q  <S-F4>
+map! <ESC>[1;2R  <S-F5>
+map! <ESC>[1;2S  <S-F6>
+map! <ESC>[15;2~ <S-F7>
+map! <ESC>[17;2~ <S-F8>
+map! <ESC>[18;2~ <S-F9>
+map! <ESC>[19;2~ <S-F10>
+map! <ESC>[23;2~ <S-F11>
+map! <ESC>[24;2~ <S-F12>
+nmap <ESC>[23~   <S-F1>
+nmap <ESC>[24~   <S-F2>
+nmap <ESC>[1;2P  <S-F3>
+nmap <ESC>[1;2Q  <S-F4>
+nmap <ESC>[1;2R  <S-F5>
+nmap <ESC>[1;2S  <S-F6>
+nmap <ESC>[15;2~ <S-F7>
+nmap <ESC>[17;2~ <S-F8>
+nmap <ESC>[18;2~ <S-F9>
+nmap <ESC>[19;2~ <S-F10>
+nmap <ESC>[23;2~ <S-F11>
+nmap <ESC>[24;2~ <S-F12>
+vmap <ESC>[23~   <S-F1>
+vmap <ESC>[24~   <S-F2>
+vmap <ESC>[1;2P  <S-F3>
+vmap <ESC>[1;2Q  <S-F4>
+vmap <ESC>[1;2R  <S-F5>
+vmap <ESC>[1;2S  <S-F6>
+vmap <ESC>[15;2~ <S-F7>
+vmap <ESC>[17;2~ <S-F8>
+vmap <ESC>[18;2~ <S-F9>
+vmap <ESC>[19;2~ <S-F10>
+vmap <ESC>[23;2~ <S-F11>
+vmap <ESC>[24;2~ <S-F12>
 
 " End
 
