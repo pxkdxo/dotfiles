@@ -1,59 +1,40 @@
 ! 1984-black
 
 !special
-*background:    #080808
-*.background:   #080808
-*foreground:    #eeeeee
+*.background:   #0a0a0a
 *.foreground:   #eeeeee
-*cursorColor:   #e0e0e0
-*.cursorColor:  #e0e0e0
+*.cursorColor:  #c0c0c0
 
 ! black
-*color0:        #0e0e0e
-*.color0:       #0e0e0e
-*color8:        #484848
-*.color8:       #484848
+*.color0:       #202020
+*.color8:       #464646
 
 ! red                  
-*color1:        #ff162b
 *.color1:       #ff162b
-*color9:        #ff16b0
 *.color9:       #ff16b0
 
 ! green                
-*color2:        #79ff16
 *.color2:       #79ff16
-*color10:       #b3ff16
 *.color10:      #b3ff16
 
 ! yellow               
-*color3:        #ffd716
 *.color3:       #ffd716
-*color11:       #ffea16
 *.color11:      #ffea16
 
 ! blue                 
-*color4:        #169fff
 *.color4:       #169fff
-*color12:       #46bdff
 *.color12:      #46bdff
 
 ! magenta              
-*color5:        #d716ff
 *.color5:       #d716ff
-*color13:       #f806fa
 *.color13:      #f806fa
 
 ! cyan                 
-*color6:        #59e1e3
 *.color6:       #59e1e3
-*color14:       #16ffb0
 *.color14:      #16ffb0
 
 ! white                
-*color7:        #cdcdcd
 *.color7:       #cdcdcd
-*color15:       #fdfdfd
 *.color15:      #fdfdfd
 
 ! vi:ft=xdefaults

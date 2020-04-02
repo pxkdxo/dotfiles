@@ -22,32 +22,32 @@ else
   umask 0022
 fi
 
-# # If HOME is unset or NULL, try to set it
-# if test -z "${HOME-}"
-# then
-#   IFS=':' read -r _ _ _ _ _ HOME _
-# fi << END
-# $(getent passwd -- "${USER:-${UID:-$(id -u)}}" 2> /dev/null)
-# END
-# export HOME
-# 
-# # Import user environment from systemd
-# while read -r REPLY
-# do
-#   case "${REPLY%%=*}" in
-#     *[!0-9A-Za-z_]*)
-#       ;;
-#     ?*)
-#       if eval test -z '"${'"${REPLY%%=*}"'+_}"'
-#       then
-#         eval export "${REPLY}"
-#       fi
-#       ;;
-#   esac
-# done << STOP
-# $(systemctl --user show-environment 2>/dev/null)
-# STOP
-# unset -v REPLY
+# If HOME is unset or NULL, try to set it
+if test -z "${HOME-}"
+then
+  IFS=':' read -r _ _ _ _ _ HOME _
+fi << END
+$(getent passwd -- "${USER:-${UID:-$(id -u)}}" 2> /dev/null)
+END
+export HOME
+
+# Import user environment from systemd
+while read -r REPLY
+do
+  case "${REPLY%%=*}" in
+    (*[!0-9A-Za-z_]*)
+      ;;
+    (?*)
+      if eval test -z '"${'"${REPLY%%=*}"'+_}"'
+      then
+        eval export "${REPLY}"
+      fi
+      ;;
+  esac
+done << STOP
+$(systemctl --user show-environment 2>/dev/null)
+STOP
+unset -v REPLY
 
 # Prepend executable paths
 if test -d "${HOME}/.bin"

@@ -1,9 +1,13 @@
 ! ~/.Xresources: X resources user config
 
 !#include ".Xresources.d/colors/1984"
+!#include ".Xresources.d/colors/1984-black"
+#include ".Xresources.d/colors/1989"
+!#include ".Xresources.d/colors/dazed"
 !#include ".Xresources.d/colors/electricity"
 !#include ".Xresources.d/colors/splash"
-#include ".Xresources.d/colors/1984-black"
+!#include ".Xresources.d/colors/tomorrow-night-eighties"
+!#include ".Xresources.d/colors/vice"
 #include ".Xresources.d/xterm"
 #include ".Xresources.d/urxvt"
 #include ".Xresources.d/xcursor"

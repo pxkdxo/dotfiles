@@ -1,0 +1,14 @@
+[Unit]
+Description=Start a detached tmux session
+Documentation=man:tmux(1)
+
+[Service]
+Type=forking
+ExecStartPre=/usr/bin/tmux start-server
+ExecStart=/usr/bin/tmux new-session -t %u -d
+ExecReload=/usr/bin/tmux refresh-client
+ExecStop=/usr/bin/tmux kill-server
+Restart=always
+
+[Install]
+WantedBy=default.target

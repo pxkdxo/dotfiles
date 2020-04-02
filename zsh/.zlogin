@@ -14,9 +14,10 @@
 #$(systemctl --user show-environment 2> /dev/null)
 #STOP
 
-# # Start an Xsession upon an initial console login at tty1
-# if [[ -z ${DISPLAY-} ]] && (( XDG_VTNR == 1 )) && command -v startx > /dev/null
-# then exec startx
-# fi
+# Start an Xsession upon an login at tty1
+if [[ $- == *i* && -z ${DISPLAY-} && ${XDG_VTNR} -eq 1 ]] && command -v startx >/dev/null
+then
+  exec startx
+fi
 
 # vi:ft=zsh

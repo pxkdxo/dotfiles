@@ -1,12 +1,12 @@
 /**
- * ROFI Color theme
- * User: pat
+ * rofi dmenu theme 
  */
+
 * {
     background-color:   rgba(  34,  34,  34, 100 % );
     border-color:       rgba( 248, 248, 255, 100 % );
     text-color:         rgba( 248, 248, 255, 100 % );
-    font:               "FuraCode Nerd Font Mono 14";
+    font:               "Fantasque Sans Mono 14";
 }
 
 configuration {

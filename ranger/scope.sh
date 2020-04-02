@@ -44,10 +44,10 @@ dump() { /bin/echo "$output"; }
 trim() { head -n "$maxln"; }
 
 # wraps highlight to treat exit code 141 (killed by SIGPIPE) as success
-safepipe() { "$@"; test $? = 0 -o $? = 141; }
+safepipe() { "$@"; test "$?" -eq 0 || test "$?" -eq 141 || return 1; }
 
 # Image previews, if enabled in ranger.
-if [ "$preview_images" = "True" ]; then
+if test "$preview_images" = "True"; then
     case "$mimetype" in
         # Image previews for SVG files, disabled by default.
         image/svg+xml)
@@ -105,6 +105,8 @@ case "$mimetype" in
             pygmentize_format=terminal
             highlight_format=ansi
         fi
+        
+        try bat --style=numbers --color=always --paging=never "$path" && { dump | trim; exit 5; }
         try safepipe highlight --out-format=${highlight_format} "$path" && { dump | trim; exit 5; }
         try safepipe pygmentize -f ${pygmentize_format} "$path" && { dump | trim; exit 5; }
         exit 2;;
