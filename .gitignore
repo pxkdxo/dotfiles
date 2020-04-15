@@ -73,6 +73,7 @@
 !/vim/vimrc
 !/xinitrc
 !/xinitrc.d/**
+!/xsession
 !/xserverrc
 !/zlogin
 !/zlogout
