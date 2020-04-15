@@ -52,4 +52,4 @@
 *.color7:       #cccccc
 *.color15:      #ffffff
 
-# vi:ft=xresources
+! vi:ft=xresources

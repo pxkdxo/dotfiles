@@ -28,10 +28,10 @@ set encoding=utf-8
 "   execute pathogen#infect()
 " catch /^Vim(execute):/
 " endtry
-" 
+"
 " " Enable filetype plugins & indentation style
 " filetype plugin indent on
-" 
+"
 " " Perform syntax highlighting
 " if (has("syntax"))
 "   syntax enable
@@ -64,7 +64,6 @@ Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
-
 
 call plug#end()
 
@@ -403,8 +402,8 @@ endif
 
 if &t_Co > 255
   let g:colorschemes = [
-    \   'skittles_berry',
     \   'squidink',
+    \   'skittles_berry',
     \   'desertink',
     \   'Tomorrow-Night-Eighties',
     \   '1989',
@@ -684,13 +683,13 @@ let g:NERDTreeIndicatorMapCustom = {
 
 " Put some Airline themes in a list
 let g:airline_themes = [
+    \   'owo',
     \   'base16_ashes',
     \   'biogoo',
     \   'atomic',
     \   'tomorrow',
     \   'behelit',
     \   'kolor',
-    \   'owo',
     \   'base16_eighties',
     \ ]
 
@@ -725,12 +724,12 @@ function RotateAirlineTheme(n)
   endif
 endfunction
 
-" Esc F9: Rotate to prev colorscheme with <Alt-Down>
+" Shift F9: Rotate to prev airline theme
 nnoremap <silent><S-F9> :
   \
   \call RotateAirlineTheme(-1)<CR>
 
-" Esc F10: Rotate to next colorscheme with <Alt-Up>
+" Shift F10: Rotate to next airline theme
 nnoremap <silent><S-F10> :
   \
   \call RotateAirlineTheme(1)<CR>
@@ -909,11 +908,15 @@ vmap <ESC>[1;8B <C-M-S-Down>
 vmap <ESC>[1;8C <C-M-S-Right>
 vmap <ESC>[1;8D <C-M-S-Left>
 
-" Map xterm sequences for <Fn> keys
+" Map xterm and rxvt escape sequences for <Fn> keys
 map! <ESC>OP   <F1>
 map! <ESC>OQ   <F2>
 map! <ESC>OR   <F3>
 map! <ESC>OS   <F4>
+map! <ESC>[11~ <F1>
+map! <ESC>[12~ <F2>
+map! <ESC>[13~ <F3>
+map! <ESC>[14~ <F4>
 map! <ESC>[15~ <F5>
 map! <ESC>[17~ <F6>
 map! <ESC>[18~ <F7>
@@ -922,32 +925,40 @@ map! <ESC>[20~ <F9>
 map! <ESC>[21~ <F10>
 map! <ESC>[23~ <F11>
 map! <ESC>[24~ <F12>
-nmap <ESC>OP   <F1> 
-nmap <ESC>OQ   <F2> 
-nmap <ESC>OR   <F3> 
-nmap <ESC>OS   <F4> 
-nmap <ESC>[15~ <F5> 
-nmap <ESC>[17~ <F6> 
-nmap <ESC>[18~ <F7> 
-nmap <ESC>[19~ <F8> 
-nmap <ESC>[20~ <F9> 
+nmap <ESC>OP   <F1>
+nmap <ESC>OQ   <F2>
+nmap <ESC>OR   <F3>
+nmap <ESC>OS   <F4>
+nmap <ESC>[11~ <F1>
+nmap <ESC>[12~ <F2>
+nmap <ESC>[13~ <F3>
+nmap <ESC>[14~ <F4>
+nmap <ESC>[15~ <F5>
+nmap <ESC>[17~ <F6>
+nmap <ESC>[18~ <F7>
+nmap <ESC>[19~ <F8>
+nmap <ESC>[20~ <F9>
 nmap <ESC>[21~ <F10>
 nmap <ESC>[23~ <F11>
 nmap <ESC>[24~ <F12>
-vmap <ESC>OP   <F1> 
-vmap <ESC>OQ   <F2> 
-vmap <ESC>OR   <F3> 
-vmap <ESC>OS   <F4> 
-vmap <ESC>[15~ <F5> 
-vmap <ESC>[17~ <F6> 
-vmap <ESC>[18~ <F7> 
-vmap <ESC>[19~ <F8> 
-vmap <ESC>[20~ <F9> 
+vmap <ESC>OP   <F1>
+vmap <ESC>OQ   <F2>
+vmap <ESC>OR   <F3>
+vmap <ESC>OS   <F4>
+vmap <ESC>[11~ <F1>
+vmap <ESC>[12~ <F2>
+vmap <ESC>[13~ <F3>
+vmap <ESC>[14~ <F4>
+vmap <ESC>[15~ <F5>
+vmap <ESC>[17~ <F6>
+vmap <ESC>[18~ <F7>
+vmap <ESC>[19~ <F8>
+vmap <ESC>[20~ <F9>
 vmap <ESC>[21~ <F10>
 vmap <ESC>[23~ <F11>
 vmap <ESC>[24~ <F12>
 
-" Map xterm sequences for <S-Fn> combinations
+" Map xterm and rxvt escape sequences for <S-Fn> combinations
 map! <ESC>[23~   <S-F1>
 map! <ESC>[24~   <S-F2>
 map! <ESC>[1;2P  <S-F3>
@@ -960,6 +971,16 @@ map! <ESC>[18;2~ <S-F9>
 map! <ESC>[19;2~ <S-F10>
 map! <ESC>[23;2~ <S-F11>
 map! <ESC>[24;2~ <S-F12>
+map! <ESC>[25~   <S-F3>
+map! <ESC>[26~   <S-F4>
+map! <ESC>[28~   <S-F5>
+map! <ESC>[29~   <S-F6>
+map! <ESC>[31~   <S-F7>
+map! <ESC>[32~   <S-F8>
+map! <ESC>[33~   <S-F9>
+map! <ESC>[34~   <S-F10>
+map! <ESC>[23$   <S-F11>
+map! <ESC>[24$   <S-F12>
 nmap <ESC>[23~   <S-F1>
 nmap <ESC>[24~   <S-F2>
 nmap <ESC>[1;2P  <S-F3>
@@ -972,6 +993,16 @@ nmap <ESC>[18;2~ <S-F9>
 nmap <ESC>[19;2~ <S-F10>
 nmap <ESC>[23;2~ <S-F11>
 nmap <ESC>[24;2~ <S-F12>
+nmap <ESC>[25~   <S-F3>
+nmap <ESC>[26~   <S-F4>
+nmap <ESC>[28~   <S-F5>
+nmap <ESC>[29~   <S-F6>
+nmap <ESC>[31~   <S-F7>
+nmap <ESC>[32~   <S-F8>
+nmap <ESC>[33~   <S-F9>
+nmap <ESC>[34~   <S-F10>
+nmap <ESC>[23$   <S-F11>
+nmap <ESC>[24$   <S-F12>
 vmap <ESC>[23~   <S-F1>
 vmap <ESC>[24~   <S-F2>
 vmap <ESC>[1;2P  <S-F3>
@@ -984,6 +1015,16 @@ vmap <ESC>[18;2~ <S-F9>
 vmap <ESC>[19;2~ <S-F10>
 vmap <ESC>[23;2~ <S-F11>
 vmap <ESC>[24;2~ <S-F12>
+vmap <ESC>[25~   <S-F3>
+vmap <ESC>[26~   <S-F4>
+vmap <ESC>[28~   <S-F5>
+vmap <ESC>[29~   <S-F6>
+vmap <ESC>[31~   <S-F7>
+vmap <ESC>[32~   <S-F8>
+vmap <ESC>[33~   <S-F9>
+vmap <ESC>[34~   <S-F10>
+vmap <ESC>[23$   <S-F11>
+vmap <ESC>[24$   <S-F12>
 
 " End
 
