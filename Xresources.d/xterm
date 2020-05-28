@@ -1,7 +1,7 @@
 ! Xresources.d/XTerm: XTerm resources
 
 ! Term
-XTerm*termName: xterm-256color
+!XTerm*termName: xterm-256color
 XTerm*ttyModes: erase ^? start ^- stop ^-
 
 ! Window
@@ -51,8 +51,8 @@ XTerm*cursorBlink: true
 
 ! Fonts (TrueType)
 XTerm*VT100*faceName: \
-xft:Fantasque Sans Mono:style=Regular
-!xft:Monofur Nerd Font Mono, \
+xft:Monofur Nerd Font Mono:style=Book
+!xft:Fantasque Sans Nerd Font Mono:style=Regular, \
 !xft:JetBrainsMono Nerd Font Mono:style=Regular, \
 !xft:DaddyTimeMono Nerd Font Mono:style=Book, \
 !xft:mononoki Nerd Font Mono:style=Regular, \
@@ -60,13 +60,13 @@ xft:Fantasque Sans Mono:style=Regular
 !xft:SauceCodePro Nerd Font Mono:style=Regular, \
 !xft:Ubuntu Mono:style=Regular
 
-XTerm*VT100*faceSize : 17
-XTerm*VT100*faceSize1: 14
-XTerm*VT100*faceSize2: 15
-XTerm*VT100*faceSize3: 16
-XTerm*VT100*faceSize4: 18
-XTerm*VT100*faceSize5: 19
-XTerm*VT100*faceSize6: 20
+XTerm*VT100*faceSize : 16
+XTerm*VT100*faceSize1: 13
+XTerm*VT100*faceSize2: 14
+XTerm*VT100*faceSize3: 15
+XTerm*VT100*faceSize4: 17
+XTerm*VT100*faceSize5: 18
+XTerm*VT100*faceSize6: 19
 
 ! Fonts (UTF-8)
 XTerm*VT100*utf8Fonts.font:  -*-terminus-medium-*-*-*-15-*-*-*-*-*-iso10646-1

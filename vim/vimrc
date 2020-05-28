@@ -1,18 +1,18 @@
 " vimrc: vim initialization script
 
 " Use vim defaults - not vi
-if (&compatible)
+if &compatible
   set nocompatible
 endif
 
 " Use vim defaults even if +eval is missing
-silent! while (0)
+silent! while 0
 set nocompatible
 silent! endwhile
 
 
 " Skip the rest in VSCode
-if (exists('g:vscode'))
+if exists('g:vscode')
   finish
 endif
 
@@ -69,9 +69,11 @@ call plug#end()
 
 
 " Clear vimrc autocommand group
-augroup vimrc
-  autocmd!
-augroup END
+if has('autocmd')
+  augroup vimrc
+    autocmd!
+  augroup END
+endif
 
 
 " Tabs and Spaces
@@ -89,10 +91,10 @@ set shiftwidth=2
 set softtabstop=2
 
 " Visual width of a tab character (ASCII 0x09)
-set tabstop=4
+set tabstop=8
 
 " Length past which lines will be broken automatically
-set textwidth=79
+set textwidth=80
 
 
 " Display and Verbosity
@@ -122,7 +124,7 @@ set title
 let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
 
 " Show lines that don't fit as @@@ and nonprintable characters as hexadecimal
-if (v:version >= 800)
+if v:version >= 800
   set display=truncate,uhex
 endif
 
@@ -146,12 +148,18 @@ endfunction
 call UpdateColorColumn()
 
 " Update 'colorcolumn' upon resizing window
-autocmd vimrc VimEnter,VimResized * silent! call UpdateColorColumn()
 
-autocmd vimrc OptionSet * silent!
-  \ if <amatch> =~ '^\(\(no)\?relative\)\?\(number\|text\)\(width\)\?$'
-  \ |  call UpdateColorColumn()
-  \ |endif
+if has('autocmd')
+  autocmd vimrc FocusGained,VimEnter,VimResized *
+    \ silent! call UpdateColorColumn()
+endif
+
+if has('autocmd')
+  autocmd vimrc OptionSet *
+    \silent! if <amatch> =~ '^\(\(no)\?relative\)\?\(number\|text\)\(width\)\?$'
+    \|  call UpdateColorColumn()
+    \|endif
+endif
 
 
 " Window Splitting
@@ -284,7 +292,7 @@ let &tags = "./.tags,./tags,.tags,tags"
 " Swapfile and Undofile
 
 " Check undofile capability and use if using swapfile
-if (has('persistent_undo'))
+if has('persistent_undo')
   let &undofile = &swapfile
 endif
 
@@ -293,20 +301,20 @@ set directory=
 set   undodir=
 
 " Append XDG_DATA_HOME if non-null
-if ($XDG_DATA_HOME != '')
+if $XDG_DATA_HOME != ''
   set directory+=$XDG_DATA_HOME/vim/swap/
   set   undodir+=$XDG_DATA_HOME/vim/undo/
 endif
 
 " Append XDG_CACHE_HOME if non-null
-if ($XDG_CACHE_HOME != '')
+if $XDG_CACHE_HOME != ''
   set directory+=$XDG_CACHE_HOME/vim/swap/
   set   undodir+=$XDG_CACHE_HOME/vim/undo/
 endif
 
 " Append first element of 'runtimepath'
-if !(empty(split(&runtimepath, ',')))
-  if (&directory == '')
+if !empty(split(&runtimepath, ','))
+  if &directory == ''
     let &directory = split(&runtimepath, ',')[0] . '/swap/'
   else
     let &directory .= ',' . split(&runtimepath, ',')[0] . '/swap/'
@@ -323,12 +331,12 @@ set directory+=/var/tmp/,/tmp/
 set   undodir+=/var/tmp/,/tmp/
 
 " Create the primary swap directory
-if !(isdirectory(split(&directory, ',')[0]))
+if !isdirectory(split(&directory, ',')[0])
   silent! call mkdir(split(&directory, ',')[0], 'p', 0700)
 endif
 
 " Create the primary undo directory
-if !(isdirectory(split(&undodir, ',')[0]))
+if !isdirectory(split(&undodir, ',')[0])
   silent! call mkdir(split(&undodir, ',')[0], 'p', 0700)
 endif
 
@@ -342,9 +350,9 @@ set belloff=all
 " Mouse
 
 " Enable the mouse
-if (has('mouse'))
+if has('mouse')
   set mouse=a
-  if (has('mouse_sgr'))
+  if has('mouse_sgr')
     set ttymouse=sgr
   endif
 endif
@@ -362,7 +370,7 @@ if !has('nvim')
 endif
 
 " Try to guess color capabilities
-if (exists('+termguicolors'))
+if exists('+termguicolors')
   if $TERM =~ '^\%(rxvt\|screen\|interix\|putty\)\%(-.*\)\?$'
       set notermguicolors
   elseif $TERM =~ '^\%(iterm\|vte\|gnome\|st\)\%(-.*\)\?$'
@@ -387,43 +395,47 @@ if (exists('+termguicolors'))
 endif
 
 " Choose some colors
+let g:colorschemes = []
+
 if &termguicolors
   let g:colorschemes = [
-    \   'neverland2-darker',
     \   'nightshimmer',
-    \   'neverness',
+    \   '3dglasses',
+    \   'grunge-contrast',
+    \   'grunge',
     \   'candycode',
+    \   'neonwave',
+    \   'afterglow',
+    \   'kiss',
+    \   'neverland2-darker',
+    \   'neverland2',
     \   'candy',
-    \   'bubblegum',
+    \   'fruity',
+    \   'darkZ',
     \ ]
-else
-  let g:colorschemes = []
-endif
 
-if &t_Co > 255
+elseif &t_Co > 16
   let g:colorschemes = [
     \   'squidink',
     \   'skittles_berry',
-    \   'desertink',
     \   'Tomorrow-Night-Eighties',
+    \   'desertink',
     \   '1989',
-    \   'dracula',
-    \   'Benokai',
     \   'vice',
-    \   'brogrammer',
-    \   'ego',
+    \   'Benokai',
+    \   'dracula',
     \   'evolution',
     \   'lucius',
-    \   'predawn',
     \ ]
-else
+
+elseif &t_Co > 0
   let g:colorschemes = [
-    \   'peachpuff',
+    \   'evening',
     \   'desert',
-    \   'delek',
     \   'default'
     \ ]
 endif
+
 execute join(['colorscheme', g:colorschemes[0]])
 
 " Define a function to rotate the colorscheme
@@ -454,18 +466,15 @@ function RotateColorscheme(n)
   endif
 endfunction
 
-" F8: Supercharge the current colorscheme
-nnoremap <silent><F8> :
+" F10: Rotate to next colorscheme with <F10>
+nnoremap <silent><F10> :
   \
+  \call RotateColorscheme(1)<Bar>
   \if exists('g:colors_charged')<Bar>
-  \ execute join(['colorscheme', g:colors_name])<Bar>
   \ unlet g:colors_charged<Bar>
-  \else<Bar>
-  \ execute join(['colorscheme', 'charge'])<Bar>
-  \ let g:colors_charged = 1<Bar>
   \endif<CR>
 
-" F9: Rotate to prev colorscheme with <Alt-Down>
+" F9: Rotate to prev colorscheme with <F9>
 nnoremap <silent><F9> :
   \
   \call RotateColorscheme(-1)<Bar>
@@ -473,13 +482,17 @@ nnoremap <silent><F9> :
   \ unlet g:colors_charged<Bar>
   \endif<CR>
 
-" F10: Rotate to next colorscheme with <Alt-Up>
-nnoremap <silent><F10> :
+" F8: Supercharge the current colorscheme with <F8>
+nnoremap <silent><F8> :
   \
-  \call RotateColorscheme(1)<Bar>
   \if exists('g:colors_charged')<Bar>
+  \ execute join(['colorscheme', g:colors_name])<Bar>
   \ unlet g:colors_charged<Bar>
+  \else<Bar>
+  \ execute join(['colorscheme', 'charged-256'])<Bar>
+  \ let g:colors_charged = 1<Bar>
   \endif<CR>
+
 
 " C / C++
 " Recognize strings & numbers inside comments
@@ -492,22 +505,35 @@ let g:c_gnu = 1
 let g:c_space_errors = 1
 
 " Set local options upon opening a C or C++ file
-autocmd vimrc FileType c,cpp
-  \ silent! setlocal cin noet cino=:0,(4 sts=0 sw=4 ts=4
+if has('autocmd')
+  autocmd vimrc FileType c,cpp
+    \ silent! setlocal cin cino=:0,(8 noet sts=0 sw=8 ts=8
+endif
 
 
 " Gitcommit
 
 " Set textwidth for commit messages
-autocmd vimrc FileType gitcommit
-  \ silent! setlocal tw=50
+if has('autocmd')
+  autocmd vimrc FileType gitcommit
+    \ silent! setlocal
+    \ textwidth=50
+endif
 
 
 " Markdown
 
 " Set local options for markdown documents (e.g. README, etc.)
-autocmd vimrc FileType markdown
-  \ silent! setlocal nonu nornu wrap lbr bri brk=" \t!@?({+-*/;:,."
+if has('autocmd')
+  autocmd vimrc FileType markdown
+    \ silent! setlocal
+    \ nonumber
+    \ norelativenumber
+    \ wrap
+    \ linebreak
+    \ breakindent
+    \ breakat=" \t!@?({+-*/;:,."
+endif
 
 
 " Man pages
@@ -519,15 +545,31 @@ runtime ftplugin/man.vim
 set keywordprg=:Man
 
 " Set local options for man pages
-autocmd vimrc FileType man
-  \ silent! setlocal noma nonu nornu nohid noswf noudf tw=0
+if has('autocmd')
+  autocmd vimrc FileType man
+    \ silent! setlocal
+    \ nohidden
+    \ nomodifiable
+    \ nonumber
+    \ norelativenumber
+    \ noswapfile
+    \ noundofile
+    \ textwidth=0
+endif
 
 
 " Python
 
 " Set local options for python scripts
-autocmd vimrc FileType python
-  \ silent! setlocal et sts=4 sw=4 ts=8
+if has('autocmd')
+  autocmd vimrc FileType python
+    \ silent! setlocal
+    \ expandtab
+    \ softtabstop=4
+    \ shiftwidth=4
+    \ tabstop=8
+    \ textwidth=80
+endif
 
 " Enable all available highlighting
 let g:python_highlight_all = 1
@@ -536,10 +578,10 @@ let g:python_highlight_all = 1
 let g:syntastic_python_checkers = ['pep8', 'pylint', 'python3']
 
 " Set the default version for pyx commands
-if (has('pythonx'))
-  if (has('python3'))
+if has('pythonx')
+  if has('python3')
     set pyxversion=3
-  elseif (has('python2'))
+  elseif has('python2')
     set pyxversion=2
   endif
 endif
@@ -569,42 +611,67 @@ let g:sh_fold_enabled = 3
 let g:sh_no_error = 1
 
 " Set local options when opening a shell script
-autocmd vimrc FileType sh,zsh
-  \ silent! setlocal et sts=2 sw=2 ts=4
+if has("autocmd")
+  autocmd vimrc FileType sh,zsh
+    \ silent! setlocal
+    \ expandtab
+    \ softtabstop=2
+    \ shiftwidth=2
+    \ tabstop=8
+endif
 
 " Set filetype to sh when editing a shell command line
-autocmd vimrc BufRead bash-fc.?*
-  \ silent! setlocal ft=sh noswf noudf
-  \ |let b:is_bash = 1
-  \ |syntax enable
+if has("autocmd")
+  autocmd vimrc BufRead bash-fc.?*
+    \ silent! setlocal
+    \ filetype=sh
+    \ noswapfile
+    \ noundofile
+    \|let b:is_bash = 1
+    \|syntax enable
+endif
 
 
 " help
 
 " Set local options when opening vim help
-autocmd vimrc FileType help
-  \ silent! setlocal noswf noudf
+if has("autocmd")
+  autocmd vimrc FileType help
+    \ silent! setlocal
+    \ noswapfile
+    \ noundofile
+endif
 
 
-" CtrlSpace
+" Fallback syntax completion
+if has("autocmd") && exists("+omnifunc")
+  autocmd Filetype *
+    \ if &omnifunc == ''
+    \|  setlocal omnifunc=syntaxcomplete#Complete
+    \|endif
+endif
 
-let g:CtrlSpaceDefaultMappingKey = "<C-Space>"
+
+" CtrlP
+
+let g:ctrlp_map = '<C-@>'
+
 
 " FZF
 let g:fzf_colors = {
-  \ 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'],
+  \   'fg':       ['fg', 'Normal'],
+  \   'bg':       ['bg', 'Normal'],
+  \   'hl':       ['fg', 'Comment'],
+  \   'fg+':      ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \   'bg+':      ['bg', 'CursorLine', 'CursorColumn'],
+  \   'hl+':      ['fg', 'Statement'],
+  \   'info':     ['fg', 'PreProc'],
+  \   'border':   ['fg', 'Ignore'],
+  \   'prompt':   ['fg', 'Conditional'],
+  \   'pointer':  ['fg', 'Exception'],
+  \   'marker':   ['fg', 'Keyword'],
+  \   'spinner':  ['fg', 'Label'],
+  \   'header':   ['fg', 'Comment'],
   \ }
 
 " Syntastic
@@ -625,23 +692,24 @@ let g:airline_right_alt_sep = "\UE0B3"
 if !(exists('g:airline_symbols'))
   let g:airline_symbols = {}
 endif
-let g:airline_symbols.branch = ''
-let g:airline_symbols.crypt = ''
-let g:airline_symbols.dirty = '  '
-let g:airline_symbols.ellipsis = '…'
-let g:airline_symbols.linenr = '﬌ '
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.modified = '  '
-let g:airline_symbols.notexists = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.paste = ''
-let g:airline_symbols.space = ' '
-let g:airline_symbols.whitespace = ''
+let g:airline_symbols.branch      = ''
+let g:airline_symbols.crypt       = ''
+let g:airline_symbols.dirty       = '  '
+let g:airline_symbols.ellipsis    = '…'
+let g:airline_symbols.linenr      = '﬌ '
+let g:airline_symbols.maxlinenr   = ''
+let g:airline_symbols.modified    = '  '
+let g:airline_symbols.notexists   = ''
+let g:airline_symbols.readonly    = ''
+let g:airline_symbols.paste       = ''
+let g:airline_symbols.space       = ' '
+let g:airline_symbols.whitespace  = ''
 "let g:airline_symbols.readonly   = ''
 "let g:airline_symbols.dirty      = ''
 "let g:airline_symbols.crypt      = ''
 "let g:airline_symbols.linenr     = ''
 "let g:airline_symbols.maxlinenr  = ''
+"let g:airline_symbols.notexists  = ''
 "let g:airline_symbols.spell      = ''
 "let g:airline_symbols.whitespace = ''
 
@@ -664,8 +732,8 @@ let g:DevIconsEnableFoldersOpenClose = 1
 let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 
 " Disable arrow icons at the left side of folder icons
-let g:NERDTreeDirArrowExpandable  = "\u202f"
-let g:NERDTreeDirArrowCollapsible = "\u202f"
+let g:NERDTreeDirArrowExpandable  = "\U202F"
+let g:NERDTreeDirArrowCollapsible = "\U202F"
 
 " NERDTree git icons
 let g:NERDTreeIndicatorMapCustom = {

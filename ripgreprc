@@ -3,7 +3,6 @@
 --auto-hybrid-regex
 --color=auto
 --follow
---hidden
 --smart-case
 
 # vim:ft=conf

@@ -1,12 +1,12 @@
-# .gitignore: whitelist for untracked files - see gitignore(5)
+# .gitignore: repo whitelist
+# see gitignore(5)
 
-# ignore everything...
+# ignore everything except directories
 *
+!*/
 
-# but descend into directories
-*/
 
-# and whitelist specific items
+# now whitelist the following files
 !.gitignore
 !/README.md
 !/Xresources
@@ -33,17 +33,14 @@
 !/inputrc
 !/inputrc.d/**
 !/mpd/mpd.conf
-!/mpv
-!/mutt
 !/nanorc
 !/ncmpcpp/config
+!/nvim/autoload/**
 !/nvim/bundle
-!/nvim/colors
+!/nvim/colors/**
 !/nvim/init.vim
-!/nvim/pack
-!/nvim/plug
-!/nvim/plugin
-!/nvim/syntax
+!/nvim/plugin/**
+!/nvim/syntax/**
 !/oh-my-zsh/custom/**
 !/pam_environment
 !/profile
@@ -64,11 +61,10 @@
 !/user-dirs.dirs
 !/user-dirs.locale
 !/user-tmpfiles.d/**
+!/vim/autoload/**
 !/vim/bundle
 !/vim/colors/**
-!/vim/pack
-!/vim/plug
-!/vim/plugin
+!/vim/plugin/**
 !/vim/syntax/**
 !/vim/vimrc
 !/xinitrc
@@ -91,6 +87,23 @@
 !/zshenv
 !/zshrc
 
-# ignore tags
+
+# ignore common index files
+.DS_Store
+.vscode
+
+# ignore python bytecode
+*.py[cod]
+
+# ignore object files
+*.so
+
+# ignore temporary files
+*~
+*.sw[op]
+
+# ignore tags files
+**/tags
 **/.tags
+**/TAGS
 **/.TAGS

@@ -1,2023 +1,783 @@
-  0   0   0		black
-  0   0   0		gray0
-  0   0   0		grey0
-  0   0 128		NavyBlue
-  0   0 128		navy
-  0   0 128		navy blue
-  0   0 128		navyblue
-  0   0 139		DarkBlue
-  0   0 139		blue3
-  0   0 139		blue4
-  0   0 139		dark blue
-  0   0 205		MediumBlue
-  0   0 205		blue2
-  0   0 205		medium blue
-  0   0 205		mediumblue
-  0   0 238		blue1
-  0   0 255		blue
-  0   1  51		verydarkblue
-  0   2  46		darknavyblue
-  0   3  91		darkblue
-  0   4  53		darknavy
-  0  45   4		darkforestgreen
-  0  69 119		prussianblue
-  0  82  73		darkbluegreen
-  0  85  90		deepteal
-  0  95 106		petrol
-  0 100   0		DarkGreen
-  0 100   0		dark green
-  0 100   0		darkgreen
-  0 104 139		DeepSkyBlue4
-  0 104 139		deepskyblue3
-  0 104 139		deepskyblue4
-  0 128   0		WebGreen
-  0 128   0		web green
-  0 128   0		webgreen
-  0 128 128		teal
-  0 134 139		turquoise4
-  0 139   0		green3
-  0 139   0		green4
-  0 139  69		SpringGreen4
-  0 139  69		springgreen3
-  0 139  69		springgreen4
-  0 139 139		DarkCyan
-  0 139 139		cyan1
-  0 139 139		cyan4
-  0 139 139		dark cyan
-  0 147  55		kelleygreen
-  0 154 205		DeepSkyBlue3
-  0 154 205		deepskyblue2
-  0 178 238		DeepSkyBlue2
-  0 178 238		deepskyblue1
-  0 191 255		DeepSkyBlue
-  0 191 255		DeepSkyBlue1
-  0 191 255		deep sky blue
-  0 191 255		deepskyblue
-  0 197 205		turquoise3
-  0 205   0		green2
-  0 205 102		SpringGreen3
-  0 205 102		springgreen2
-  0 205 205		cyan0
-  0 205 205		cyan3
-  0 206 209		DarkTurquoise
-  0 206 209		dark turquoise
-  0 206 209		darkturquoise
-  0 229 238		turquoise2
-  0 238   0		green1
-  0 238 118		SpringGreen2
-  0 238 118		springgreen1
-  0 238 238		cyan
-  0 238 238		cyan2
-  0 245 255		turquoise1
-  0 250 154		MediumSpringGreen
-  0 250 154		medium spring green
-  0 250 154		mediumspringgreen
-  0 251 176		greenishturquoise
-  0 255   0		X11Green
-  0 255   0		green
-  0 255   0		lime
-  0 255   0		x11 green
-  0 255   0		x11green
-  0 255 127		SpringGreen
-  0 255 127		SpringGreen1
-  0 255 127		spring green
-  0 255 127		springgreen
-  0 255 255		aqua
-  1  15 204		trueblue
-  1  21  62		navy0
-  1  56 106		marineblue
-  1  65 130		darkishblue
-  1  70   0		racinggreen
-  1  77  78		darkteal
-  1  84 130		deepseablue
-  1 101 252		brightblue
-  1 103 149		peacockblue
-  1 115 113		darkaquamarine
-  1 115 116		deepturquoise
-  1 122 121		bluegreen
-  1 123 146		ocean
-  1 136 159		tealblue
-  1 149  41		irishgreen
-  1 160  73		emerald
-  1 180  76		shamrock
-  1 192 141		greenblue
-  1 249 198		brightteal
-  1 255   7		brightgreen
-  2   0  53		midnightblue
-  2   3 226		pureblue
-  2   6 111		darkroyalblue
-  2  27 249		richblue
-  2  89  15		deepgreen
-  2 143  30		emeraldgreen
-  2 147 134		teal0
-  2 171  46		kellygreen
-  2 193  77		shamrockgreen
-  2 204 254		brightskyblue
-  2 216 233		aquablue
-  3   1  45		midnight
-  3   3   3		gray1
-  3   3   3		grey1
-  3   7 100		darkblue0
-  3  10 167		cobaltblue
-  3  53   0		darkgreen0
-  3  57 248		vibrantblue
-  3  67 223		blue0
-  3 113 156		oceanblue
-  4   2 115		deepblue
-  4   3  72		nightblue
-  4  46  96		marine
-  4  74   5		bottlegreen
-  4  92  90		darkturquoise0
-  4 116 149		seablue
-  4 130  67		junglegreen
-  4 133 209		cerulean
-  4 216 178		aquamarine0
-  4 217 255		neonblue
-  4 244 137		turquoisegreen
-  5   4 170		royalblue
-  5   5   5		gray2
-  5   5   5		grey13
-  5   5   5		grey2
-  5  71  42		evergreen
-  5  72  13		britishracinggreen
-  5  73   7		darkgreen1
-  5 105 107		darkaqua
-  5 110 238		ceruleanblue
-  5 255 166		brightseagreen
-  6  46   3		verydarkgreen
-  6  71  12		forestgreen0
-  6  82 255		electricblue
-  6 154 243		azure0
-  6 177 196		turquoiseblue
-  6 180 139		greenblue1
-  6 194 172		turquoise
-  7  13  13		almostblack
-  8   4 249		primaryblue
-  8   8   8		gray3
-  8   8   8		grey24
-  8   8   8		grey3
-  8 120 127		deepaqua
-  8 148   4		truegreen
-  8 255   8		fluorescentgreen
- 10  10  10		gray4
- 10  10  10		grey35
- 10  10  10		grey4
- 10  67 122		twilightblue
- 10  72  30		pinegreen
- 10  95  56		spruce
- 10 136 138		darkcyan
- 10 221   8		vibrantgreen
- 10 255   2		flurogreen
- 11  64   8		huntergreen
- 11  85   9		forest
- 11 139 135		greenishblue
- 11 247 125		mintygreen
- 11 249 234		brightaqua
- 12   6 247		strongblue
- 12  23 147		royal
- 12 181 119		greenteal
- 12 220 115		tealishgreen
- 12 255  12		neongreen
- 13  13  13		gray5
- 13  13  13		grey45
- 13  13  13		grey5
- 13 117 248		deepskyblue0
- 14 135 204		waterblue
- 15  15  15		gray6
- 15  15  15		grey56
- 15  15  15		grey6
- 15 155 142		bluegreen0
- 15 254 249		brightturquoise
- 16  78 139		DodgerBlue4
- 16  78 139		dodgerblue3
- 16  78 139		dodgerblue4
- 16 122 176		niceblue
- 16 166 116		bluishgreen
- 17 135  93		darkseagreen0
- 18  18  18		gray7
- 18  18  18		grey67
- 18  18  18		grey7
- 18 225 147		aquagreen
- 19 126 109		bluegreen1
- 19 187 175		topaz
- 19 234 201		aqua0
- 20  20  20		gray8
- 20  20  20		grey78
- 20  20  20		grey8
- 21  46 255		vividblue
- 21  68   6		forrestgreen
- 21  80 132		lightnavy
- 21 176  26		green0
- 23  23  23		gray9
- 23  23  23		grey89
- 23  23  23		grey9
- 24   5 219		ultramarineblue
- 24 116 205		DodgerBlue3
- 24 116 205		dodgerblue2
- 24 209 123		seaweed
- 25  25 112		MidnightBlue
- 25  25 112		midnight blue
- 25  25 112		midnightblue0
- 26  26  26		gray10
- 26  26  26		grey10
- 27  36  49		dark
- 27 252   6		highlightergreen
- 28  28  28		gray11
- 28  28  28		grey11
- 28 134 238		DodgerBlue2
- 28 134 238		dodgerblue1
- 29   2   0		verydarkbrown
- 29  93 236		azul
- 30  72 143		cobalt
- 30 144 255		DodgerBlue
- 30 144 255		DodgerBlue1
- 30 144 255		dodger blue
- 30 144 255		dodgerblue
- 30 145 103		viridian
- 30 248 118		spearmint
- 31   9  84		darkindigo
- 31  31  31		gray12
- 31  31  31		grey12
- 31  59  77		darkbluegrey
- 31  99  87		darkgreenblue
- 31 167 116		jade
- 31 181 122		darkseafoam
- 32   0 177		ultramarine
- 32 178 170		LightSeaGreen
- 32 178 170		light sea green
- 32 178 170		lightseagreen
- 32 178 170		lightseagreen0
- 32 192 115		darkmintgreen
- 32 249 134		wintergreen
- 33  33  33		gray13
- 33  56 171		sapphire
- 33  71  97		darkslateblue
- 33 195 111		algaegreen
- 33 252  13		electricgreen
- 34  66 199		blueblue
- 34 139  34		ForestGreen
- 34 139  34		forest green
- 34 139  34		forestgreen
- 35 196 139		greenblue0
- 36  36  36		gray14
- 36  36  36		grey14
- 36 122 253		clearblue
- 36 188 168		tealish
- 37 163 111		tealgreen
- 37 255  41		hotgreen
- 38  38  38		gray15
- 38  38  38		grey15
- 38  83 141		duskblue
- 38 247 253		brightlightblue
- 39  64 139		RoyalBlue4
- 39  64 139		royalblue4
- 39 106 179		midblue
- 40   1  55		midnightpurple
- 40 124  55		darkishgreen
- 41  41  41		gray16
- 41  41  41		grey16
- 41  70  91		darkgreyblue
- 41 118 187		bluish
- 42   1  52		verydarkpurple
- 42 126  25		treegreen
- 42 254 183		greenishcyan
- 43  43  43		gray17
- 43  43  43		grey17
- 43  93  52		pine
- 43 175 106		jadegreen
- 43 177 121		blueygreen
- 44 250  31		radioactivegreen
- 45 254  84		brightlightgreen
- 46  46  46		gray18
- 46  46  46		grey18
- 46  90 136		lightnavyblue
- 46 139  87		SeaGreen
- 46 139  87		SeaGreen4
- 46 139  87		sea green
- 46 139  87		seagreen
- 46 139  87		seagreen4
- 46 232 187		aquamarine1
- 47  79  79		DarkSlateGray
- 47  79  79		DarkSlateGrey
- 47  79  79		dark slate gray
- 47  79  79		dark slate grey
- 47  79  79		darkslategray
- 47  79  79		darkslategrey
- 47 239  16		vividgreen
- 48  48  48		gray19
- 48  48  48		grey19
- 49 102 138		uglyblue
- 50 191 132		greenishteal
- 50 205  50		LimeGreen
- 50 205  50		lime green
- 50 205  50		limegreen
- 50 205  50		limegreen0
- 51  51  51		gray20
- 51  51  51		grey20
- 51 184 100		coolgreen
- 52   1  63		darkviolet0
- 52  28   2		darkbrown
- 52  56  55		charcoal
- 53   6  62		darkpurple
- 53  83  10		navygreen
- 53 173 107		seaweedgreen
- 54   1  63		deeppurple
- 54  54  54		gray21
- 54  54  54		grey21
- 54  55  55		darkgrey0
- 54 100 139		SteelBlue4
- 54 100 139		steelblue4
- 55  62   2		darkolive
- 55 120 191		windowsblue
- 56   2 130		indigo
- 56   8  53		eggplant
- 56  56  56		gray22
- 56  56  56		grey22
- 56 128   4		darkgrassgreen
- 57 173  72		mediumgreen
- 58  24 177		indigoblue
- 58  46 254		lightroyalblue
- 58  95 205		RoyalBlue3
- 58  95 205		royalblue3
- 58 229 127		weirdgreen
- 59  59  59		gray23
- 59  59  59		grey23
- 59  91 146		denimblue
- 59  99 140		denim
- 59 113 159		mutedblue
- 60   0   8		darkmaroon
- 60  65  66		charcoalgrey
- 60  77   3		darkolivegreen
- 60 115 168		flatblue
- 60 153 146		sea
- 60 179 113		MediumSeaGreen
- 60 179 113		medium sea green
- 60 179 113		mediumseagreen
- 61   7  52		aubergine
- 61  28   2		chocolate0
- 61  61  61		gray24
- 61 122 253		lightishblue
- 61 153 115		oceangreen
- 62 130 252		dodgerblue0
- 62 175 118		darkseafoamgreen
- 63   1  44		darkplum
- 63 130 157		dirtyblue
- 63 155  11		grassgreen
- 64  64  64		gray25
- 64  64  64		grey25
- 64 163 104		greenish
- 64 224 208		turquoise0
- 64 253  20		poisongreen
- 65   2   0		deepbrown
- 65  25   0		chocolatebrown
- 65 105 225		RoyalBlue
- 65 105 225		royal blue
- 65 105 225		royalblue0
- 65 156   3		grassygreen
- 65 253 254		brightcyan
- 66  66  66		gray26
- 66  66  66		grey26
- 66 179 149		greenyblue
- 67   5  65		eggplantpurple
- 67 107 173		frenchblue
- 67 110 238		RoyalBlue2
- 67 110 238		royalblue2
- 67 205 128		SeaGreen3
- 67 205 128		seagreen3
- 68 142 228		darkskyblue
- 69  69  69		gray27
- 69  69  69		grey27
- 69 139   0		chartreuse3
- 69 139   0		chartreuse4
- 69 139 116		aquamarine4
- 70  65 150		blueberry
- 70 130 180		SteelBlue
- 70 130 180		steel blue
- 70 130 180		steelblue
- 71  60 139		SlateBlue4
- 71  60 139		slateblue4
- 71  71  71		gray28
- 71  71  71		grey28
- 71  95 148		duskyblue
- 72  61 139		DarkSlateBlue
- 72  61 139		dark slate blue
- 72  61 139		darkslateblue0
- 72 118 255		RoyalBlue1
- 72 118 255		royalblue1
- 72 192 114		darkmint
- 72 209 204		MediumTurquoise
- 72 209 204		medium turquoise
- 72 209 204		mediumturquoise
- 73   6  72		deepviolet
- 73 117 156		dullblue
- 73 132 184		coolblue
- 74   1   0		mahogany
- 74  74  74		gray29
- 74  74  74		grey29
- 74 112 139		SkyBlue4
- 74 112 139		skyblue4
- 75   0 110		royalpurple
- 75   0 130		indigo0
- 75   1   1		driedblood
- 75  87 219		warmblue
- 75  93  22		armygreen
- 75  97  19		camouflagegreen
- 76 144 133		dustyteal
- 77  77  77		gray30
- 77  77  77		grey30
- 77 164   9		lawngreen0
- 78   5  80		plumpurple
- 78  81 139		twilight
- 78  84 129		dusk
- 78 116 150		cadetblue
- 78 238 148		SeaGreen2
- 78 238 148		seagreen2
- 78 253  84		lightneongreen
- 79  79  79		gray31
- 79  79  79		grey31
- 79 115 142		metallicblue
- 79 145  83		lightforestgreen
- 79 148 205		SteelBlue3
- 79 148 205		steelblue3
- 80 123 156		stormyblue
- 80 167  71		midgreen
- 81  10 201		violetblue
- 81 101 114		slate
- 81 112 215		cornflowerblue0
- 81 183  59		leafygreen
- 82  82  82		gray32
- 82  82  82		grey32
- 82 101  37		camogreen
- 82 139 139		DarkSlateGray4
- 82 139 139		darkslategray4
- 82 139 139		darkslategrey3
- 83  60 198		bluewithahintofpurple
- 83  98 103		gunmetal
- 83 134 139		CadetBlue4
- 83 134 139		cadetblue4
- 83 252 161		seagreen0
- 83 254  92		lightbrightgreen
- 84  78   3		greenbrown
- 84  84  84		gray33
- 84  84  84		grey33
- 84 139  84		PaleGreen4
- 84 139  84		palegreen3
- 84 139  84		palegreen4
- 84 141  68		ferngreen
- 84 172 104		algae
- 84 255 159		SeaGreen1
- 84 255 159		seagreen1
- 85  26 139		purple4
- 85  57 204		blurple
- 85 107  47		DarkOliveGreen
- 85 107  47		dark olive green
- 85 107  47		darkolivegreen0
- 86 132 174		offblue
- 86 174  87		darkpastelgreen
- 86 252 162		lightgreenblue
- 87  41 206		bluepurple
- 87  87  87		gray34
- 87  87  87		grey34
- 88  15  65		plum0
- 88 188   8		froggreen
- 89  89  89		gray35
- 89 101 109		slategrey0
- 89 133  86		darksage
- 90   6 239		bluepurple0
- 90 125 154		steelblue0
- 90 134 173		dustyblue
- 91 124 153		slateblue0
- 92  92  92		gray36
- 92  92  92		grey36
- 92 139  21		sapgreen
- 92 169   4		leafgreen
- 92 172  45		grass
- 92 172 238		SteelBlue2
- 92 172 238		steelblue2
- 92 178   0		kermitgreen
- 93   6 233		blueviolet0
- 93  20  81		grapepurple
- 93  33 208		purpleblue
- 93  71 139		MediumPurple4
- 93  71 139		mediumpurple4
- 94  94  94		gray37
- 94  94  94		grey37
- 94 129 157		greyishblue
- 94 155 138		greyteal
- 94 220  31		greenapple
- 95  52 231		purpleyblue
- 95 158 143		dullteal
- 95 158 160		CadetBlue
- 95 158 160		cadet blue
- 95 158 160		cadetblue0
- 95 160  82		mutedgreen
- 96  30 249		purplishblue
- 96  70  15		mudbrown
- 96 102   2		mudgreen
- 96 123 139		LightSkyBlue4
- 96 123 139		lightskyblue4
- 96 124 142		bluegrey1
- 97   0  35		burgundy
- 97  64 239		purpleishblue
- 97  97  97		gray38
- 97  97  97		grey38
- 97 222  42		toxicgreen
- 97 225  96		lightishgreen
- 98  65 199		blueypurple
- 98  88 196		iris
- 99  45 233		purpleblue0
- 99  99  99		gray39
- 99  99  99		grey39
- 99 139  39		mossygreen
- 99 169  80		fern
- 99 179 101		boringgreen
- 99 184 255		SteelBlue1
- 99 184 255		steelblue1
- 99 247 180		lightgreenishblue
-100  84   3		olivebrown
-100 125 142		greyblue
-100 136 234		softblue
-100 149 237		CornflowerBlue
-100 149 237		cornflower blue
-100 149 237		cornflowerblue
-101   0  33		maroon
-101  55   0		brown
-101 116  50		muddygreen
-101 139  56		mossgreen
-101 140 187		fadedblue
-101 141 109		slategreen
-101 171 124		tea
-101 254   8		brightlimegreen
-102  26 238		purplyblue
-102  51 153		RebeccaPurple
-102  51 153		rebecca purple
-102  51 153		rebeccapurple
-102  95 209		darkperiwinkle
-102 102 102		gray40
-102 102 102		grey40
-102 124  62		militarygreen
-102 126  44		dirtygreen
-102 139 139		PaleTurquoise4
-102 139 139		paleturquoise4
-102 205   0		chartreuse2
-102 205 170		MediumAquamarine
-102 205 170		aquamarine3
-102 205 170		medium aquamarine
-102 205 170		mediumaquamarine
-103  58  63		purplebrown
-103 122   4		olivegreen
-104   0  24		claret
-104  34 139		DarkOrchid4
-104  34 139		darkorchid3
-104  34 139		darkorchid4
-104  50 227		burple
-104 131 139		LightBlue4
-104 131 139		lightblue4
-104 131 139		lightblue5
-105  89 205		SlateBlue3
-105  89 205		slateblue3
-105  96   6		greenybrown
-105  97  18		greenishbrown
-105 105 105		DimGray
-105 105 105		DimGrey
-105 105 105		dim gray
-105 105 105		dim grey
-105 105 105		dimgray
-105 105 105		dimgrey
-105 105 105		gray41
-105 105 105		grey41
-105 131  57		swamp
-105 139  34		OliveDrab4
-105 139  34		olivedrab4
-105 139 105		DarkSeaGreen4
-105 139 105		darkseagreen4
-105 157  76		flatgreen
-105 216  79		freshgreen
-106  90 205		SlateBlue
-106  90 205		slate blue
-106  90 205		slateblue
-106 110   9		brownishgreen
-106 121 247		cornflower
-107  66  71		purplishbrown
-107 107 107		gray42
-107 107 107		grey42
-107 124 133		battleshipgrey
-107 139 164		greyblue0
-107 142  35		OliveDrab
-107 142  35		olive drab
-107 142  35		olivedrab
-107 163  83		offgreen
-108  52  97		grape
-108 122  14		murkygreen
-108 123 139		SlateGray4
-108 123 139		slategray4
-108 123 139		slategrey4
-108 166 205		SkyBlue3
-108 166 205		skyblue3
-109  90 207		lightindigo
-109 237 253		robinsegg
-110  16   5		reddybrown
-110 110 110		gray43
-110 110 110		grey43
-110 117  14		olive
-110 123 139		LightSteelBlue4
-110 123 139		lightsteelblue3
-110 123 139		lightsteelblue4
-110 139  61		DarkOliveGreen4
-110 139  61		darkolivegreen4
-110 203  60		apple
-111 108  10		brownygreen
-111 118  50		olivedrab0
-111 124   0		poopgreen
-111 130 138		steelgrey
-111 194 118		softgreen
-112  59 231		bluishpurple
-112 108  17		browngreen
-112 112 112		gray44
-112 112 112		grey44
-112 128 144		SlateGray
-112 128 144		SlateGrey
-112 128 144		slate gray
-112 128 144		slate grey
-112 128 144		slategray
-112 128 144		slategrey
-112 178  63		nastygreen
-113 159 145		greyishteal
-113 170  52		leaf
-114   0  88		richpurple
-114 134  57		khakigreen
-114 143   2		darkyellowgreen
-115   0  57		merlot
-115  74 101		dirtypurple
-115  92  18		mud
-115 115 115		gray45
-115 133 149		steel
-116  40   2		chestnut
-116 133   0		swampgreen
-116 139 151		bluishgrey
-116 149  81		drabgreen
-116 166  98		dullgreen
-117   8  81		velvet
-117  25 115		darkishpurple
-117 117 117		gray46
-117 117 117		grey46
-117 128   0		shitgreen
-117 141 163		bluegrey
-117 184  79		turtlegreen
-117 187 253		skyblue
-117 253  99		lightergreen
-118  66  78		brownishpurple
-118 153  88		moss
-118 169 115		dustygreen
-118 205  38		applegreen
-118 238   0		chartreuse1
-118 238 198		aquamarine2
-118 253 168		lightbluishgreen
-118 255 123		lightgreen
-119   0   1		blood
-119 136 153		LightSlateGray
-119 136 153		LightSlateGrey
-119 136 153		light slate gray
-119 136 153		light slate grey
-119 136 153		lightslategray
-119 136 153		lightslategrey
-119 146 111		greengrey
-119 161 181		greyblue1
-119 171  86		asparagus
-120 120 120		gray47
-120 120 120		grey47
-120 155 115		greygreen
-120 209 182		seafoamblue
-121 205 205		DarkSlateGray3
-121 205 205		darkslategray3
-121 205 205		darkslategrey2
-122  55 139		MediumOrchid4
-122  55 139		mediumorchid3
-122  55 139		mediumorchid4
-122  89   1		poopbrown
-122 103 238		SlateBlue2
-122 103 238		slateblue2
-122 104 127		purplishgrey
-122 106  79		greyishbrown
-122 122 122		gray48
-122 122 122		grey48
-122 139 139		LightCyan4
-122 139 139		lightcyan3
-122 139 139		lightcyan4
-122 151   3		uglygreen
-122 197 205		CadetBlue3
-122 197 205		cadetblue3
-122 249 171		seafoamgreen
-123   0  44		bordeaux
-123   3  35		winered
-123  88   4		shitbrown
-123 104 238		MediumSlateBlue
-123 104 238		medium slate blue
-123 104 238		mediumslateblue
-123 178 116		fadedgreen
-123 200 246		lightblue
-123 242 218		tiffanyblue
-123 253 199		lightaquamarine
-124 205 124		PaleGreen3
-124 205 124		palegreen2
-124 252   0		LawnGreen
-124 252   0		lawn green
-124 252   0		lawngreen
-125  38 205		purple3
-125 113   3		uglybrown
-125 125 125		gray49
-125 125 125		grey49
-125 127 124		mediumgrey
-126  30 156		purple
-126  64 113		bruise
-126 160 122		greenygrey
-126 189   1		darklimegreen
-126 192 238		SkyBlue2
-126 192 238		skyblue2
-126 244 204		lightturquoise
-126 251 179		lightbluegreen
-127  43  10		reddishbrown
-127  78  30		milkchocolate
-127  81  18		mediumbrown
-127  94   0		poop
-127  95   0		shit
-127 104  78		darktaupe
-127 112  83		greybrown
-127 127 127		gray50
-127 127 127		grey50
-127 143  78		camo
-127 255   0		chartreuse
-127 255 212		aquamarine
-128   0   0		WebMaroon
-128   0   0		web maroon
-128   0   0		webmaroon
-128   0 128		WebPurple
-128   0 128		web purple
-128   0 128		webpurple
-128   1  63		wine
-128  91 135		mutedpurple
-128 128   0		olive0
-128 128 128		WebGray
-128 128 128		WebGrey
-128 128 128		web gray
-128 128 128		web grey
-128 128 128		webgray
-128 128 128		webgrey
-128 249 173		seafoam
-130   7  71		redpurple
-130  95 135		dustypurple
-130 109 140		greypurple
-130 130 130		gray51
-130 130 130		grey51
-130 131  68		drab
-130 166 125		greyishgreen
-130 202 252		sky
-130 203 178		paleteal
-131 101  57		dirtbrown
-131 111 255		SlateBlue1
-131 111 255		slateblue1
-131 139 131		honeydew2
-131 139 131		honeydew4
-131 139 139		azure3
-131 139 139		azure4
-132   0   0		darkred
-132  89 126		dullpurple
-132 112 255		LightSlateBlue
-132 112 255		light slate blue
-132 112 255		lightslateblue
-132 183   1		darklime
-133  14   4		indianred
-133 103 152		darklavender
-133 133 133		gray52
-133 133 133		grey52
-133 163 178		bluegrey0
-134 111 133		purplegrey
-134 119  95		brownishgrey
-134 161 125		greygreen0
-135  76  98		darkmauve
-135  86 228		purpley
-135  95  66		cocoa
-135 110  75		dullbrown
-135 135 135		gray53
-135 135 135		grey53
-135 169  34		avocadogreen
-135 174 115		sage
-135 206 235		SkyBlue
-135 206 235		sky blue
-135 206 235		skyblue0
-135 206 250		LightSkyBlue
-135 206 250		light sky blue
-135 206 250		lightskyblue
-135 206 255		SkyBlue1
-135 206 255		skyblue1
-135 253   5		brightlime
-136  95   1		poobrown
-136 104   6		muddybrown
-136 113 145		greyishpurple
-136 151  23		babyshitgreen
-136 179 120		sagegreen
-137  69 133		lighteggplant
-137  91 123		duskypurple
-137 104 205		MediumPurple3
-137 104 205		mediumpurple3
-137 160 176		blueygrey
-137 162   3		vomitgreen
-138  43 226		BlueViolet
-138  43 226		blue violet
-138  43 226		blueviolet
-138 110  69		dirt
-138 138 138		gray54
-138 138 138		grey54
-138 184 254		carolinablue
-138 241 254		robineggblue
-139   0   0		DarkRed
-139   0   0		dark red
-139   0   0		darkred0
-139   0   0		red4
-139   0 139		DarkMagenta
-139   0 139		dark magenta
-139   0 139		darkmagenta
-139   0 139		magenta4
-139  10  80		DeepPink4
-139  10  80		deeppink3
-139  10  80		deeppink4
-139  26  26		firebrick3
-139  26  26		firebrick4
-139  28  98		maroon4
-139  34  82		VioletRed4
-139  34  82		violetred4
-139  35  35		brown4
-139  37   0		OrangeRed4
-139  37   0		orangered4
-139  46  22		redbrown
-139  49   3		rustbrown
-139  54  38		tomato3
-139  54  38		tomato4
-139  58  58		IndianRed4
-139  58  58		indianred4
-139  58  98		HotPink4
-139  58  98		hotpink4
-139  62  47		coral4
-139  69   0		DarkOrange4
-139  69   0		darkorange4
-139  69  19		SaddleBrown
-139  69  19		chocolate4
-139  69  19		saddle brown
-139  69  19		saddlebrown
-139  71  38		sienna4
-139  71  93		PaleVioletRed4
-139  71  93		palevioletred3
-139  71  93		palevioletred4
-139  71 137		orchid4
-139  76  57		salmon4
-139  87  66		LightSalmon4
-139  87  66		lightsalmon3
-139  87  66		lightsalmon4
-139  90   0		orange3
-139  90   0		orange4
-139  90  43		tan3
-139  90  43		tan4
-139  95 101		LightPink4
-139  95 101		lightpink4
-139  99 108		pink4
-139 101   8		DarkGoldenrod4
-139 101   8		darkgoldenrod3
-139 101   8		darkgoldenrod4
-139 102 139		plum4
-139 105  20		goldenrod4
-139 105  20		goldenrod5
-139 105 105		RosyBrown4
-139 105 105		rosybrown3
-139 105 105		rosybrown4
-139 115  85		burlywood3
-139 115  85		burlywood4
-139 117   0		gold3
-139 117   0		gold4
-139 119 101		PeachPuff4
-139 119 101		peachpuff2
-139 119 101		peachpuff4
-139 121  94		NavajoWhite4
-139 121  94		navajowhite2
-139 121  94		navajowhite4
-139 123 139		thistle3
-139 123 139		thistle4
-139 125 107		bisque2
-139 125 107		bisque4
-139 125 123		MistyRose4
-139 125 123		mistyrose2
-139 125 123		mistyrose4
-139 126 102		wheat4
-139 129  76		LightGoldenrod4
-139 129  76		lightgoldenrod3
-139 129  76		lightgoldenrod4
-139 131 120		AntiqueWhite4
-139 131 120		antiquewhite3
-139 131 120		antiquewhite4
-139 131 134		LavenderBlush4
-139 131 134		lavenderblush2
-139 131 134		lavenderblush4
-139 134  78		khaki4
-139 134 130		seashell2
-139 134 130		seashell4
-139 136 120		cornsilk2
-139 136 120		cornsilk4
-139 136 248		lavenderblue
-139 137 112		LemonChiffon4
-139 137 112		lemonchiffon2
-139 137 112		lemonchiffon4
-139 137 137		snow2
-139 137 137		snow4
-139 139   0		yellow3
-139 139   0		yellow4
-139 139 122		LightYellow4
-139 139 122		lightyellow3
-139 139 122		lightyellow4
-139 139 131		ivory3
-139 139 131		ivory4
-140   0  15		crimson
-140   0  52		redwine
-140 140 140		gray55
-140 140 140		grey55
-140 253 126		eastergreen
-140 255 158		babygreen
-140 255 219		lightaqua
-141  94 183		deeplavender
-141 132 104		browngrey
-141 182 205		LightSkyBlue3
-141 182 205		lightskyblue3
-141 238 238		DarkSlateGray2
-141 238 238		darkslategray2
-141 238 238		darkslategrey1
-142 118  24		hazel
-142 130 254		periwinkle
-142 171  18		peagreen
-142 229  63		kiwigreen
-142 229 238		CadetBlue2
-142 229 238		cadetblue2
-143  20   2		brickred
-143 115   3		poo
-143 140 231		perrywinkle
-143 143 143		gray56
-143 152   5		babypoopgreen
-143 153 251		periwinkleblue
-143 174  34		ickygreen
-143 182 123		lichen
-143 188 143		DarkSeaGreen
-143 188 143		dark sea green
-143 188 143		darkseagreen
-143 254   9		acidgreen
-143 255 159		mintgreen
-144 177  52		avocado
-144 228 193		lightteal
-144 238 144		LightGreen
-144 238 144		PaleGreen2
-144 238 144		light green
-144 238 144		lightgreen0
-144 253 169		foamgreen
-145   9  81		reddishpurple
-145  44 238		purple2
-145 110 153		fadedpurple
-145 145 145		gray57
-145 145 145		grey57
-146  10  78		mulberry
-146  43   5		brownred
-146 149 145		grey
-146 153   1		peasoup
-147 112 219		MediumPurple
-147 112 219		medium purple
-147 112 219		mediumpurple
-147 124   0		babypoop
-148   0 211		DarkViolet
-148   0 211		dark violet
-148   0 211		darkviolet
-148  86 140		purplish
-148 119   6		pukebrown
-148 126 148		purpleygrey
-148 148 148		gray58
-148 148 148		grey58
-148 166  23		peasoupgreen
-148 172   2		barfgreen
-148 178  28		sicklygreen
-149  46 143		warmpurple
-149 163 166		coolgrey
-149 208 252		lightblue0
-150   0  86		darkmagenta0
-150  78   2		warmbrown
-150 110 189		deeplilac
-150 150 150		gray59
-150 150 150		grey59
-150 174 141		greenishgrey
-150 180   3		boogergreen
-150 205 205		PaleTurquoise3
-150 205 205		paleturquoise3
-150 249 123		lightgreen1
-151 138 132		warmgrey
-151 255 255		DarkSlateGray1
-151 255 255		darkslategray1
-151 255 255		darkslategrey0
-152   0   2		bloodred
-152  63 178		purply
-152  86 141		purpleish
-152  94  43		sepia
-152 239 249		robinseggblue
-152 245 255		CadetBlue1
-152 245 255		cadetblue1
-152 251 152		PaleGreen
-152 251 152		pale green
-152 251 152		palegreen
-153   0 250		vividpurple
-153   1  71		purplered
-153  15  75		berry
-153  50 204		DarkOrchid
-153  50 204		dark orchid
-153  50 204		darkorchid
-153 117 112		reddishgrey
-153 153 153		gray60
-153 153 153		grey60
-153 204   4		slimegreen
-154   2   0		deepred
-154  14 234		violet
-154  48   1		auburn
-154  50 205		DarkOrchid3
-154  50 205		darkorchid2
-154  98   0		rawsienna
-154 174   7		pukegreen
-154 192 205		LightBlue3
-154 192 205		lightblue3
-154 205  50		OliveDrab3
-154 205  50		YellowGreen
-154 205  50		olivedrab3
-154 205  50		yellow green
-154 205  50		yellowgreen
-154 247 100		lightgrassgreen
-154 255 154		PaleGreen1
-154 255 154		palegreen1
-155  48 255		purple1
-155  95 192		amethyst
-155 122   1		yellowishbrown
-155 143  85		darkkhaki
-155 181  60		booger
-155 205 155		DarkSeaGreen3
-155 205 155		darkseagreen3
-155 229 170		hospitalgreen
-156 109  87		brownish
-156 109 165		darklilac
-156 156 156		gray61
-156 156 156		grey61
-156 187   4		brightolive
-156 239  67		kiwi
-157   2  22		carmine
-157   7  89		darkfuchsia
-157  87 131		lightplum
-157 118  81		mocha
-157 185  44		sickgreen
-157 188 212		lightgreyblue
-157 193   0		snotgreen
-157 255   0		brightyellowgreen
-158   0  58		cranberry
-158   1 104		redviolet
-158  54  35		brownishred
-158  67 162		mediumpurple0
-158 158 158		gray62
-158 158 158		grey62
-159  35   5		burntred
-159 121 238		MediumPurple2
-159 121 238		mediumpurple2
-159 131   3		diarrhea
-159 182 205		SlateGray3
-159 182 205		slategray3
-159 182 205		slategrey3
-159 254 176		mint
-160   2  92		deepmagenta
-160   4 152		barneypurple
-160  32 240		X11Purple
-160  32 240		purple0
-160  32 240		x11 purple
-160  32 240		x11purple
-160  54  35		brick
-160  69  14		burntumber
-160  82  45		sienna
-160 191  22		grossgreen
-160 254 191		lightseafoam
-161  57   5		russet
-161 161 161		gray63
-161 161 161		grey63
-162  72  87		lightmaroon
-162 101  62		earth
-162 164  21		vomit
-162 181 205		LightSteelBlue3
-162 181 205		lightsteelblue2
-162 191 254		pastelblue
-162 205  90		DarkOliveGreen3
-162 205  90		darkolivegreen3
-162 207 254		babyblue
-163 163 163		gray64
-163 163 163		grey64
-164  66 160		uglypurple
-164 132 172		heather
-164 190  92		lightolivegreen
-164 191  32		pea
-164 211 238		LightSkyBlue2
-164 211 238		lightskyblue2
-165   0  85		violetred
-165  42  42		brown0
-165  82 230		lightishpurple
-165  90 244		lighterpurple
-165 126  82		puce
-165 163 145		cement
-165 165   2		puke
-165 251 213		paleturquoise
-166 111 181		softpurple
-166 129  76		coffee
-166 166 166		gray65
-166 166 166		grey65
-166 200 117		lightmossgreen
-166 251 178		lightmintgreen
-167  94   9		rawumber
-167 255 181		lightseafoamgreen
-168  60   9		rust
-168  65  91		lightburgundy
-168 121   0		bronze
-168 125 194		wisteria
-168 137   5		darkmustard
-168 143  89		darksand
-168 164 149		greyish
-168 168 168		gray66
-168 168 168		grey66
-168 181   4		mustardgreen
-168 255   4		electriclime
-169   3   8		darkishred
-169  86  30		sienna0
-169 169 169		DarkGray
-169 169 169		DarkGrey
-169 169 169		dark gray
-169 169 169		dark grey
-169 169 169		darkgray
-169 169 169		darkgrey
-169 190 112		tangreen
-169 249 113		springgreen0
-170  35 255		electricpurple
-170  39   4		rustred
-170 166  98		khaki
-171  18  57		rouge
-171 126  76		tanbrown
-171 130 255		MediumPurple1
-171 130 255		mediumpurple1
-171 144   4		babypoo
-171 171 171		gray67
-172  29 184		barney
-172  79   6		cinnamon
-172 116  52		leather
-172 126   4		mustardbrown
-172 134 168		dustylavender
-172 147  98		darkbeige
-172 187  13		snot
-172 191 105		lightolive
-172 194 217		cloudyblue
-172 255 252		lightcyan
-173   3 222		vibrantpurple
-173  10 253		brightviolet
-173 129  80		lightbrown
-173 144  13		babyshitbrown
-173 165 135		stone
-173 173 173		gray68
-173 173 173		grey68
-173 216 230		LightBlue
-173 216 230		light blue
-173 216 230		lightblue1
-173 248   2		lemongreen
-173 255  47		GreenYellow
-173 255  47		green yellow
-173 255  47		greenyellow
-174 113 129		mauve
-174 139  12		yellowybrown
-174 238 238		PaleTurquoise2
-174 238 238		paleturquoise2
-174 253 108		lightlime
-174 255 110		keylime
-175  47  13		rustyred
-175 111   9		caramel
-175 136  74		darktan
-175 168 139		bland
-175 238 238		PaleTurquoise
-175 238 238		pale turquoise
-175 238 238		paleturquoise0
-176   1  73		raspberry
-176   5  75		purplishred
-176  48  96		X11Maroon
-176  48  96		maroon0
-176  48  96		x11 maroon
-176  48  96		x11maroon
-176  78  15		burntsienna
-176 176 176		gray69
-176 176 176		grey69
-176 196 222		LightSteelBlue
-176 196 222		light steel blue
-176 196 222		lightsteelblue
-176 221  22		yellowishgreen
-176 224 230		PowderBlue
-176 224 230		powder blue
-176 224 230		powderblue
-176 226 255		LightSkyBlue1
-176 226 255		lightskyblue1
-176 255 157		pastelgreen
-177  96   2		orangeybrown
-177 114  97		pinkishbrown
-177 145 110		palebrown
-177 209 252		powderblue0
-177 210 123		paleolivegreen
-177 252 153		palelightgreen
-177 255 101		palelimegreen
-178  34  34		firebrick
-178  58 238		DarkOrchid2
-178  58 238		darkorchid1
-178  95   3		orangishbrown
-178 100   0		umber
-178 113  61		claybrown
-178 122   1		goldenbrown
-178 151   5		brownyellow
-178 153 110		dust
-178 223 238		LightBlue2
-178 223 238		lightblue2
-178 251 165		lightpastelgreen
-179 111 246		lighturple
-179 179 179		gray70
-179 179 179		grey70
-179 238  58		OliveDrab2
-179 238  58		olivedrab2
-180  82 205		MediumOrchid3
-180  82 205		mediumorchid2
-180 205 205		LightCyan3
-180 205 205		lightcyan2
-180 238 180		DarkSeaGreen2
-180 238 180		darkseagreen2
-181  72  93		darkrose
-181 148  16		darkgold
-181 181 181		gray71
-181 181 181		grey71
-181 195   6		bile
-181 206   8		greenyellow0
-182  99  37		copper
-182 106  80		clay
-182 196   6		babypukegreen
-182 255 187		lightmint
-183  82   3		burntsiena
-183 144 212		palepurple
-183 148   0		yellowbrown
-183 201 226		lightbluegrey
-183 225 161		lightgreygreen
-183 255 250		palecyan
-184 134  11		DarkGoldenrod
-184 134  11		dark goldenrod
-184 134  11		darkgoldenrod
-184 184 184		gray72
-184 184 184		grey72
-184 255 235		paleaqua
-185  72  78		dustyred
-185 105   2		brownorange
-185 162 129		taupe
-185 204 129		paleolive
-185 211 238		SlateGray2
-185 211 238		slategray2
-185 211 238		slategrey2
-185 255 102		lightlimegreen
-186  85 211		MediumOrchid
-186  85 211		medium orchid
-186  85 211		mediumorchid
-186 104 115		duskyrose
-186 158 136		mushroom
-186 186 186		gray73
-186 186 186		grey73
-187  63  63		dullred
-187 255 255		PaleTurquoise1
-187 255 255		paleturquoise1
-188  19 254		neonpurple
-188 143 143		RosyBrown
-188 143 143		rosy brown
-188 143 143		rosybrown
-188 203 122		greenishtan
-188 210 238		LightSteelBlue2
-188 210 238		lightsteelblue1
-188 236 172		lightsage
-188 238 104		DarkOliveGreen2
-188 238 104		darkolivegreen2
-188 245 166		washedoutgreen
-189 108  72		adobe
-189 183 107		DarkKhaki
-189 183 107		dark khaki
-189 183 107		darkkhaki0
-189 189 189		gray74
-189 189 189		grey74
-189 246 254		paleskyblue
-189 248 163		teagreen
-190   1  25		scarlet
-190   1  60		rosered
-190   3 253		brightpurple
-190 100   0		orangebrown
-190 174 138		putty
-190 190 190		X11Gray
-190 190 190		X11Grey
-190 190 190		gray
-190 190 190		x11 gray
-190 190 190		x11 grey
-190 190 190		x11gray
-190 190 190		x11grey
-190 253 115		palelime
-190 253 183		celadon
-191  62 255		DarkOrchid1
-191  62 255		darkorchid0
-191 119 246		lightpurple
-191 144   5		ochre
-191 155  12		ocher
-191 172   5		muddyyellow
-191 191 191		gray75
-191 191 191		grey75
-191 239 255		LightBlue1
-191 254  40		lemonlime
-192   2  47		lipstickred
-192  78   1		burntorange
-192 113 254		easterpurple
-192 115 122		dustyrose
-192 192 192		silver
-192 250 139		pistachio
-192 251  45		yellowgreen0
-192 255  62		OliveDrab1
-192 255  62		olivedrab1
-193  74   9		brickorange
-193 198 252		lightperiwinkle
-193 205 193		honeydew1
-193 205 193		honeydew3
-193 205 205		azure2
-193 248  10		chartreuse0
-193 253 149		celery
-193 255 193		DarkSeaGreen1
-193 255 193		darkseagreen1
-194   0 120		magenta
-194 126 121		brownishpink
-194 146 161		lightmauve
-194 183   9		oliveyellow
-194 190  14		pukeyellow
-194 194 194		gray76
-194 194 194		grey76
-194 255 137		lightyellowishgreen
-195 144 155		greypink
-195 251 244		duckeggblue
-196  66  64		reddish
-196  85   8		rustorange
-196 142 253		liliac
-196 166  97		sandybrown
-196 196 196		gray77
-196 196 196		grey77
-196 254 130		lightpeagreen
-196 255 247		eggshellblue
-197 201 199		silver0
-198  81   2		darkorange
-198 156   4		ocre
-198 159  89		camel
-198 226 255		SlateGray1
-198 226 255		slategray1
-198 226 255		slategrey1
-198 248   8		greenyyellow
-198 252 255		lightskyblue0
-199  21 133		MediumVioletRed
-199  21 133		medium violet red
-199  21 133		mediumvioletred
-199  71 103		deeprose
-199  96 255		brightlavender
-199 121 134		oldpink
-199 159 239		lavender
-199 172 125		toupe
-199 193  12		vomityellow
-199 199 199		gray78
-199 253 181		palegreen0
-200  60 185		purpleypink
-200  90  83		darksalmon
-200 117 196		orchid
-200 118   6		dirtyorange
-200 127 137		oldrose
-200 141 148		greyishpink
-200 172 169		pinkishgrey
-200 253  61		yellowgreen1
-200 255 176		lightlightgreen
-201  76 190		pinkypurple
-201  94 251		brightlilac
-201 100  59		terracotta
-201 174 116		sandstone
-201 176   3		brownishyellow
-201 201 201		gray79
-201 201 201		grey79
-201 209 121		greenishbeige
-201 255  39		greenyellow1
-202   1  71		ruby
-202 102  65		terracotta0
-202 107   2		brownyorange
-202 123 128		dirtypink
-202 155 247		babypurple
-202 160 255		pastelpurple
-202 225 255		LightSteelBlue1
-202 225 255		lightsteelblue0
-202 255 112		DarkOliveGreen1
-202 255 112		darkolivegreen1
-202 255 251		lightlightblue
-203   0 245		hotpurple
-203   1  98		deeppink
-203  65 107		darkpink
-203 104  67		terracota
-203 119  35		brownishorange
-203 157   6		yellowochre
-203 165  96		sandbrown
-203 248  95		pear
-204 122 139		duskypink
-204 173  96		desert
-204 204 204		gray80
-204 204 204		grey80
-204 253 127		lightyellowgreen
-205   0   0		red2
-205   0   0		red3
-205   0 205		magenta1
-205   0 205		magenta3
-205  16 118		DeepPink3
-205  16 118		deeppink2
-205  38  38		firebrick2
-205  41 144		maroon3
-205  50 120		VioletRed3
-205  50 120		violetred3
-205  51  51		brown3
-205  55   0		OrangeRed3
-205  55   0		orangered3
-205  79  57		tomato2
-205  85  85		IndianRed3
-205  85  85		indianred3
-205  89   9		rustyorange
-205  91  69		coral3
-205  92  92		IndianRed
-205  92  92		indian red
-205  92  92		indianred0
-205  96 144		HotPink3
-205  96 144		hotpink3
-205 102   0		DarkOrange3
-205 102   0		darkorange3
-205 102  29		chocolate3
-205 104  57		sienna3
-205 104 137		PaleVioletRed3
-205 104 137		palevioletred2
-205 105 201		orchid3
-205 112  84		salmon3
-205 117 132		uglypink
-205 129  98		LightSalmon3
-205 129  98		lightsalmon2
-205 133   0		orange2
-205 133  63		peru
-205 140 149		LightPink3
-205 140 149		lightpink3
-205 145 158		pink3
-205 149  12		DarkGoldenrod3
-205 149  12		darkgoldenrod2
-205 150 205		plum3
-205 155  29		goldenrod3
-205 155 155		RosyBrown3
-205 155 155		rosybrown2
-205 170 125		burlywood2
-205 173   0		gold2
-205 175 149		PeachPuff3
-205 175 149		peachpuff1
-205 175 149		peachpuff3
-205 179 139		NavajoWhite3
-205 179 139		navajowhite1
-205 179 139		navajowhite3
-205 181 205		thistle2
-205 183 158		bisque1
-205 183 158		bisque3
-205 183 181		MistyRose3
-205 183 181		mistyrose1
-205 183 181		mistyrose3
-205 186 150		wheat3
-205 190 112		LightGoldenrod3
-205 190 112		lightgoldenrod2
-205 192 176		AntiqueWhite3
-205 192 176		antiquewhite2
-205 193 197		LavenderBlush3
-205 193 197		lavenderblush1
-205 193 197		lavenderblush3
-205 197  10		dirtyyellow
-205 197 191		seashell1
-205 197 191		seashell3
-205 198 115		khaki3
-205 200 177		cornsilk1
-205 200 177		cornsilk3
-205 201 165		LemonChiffon3
-205 201 165		lemonchiffon1
-205 201 165		lemonchiffon3
-205 201 201		snow1
-205 201 201		snow3
-205 205   0		yellow2
-205 205 180		LightYellow3
-205 205 180		lightyellow2
-205 205 193		ivory2
-205 253   2		greenishyellow
-206  93 174		purplishpink
-206 162 253		lilac
-206 174 250		paleviolet
-206 179   1		mustard
-207   2  52		cherry
-207  82  78		darkcoral
-207  98 117		rose
-207 175 123		fawn
-207 207 207		gray81
-207 207 207		grey81
-207 253 188		verypalegreen
-207 255   4		neonyellow
-208  32 144		VioletRed
-208  32 144		violet red
-208  32 144		violetred0
-208 193   1		uglyyellow
-208 228  41		sicklyyellow
-208 254  29		limeyellow
-208 254 254		paleblue
-209  95 238		MediumOrchid2
-209  95 238		mediumorchid1
-209 118 143		mutedpink
-209 178 111		tan
-209 209 209		gray82
-209 209 209		grey82
-209 238 238		LightCyan2
-209 238 238		lightcyan1
-209 255 189		verylightgreen
-210 105  30		chocolate
-210 180 140		tan0
-210 189  10		mustardyellow
-211  73  78		fadedred
-211 182 131		verylightbrown
-211 211 211		LightGray
-211 211 211		LightGrey
-211 211 211		light gray
-211 211 211		light grey
-211 211 211		lightgray
-211 211 211		lightgrey
-212 106 126		pinkish
-212 212 212		gray83
-212 212 212		grey83
-212 255 255		reallylightblue
-213  23  78		lipstick
-213 134 157		dullpink
-213 138 148		dustypink
-213 171   9		burntyellow
-213 182  10		darkyellow
-213 255 255		verylightblue
-214  72 215		pinkishpurple
-214 180 252		lightviolet
-214 214 214		gray84
-214 214 214		grey84
-214 255 250		ice
-214 255 254		verypaleblue
-215   7  81		DebianRed
-215  37 222		purplepink
-215 103 173		palemagenta
-215 255 254		iceblue
-216 134  59		dullorange
-216 191 216		thistle
-216 220 214		lightgrey0
-217   1 102		darkhotpink
-217  79 245		heliotrope
-217  84  77		palered
-217 155 130		pinkishtan
-217 217 217		gray85
-217 217 217		grey85
-218  70 125		darkishpink
-218 112 214		orchid0
-218 165  32		goldenrod
-219  75 218		pinkpurple
-219  88  86		pastelred
-219 112 147		PaleVioletRed
-219 112 147		pale violet red
-219 112 147		palevioletred
-219 180  12		gold
-219 219 219		gray86
-219 219 219		grey86
-220  20  60		crimson0
-220  77   1		deeporange
-220 220 220		gainsboro
-221 133 215		lavenderpink
-221 160 221		plum
-221 214  24		pissyellow
-222  12  98		cerise
-222 126  93		darkpeach
-222 157 172		fadedpink
-222 184 135		burlywood
-222 222 222		gray87
-222 222 222		grey87
-223  78 200		purpleishpink
-223 197 254		lightlavender
-224  63 216		purplepink0
-224 102 255		MediumOrchid1
-224 102 255		mediumorchid0
-224 224 224		gray88
-224 224 224		grey88
-224 238 224		honeydew0
-224 238 238		azure1
-224 255 255		LightCyan
-224 255 255		LightCyan1
-224 255 255		light cyan
-224 255 255		lightcyan0
-225 119   1		pumpkin
-226 202 118		sand
-227 227 227		gray89
-228 203 255		palelilac
-229   0   0		red
-229 229 229		gray90
-229 229 229		grey90
-230 218 166		beige
-230 230 250		lavender0
-230 242 162		lightkhaki
-231 142 165		pigpink
-232 232 232		gray91
-232 232 232		grey91
-233 150 122		DarkSalmon
-233 150 122		dark salmon
-233 150 122		darksalmon0
-235 235 235		gray92
-235 235 235		grey92
-236  45   1		tomatored
-237  13 217		fuchsia
-237 200 255		lightlilac
-237 237 237		gray93
-237 237 237		grey93
-238   0   0		red1
-238   0 238		magenta0
-238   0 238		magenta2
-238  18 137		DeepPink2
-238  18 137		deeppink1
-238  44  44		firebrick1
-238  48 167		maroon2
-238  58 140		VioletRed2
-238  58 140		violetred2
-238  59  59		brown2
-238  64   0		OrangeRed2
-238  64   0		orangered2
-238  92  66		tomato1
-238  99  99		IndianRed2
-238  99  99		indianred2
-238 106  80		coral2
-238 106 167		HotPink2
-238 106 167		hotpink2
-238 118   0		DarkOrange2
-238 118   0		darkorange2
-238 118  33		chocolate2
-238 121  66		sienna2
-238 121 159		PaleVioletRed2
-238 121 159		palevioletred1
-238 122 233		orchid2
-238 130  98		salmon2
-238 130 238		violet0
-238 149 114		LightSalmon2
-238 149 114		lightsalmon1
-238 154   0		orange1
-238 154  73		tan2
-238 162 173		LightPink2
-238 162 173		lightpink2
-238 169 184		pink2
-238 173  14		DarkGoldenrod2
-238 173  14		darkgoldenrod1
-238 174 238		plum2
-238 180  34		goldenrod2
-238 180 180		RosyBrown2
-238 180 180		rosybrown1
-238 197 145		burlywood1
-238 201   0		gold1
-238 203 173		PeachPuff2
-238 203 173		peachpuff0
-238 207 161		NavajoWhite2
-238 207 161		navajowhite0
-238 207 254		palelavender
-238 210 238		thistle1
-238 213 183		bisque0
-238 213 210		MistyRose2
-238 213 210		mistyrose0
-238 216 174		wheat2
-238 220  91		dullyellow
-238 220 130		LightGoldenrod2
-238 220 130		lightgoldenrod1
-238 221 130		LightGoldenrod
-238 221 130		light goldenrod
-238 221 130		lightgoldenrod
-238 223 204		AntiqueWhite2
-238 223 204		antiquewhite1
-238 224 229		LavenderBlush2
-238 224 229		lavenderblush0
-238 229 222		seashell0
-238 230 133		khaki2
-238 232 170		PaleGoldenrod
-238 232 170		pale goldenrod
-238 232 170		palegoldenrod
-238 232 205		cornsilk0
-238 233 191		LemonChiffon2
-238 233 191		lemonchiffon0
-238 233 233		snow0
-238 238   0		yellow1
-238 238 209		LightYellow2
-238 238 209		lightyellow1
-238 238 224		ivory1
-239  29 231		pinkpurple0
-239  64  38		tomato
-239 180  53		macaroniandcheese
-239 192 254		lightlavendar
-240 117 230		purplypink
-240 128 128		LightCoral
-240 128 128		light coral
-240 128 128		lightcoral
-240 131  58		dustyorange
-240 148  77		fadedorange
-240 230 140		khaki0
-240 240 240		gray94
-240 240 240		grey94
-240 248 255		AliceBlue
-240 248 255		alice blue
-240 248 255		aliceblue
-240 255 240		honeydew
-240 255 255		azure
-241  12  69		pinkishred
-241 218 122		sandy
-241 243  63		offyellow
-242 158 142		blush
-242 171  21		squash
-242 242 242		gray95
-242 242 242		grey95
-243  97 150		mediumpink
-244  50  12		vermillion
-244  54   5		orangishred
-244 164  96		SandyBrown
-244 164  96		sandy brown
-244 164  96		sandybrown0
-244 208  84		maize
-245   4 201		hotmagenta
-245   5  79		pinkred
-245 191   3		golden
-245 222 179		wheat
-245 245 220		beige0
-245 245 245		WhiteSmoke
-245 245 245		gray96
-245 245 245		grey96
-245 245 245		white smoke
-245 245 245		whitesmoke
-245 255 250		MintCream
-245 255 250		mint cream
-245 255 250		mintcream
-246 104 142		rosypink
-246 206 252		verylightpurple
-247   2  42		cherryred
-247 135 154		rosepink
-247 213  96		lightmustard
-247 247 247		gray97
-247 247 247		grey97
-248  72  28		reddishorange
-248 248 255		GhostWhite
-248 248 255		ghost white
-248 248 255		ghostwhite
-249 115   6		orange
-249 188   8		goldenrod0
-250  42  85		redpink
-250  66  36		orangeyred
-250  95 247		lightmagenta
-250 128 114		salmon
-250 194   5		goldenrod1
-250 235 215		AntiqueWhite
-250 235 215		antique white
-250 235 215		antiquewhite
-250 238 102		yellowish
-250 240 230		linen
-250 250 210		LightGoldenrodYellow
-250 250 210		light goldenrod yellow
-250 250 210		lightgoldenrodyellow
-250 250 250		gray98
-250 250 250		grey98
-250 254  75		bananayellow
-251  41  67		strawberry
-251  85 129		warmpink
-251  95 252		violetpink
-251 125   7		pumpkinorange
-251 221 126		wheat0
-251 238 172		lighttan
-252  38  71		pinkyred
-252  90  80		coral
-252 130  74		orangish
-252 134 170		pinky
-252 176   1		yelloworange
-252 192   6		marigold
-252 225 102		sandyellow
-252 246 121		straw
-252 252 129		yellowishtan
-252 252 252		gray99
-252 252 252		grey99
-253  60   6		redorange
-253  65  30		orangered
-253  70  89		watermelon
-253  89  86		grapefruit
-253 121 143		carnation
-253 141  73		orangeish
-253 170  72		lightorange
-253 176 192		softpink
-253 177  71		butterscotch
-253 185  21		orangeyyellow
-253 193 197		palerose
-253 220  92		lightgold
-253 222 108		palegold
-253 238 115		sandyyellow
-253 245 230		OldLace
-253 245 230		old lace
-253 245 230		oldlace
-253 253 254		palegrey
-253 255  56		lemonyellow
-253 255  82		lemon
-253 255  99		canary
-254   0   2		fireenginered
-254   1 154		neonpink
-254   1 177		brightpink
-254   2 162		shockingpink
-254  44  84		reddishpink
-254  47  74		lightishred
-254  66  15		orangered0
-254  70 165		barbiepink
-254  75   3		bloodorange
-254 123 124		salmonpink
-254 130 140		blushpink
-254 131 204		bubblegumpink
-254 134 164		rosa
-254 169 147		lightsalmon
-254 178   9		saffron
-254 179   8		amber
-254 198  21		goldenyellow
-254 208 252		palemauve
-254 223   8		dandelion
-254 246 158		buff
-254 252 175		parchment
-254 255 127		fadedyellow
-254 255 202		ecru
-255   0   0		red0
-255   0  13		brightred
-255   0 255		fuchsia0
-255   2 141		hotpink0
-255   4 144		electricpink
-255   7  58		neonred
-255   7 137		strongpink
-255   8 232		brightmagenta
-255  20 147		DeepPink
-255  20 147		DeepPink1
-255  20 147		deep pink
-255  20 147		deeppink0
-255  48  48		firebrick0
-255  52 179		maroon1
-255  62 150		VioletRed1
-255  62 150		violetred1
-255  64  64		brown1
-255  69   0		OrangeRed
-255  69   0		OrangeRed1
-255  69   0		orange red
-255  69   0		orangered1
-255  71  76		lightred
-255  91   0		brightorange
-255  97  99		coralpink
-255  99  71		tomato0
-255  99 233		candypink
-255 105 175		bubblegumpink0
-255 105 180		HotPink
-255 105 180		hot pink
-255 105 180		hotpink
-255 106 106		IndianRed1
-255 106 106		indianred1
-255 108 181		bubblegum
-255 110 180		HotPink1
-255 110 180		hotpink1
-255 111  82		orangepink
-255 114  76		pinkishorange
-255 114  86		coral1
-255 120  85		melon
-255 121 108		salmon0
-255 127   0		DarkOrange1
-255 127   0		darkorange1
-255 127  36		chocolate1
-255 127  80		coral0
-255 127 167		carnationpink
-255 129 192		pink
-255 130  71		sienna1
-255 130 171		PaleVioletRed1
-255 130 171		palevioletred0
-255 131 250		orchid1
-255 140   0		DarkOrange
-255 140   0		dark orange
-255 140   0		darkorange0
-255 140 105		salmon1
-255 148   8		tangerine
-255 150  79		pastelorange
-255 154 138		peachypink
-255 160 122		LightSalmon
-255 160 122		LightSalmon1
-255 160 122		light salmon
-255 160 122		lightsalmon0
-255 165   0		orange0
-255 165  79		tan1
-255 166  43		mango
-255 167  86		paleorange
-255 171  15		yellowishorange
-255 173   1		orangeyellow
-255 174 185		LightPink1
-255 174 185		lightpink1
-255 176 124		peach
-255 177 109		apricot
-255 177 154		palesalmon
-255 178 208		powderpink
-255 181 197		pink1
-255 182 193		LightPink
-255 182 193		light pink
-255 182 193		lightpink
-255 183 206		babypink
-255 185  15		DarkGoldenrod1
-255 185  15		darkgoldenrod0
-255 186 205		pastelpink
-255 187 255		plum1
-255 192 203		pink0
-255 193 193		RosyBrown1
-255 193 193		rosybrown0
-255 197  18		sunflower
-255 197 203		lightrose
-255 207 220		palepink
-255 209 223		lightpink0
-255 211 155		burlywood0
-255 215   0		gold0
-255 216 177		lightpeach
-255 218   3		sunfloweryellow
-255 218 185		PeachPuff
-255 218 185		PeachPuff1
-255 218 185		peach puff
-255 218 185		peachpuff
-255 222 173		NavajoWhite
-255 222 173		NavajoWhite1
-255 222 173		navajo white
-255 222 173		navajowhite
-255 223  34		sunyellow
-255 225 255		thistle0
-255 227 110		yellowtan
-255 228 181		moccasin
-255 228 196		bisque
-255 228 225		MistyRose
-255 228 225		MistyRose1
-255 228 225		misty rose
-255 228 225		mistyrose
-255 229 173		palepeach
-255 231 186		wheat1
-255 235 205		BlanchedAlmond
-255 235 205		blanched almond
-255 235 205		blanchedalmond
-255 236 139		LightGoldenrod1
-255 236 139		lightgoldenrod0
-255 239 213		PapayaWhip
-255 239 213		papaya whip
-255 239 213		papayawhip
-255 239 219		AntiqueWhite1
-255 239 219		antiquewhite0
-255 240 245		LavenderBlush
-255 240 245		LavenderBlush1
-255 240 245		lavender blush
-255 240 245		lavenderblush
-255 243 154		darkcream
-255 244 242		verylightpink
-255 245 238		seashell
-255 246 143		khaki1
-255 248 220		cornsilk
-255 249  23		sunnyyellow
-255 249 208		pale
-255 250 134		manilla
-255 250 205		LemonChiffon
-255 250 205		LemonChiffon1
-255 250 205		lemon chiffon
-255 250 205		lemonchiffon
-255 250 240		FloralWhite
-255 250 240		floral white
-255 250 240		floralwhite
-255 250 250		snow
-255 252 196		eggshell
-255 253   1		brightyellow
-255 253  55		sunshineyellow
-255 253 116		butteryellow
-255 253 120		custard
-255 254  64		canaryyellow
-255 254 113		pastelyellow
-255 254 122		lightyellow
-255 254 182		lightbeige
-255 255   0		yellow
-255 255  20		yellow0
-255 255 126		banana
-255 255 129		butter
-255 255 132		paleyellow
-255 255 182		creme
-255 255 194		cream
-255 255 203		ivory
-255 255 212		eggshell0
-255 255 224		LightYellow
-255 255 224		LightYellow1
-255 255 224		light yellow
-255 255 224		lightyellow0
-255 255 228		offwhite
-255 255 240		ivory0
-255 255 255		gray100
-255 255 255		grey100
-255 255 255		white
+0	0	0	black
+0	0	0	gray0
+0	0	0	grey0
+0	0	128	NavyBlue
+0	0	128	navy
+0	0	128	navy blue
+0	0	139	DarkBlue
+0	0	139	blue4
+0	0	139	dark blue
+0	0	205	MediumBlue
+0	0	205	blue3
+0	0	205	medium blue
+0	0	238	blue2
+0	0	255	blue
+0	0	255	blue1
+0	100	0	DarkGreen
+0	100	0	dark green
+0	104	139	DeepSkyBlue4
+0	128	0	WebGreen
+0	128	0	web green
+0	128	128	teal
+0	134	139	turquoise4
+0	139	0	green4
+0	139	69	SpringGreen4
+0	139	139	DarkCyan
+0	139	139	cyan4
+0	139	139	dark cyan
+0	154	205	DeepSkyBlue3
+0	178	238	DeepSkyBlue2
+0	191	255	DeepSkyBlue
+0	191	255	DeepSkyBlue1
+0	191	255	deep sky blue
+0	197	205	turquoise3
+0	205	0	green3
+0	205	102	SpringGreen3
+0	205	205	cyan3
+0	206	209	DarkTurquoise
+0	206	209	dark turquoise
+0	229	238	turquoise2
+0	238	0	green2
+0	238	118	SpringGreen2
+0	238	238	cyan2
+0	245	255	turquoise1
+0	250	154	MediumSpringGreen
+0	250	154	medium spring green
+0	255	0	X11Green
+0	255	0	green
+0	255	0	green1
+0	255	0	lime
+0	255	0	x11 green
+0	255	127	SpringGreen
+0	255	127	SpringGreen1
+0	255	127	spring green
+0	255	255	aqua
+0	255	255	cyan
+0	255	255	cyan1
+3	3	3	gray1
+3	3	3	grey1
+5	5	5	gray2
+5	5	5	grey2
+8	8	8	gray3
+8	8	8	grey3
+10	10	10	gray4
+10	10	10	grey4
+13	13	13	gray5
+13	13	13	grey5
+15	15	15	gray6
+15	15	15	grey6
+16	78	139	DodgerBlue4
+18	18	18	gray7
+18	18	18	grey7
+20	20	20	gray8
+20	20	20	grey8
+23	23	23	gray9
+23	23	23	grey9
+24	116	205	DodgerBlue3
+25	25	112	MidnightBlue
+25	25	112	midnight blue
+26	26	26	gray10
+26	26	26	grey10
+28	28	28	gray11
+28	28	28	grey11
+28	134	238	DodgerBlue2
+30	144	255	DodgerBlue
+30	144	255	DodgerBlue1
+30	144	255	dodger blue
+31	31	31	gray12
+31	31	31	grey12
+32	178	170	LightSeaGreen
+32	178	170	light sea green
+33	33	33	gray13
+33	33	33	grey13
+34	139	34	ForestGreen
+34	139	34	forest green
+36	36	36	gray14
+36	36	36	grey14
+38	38	38	gray15
+38	38	38	grey15
+39	64	139	RoyalBlue4
+41	41	41	gray16
+41	41	41	grey16
+43	43	43	gray17
+43	43	43	grey17
+46	46	46	gray18
+46	46	46	grey18
+46	139	87	SeaGreen
+46	139	87	SeaGreen4
+46	139	87	sea green
+47	79	79	DarkSlateGray
+47	79	79	DarkSlateGrey
+47	79	79	dark slate gray
+47	79	79	dark slate grey
+48	48	48	gray19
+48	48	48	grey19
+50	205	50	LimeGreen
+50	205	50	lime green
+51	51	51	gray20
+51	51	51	grey20
+54	54	54	gray21
+54	54	54	grey21
+54	100	139	SteelBlue4
+56	56	56	gray22
+56	56	56	grey22
+58	95	205	RoyalBlue3
+59	59	59	gray23
+59	59	59	grey23
+60	179	113	MediumSeaGreen
+60	179	113	medium sea green
+61	61	61	gray24
+61	61	61	grey24
+64	64	64	gray25
+64	64	64	grey25
+64	224	208	turquoise
+65	105	225	RoyalBlue
+65	105	225	royal blue
+66	66	66	gray26
+66	66	66	grey26
+67	110	238	RoyalBlue2
+67	205	128	SeaGreen3
+69	69	69	gray27
+69	69	69	grey27
+69	139	0	chartreuse4
+69	139	116	aquamarine4
+70	130	180	SteelBlue
+70	130	180	steel blue
+71	60	139	SlateBlue4
+71	71	71	gray28
+71	71	71	grey28
+72	61	139	DarkSlateBlue
+72	61	139	dark slate blue
+72	118	255	RoyalBlue1
+72	209	204	MediumTurquoise
+72	209	204	medium turquoise
+74	74	74	gray29
+74	74	74	grey29
+74	112	139	SkyBlue4
+75	0	130	indigo
+77	77	77	gray30
+77	77	77	grey30
+78	238	148	SeaGreen2
+79	79	79	gray31
+79	79	79	grey31
+79	148	205	SteelBlue3
+82	82	82	gray32
+82	82	82	grey32
+82	139	139	DarkSlateGray4
+83	134	139	CadetBlue4
+84	84	84	gray33
+84	84	84	grey33
+84	139	84	PaleGreen4
+84	255	159	SeaGreen1
+85	26	139	purple4
+85	107	47	DarkOliveGreen
+85	107	47	dark olive green
+87	87	87	gray34
+87	87	87	grey34
+89	89	89	gray35
+89	89	89	grey35
+92	92	92	gray36
+92	92	92	grey36
+92	172	238	SteelBlue2
+93	71	139	MediumPurple4
+94	94	94	gray37
+94	94	94	grey37
+95	158	160	CadetBlue
+95	158	160	cadet blue
+96	123	139	LightSkyBlue4
+97	97	97	gray38
+97	97	97	grey38
+99	99	99	gray39
+99	99	99	grey39
+99	184	255	SteelBlue1
+100	149	237	CornflowerBlue
+100	149	237	cornflower blue
+102	51	153	RebeccaPurple
+102	51	153	rebecca purple
+102	102	102	gray40
+102	102	102	grey40
+102	139	139	PaleTurquoise4
+102	205	0	chartreuse3
+102	205	170	MediumAquamarine
+102	205	170	aquamarine3
+102	205	170	medium aquamarine
+104	34	139	DarkOrchid4
+104	131	139	LightBlue4
+105	89	205	SlateBlue3
+105	105	105	DimGray
+105	105	105	DimGrey
+105	105	105	dim gray
+105	105	105	dim grey
+105	105	105	gray41
+105	105	105	grey41
+105	139	34	OliveDrab4
+105	139	105	DarkSeaGreen4
+106	90	205	SlateBlue
+106	90	205	slate blue
+107	107	107	gray42
+107	107	107	grey42
+107	142	35	OliveDrab
+107	142	35	olive drab
+108	123	139	SlateGray4
+108	166	205	SkyBlue3
+110	110	110	gray43
+110	110	110	grey43
+110	123	139	LightSteelBlue4
+110	139	61	DarkOliveGreen4
+112	112	112	gray44
+112	112	112	grey44
+112	128	144	SlateGray
+112	128	144	SlateGrey
+112	128	144	slate gray
+112	128	144	slate grey
+115	115	115	gray45
+115	115	115	grey45
+117	117	117	gray46
+117	117	117	grey46
+118	238	0	chartreuse2
+118	238	198	aquamarine2
+119	136	153	LightSlateGray
+119	136	153	LightSlateGrey
+119	136	153	light slate gray
+119	136	153	light slate grey
+120	120	120	gray47
+120	120	120	grey47
+121	205	205	DarkSlateGray3
+122	55	139	MediumOrchid4
+122	103	238	SlateBlue2
+122	122	122	gray48
+122	122	122	grey48
+122	139	139	LightCyan4
+122	197	205	CadetBlue3
+123	104	238	MediumSlateBlue
+123	104	238	medium slate blue
+124	205	124	PaleGreen3
+124	252	0	LawnGreen
+124	252	0	lawn green
+125	38	205	purple3
+125	125	125	gray49
+125	125	125	grey49
+126	192	238	SkyBlue2
+127	127	127	gray50
+127	127	127	grey50
+127	255	0	chartreuse
+127	255	0	chartreuse1
+127	255	212	aquamarine
+127	255	212	aquamarine1
+128	0	0	WebMaroon
+128	0	0	web maroon
+128	0	128	WebPurple
+128	0	128	web purple
+128	128	0	olive
+128	128	128	WebGray
+128	128	128	WebGrey
+128	128	128	web gray
+128	128	128	web grey
+130	130	130	gray51
+130	130	130	grey51
+131	111	255	SlateBlue1
+131	139	131	honeydew4
+131	139	139	azure4
+132	112	255	LightSlateBlue
+132	112	255	light slate blue
+133	133	133	gray52
+133	133	133	grey52
+135	135	135	gray53
+135	135	135	grey53
+135	206	235	SkyBlue
+135	206	235	sky blue
+135	206	250	LightSkyBlue
+135	206	250	light sky blue
+135	206	255	SkyBlue1
+137	104	205	MediumPurple3
+138	43	226	BlueViolet
+138	43	226	blue violet
+138	138	138	gray54
+138	138	138	grey54
+139	0	0	DarkRed
+139	0	0	dark red
+139	0	0	red4
+139	0	139	DarkMagenta
+139	0	139	dark magenta
+139	0	139	magenta4
+139	10	80	DeepPink4
+139	26	26	firebrick4
+139	28	98	maroon4
+139	34	82	VioletRed4
+139	35	35	brown4
+139	37	0	OrangeRed4
+139	54	38	tomato4
+139	58	58	IndianRed4
+139	58	98	HotPink4
+139	62	47	coral4
+139	69	0	DarkOrange4
+139	69	19	SaddleBrown
+139	69	19	chocolate4
+139	69	19	saddle brown
+139	71	38	sienna4
+139	71	93	PaleVioletRed4
+139	71	137	orchid4
+139	76	57	salmon4
+139	87	66	LightSalmon4
+139	90	0	orange4
+139	90	43	tan4
+139	95	101	LightPink4
+139	99	108	pink4
+139	101	8	DarkGoldenrod4
+139	102	139	plum4
+139	105	20	goldenrod4
+139	105	105	RosyBrown4
+139	115	85	burlywood4
+139	117	0	gold4
+139	119	101	PeachPuff4
+139	121	94	NavajoWhite4
+139	123	139	thistle4
+139	125	107	bisque4
+139	125	123	MistyRose4
+139	126	102	wheat4
+139	129	76	LightGoldenrod4
+139	131	120	AntiqueWhite4
+139	131	134	LavenderBlush4
+139	134	78	khaki4
+139	134	130	seashell4
+139	136	120	cornsilk4
+139	137	112	LemonChiffon4
+139	137	137	snow4
+139	139	0	yellow4
+139	139	122	LightYellow4
+139	139	131	ivory4
+140	140	140	gray55
+140	140	140	grey55
+141	182	205	LightSkyBlue3
+141	238	238	DarkSlateGray2
+142	229	238	CadetBlue2
+143	143	143	gray56
+143	143	143	grey56
+143	188	143	DarkSeaGreen
+143	188	143	dark sea green
+144	238	144	LightGreen
+144	238	144	PaleGreen2
+144	238	144	light green
+145	44	238	purple2
+145	145	145	gray57
+145	145	145	grey57
+147	112	219	MediumPurple
+147	112	219	medium purple
+148	0	211	DarkViolet
+148	0	211	dark violet
+148	148	148	gray58
+148	148	148	grey58
+150	150	150	gray59
+150	150	150	grey59
+150	205	205	PaleTurquoise3
+151	255	255	DarkSlateGray1
+152	245	255	CadetBlue1
+152	251	152	PaleGreen
+152	251	152	pale green
+153	50	204	DarkOrchid
+153	50	204	dark orchid
+153	153	153	gray60
+153	153	153	grey60
+154	50	205	DarkOrchid3
+154	192	205	LightBlue3
+154	205	50	OliveDrab3
+154	205	50	YellowGreen
+154	205	50	yellow green
+154	255	154	PaleGreen1
+155	48	255	purple1
+155	205	155	DarkSeaGreen3
+156	156	156	gray61
+156	156	156	grey61
+158	158	158	gray62
+158	158	158	grey62
+159	121	238	MediumPurple2
+159	182	205	SlateGray3
+160	32	240	X11Purple
+160	32	240	purple
+160	32	240	x11 purple
+160	82	45	sienna
+161	161	161	gray63
+161	161	161	grey63
+162	181	205	LightSteelBlue3
+162	205	90	DarkOliveGreen3
+163	163	163	gray64
+163	163	163	grey64
+164	211	238	LightSkyBlue2
+165	42	42	brown
+166	166	166	gray65
+166	166	166	grey65
+168	168	168	gray66
+168	168	168	grey66
+169	169	169	DarkGray
+169	169	169	DarkGrey
+169	169	169	dark gray
+169	169	169	dark grey
+171	130	255	MediumPurple1
+171	171	171	gray67
+171	171	171	grey67
+173	173	173	gray68
+173	173	173	grey68
+173	216	230	LightBlue
+173	216	230	light blue
+173	255	47	GreenYellow
+173	255	47	green yellow
+174	238	238	PaleTurquoise2
+175	238	238	PaleTurquoise
+175	238	238	pale turquoise
+176	48	96	X11Maroon
+176	48	96	maroon
+176	48	96	x11 maroon
+176	176	176	gray69
+176	176	176	grey69
+176	196	222	LightSteelBlue
+176	196	222	light steel blue
+176	224	230	PowderBlue
+176	224	230	powder blue
+176	226	255	LightSkyBlue1
+178	34	34	firebrick
+178	58	238	DarkOrchid2
+178	223	238	LightBlue2
+179	179	179	gray70
+179	179	179	grey70
+179	238	58	OliveDrab2
+180	82	205	MediumOrchid3
+180	205	205	LightCyan3
+180	238	180	DarkSeaGreen2
+181	181	181	gray71
+181	181	181	grey71
+184	134	11	DarkGoldenrod
+184	134	11	dark goldenrod
+184	184	184	gray72
+184	184	184	grey72
+185	211	238	SlateGray2
+186	85	211	MediumOrchid
+186	85	211	medium orchid
+186	186	186	gray73
+186	186	186	grey73
+187	255	255	PaleTurquoise1
+188	143	143	RosyBrown
+188	143	143	rosy brown
+188	210	238	LightSteelBlue2
+188	238	104	DarkOliveGreen2
+189	183	107	DarkKhaki
+189	183	107	dark khaki
+189	189	189	gray74
+189	189	189	grey74
+190	190	190	X11Gray
+190	190	190	X11Grey
+190	190	190	gray
+190	190	190	grey
+190	190	190	x11 gray
+190	190	190	x11 grey
+191	62	255	DarkOrchid1
+191	191	191	gray75
+191	191	191	grey75
+191	239	255	LightBlue1
+192	192	192	silver
+192	255	62	OliveDrab1
+193	205	193	honeydew3
+193	205	205	azure3
+193	255	193	DarkSeaGreen1
+194	194	194	gray76
+194	194	194	grey76
+196	196	196	gray77
+196	196	196	grey77
+198	226	255	SlateGray1
+199	21	133	MediumVioletRed
+199	21	133	medium violet red
+199	199	199	gray78
+199	199	199	grey78
+201	201	201	gray79
+201	201	201	grey79
+202	225	255	LightSteelBlue1
+202	255	112	DarkOliveGreen1
+204	204	204	gray80
+204	204	204	grey80
+205	0	0	red3
+205	0	205	magenta3
+205	16	118	DeepPink3
+205	38	38	firebrick3
+205	41	144	maroon3
+205	50	120	VioletRed3
+205	51	51	brown3
+205	55	0	OrangeRed3
+205	79	57	tomato3
+205	85	85	IndianRed3
+205	91	69	coral3
+205	92	92	IndianRed
+205	92	92	indian red
+205	96	144	HotPink3
+205	102	0	DarkOrange3
+205	102	29	chocolate3
+205	104	57	sienna3
+205	104	137	PaleVioletRed3
+205	105	201	orchid3
+205	112	84	salmon3
+205	129	98	LightSalmon3
+205	133	0	orange3
+205	133	63	peru
+205	133	63	tan3
+205	140	149	LightPink3
+205	145	158	pink3
+205	149	12	DarkGoldenrod3
+205	150	205	plum3
+205	155	29	goldenrod3
+205	155	155	RosyBrown3
+205	170	125	burlywood3
+205	173	0	gold3
+205	175	149	PeachPuff3
+205	179	139	NavajoWhite3
+205	181	205	thistle3
+205	183	158	bisque3
+205	183	181	MistyRose3
+205	186	150	wheat3
+205	190	112	LightGoldenrod3
+205	192	176	AntiqueWhite3
+205	193	197	LavenderBlush3
+205	197	191	seashell3
+205	198	115	khaki3
+205	200	177	cornsilk3
+205	201	165	LemonChiffon3
+205	201	201	snow3
+205	205	0	yellow3
+205	205	180	LightYellow3
+205	205	193	ivory3
+207	207	207	gray81
+207	207	207	grey81
+208	32	144	VioletRed
+208	32	144	violet red
+209	95	238	MediumOrchid2
+209	209	209	gray82
+209	209	209	grey82
+209	238	238	LightCyan2
+210	105	30	chocolate
+210	180	140	tan
+211	211	211	LightGray
+211	211	211	LightGrey
+211	211	211	light gray
+211	211	211	light grey
+212	212	212	gray83
+212	212	212	grey83
+214	214	214	gray84
+214	214	214	grey84
+215	7	81	DebianRed
+216	191	216	thistle
+217	217	217	gray85
+217	217	217	grey85
+218	112	214	orchid
+218	165	32	goldenrod
+219	112	147	PaleVioletRed
+219	112	147	pale violet red
+219	219	219	gray86
+219	219	219	grey86
+220	20	60	crimson
+220	220	220	gainsboro
+221	160	221	plum
+222	184	135	burlywood
+222	222	222	gray87
+222	222	222	grey87
+224	102	255	MediumOrchid1
+224	224	224	gray88
+224	224	224	grey88
+224	238	224	honeydew2
+224	238	238	azure2
+224	255	255	LightCyan
+224	255	255	LightCyan1
+224	255	255	light cyan
+227	227	227	gray89
+227	227	227	grey89
+229	229	229	gray90
+229	229	229	grey90
+230	230	250	lavender
+232	232	232	gray91
+232	232	232	grey91
+233	150	122	DarkSalmon
+233	150	122	dark salmon
+235	235	235	gray92
+235	235	235	grey92
+237	237	237	gray93
+237	237	237	grey93
+238	0	0	red2
+238	0	238	magenta2
+238	18	137	DeepPink2
+238	44	44	firebrick2
+238	48	167	maroon2
+238	58	140	VioletRed2
+238	59	59	brown2
+238	64	0	OrangeRed2
+238	92	66	tomato2
+238	99	99	IndianRed2
+238	106	80	coral2
+238	106	167	HotPink2
+238	118	0	DarkOrange2
+238	118	33	chocolate2
+238	121	66	sienna2
+238	121	159	PaleVioletRed2
+238	122	233	orchid2
+238	130	98	salmon2
+238	130	238	violet
+238	149	114	LightSalmon2
+238	154	0	orange2
+238	154	73	tan2
+238	162	173	LightPink2
+238	169	184	pink2
+238	173	14	DarkGoldenrod2
+238	174	238	plum2
+238	180	34	goldenrod2
+238	180	180	RosyBrown2
+238	197	145	burlywood2
+238	201	0	gold2
+238	203	173	PeachPuff2
+238	207	161	NavajoWhite2
+238	210	238	thistle2
+238	213	183	bisque2
+238	213	210	MistyRose2
+238	216	174	wheat2
+238	220	130	LightGoldenrod2
+238	221	130	LightGoldenrod
+238	221	130	light goldenrod
+238	223	204	AntiqueWhite2
+238	224	229	LavenderBlush2
+238	229	222	seashell2
+238	230	133	khaki2
+238	232	170	PaleGoldenrod
+238	232	170	pale goldenrod
+238	232	205	cornsilk2
+238	233	191	LemonChiffon2
+238	233	233	snow2
+238	238	0	yellow2
+238	238	209	LightYellow2
+238	238	224	ivory2
+240	128	128	LightCoral
+240	128	128	light coral
+240	230	140	khaki
+240	240	240	gray94
+240	240	240	grey94
+240	248	255	AliceBlue
+240	248	255	alice blue
+240	255	240	honeydew
+240	255	240	honeydew1
+240	255	255	azure
+240	255	255	azure1
+242	242	242	gray95
+242	242	242	grey95
+244	164	96	SandyBrown
+244	164	96	sandy brown
+245	222	179	wheat
+245	245	220	beige
+245	245	245	WhiteSmoke
+245	245	245	gray96
+245	245	245	grey96
+245	245	245	white smoke
+245	255	250	MintCream
+245	255	250	mint cream
+247	247	247	gray97
+247	247	247	grey97
+248	248	255	GhostWhite
+248	248	255	ghost white
+250	128	114	salmon
+250	235	215	AntiqueWhite
+250	235	215	antique white
+250	240	230	linen
+250	250	210	LightGoldenrodYellow
+250	250	210	light goldenrod yellow
+250	250	250	gray98
+250	250	250	grey98
+252	252	252	gray99
+252	252	252	grey99
+253	245	230	OldLace
+253	245	230	old lace
+255	0	0	red
+255	0	0	red1
+255	0	255	fuchsia
+255	0	255	magenta
+255	0	255	magenta1
+255	20	147	DeepPink
+255	20	147	DeepPink1
+255	20	147	deep pink
+255	48	48	firebrick1
+255	52	179	maroon1
+255	62	150	VioletRed1
+255	64	64	brown1
+255	69	0	OrangeRed
+255	69	0	OrangeRed1
+255	69	0	orange red
+255	99	71	tomato
+255	99	71	tomato1
+255	105	180	HotPink
+255	105	180	hot pink
+255	106	106	IndianRed1
+255	110	180	HotPink1
+255	114	86	coral1
+255	127	0	DarkOrange1
+255	127	36	chocolate1
+255	127	80	coral
+255	130	71	sienna1
+255	130	171	PaleVioletRed1
+255	131	250	orchid1
+255	140	0	DarkOrange
+255	140	0	dark orange
+255	140	105	salmon1
+255	160	122	LightSalmon
+255	160	122	LightSalmon1
+255	160	122	light salmon
+255	165	0	orange
+255	165	0	orange1
+255	165	79	tan1
+255	174	185	LightPink1
+255	181	197	pink1
+255	182	193	LightPink
+255	182	193	light pink
+255	185	15	DarkGoldenrod1
+255	187	255	plum1
+255	192	203	pink
+255	193	37	goldenrod1
+255	193	193	RosyBrown1
+255	211	155	burlywood1
+255	215	0	gold
+255	215	0	gold1
+255	218	185	PeachPuff
+255	218	185	PeachPuff1
+255	218	185	peach puff
+255	222	173	NavajoWhite
+255	222	173	NavajoWhite1
+255	222	173	navajo white
+255	225	255	thistle1
+255	228	181	moccasin
+255	228	196	bisque
+255	228	196	bisque1
+255	228	225	MistyRose
+255	228	225	MistyRose1
+255	228	225	misty rose
+255	231	186	wheat1
+255	235	205	BlanchedAlmond
+255	235	205	blanched almond
+255	236	139	LightGoldenrod1
+255	239	213	PapayaWhip
+255	239	213	papaya whip
+255	239	219	AntiqueWhite1
+255	240	245	LavenderBlush
+255	240	245	LavenderBlush1
+255	240	245	lavender blush
+255	245	238	seashell
+255	245	238	seashell1
+255	246	143	khaki1
+255	248	220	cornsilk
+255	248	220	cornsilk1
+255	250	205	LemonChiffon
+255	250	205	LemonChiffon1
+255	250	205	lemon chiffon
+255	250	240	FloralWhite
+255	250	240	floral white
+255	250	250	snow
+255	250	250	snow1
+255	255	0	yellow
+255	255	0	yellow1
+255	255	224	LightYellow
+255	255	224	LightYellow1
+255	255	224	light yellow
+255	255	240	ivory
+255	255	240	ivory1
+255	255	255	gray100
+255	255	255	grey100
+255	255	255	white

@@ -17,7 +17,8 @@
 
 # graphical browser? defaults to yes for meatminds. text browser users can
 # work it out how to change it.
-SURFRAW_graphical="yes"
+#SURFRAW_graphical="yes"
+SURFRAW_graphical="no"
 
 # name/path of text browser executable
 # e.g links, lynx, w3m
