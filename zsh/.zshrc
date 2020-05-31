@@ -85,7 +85,6 @@ plugins=(
   copyfile
   ctags
   dircolors
-  django
   docker
   docker-shortcuts
   encode64
@@ -93,7 +92,9 @@ plugins=(
   fancy-ctrl-z
   fzf-extensions
   git
+  git-extras
   gpg-agent
+  grip-extensions
   history-substring-search
   jsontools
   keybindings
@@ -112,10 +113,11 @@ plugins=(
   tmux
   ufw
   urltools
+  vagrant
   venv
-  virtualenv
+  # virtualenv
   zsh-completions
-#  zsh-interactive-cd
+  # zsh-interactive-cd
   zsh-navigation-tools
   zsh-syntax-highlighting
 )
@@ -155,14 +157,16 @@ setopt ALWAYS_TO_END
 setopt APPEND_CREATE
 setopt APPEND_HISTORY
 setopt AUTO_CD
-setopt AUTO_PUSHD
 setopt AUTO_NAME_DIRS
+setopt AUTO_PUSHD
+setopt AUTO_RESUME
 setopt NO_BEEP
 setopt BRACE_CCL
 setopt C_BASES
 setopt C_PRECEDENCES
 setopt CDABLE_VARS
 setopt CHASE_LINKS
+setopt CHECK_JOBS
 setopt NO_CLOBBER
 setopt CORRECT
 setopt NO_CORRECT_ALL
@@ -175,11 +179,11 @@ setopt NO_GLOB_DOTS
 setopt GLOB_STAR_SHORT
 setopt NO_GLOBAL_EXPORT
 setopt HASH_EXECUTABLES_ONLY
+setopt HIST_ALLOW_CLOBBER
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_FCNTL_LOCK
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_IGNORE_SPACE
 setopt HIST_LEX_WORDS
 setopt HIST_NO_STORE
 setopt HIST_REDUCE_BLANKS
@@ -188,19 +192,21 @@ setopt HIST_SUBST_PATTERN
 setopt HIST_VERIFY
 setopt INC_APPEND_HISTORY
 setopt LONG_LIST_JOBS
-setopt MAGIC_EQUAL_SUBST
+# setopt MAGIC_EQUAL_SUBST
 setopt NOHUP
 setopt NOTIFY
 setopt NUMERIC_GLOB_SORT
 setopt OCTAL_ZEROES
-setopt PROMPT_BANG
+# setopt PROMPT_BANG
 setopt PROMPT_SUBST
 setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_TO_HOME
 setopt RC_QUOTES
 setopt REMATCH_PCRE
 setopt RM_STAR_SILENT
 setopt NO_SH_WORD_SPLIT
 setopt SHARE_HISTORY
+setopt SHORT_LOOPS
 setopt UNSET
 setopt WARN_CREATE_GLOBAL
 
@@ -228,15 +234,26 @@ fi
 # Zsh Params
 # see zshparam(1)
 #
+unset IFS
 LISTMAX=0
 DIRSTACKSIZE=0
 CORRECT_IGNORE='_*'
-HISTORY_IGNORE='[bf]g'
+CORRECT_IGNORE_FILE='*~'
+HISTORY_='([A-Za-z0-9_]##=*[[:space:]]##)#(bg|fg|fc)([[:space:]]*)#'
 HISTSIZE=30000
 SAVEHIST=25000
 NULLCMD='cat'
-PROMPT_EOL_MARK='%B%S^@%s%b'
-READNULLCMD="${PAGER:-${READNULLCMD:-pager}}"
+PROMPT_EOL_MARK='%B%S^@%b%s'
+READNULLCMD="${PAGER:-${READNULLCMD:-cat}}"
+sprompt=(
+'%N:'
+'correct'
+'%1F'\''${${:-%%R}//'\''/'\'\\\'\''}'\''%1f'
+'to'
+'%2F'\''${${:-%%r}//'\''/'\'\\\'\''}'\''%2f?'
+'%8F[%8fy%8F/%8fn%8F/%8fe%8F/%8fa%8F]%8f '
+)
+SPROMPT='${(%%)sprompt}'
 
 
 # Zsh Completion
@@ -259,14 +276,14 @@ zstyle ':completion:*' glob true
 zstyle ':completion:*' ignore-parents parent pwd .. directory
 zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS%:}"
-zstyle ':completion:*' list-prompt '%S[%p] -- TAB for more --%s'
+zstyle -e ':completion:*' list-prompt 'reply=( "${(%%):-%S[%U%%p%u] -- <%UTab%u> to continue --%s}" )'
 zstyle ':completion:*' match-original both
 zstyle ':completion:*' matcher-list '' '+m:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+r:|[_.]=* r:|=*'
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' old-menu false
 zstyle ':completion:*' original true
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
-zstyle ':completion:*' select-prompt '%S[%m]%s'
+zstyle -e ':completion:*' select-prompt 'reply=( "${(%%):-%S[%U%%m%u]%s}" )'
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' substitute true
 zstyle ':completion:*' use-cache true
@@ -282,12 +299,12 @@ zstyle ':completion:*:matches' group yes
 zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:options' auto-description '%d'
 zstyle ':completion:*:options' description yes
-zstyle ':completion:*:sudo:*' environ PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-zstyle ':completion:*:warnings' format $'%{\e[0;31m%}No matches%{\e[0m%}'
+zstyle ':completion:*:sudo:*' environ "PATH=${$(sudo -n -u "${USERNAME:-$(id -un)}" printenv PATH):-${PATH:-$(getconf PATH)}}"
+zstyle -e ':completion:*:warnings' format 'reply=( "${(%%):-%B-- %U%1Fno matches%1f%u --%b}" )'
 zstyle ':completion:*:*:zcompile:*' ignored-patterns '(*~|*.zwc)'
 zstyle ':completion:*:*:-command-:*:commands' ignored-patterns '*\~'
-zstyle ':completion::(^approximate*):*:functions' ignored-patterns '[_.]*'
-zstyle -e ':completion:*' max-errors 'reply=( $(( (${#PREFIX} + ${#SUFFIX}) / 4 )) numeric )'
+zstyle ':completion::(^approximate*):*:functions' ignored-patterns '[._]*'
+zstyle -e ':completion:*' max-errors 'reply=( "$(( (${#PREFIX} + ${#SUFFIX}) / 4 ))" numeric )'
 
 zstyle ':compinstall' filename "$0"
 autoload -U -z compinit
@@ -313,17 +330,6 @@ then
   # fzf key bindings
   source -- "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
 fi
-
-function level-order-traversal()
-(
-  emulate -R zsh
-  dirs -- "${1:-.}"
-  while popd -q 2> /dev/null
-  do
-    pwd
-    dirstack+=(*/(N:a))
-  done
-)
 
 typeset -xT 'FZF_DEFAULT_OPTS' 'fzf_default_opts' ' '
 fzf_default_opts=(
@@ -382,8 +388,7 @@ then
     '--color=auto'
     '--files-with-matches'
     '--follow'
-    '--hidden'
-    '--ignore-case'
+    '--smart-case'
   )
 fi
 
