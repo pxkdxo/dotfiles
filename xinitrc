@@ -8,81 +8,81 @@
 SYSRESOURCES='/etc/X11/Xresources'
 USERRESOURCES="${HOME}/.Xresources"
 
-SYSXINITDIR='/etc/X11/xinit/xinitrc.d'
-USERXINITDIR="${HOME}/.xinitrc.d"
+SYSSESSIONDIR='/etc/X11/xinit/xinitrc.d'
+USERSESSIONDIR="${HOME}/.xinitrc.d"
 
 WM="${WM:-awesome}"
 
 
 # Merge in system resources
 
-if test -f "${SYSRESOURCES}"
+if test -f "${SYSRESOURCES}" && test -r "${SYSRESOURCES}"
 then
     xrdb -merge "${SYSRESOURCES}"
 
-elif test -d "${SYSRESOURCES}"
+elif test -d "${SYSRESOURCES}" && test -r "${SYSRESOURCES}"
 then
-    for f in "${SYSRESOURCES}"/*
+    for file in "${SYSRESOURCES}"/*
     do
-        if test -f "${f}"
+        if test -f "${file}" && test -r "${file}"
         then
-            xrdb -merge "${f}"
+            xrdb -merge "${file}"
         fi
     done
+    unset -v file
 fi
-unset -v f
 
 
 # Merge in user resources
 
-if test -f "${USERRESOURCES}"
+if test -f "${USERRESOURCES}" && test -r "${USERRESOURCES}"
 then
     xrdb -merge -I"${HOME}" "${USERRESOURCES}"
 
-elif test -d "${USERRESOURCES}"
+elif test -d "${USERRESOURCES}" && test -r "${USERRESOURCES}"
 then
-    for f in "${USERRESOURCES}"/*
+    for file in "${USERRESOURCES}"/*
     do
-        if test -f "${f}"
+        if test -f "${file}" && test -r "${file}"
         then
-            xrdb -merge -I"${HOME}" "${f}"
+            xrdb -merge -I"${HOME}" "${file}"
         fi
     done
+    unset -v file
 fi
-unset -v f
 
 
 # Run system config scripts
 
-if test -d "${SYSXINITDIR}"
+if test -d "${SYSSESSIONDIR}" && test -r "${SYSSESSIONDIR}"
 then
-    for f in "${SYSXINITDIR}"/*
+    for file in "${SYSSESSIONDIR}"/*
     do
-        if test -f "${f}"
+        if test -f "${file}" && test -r "${file}"
         then
-            . "${f}"
+            . "${file}"
         fi
     done
+    unset -v file
 fi
-unset -v f
 
 
 # Run user config scripts
 
-if test -d "${USERXINITDIR}"
+if test -d "${USERSESSIONDIR}" && test -r "${USERSESSIONDIR}"
 then
-    for f in "${USERXINITDIR}"/*
+    for file in "${USERSESSIONDIR}"/*
     do
-        if test -f "${f}"
+        if test -f "${file}" && test -r "${file}"
         then
-            . "${f}"
+            . "${file}"
         fi
     done
+    unset -v file
 fi
-unset -v f
 
 
-# Pass control to window manager
+# Exec a window manager
 
 if command -v "${WM}" > /dev/null
 then

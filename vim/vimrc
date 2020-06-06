@@ -48,6 +48,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+"Plug 'mcchrish/nnn.vim'
 Plug 'edkolev/promptline.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
@@ -94,7 +95,7 @@ set softtabstop=2
 set tabstop=8
 
 " Length past which lines will be broken automatically
-set textwidth=80
+set textwidth=79
 
 
 " Display and Verbosity
@@ -394,45 +395,48 @@ if exists('+termguicolors')
   endif
 endif
 
+
 " Choose some colors
 let g:colorschemes = []
 
 if &termguicolors
-  let g:colorschemes = [
-    \   'nightshimmer',
-    \   '3dglasses',
-    \   'grunge-contrast',
-    \   'grunge',
-    \   'candycode',
-    \   'neonwave',
-    \   'afterglow',
-    \   'kiss',
-    \   'neverland2-darker',
-    \   'neverland2',
-    \   'candy',
-    \   'fruity',
-    \   'darkZ',
+  let g:colorschemes += [
+    \ 'nightshimmer',
+    \ '3dglasses',
+    \ 'grunge-contrast',
+    \ 'grunge',
+    \ 'candycode',
+    \ 'neonwave',
+    \ 'afterglow',
+    \ 'kiss',
+    \ 'neverland2-darker',
+    \ 'neverland2',
+    \ 'candy',
+    \ 'fruity',
+    \ 'darkZ',
     \ ]
+endif
 
-elseif &t_Co > 16
-  let g:colorschemes = [
-    \   'squidink',
-    \   'skittles_berry',
-    \   'Tomorrow-Night-Eighties',
-    \   'desertink',
-    \   '1989',
-    \   'vice',
-    \   'Benokai',
-    \   'dracula',
-    \   'evolution',
-    \   'lucius',
+if &t_Co > 16
+  let g:colorschemes += [
+    \ 'Tomorrow-Night-Eighties',
+    \ 'squidink',
+    \ 'skittles_berry',
+    \ 'desertink',
+    \ '1989',
+    \ 'vice',
+    \ 'Benokai',
+    \ 'dracula',
+    \ 'evolution',
+    \ 'lucius',
     \ ]
+endif
 
-elseif &t_Co > 0
-  let g:colorschemes = [
-    \   'evening',
-    \   'desert',
-    \   'default'
+if &t_Co > 0
+  let g:colorschemes += [
+    \ 'evening',
+    \ 'desert',
+    \ 'default'
     \ ]
 endif
 
@@ -568,14 +572,14 @@ if has('autocmd')
     \ softtabstop=4
     \ shiftwidth=4
     \ tabstop=8
-    \ textwidth=80
+    \ textwidth=79
 endif
 
 " Enable all available highlighting
 let g:python_highlight_all = 1
 
 " Enable syntastic plugins
-let g:syntastic_python_checkers = ['pep8', 'pylint', 'python3']
+let g:syntastic_python_checkers = ['pycodestyle', 'pylint', 'python']
 
 " Set the default version for pyx commands
 if has('pythonx')

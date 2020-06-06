@@ -94,7 +94,6 @@ plugins=(
   git
   git-extras
   gpg-agent
-  grip-extensions
   history-substring-search
   jsontools
   keybindings
@@ -234,7 +233,6 @@ fi
 # Zsh Params
 # see zshparam(1)
 #
-unset IFS
 LISTMAX=0
 DIRSTACKSIZE=0
 CORRECT_IGNORE='_*'
@@ -247,11 +245,10 @@ PROMPT_EOL_MARK='%B%S^@%b%s'
 READNULLCMD="${PAGER:-${READNULLCMD:-cat}}"
 sprompt=(
 '%N:'
-'correct'
-'%1F'\''${${:-%%R}//'\''/'\'\\\'\''}'\''%1f'
-'to'
-'%2F'\''${${:-%%r}//'\''/'\'\\\'\''}'\''%2f?'
-'%8F[%8fy%8F/%8fn%8F/%8fe%8F/%8fa%8F]%8f '
+'%1F'"'"'${${:-%%R}//'"'"'/'"'"''''"'""'"'}'"'"'%1f:'
+'perhaps you meant'
+'%2F'"'"'${${:-%%r}//'"'"'/'"'"''''"'""'"'}'"'"'%2f'
+'%8F[%8f%7Fy%7f%8F/%8f%7Fn%7f%8F/%8f%7Fe%7f%8F/%8f%7Fa%7f%8F]%8f: '
 )
 SPROMPT='${(%%)sprompt}'
 
@@ -306,10 +303,10 @@ zstyle ':completion:*:*:-command-:*:commands' ignored-patterns '*\~'
 zstyle ':completion::(^approximate*):*:functions' ignored-patterns '[._]*'
 zstyle -e ':completion:*' max-errors 'reply=( "$(( (${#PREFIX} + ${#SUFFIX}) / 4 ))" numeric )'
 
-zstyle ':compinstall' filename "$0"
+# zstyle ':compinstall' filename "$0"
 autoload -U -z compinit
 
-compinit -d "${ZDOTDIR:-${HOME}}/.zcompdump"
+compinit -i -d "${ZSH_COMPDUMP:-${ZDOTDIR:-${HOME}}/.zcompdump}"
 
 
 # fzf
@@ -331,7 +328,7 @@ then
   source -- "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
 fi
 
-typeset -xT 'FZF_DEFAULT_OPTS' 'fzf_default_opts' ' '
+typeset -xT FZF_DEFAULT_OPTS fzf_default_opts " "
 fzf_default_opts=(
   '--bind=''ctrl-\:cancel'''
   '--bind=''ctrl-space:jump'''
@@ -348,9 +345,9 @@ fzf_default_opts=(
   '--tabstop=4'
 )
 
-typeset -xT 'FZF_CTRL_R_OPTS' 'fzf_ctrl_r_opts' ' '
+typeset -xT FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
 fzf_ctrl_r_opts=(
-  '--bind=''alt-enter:execute-silent%exec "${(q)${(@)${(f)$(whence -sp urxvt xterm x-terminal-emulator)}#* -> }[1]}" -e tmux new zsh -i -c "exec \"\${(@Z+c+)@}\"" -- {2..} &%+abort'''
+  '--bind=''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c "trap \"print -n \[press any key to exit\]; read -E -e -k 1 -s\" EXIT; \"\${(@Z+c+)@}\"" -- {2..} &%+abort'''
   '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
   '--filepath-word'
   '--jump-labels=''qwertyuiop[]'''
@@ -358,9 +355,9 @@ fzf_ctrl_r_opts=(
   '--sort'
 )
 
-typeset -xT 'FZF_CTRL_T_OPTS' 'fzf_ctrl_t_opts' ' '
+typeset -xT FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
 fzf_ctrl_t_opts=(
-  '--bind=''alt-enter:execute-silent%exec "${(q)${(@)${(f)$(whence -sp urxvt xterm x-terminal-emulator)}#* -> }[1]}" -e tmux new zsh -i -c "exec xdg-open \"\${(@Z+c+)@}\"" -- {} &%+abort'''
+  '--bind=''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c "exec xdg-open \"\${(@Z+c+)@}\"" -- {} &%+abort'''
   '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
   '--filepath-word'
   '--jump-labels=''qwertyuiop[]'''
@@ -368,20 +365,19 @@ fzf_ctrl_t_opts=(
   '--no-sort'
 )
 
-typeset -xT 'FZF_ALT_C_OPTS' 'fzf_alt_c_opts' ' '
+typeset -xT FZF_ALT_C_OPTS fzf_alt_c_opts " "
 fzf_alt_c_opts=(
-  '--bind=''alt-enter:execute-silent%exec "${(q)${(@)${(f)$(whence -sp urxvt xterm x-terminal-emulator)}#* -> }[1]}" -e tmux new zsh -i -c "exec ${(q)${(@)${(f)$(whence -sp nvim vim editor)}#* -> }[1]} -- \"\${(@Z+c+)@}\"" -- {} &%+abort'''
-  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:1'''
+  '--bind=''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c "exec \"\${EDITOR:-editor}\" -- \"\${(@Z+c+)@}\"" -- {} &%+abort'''
+  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
   '--filepath-word'
   '--jump-labels=''qwertyuiop[]'''
   '--no-hscroll'
   '--no-sort'
-  '--color=''header:1,info:3,pointer:5,prompt:5,border:5'''
 )
 
 if command -v rg > /dev/null
 then
-  typeset -xT 'FZF_DEFAULT_COMMAND' 'fzf_default_command' ' '
+  typeset -xT FZF_DEFAULT_COMMAND fzf_default_command " "
   fzf_default_command=(
     'rg'
     '--auto-hybrid-regex'

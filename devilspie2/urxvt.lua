@@ -12,5 +12,6 @@ if get_window_class() == "URxvt" then
         set_window_opacity(0.88)
     end
     --]]
-    set_window_opacity(0.91)
+    set_window_opacity(tonumber(
+    os.getenv('RXVT_WINDOW_OPACITY') or os.getenv('TERM_WINDOW_OPACITY') or "0.92"))
 end
