@@ -69,6 +69,7 @@
 !/vim/vimrc
 !/xinitrc
 !/xinitrc.d/**
+!/xprofile
 !/xsession
 !/xserverrc
 !/zlogin
