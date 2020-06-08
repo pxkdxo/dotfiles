@@ -237,7 +237,6 @@ LISTMAX=0
 DIRSTACKSIZE=0
 CORRECT_IGNORE='_*'
 CORRECT_IGNORE_FILE='*~'
-HISTORY_='([A-Za-z0-9_]##=*[[:space:]]##)#(bg|fg|fc)([[:space:]]*)#'
 HISTSIZE=30000
 SAVEHIST=25000
 NULLCMD='cat'

@@ -16,9 +16,9 @@
 
 
 ! special
-*.foreground:   #f4f4f4
+*.foreground:   #dadada
 *.background:   #1a1a1a
-*.cursorColor:  #f4f4f4
+*.cursorColor:  #dadada
 
 ! black         Black
 *.color0:       #0a0a0a

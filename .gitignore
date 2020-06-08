@@ -35,12 +35,12 @@
 !/mpd/mpd.conf
 !/nanorc
 !/ncmpcpp/config
-!/nvim/autoload/**
+!/nvim/autoload
 !/nvim/bundle
-!/nvim/colors/**
+!/nvim/colors
 !/nvim/init.vim
-!/nvim/plugin/**
-!/nvim/syntax/**
+!/nvim/plugin
+!/nvim/syntax
 !/oh-my-zsh/custom/**
 !/pam_environment
 !/profile
