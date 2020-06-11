@@ -10,7 +10,6 @@ silent! while 0
 set nocompatible
 silent! endwhile
 
-
 " Skip the rest in VSCode
 if exists('g:vscode')
   finish
@@ -52,6 +51,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'edkolev/promptline.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
+Plug 'majutsushi/tagbar'
 Plug 'edkolev/tmuxline.vim'
 Plug 'rainglow/vim'
 Plug 'vim-airline/vim-airline'
@@ -65,6 +65,7 @@ Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
+Plug 'ycm-core/YouCompleteMe'
 
 call plug#end()
 
@@ -268,6 +269,10 @@ set timeoutlen=1000
 " milliseconds to wait for completion of a key code
 set ttimeoutlen=80
 
+if has('nvim')
+  set nottimeout
+endif
+
 
 " History
 
@@ -288,7 +293,11 @@ set updatetime=200
 
 
 " Tags File Locations
-let &tags = "./.tags,./tags,.tags,tags"
+set tags=
+set tags+=./tags
+set tags+=./.tags
+set tags+=tags
+set tags+=.tags
 
 " Swapfile and Undofile
 
@@ -353,7 +362,7 @@ set belloff=all
 " Enable the mouse
 if has('mouse')
   set mouse=a
-  if has('mouse_sgr')
+  if has('mouse_sgr') && !has('nvim')
     set ttymouse=sgr
   endif
 endif
@@ -424,10 +433,10 @@ if &t_Co > 16
     \ 'skittles_berry',
     \ 'desertink',
     \ '1989',
-    \ 'vice',
-    \ 'Benokai',
     \ 'dracula',
+    \ 'vice',
     \ 'evolution',
+    \ 'Benokai',
     \ 'lucius',
     \ ]
 endif
@@ -536,7 +545,6 @@ if has('autocmd')
     \ wrap
     \ linebreak
     \ breakindent
-    \ breakat=" \t!@?({+-*/;:,."
 endif
 
 
@@ -647,18 +655,49 @@ if has("autocmd")
 endif
 
 
-" Fallback syntax completion
+" Completion
+
+set complete=
+set complete+=.
+set complete+=w
+set complete+=b
+set complete+=u
+set complete+=d
+set complete+=t
+
+set completeopt=
+set completeopt+=preview
+set completeopt+=noselect
+set completeopt+=menuone
+
+" omnicompletion fallback 
 if has("autocmd") && exists("+omnifunc")
-  autocmd Filetype *
+  autocmd vimrc Filetype *
     \ if &omnifunc == ''
     \|  setlocal omnifunc=syntaxcomplete#Complete
     \|endif
 endif
 
 
+" YouCompleteMe
+
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_key_list_stop_completion = ['<C-\\>']
+
+if has('autocmd')
+  autocmd vimrc FileType *
+    \ let b:ycm_hover = {
+    \ 'command': 'GetDoc',
+    \ 'syntax': &syntax
+    \ }
+endif
+
+
 " CtrlP
 
-let g:ctrlp_map = '<C-@>'
+"let g:ctrlp_map = '<C-@>'
 
 
 " FZF
@@ -677,6 +716,11 @@ let g:fzf_colors = {
   \   'spinner':  ['fg', 'Label'],
   \   'header':   ['fg', 'Comment'],
   \ }
+
+let g:fzf_buffers_jump = 1
+let g:fzf_tags_command = 'ctags -f .tags -R'
+let g:fzf_commands_expect = 'alt-enter'
+
 
 " Syntastic
 
@@ -700,10 +744,10 @@ let g:airline_symbols.branch      = ''
 let g:airline_symbols.crypt       = ''
 let g:airline_symbols.dirty       = '  '
 let g:airline_symbols.ellipsis    = '…'
-let g:airline_symbols.linenr      = '﬌ '
+let g:airline_symbols.linenr      = '﬌'
 let g:airline_symbols.maxlinenr   = ''
+let g:airline_symbols.notexists   = ' Ɇ '
 let g:airline_symbols.modified    = '  '
-let g:airline_symbols.notexists   = ''
 let g:airline_symbols.readonly    = ''
 let g:airline_symbols.paste       = ''
 let g:airline_symbols.space       = ' '
@@ -817,6 +861,19 @@ autocmd vimrc ColorScheme *
 " Set a key to act as <leader> in mappings
 let g:mapleader = ','
 
+nnoremap <silent> <leader><F12> :
+  \
+  \call fzf#run({
+  \ 'source': map(
+  \   split(globpath(&rtp, "colors/*.vim"), "\n"),
+  \   "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"
+  \ ),
+  \ 'sink': 'colo',
+  \ 'options': '+m',
+  \ 'left': 30
+  \})
+  \<CR>
+
 " Next tab
 nnoremap <silent><M-Right> :
   \
@@ -882,221 +939,228 @@ vnoremap <silent> # :
   \substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \gV:call setreg('"',old_reg,old_regtype)<CR>
 
-" Map xterm sequences for <S-Arrow> combinations
-map! <ESC>[1;2A <S-Up>
-map! <ESC>[1;2B <S-Down>
-map! <ESC>[1;2C <S-Right>
-map! <ESC>[1;2D <S-Left>
-nmap <ESC>[1;2A <S-Up>
-nmap <ESC>[1;2B <S-Down>
-nmap <ESC>[1;2C <S-Right>
-nmap <ESC>[1;2D <S-Left>
-vmap <ESC>[1;2A <S-Up>
-vmap <ESC>[1;2B <S-Down>
-vmap <ESC>[1;2C <S-Right>
-vmap <ESC>[1;2D <S-Left>
 
-" Map xterm sequences for <M-Arrow> combinations
-map! <ESC>[1;3A <M-Up>
-map! <ESC>[1;3B <M-Down>
-map! <ESC>[1;3C <M-Right>
-map! <ESC>[1;3D <M-Left>
-nmap <ESC>[1;3A <M-Up>
-nmap <ESC>[1;3B <M-Down>
-nmap <ESC>[1;3C <M-Right>
-nmap <ESC>[1;3D <M-Left>
-vmap <ESC>[1;3A <M-Up>
-vmap <ESC>[1;3B <M-Down>
-vmap <ESC>[1;3C <M-Right>
-vmap <ESC>[1;3D <M-Left>
+" Fix escape sequences in vim
+if !has('nvim')
 
-" Map xterm sequences for <M-S-Arrow> combinations
-map! <ESC>[1;4A <M-S-Up>
-map! <ESC>[1;4B <M-S-Down>
-map! <ESC>[1;4C <M-S-Right>
-map! <ESC>[1;4D <M-S-Left>
-nmap <ESC>[1;4A <M-S-Up>
-nmap <ESC>[1;4B <M-S-Down>
-nmap <ESC>[1;4C <M-S-Right>
-nmap <ESC>[1;4D <M-S-Left>
-vmap <ESC>[1;4A <M-S-Up>
-vmap <ESC>[1;4B <M-S-Down>
-vmap <ESC>[1;4C <M-S-Right>
-vmap <ESC>[1;4D <M-S-Left>
+  " Map xterm sequences for <S-Arrow> combinations
+  map! <ESC>[1;2A <S-Up>
+  map! <ESC>[1;2B <S-Down>
+  map! <ESC>[1;2C <S-Right>
+  map! <ESC>[1;2D <S-Left>
+  nmap <ESC>[1;2A <S-Up>
+  nmap <ESC>[1;2B <S-Down>
+  nmap <ESC>[1;2C <S-Right>
+  nmap <ESC>[1;2D <S-Left>
+  vmap <ESC>[1;2A <S-Up>
+  vmap <ESC>[1;2B <S-Down>
+  vmap <ESC>[1;2C <S-Right>
+  vmap <ESC>[1;2D <S-Left>
+  
+  " Map xterm sequences for <M-Arrow> combinations
+  map! <ESC>[1;3A <M-Up>
+  map! <ESC>[1;3B <M-Down>
+  map! <ESC>[1;3C <M-Right>
+  map! <ESC>[1;3D <M-Left>
+  nmap <ESC>[1;3A <M-Up>
+  nmap <ESC>[1;3B <M-Down>
+  nmap <ESC>[1;3C <M-Right>
+  nmap <ESC>[1;3D <M-Left>
+  vmap <ESC>[1;3A <M-Up>
+  vmap <ESC>[1;3B <M-Down>
+  vmap <ESC>[1;3C <M-Right>
+  vmap <ESC>[1;3D <M-Left>
+  
+  " Map xterm sequences for <M-S-Arrow> combinations
+  map! <ESC>[1;4A <M-S-Up>
+  map! <ESC>[1;4B <M-S-Down>
+  map! <ESC>[1;4C <M-S-Right>
+  map! <ESC>[1;4D <M-S-Left>
+  nmap <ESC>[1;4A <M-S-Up>
+  nmap <ESC>[1;4B <M-S-Down>
+  nmap <ESC>[1;4C <M-S-Right>
+  nmap <ESC>[1;4D <M-S-Left>
+  vmap <ESC>[1;4A <M-S-Up>
+  vmap <ESC>[1;4B <M-S-Down>
+  vmap <ESC>[1;4C <M-S-Right>
+  vmap <ESC>[1;4D <M-S-Left>
+  
+  " Map xterm sequences for <C-Arrow> combinations
+  map! <ESC>[1;5A <C-Up>
+  map! <ESC>[1;5B <C-Down>
+  map! <ESC>[1;5C <C-Right>
+  map! <ESC>[1;5D <C-Left>
+  nmap <ESC>[1;5A <C-Up>
+  nmap <ESC>[1;5B <C-Down>
+  nmap <ESC>[1;5C <C-Right>
+  nmap <ESC>[1;5D <C-Left>
+  vmap <ESC>[1;5A <C-Up>
+  vmap <ESC>[1;5B <C-Down>
+  vmap <ESC>[1;5C <C-Right>
+  vmap <ESC>[1;5D <C-Left>
+  
+  " Map xterm sequences for <C-S-Arrow> combinations
+  map! <ESC>[1;6A <C-S-Up>
+  map! <ESC>[1;6B <C-S-Down>
+  map! <ESC>[1;6C <C-S-Right>
+  map! <ESC>[1;6D <C-S-Left>
+  nmap <ESC>[1;6A <C-S-Up>
+  nmap <ESC>[1;6B <C-S-Down>
+  nmap <ESC>[1;6C <C-S-Right>
+  nmap <ESC>[1;6D <C-S-Left>
+  vmap <ESC>[1;6A <C-S-Up>
+  vmap <ESC>[1;6B <C-S-Down>
+  vmap <ESC>[1;6C <C-S-Right>
+  vmap <ESC>[1;6D <C-S-Left>
+  
+  " Map xterm sequences for <C-M-Arrow> combinations
+  map! <ESC>[1;7A <C-M-Up>
+  map! <ESC>[1;7B <C-M-Down>
+  map! <ESC>[1;7C <C-M-Right>
+  map! <ESC>[1;7D <C-M-Left>
+  nmap <ESC>[1;7A <C-M-Up>
+  nmap <ESC>[1;7B <C-M-Down>
+  nmap <ESC>[1;7C <C-M-Right>
+  nmap <ESC>[1;7D <C-M-Left>
+  vmap <ESC>[1;7A <C-M-Up>
+  vmap <ESC>[1;7B <C-M-Down>
+  vmap <ESC>[1;7C <C-M-Right>
+  vmap <ESC>[1;7D <C-M-Left>
+  
+  " Map xterm sequences for <C-M-S-Arrow> combinations
+  map! <ESC>[1;8A <C-M-S-Up>
+  map! <ESC>[1;8B <C-M-S-Down>
+  map! <ESC>[1;8C <C-M-S-Right>
+  map! <ESC>[1;8D <C-M-S-Left>
+  nmap <ESC>[1;8A <C-M-S-Up>
+  nmap <ESC>[1;8B <C-M-S-Down>
+  nmap <ESC>[1;8C <C-M-S-Right>
+  nmap <ESC>[1;8D <C-M-S-Left>
+  vmap <ESC>[1;8A <C-M-S-Up>
+  vmap <ESC>[1;8B <C-M-S-Down>
+  vmap <ESC>[1;8C <C-M-S-Right>
+  vmap <ESC>[1;8D <C-M-S-Left>
+  
+  " Map xterm and rxvt escape sequences for <Fn> keys
+  map! <ESC>OP   <F1>
+  map! <ESC>OQ   <F2>
+  map! <ESC>OR   <F3>
+  map! <ESC>OS   <F4>
+  map! <ESC>[11~ <F1>
+  map! <ESC>[12~ <F2>
+  map! <ESC>[13~ <F3>
+  map! <ESC>[14~ <F4>
+  map! <ESC>[15~ <F5>
+  map! <ESC>[17~ <F6>
+  map! <ESC>[18~ <F7>
+  map! <ESC>[19~ <F8>
+  map! <ESC>[20~ <F9>
+  map! <ESC>[21~ <F10>
+  map! <ESC>[23~ <F11>
+  map! <ESC>[24~ <F12>
+  nmap <ESC>OP   <F1>
+  nmap <ESC>OQ   <F2>
+  nmap <ESC>OR   <F3>
+  nmap <ESC>OS   <F4>
+  nmap <ESC>[11~ <F1>
+  nmap <ESC>[12~ <F2>
+  nmap <ESC>[13~ <F3>
+  nmap <ESC>[14~ <F4>
+  nmap <ESC>[15~ <F5>
+  nmap <ESC>[17~ <F6>
+  nmap <ESC>[18~ <F7>
+  nmap <ESC>[19~ <F8>
+  nmap <ESC>[20~ <F9>
+  nmap <ESC>[21~ <F10>
+  nmap <ESC>[23~ <F11>
+  nmap <ESC>[24~ <F12>
+  vmap <ESC>OP   <F1>
+  vmap <ESC>OQ   <F2>
+  vmap <ESC>OR   <F3>
+  vmap <ESC>OS   <F4>
+  vmap <ESC>[11~ <F1>
+  vmap <ESC>[12~ <F2>
+  vmap <ESC>[13~ <F3>
+  vmap <ESC>[14~ <F4>
+  vmap <ESC>[15~ <F5>
+  vmap <ESC>[17~ <F6>
+  vmap <ESC>[18~ <F7>
+  vmap <ESC>[19~ <F8>
+  vmap <ESC>[20~ <F9>
+  vmap <ESC>[21~ <F10>
+  vmap <ESC>[23~ <F11>
+  vmap <ESC>[24~ <F12>
+  
+  " Map xterm and rxvt escape sequences for <S-Fn> combinations
+  map! <ESC>[23~   <S-F1>
+  map! <ESC>[24~   <S-F2>
+  map! <ESC>[1;2P  <S-F3>
+  map! <ESC>[1;2Q  <S-F4>
+  map! <ESC>[1;2R  <S-F5>
+  map! <ESC>[1;2S  <S-F6>
+  map! <ESC>[15;2~ <S-F7>
+  map! <ESC>[17;2~ <S-F8>
+  map! <ESC>[18;2~ <S-F9>
+  map! <ESC>[19;2~ <S-F10>
+  map! <ESC>[23;2~ <S-F11>
+  map! <ESC>[24;2~ <S-F12>
+  map! <ESC>[25~   <S-F3>
+  map! <ESC>[26~   <S-F4>
+  map! <ESC>[28~   <S-F5>
+  map! <ESC>[29~   <S-F6>
+  map! <ESC>[31~   <S-F7>
+  map! <ESC>[32~   <S-F8>
+  map! <ESC>[33~   <S-F9>
+  map! <ESC>[34~   <S-F10>
+  map! <ESC>[23$   <S-F11>
+  map! <ESC>[24$   <S-F12>
+  nmap <ESC>[23~   <S-F1>
+  nmap <ESC>[24~   <S-F2>
+  nmap <ESC>[1;2P  <S-F3>
+  nmap <ESC>[1;2Q  <S-F4>
+  nmap <ESC>[1;2R  <S-F5>
+  nmap <ESC>[1;2S  <S-F6>
+  nmap <ESC>[15;2~ <S-F7>
+  nmap <ESC>[17;2~ <S-F8>
+  nmap <ESC>[18;2~ <S-F9>
+  nmap <ESC>[19;2~ <S-F10>
+  nmap <ESC>[23;2~ <S-F11>
+  nmap <ESC>[24;2~ <S-F12>
+  nmap <ESC>[25~   <S-F3>
+  nmap <ESC>[26~   <S-F4>
+  nmap <ESC>[28~   <S-F5>
+  nmap <ESC>[29~   <S-F6>
+  nmap <ESC>[31~   <S-F7>
+  nmap <ESC>[32~   <S-F8>
+  nmap <ESC>[33~   <S-F9>
+  nmap <ESC>[34~   <S-F10>
+  nmap <ESC>[23$   <S-F11>
+  nmap <ESC>[24$   <S-F12>
+  vmap <ESC>[23~   <S-F1>
+  vmap <ESC>[24~   <S-F2>
+  vmap <ESC>[1;2P  <S-F3>
+  vmap <ESC>[1;2Q  <S-F4>
+  vmap <ESC>[1;2R  <S-F5>
+  vmap <ESC>[1;2S  <S-F6>
+  vmap <ESC>[15;2~ <S-F7>
+  vmap <ESC>[17;2~ <S-F8>
+  vmap <ESC>[18;2~ <S-F9>
+  vmap <ESC>[19;2~ <S-F10>
+  vmap <ESC>[23;2~ <S-F11>
+  vmap <ESC>[24;2~ <S-F12>
+  vmap <ESC>[25~   <S-F3>
+  vmap <ESC>[26~   <S-F4>
+  vmap <ESC>[28~   <S-F5>
+  vmap <ESC>[29~   <S-F6>
+  vmap <ESC>[31~   <S-F7>
+  vmap <ESC>[32~   <S-F8>
+  vmap <ESC>[33~   <S-F9>
+  vmap <ESC>[34~   <S-F10>
+  vmap <ESC>[23$   <S-F11>
+  vmap <ESC>[24$   <S-F12>
 
-" Map xterm sequences for <C-Arrow> combinations
-map! <ESC>[1;5A <C-Up>
-map! <ESC>[1;5B <C-Down>
-map! <ESC>[1;5C <C-Right>
-map! <ESC>[1;5D <C-Left>
-nmap <ESC>[1;5A <C-Up>
-nmap <ESC>[1;5B <C-Down>
-nmap <ESC>[1;5C <C-Right>
-nmap <ESC>[1;5D <C-Left>
-vmap <ESC>[1;5A <C-Up>
-vmap <ESC>[1;5B <C-Down>
-vmap <ESC>[1;5C <C-Right>
-vmap <ESC>[1;5D <C-Left>
+endif
 
-" Map xterm sequences for <C-S-Arrow> combinations
-map! <ESC>[1;6A <C-S-Up>
-map! <ESC>[1;6B <C-S-Down>
-map! <ESC>[1;6C <C-S-Right>
-map! <ESC>[1;6D <C-S-Left>
-nmap <ESC>[1;6A <C-S-Up>
-nmap <ESC>[1;6B <C-S-Down>
-nmap <ESC>[1;6C <C-S-Right>
-nmap <ESC>[1;6D <C-S-Left>
-vmap <ESC>[1;6A <C-S-Up>
-vmap <ESC>[1;6B <C-S-Down>
-vmap <ESC>[1;6C <C-S-Right>
-vmap <ESC>[1;6D <C-S-Left>
-
-" Map xterm sequences for <C-M-Arrow> combinations
-map! <ESC>[1;7A <C-M-Up>
-map! <ESC>[1;7B <C-M-Down>
-map! <ESC>[1;7C <C-M-Right>
-map! <ESC>[1;7D <C-M-Left>
-nmap <ESC>[1;7A <C-M-Up>
-nmap <ESC>[1;7B <C-M-Down>
-nmap <ESC>[1;7C <C-M-Right>
-nmap <ESC>[1;7D <C-M-Left>
-vmap <ESC>[1;7A <C-M-Up>
-vmap <ESC>[1;7B <C-M-Down>
-vmap <ESC>[1;7C <C-M-Right>
-vmap <ESC>[1;7D <C-M-Left>
-
-" Map xterm sequences for <C-M-S-Arrow> combinations
-map! <ESC>[1;8A <C-M-S-Up>
-map! <ESC>[1;8B <C-M-S-Down>
-map! <ESC>[1;8C <C-M-S-Right>
-map! <ESC>[1;8D <C-M-S-Left>
-nmap <ESC>[1;8A <C-M-S-Up>
-nmap <ESC>[1;8B <C-M-S-Down>
-nmap <ESC>[1;8C <C-M-S-Right>
-nmap <ESC>[1;8D <C-M-S-Left>
-vmap <ESC>[1;8A <C-M-S-Up>
-vmap <ESC>[1;8B <C-M-S-Down>
-vmap <ESC>[1;8C <C-M-S-Right>
-vmap <ESC>[1;8D <C-M-S-Left>
-
-" Map xterm and rxvt escape sequences for <Fn> keys
-map! <ESC>OP   <F1>
-map! <ESC>OQ   <F2>
-map! <ESC>OR   <F3>
-map! <ESC>OS   <F4>
-map! <ESC>[11~ <F1>
-map! <ESC>[12~ <F2>
-map! <ESC>[13~ <F3>
-map! <ESC>[14~ <F4>
-map! <ESC>[15~ <F5>
-map! <ESC>[17~ <F6>
-map! <ESC>[18~ <F7>
-map! <ESC>[19~ <F8>
-map! <ESC>[20~ <F9>
-map! <ESC>[21~ <F10>
-map! <ESC>[23~ <F11>
-map! <ESC>[24~ <F12>
-nmap <ESC>OP   <F1>
-nmap <ESC>OQ   <F2>
-nmap <ESC>OR   <F3>
-nmap <ESC>OS   <F4>
-nmap <ESC>[11~ <F1>
-nmap <ESC>[12~ <F2>
-nmap <ESC>[13~ <F3>
-nmap <ESC>[14~ <F4>
-nmap <ESC>[15~ <F5>
-nmap <ESC>[17~ <F6>
-nmap <ESC>[18~ <F7>
-nmap <ESC>[19~ <F8>
-nmap <ESC>[20~ <F9>
-nmap <ESC>[21~ <F10>
-nmap <ESC>[23~ <F11>
-nmap <ESC>[24~ <F12>
-vmap <ESC>OP   <F1>
-vmap <ESC>OQ   <F2>
-vmap <ESC>OR   <F3>
-vmap <ESC>OS   <F4>
-vmap <ESC>[11~ <F1>
-vmap <ESC>[12~ <F2>
-vmap <ESC>[13~ <F3>
-vmap <ESC>[14~ <F4>
-vmap <ESC>[15~ <F5>
-vmap <ESC>[17~ <F6>
-vmap <ESC>[18~ <F7>
-vmap <ESC>[19~ <F8>
-vmap <ESC>[20~ <F9>
-vmap <ESC>[21~ <F10>
-vmap <ESC>[23~ <F11>
-vmap <ESC>[24~ <F12>
-
-" Map xterm and rxvt escape sequences for <S-Fn> combinations
-map! <ESC>[23~   <S-F1>
-map! <ESC>[24~   <S-F2>
-map! <ESC>[1;2P  <S-F3>
-map! <ESC>[1;2Q  <S-F4>
-map! <ESC>[1;2R  <S-F5>
-map! <ESC>[1;2S  <S-F6>
-map! <ESC>[15;2~ <S-F7>
-map! <ESC>[17;2~ <S-F8>
-map! <ESC>[18;2~ <S-F9>
-map! <ESC>[19;2~ <S-F10>
-map! <ESC>[23;2~ <S-F11>
-map! <ESC>[24;2~ <S-F12>
-map! <ESC>[25~   <S-F3>
-map! <ESC>[26~   <S-F4>
-map! <ESC>[28~   <S-F5>
-map! <ESC>[29~   <S-F6>
-map! <ESC>[31~   <S-F7>
-map! <ESC>[32~   <S-F8>
-map! <ESC>[33~   <S-F9>
-map! <ESC>[34~   <S-F10>
-map! <ESC>[23$   <S-F11>
-map! <ESC>[24$   <S-F12>
-nmap <ESC>[23~   <S-F1>
-nmap <ESC>[24~   <S-F2>
-nmap <ESC>[1;2P  <S-F3>
-nmap <ESC>[1;2Q  <S-F4>
-nmap <ESC>[1;2R  <S-F5>
-nmap <ESC>[1;2S  <S-F6>
-nmap <ESC>[15;2~ <S-F7>
-nmap <ESC>[17;2~ <S-F8>
-nmap <ESC>[18;2~ <S-F9>
-nmap <ESC>[19;2~ <S-F10>
-nmap <ESC>[23;2~ <S-F11>
-nmap <ESC>[24;2~ <S-F12>
-nmap <ESC>[25~   <S-F3>
-nmap <ESC>[26~   <S-F4>
-nmap <ESC>[28~   <S-F5>
-nmap <ESC>[29~   <S-F6>
-nmap <ESC>[31~   <S-F7>
-nmap <ESC>[32~   <S-F8>
-nmap <ESC>[33~   <S-F9>
-nmap <ESC>[34~   <S-F10>
-nmap <ESC>[23$   <S-F11>
-nmap <ESC>[24$   <S-F12>
-vmap <ESC>[23~   <S-F1>
-vmap <ESC>[24~   <S-F2>
-vmap <ESC>[1;2P  <S-F3>
-vmap <ESC>[1;2Q  <S-F4>
-vmap <ESC>[1;2R  <S-F5>
-vmap <ESC>[1;2S  <S-F6>
-vmap <ESC>[15;2~ <S-F7>
-vmap <ESC>[17;2~ <S-F8>
-vmap <ESC>[18;2~ <S-F9>
-vmap <ESC>[19;2~ <S-F10>
-vmap <ESC>[23;2~ <S-F11>
-vmap <ESC>[24;2~ <S-F12>
-vmap <ESC>[25~   <S-F3>
-vmap <ESC>[26~   <S-F4>
-vmap <ESC>[28~   <S-F5>
-vmap <ESC>[29~   <S-F6>
-vmap <ESC>[31~   <S-F7>
-vmap <ESC>[32~   <S-F8>
-vmap <ESC>[33~   <S-F9>
-vmap <ESC>[34~   <S-F10>
-vmap <ESC>[23$   <S-F11>
-vmap <ESC>[24$   <S-F12>
 
 " End
 

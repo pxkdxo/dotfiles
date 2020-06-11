@@ -114,7 +114,7 @@ plugins=(
   urltools
   vagrant
   venv
-  # virtualenv
+  virtualenv
   zsh-completions
   # zsh-interactive-cd
   zsh-navigation-tools
@@ -237,8 +237,8 @@ LISTMAX=0
 DIRSTACKSIZE=0
 CORRECT_IGNORE='_*'
 CORRECT_IGNORE_FILE='*~'
-HISTSIZE=30000
-SAVEHIST=25000
+HISTSIZE=25000
+SAVEHIST=20000
 NULLCMD='cat'
 PROMPT_EOL_MARK='%B%S^@%b%s'
 READNULLCMD="${PAGER:-${READNULLCMD:-cat}}"
@@ -252,14 +252,13 @@ sprompt=(
 SPROMPT='${(%%)sprompt}'
 
 
-# Zsh Completion
+# Completion
 # see zshcompsys(1)
-#
+
 # Rehash upon completion so programs are found immediately after installation
-function _force_rehash ()
-{
-  emulate -L zsh
-  if (( CURRENT == 1 )) rehash
+function _force_rehash() {
+  emulate -LR zsh
+  if (( CURRENT == 1 )); then rehash; fi
   return 1
 }
 
@@ -272,14 +271,14 @@ zstyle ':completion:*' glob true
 zstyle ':completion:*' ignore-parents parent pwd .. directory
 zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS%:}"
-zstyle -e ':completion:*' list-prompt 'reply=( "${(%%):-%S[%U%%p%u] -- <%UTab%u> to continue --%s}" )'
+zstyle ':completion:*' list-prompt '%S[%U%p%u] -- <%UTab%u> to continue --%s'
 zstyle ':completion:*' match-original both
-zstyle ':completion:*' matcher-list '' '+m:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+r:|[_.]=* r:|=*'
+zstyle ':completion:*' matcher-list '' '+m:{[:lower:]}={[:upper:]}' '+m:{[:upper:]}={[:lower:]}' '+r:|[_-]=* r:|=*'
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' old-menu false
 zstyle ':completion:*' original true
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
-zstyle -e ':completion:*' select-prompt 'reply=( "${(%%):-%S[%U%%m%u]%s}" )'
+zstyle ':completion:*' select-prompt '%S[%U%m%u]%s'
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' substitute true
 zstyle ':completion:*' use-cache true
@@ -295,12 +294,12 @@ zstyle ':completion:*:matches' group yes
 zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:options' auto-description '%d'
 zstyle ':completion:*:options' description yes
-zstyle ':completion:*:sudo:*' environ "PATH=${$(sudo -n -u "${USERNAME:-$(id -un)}" printenv PATH):-${PATH:-$(getconf PATH)}}"
-zstyle -e ':completion:*:warnings' format 'reply=( "${(%%):-%B-- %U%1Fno matches%1f%u --%b}" )'
+zstyle ':completion:*:sudo:*' environ "PATH=${$(sudo -n -u "${USER:-$(id -nu)}" printenv PATH):-${PATH:-$(getconf PATH)}}"
+zstyle ':completion:*:warnings' format '%B-- %F{red}%Uno matches%u%f --%b'
 zstyle ':completion:*:*:zcompile:*' ignored-patterns '(*~|*.zwc)'
 zstyle ':completion:*:*:-command-:*:commands' ignored-patterns '*\~'
-zstyle ':completion::(^approximate*):*:functions' ignored-patterns '[._]*'
-zstyle -e ':completion:*' max-errors 'reply=( "$(( (${#PREFIX} + ${#SUFFIX}) / 4 ))" numeric )'
+zstyle ':completion::(^approximate*):*:functions' ignored-patterns '(.|_[^_])*'
+zstyle -e ':completion:*' max-errors 'reply=( "$(( (${#PREFIX} + ${#SUFFIX} + 1) / 4 ))" numeric )'
 
 # zstyle ':compinstall' filename "$0"
 autoload -U -z compinit
@@ -327,6 +326,10 @@ then
   source -- "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
 fi
 
+export FZF_COMPLETION_TRIGGER=''
+bindkey '^I' "${fzf_default_completion}"
+bindkey '^]' fzf-completion
+
 typeset -xT FZF_DEFAULT_OPTS fzf_default_opts " "
 fzf_default_opts=(
   '--bind=''ctrl-\:cancel'''
@@ -337,6 +340,7 @@ fzf_default_opts=(
   '--bind=''ctrl-k:kill-line'''
   '--bind=''ctrl-o:execute-silent(printf %s {2..} | xclip -sel clip)'''
   '--border'
+  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
   '--no-cycle'
   '--info=hidden'
   '--layout=reverse'
@@ -372,6 +376,7 @@ fzf_alt_c_opts=(
   '--jump-labels=''qwertyuiop[]'''
   '--no-hscroll'
   '--no-sort'
+  '--preview ''tree -CF -- {} | head -n "$((FZF_PREVIEW_LINES))"'''
 )
 
 if command -v rg > /dev/null
@@ -387,56 +392,67 @@ then
   )
 fi
 
-# brackets
-ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=red'
-ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=cyan,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=yellow,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=blue,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=magenta,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]='standout'
 
-# cursor
-ZSH_HIGHLIGHT_STYLES[cursor]='standout'
-
-# line
-#ZSH_HIGHLIGHT_STYLES[line]=''
-
-# main
-ZSH_HIGHLIGHT_STYLES[default]='none'
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
-ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=green,underline'
-ZSH_HIGHLIGHT_STYLES[precommand]='fg=green,underline'
+# zsh syntax highlighting
+typeset -a ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[alias]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[assign]='fg=white'
+ZSH_HIGHLIGHT_STYLES[autodirectory]='fg=green,underline'
+ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]='fg=red'
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='none'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-unclosed]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=black,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=red'
+ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[bracket-level-6]='fg=green'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
+ZSH_HIGHLIGHT_STYLES[command]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]='none'
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-unquoted]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[command-substitution]='none'
+ZSH_HIGHLIGHT_STYLES[command-substitution-quoted]='none'
+ZSH_HIGHLIGHT_STYLES[command-substitution-unquoted]='none'
 ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=white,bold'
-ZSH_HIGHLIGHT_STYLES[path]='fg=none,underline'
-#ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=white,bold,underline'
-#ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=''
+ZSH_HIGHLIGHT_STYLES[comment]='fg=black,bold'
+ZSH_HIGHLIGHT_STYLES[cursor]='standout'
+ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]='standout'
+ZSH_HIGHLIGHT_STYLES[default]='none'
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=red'
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=cyan'
+#ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument-unclosed]='fg=cyan,bold'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='none'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=blue'
+#ZSH_HIGHLIGHT_STYLES[double-quoted-argument-unclosed]='fg=blue,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[command-substitution]='none'
-ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[line]='none'
+ZSH_HIGHLIGHT_STYLES[named-fd]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[numeric-fd]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[path]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=''
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=red'
 ZSH_HIGHLIGHT_STYLES[process-substitution]='none'
 ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='none'
-ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='none'
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=blue,bold'
 ZSH_HIGHLIGHT_STYLES[rc-quote]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=magenta,bold'
-ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[assign]='fg=white,bold'
 ZSH_HIGHLIGHT_STYLES[redirection]='fg=white,underline'
-ZSH_HIGHLIGHT_STYLES[comment]='fg=black,bg=white'
-ZSH_HIGHLIGHT_STYLES[named-fd]='fg=yellow,underline'
-ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan,bold'
-
-# root
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[root]='standout'
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='none'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
+#ZSH_HIGHLIGHT_STYLES[single-quoted-argument-unclosed]='fg=yellow,bold'
+ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=black,bold'
 
 
 # start a tmux session

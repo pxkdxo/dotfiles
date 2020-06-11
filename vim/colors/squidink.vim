@@ -138,10 +138,10 @@ if has("gui_running")
     hi doxygenSpecialOnelineDesc    gui=NONE guifg=#ad600b   guibg=NONE
 
     if v:version >= 700
-        hi Pmenu          gui=NONE   guifg=#eeeeee   guibg=#4e4e8f
-        hi PmenuSel       gui=BOLD   guifg=#eeeeee   guibg=#2e2e3f
-        hi PmenuSbar      gui=BOLD   guifg=#eeeeee   guibg=#6e6eaf
-        hi PmenuThumb     gui=BOLD   guifg=#eeeeee   guibg=#6e6eaf
+        hi Pmenu        gui=NONE      guifg=#eeeeee   guibg=#4e4e8f
+        hi PmenuSel     gui=BOLD      guifg=#eeeeee   guibg=#2e2e3f
+        hi PmenuSbar    gui=BOLD      guifg=#eeeeee   guibg=#6e6eaf
+        hi PmenuThumb   gui=BOLD      guifg=#eeeeee   guibg=#6e6eaf
 
         hi SpellBad     gui=undercurl guisp=#cc6666
         hi SpellRare    gui=undercurl guisp=#cc66cc
@@ -153,6 +153,9 @@ if has("gui_running")
     if v:version >= 703
         hi Conceal      gui=NONE      guifg=#c080d0   guibg=NONE
         hi ColorColumn  gui=NONE                      guibg=#2e2e2e
+    endif
+    if has('signs')
+        hi SignColumn   gui=bold                      guibg=#2e2e2e
     endif
 else
     exec "hi Normal         cterm=NONE   ctermfg=" . <SID>X(79) . " ctermbg=" . "NONE"
@@ -210,20 +213,23 @@ else
     exec "hi TaglistTagName cterm=BOLD   ctermfg=" . <SID>X(39) . " ctermbg=" . "NONE"
 
     if v:version >= 700
-        exec "hi Pmenu          cterm=NONE   ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(82)
-        exec "hi PmenuSel       cterm=BOLD   ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(38)
-        exec "hi PmenuSbar      cterm=BOLD   ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(39)
-        exec "hi PmenuThumb     cterm=BOLD   ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(39)
+        exec "hi Pmenu          cterm=NONE  ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(82)
+        exec "hi PmenuSel       cterm=BOLD  ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(38)
+        exec "hi PmenuSbar      cterm=BOLD  ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(39)
+        exec "hi PmenuThumb     cterm=BOLD  ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(39)
 
-        exec "hi SpellBad       cterm=NONE ctermbg=" . <SID>X(32)
-        exec "hi SpellRare      cterm=NONE ctermbg=" . <SID>X(33)
-        exec "hi SpellLocal     cterm=NONE ctermbg=" . <SID>X(36)
-        exec "hi SpellCap       cterm=NONE ctermbg=" . <SID>X(21)
-        exec "hi MatchParen     cterm=NONE ctermbg=" . <SID>X(14) . "ctermfg=" . <SID>X(25)
+        exec "hi SpellBad       cterm=NONE  ctermbg=" . <SID>X(32)
+        exec "hi SpellRare      cterm=NONE  ctermbg=" . <SID>X(33)
+        exec "hi SpellLocal     cterm=NONE  ctermbg=" . <SID>X(36)
+        exec "hi SpellCap       cterm=NONE  ctermbg=" . <SID>X(21)
+        exec "hi MatchParen     cterm=NONE  ctermbg=" . <SID>X(14) . " ctermfg=" . <SID>X(25)
     endif
     if v:version >= 703
-        exec "hi Conceal      cterm=NONE      ctermfg=" . <SID>X(55) . " ctermbg=" . "NONE"
-        exec "hi ColorColumn  cterm=NONE      ctermbg=" . <SID>X(81)
+        exec "hi Conceal        cterm=NONE  ctermfg=" . <SID>X(55) . " ctermbg=" . "NONE"
+        exec "hi ColorColumn    cterm=NONE  ctermbg=" . <SID>X(81)
+    endif
+    if has('signs')
+        exec "hi SignColumn     cterm=bold  ctermbg=" . "NONE"
     endif
 endif
 

@@ -1,14 +1,17 @@
-# .gitignore: repo whitelist
+# .gitignore: git repository whitelist
 # see gitignore(5)
 
 # ignore everything except directories
 *
 !*/
 
+# whitelist gitignore
+!/.gitignore
 
-# now whitelist the following files
-!.gitignore
+# whitelist README
 !/README.md
+
+# whitelist specified files
 !/Xresources
 !/Xresources.d/**
 !/asoundrc
@@ -88,23 +91,21 @@
 !/zshenv
 !/zshrc
 
-
-# ignore common index files
-.DS_Store
-.vscode
+# ignore temporary files
+*~
+*.sw[op]
 
 # ignore python bytecode
 *.py[cod]
 
 # ignore object files
+*.o
 *.so
 
-# ignore temporary files
-*~
-*.sw[op]
+# ignore tag files
+tags
+.tags
 
-# ignore tags files
-**/tags
-**/.tags
-**/TAGS
-**/.TAGS
+# ignore index files
+.DS_Store
+.vscode

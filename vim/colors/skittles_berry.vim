@@ -31,7 +31,7 @@ hi DiffAdd        ctermfg=NONE ctermbg=24 guifg=#f8f8f2 guibg=#13354a
 hi DiffChange     term=bold ctermbg=238 guifg=#89807d guibg=#4c4745
 hi DiffDelete     ctermfg=125 ctermbg=125 guifg=#960050 guibg=#1e0010
 hi DiffText       term=reverse cterm=bold ctermfg=0 ctermbg=202 gui=bold guifg=#ad81ff guibg=#4a7800
-hi SignColumn     term=standout ctermfg=149 ctermbg=74 guifg=#a6e22e guibg=#232526
+hi SignColumn     term=bold ctermbg=0 guibg=#000000
 hi Conceal        ctermfg=7 ctermbg=242 guifg=#e5e5e5 guibg=#080808
 hi SpellBad       term=reverse ctermfg=255 ctermbg=9 guifg=#eeeeee guisp=#ff0000
 hi SpellCap       term=reverse ctermfg=255 ctermbg=12 guifg=#eeeeee guisp=#0000ff
@@ -88,7 +88,7 @@ hi Identifier     cterm=none term=none ctermfg=228 guifg=#ffff87
 hi clear Cursor
 hi Cursor         ctermbg=26 ctermfg=7 guifg=#e5e5e5 guibg=#005fd7
 
-hi GitGutterChange ctermfg=202 ctermbg=233 cterm=bold
-hi GitGutterDelete ctermfg=125 ctermbg=233 cterm=bold
-hi GitGutterAdd    ctermfg=190 ctermbg=233 cterm=bold
+hi GitGutterChange ctermfg=202 ctermbg=0 cterm=bold
+hi GitGutterDelete ctermfg=125 ctermbg=0 cterm=bold
+hi GitGutterAdd    ctermfg=190 ctermbg=0 cterm=bold
 hi link TagbarSignature Type
