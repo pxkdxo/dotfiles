@@ -2,13 +2,22 @@
 
 if test -d "${CARGO_HOME-}"
 then
-  export PATH="${PATH:+${PATH}:}${CARGO_HOME}/bin"
+  case ":${PATH}:" in
+    *:"${CARGO_HOME}/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${CARGO_HOME}/bin"
+  esac
 elif test -d "${HOME}/.local/share/cargo"
 then
-  export PATH="${PATH:+${PATH}:}${HOME}/.local/share/cargo/bin"
+  case ":${PATH}:" in
+    *:"${HOME}/.local/share/cargo/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/share/cargo/bin"
+  esac
 elif test -d "${HOME}/.cargo"
 then
-  export PATH="${PATH:+${PATH}:}${HOME}/.cargo/bin"
+  case ":${PATH}:" in
+    *:"${HOME}/.cargo/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.cargo/bin"
+  esac
 fi
 
 # vim:ft=sh

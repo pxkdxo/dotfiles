@@ -6,8 +6,8 @@ then
   tput reset
 fi
 
-# If leaving the console, clear the screen
-if (( SHLVL == 1 ))
+# If leaving console, clear the screen
+if (( SHLVL == 1 )) && command -v clear_console > /dev/null
 then
   clear_console -q
 fi

@@ -1,4 +1,4 @@
--- devilspie2/urxvt.lua : Apply transparency to URxvt windows
+-- devilspie2/urxvt.lua : apply transparency to urxvt windows
 
 debug_print("application    : " .. get_application_name())
 debug_print("window class   : " .. get_window_class())
@@ -13,5 +13,6 @@ if get_window_class() == "URxvt" then
     end
     --]]
     set_window_opacity(tonumber(
-    os.getenv('RXVT_WINDOW_OPACITY') or os.getenv('TERM_WINDOW_OPACITY') or "0.92"))
+    os.getenv('RXVT_WINDOW_OPACITY') or
+    os.getenv('TERM_WINDOW_OPACITY') or "0.92"))
 end

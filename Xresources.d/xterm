@@ -1,7 +1,7 @@
 ! Xresources.d/XTerm: XTerm resources
 
 ! Term
-!XTerm*termName: xterm-256color
+XTerm*termName: xterm
 XTerm*ttyModes: erase ^? start ^- stop ^-
 
 ! Window

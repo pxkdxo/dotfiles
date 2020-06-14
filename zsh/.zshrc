@@ -11,6 +11,8 @@ esac
 # Path to your oh-my-zsh installation.
 export ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/oh-my-zsh"
 
+export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -76,6 +78,7 @@ ZSH_THEME="space-travel"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  alacritty
   aliases
   command-not-found
   cargo
@@ -90,9 +93,11 @@ plugins=(
   encode64
   extract
   fancy-ctrl-z
+  fzf
   fzf-extensions
   git
   git-extras
+  globalias-rev
   gpg-agent
   history-substring-search
   jsontools
@@ -101,7 +106,7 @@ plugins=(
   mkmv
   mvcd
   nmap
-  npm
+  #npm
   pass
   pip
   ripgrep
@@ -116,7 +121,7 @@ plugins=(
   venv
   virtualenv
   zsh-completions
-  # zsh-interactive-cd
+  zsh-interactive-cd
   zsh-navigation-tools
   zsh-syntax-highlighting
 )
@@ -239,9 +244,9 @@ CORRECT_IGNORE='_*'
 CORRECT_IGNORE_FILE='*~'
 HISTSIZE=25000
 SAVEHIST=20000
-NULLCMD='cat'
+NULLCMD="${NULLCMD:-cat}"
 PROMPT_EOL_MARK='%B%S^@%b%s'
-READNULLCMD="${PAGER:-${READNULLCMD:-cat}}"
+READNULLCMD="${READNULLCMD:-cat}"
 sprompt=(
 '%N:'
 '%1F'"'"'${${:-%%R}//'"'"'/'"'"''''"'""'"'}'"'"'%1f:'
@@ -308,8 +313,7 @@ compinit -i -d "${ZSH_COMPDUMP:-${ZDOTDIR:-${HOME}}/.zcompdump}"
 
 
 # fzf
-# see fzf(1)
-#
+
 if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]
 then
   # fzf executable
@@ -326,87 +330,91 @@ then
   source -- "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
 fi
 
+#export FZF_TMUX=1
+
 export FZF_COMPLETION_TRIGGER=''
-bindkey '^I' "${fzf_default_completion}"
 bindkey '^]' fzf-completion
+bindkey '^I' "${fzf_default_completion}"
 
 typeset -xT FZF_DEFAULT_OPTS fzf_default_opts " "
 fzf_default_opts=(
-  '--bind=''ctrl-\:cancel'''
-  '--bind=''ctrl-space:jump'''
-  '--bind=''ctrl-b:page-up'''
-  '--bind=''ctrl-f:page-down'''
-  '--bind=''ctrl-j:accept'''
-  '--bind=''ctrl-k:kill-line'''
-  '--bind=''ctrl-o:execute-silent(printf %s {2..} | xclip -sel clip)'''
-  '--border'
-  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
-  '--no-cycle'
-  '--info=hidden'
-  '--layout=reverse'
-  '--literal'
-  '--tabstop=4'
+  --bind='''ctrl-\:cancel'''
+  --bind='''ctrl-space:jump'''
+  --bind='''ctrl-b:page-up'''
+  --bind='''ctrl-f:page-down'''
+  --bind='''ctrl-j:accept'''
+  --bind='''ctrl-k:kill-line'''
+  --bind='''ctrl-o:execute-silent(sh -c ''"''"''printf %s "$*" | xclip -sel clip''"''"'' -- {2..})'''
+  --color='''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
+  --info=hidden
+  --layout=reverse
+  --literal
+  --tabstop=4
 )
 
 typeset -xT FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
 fzf_ctrl_r_opts=(
-  '--bind=''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c "trap \"print -n \[press any key to exit\]; read -E -e -k 1 -s\" EXIT; \"\${(@Z+c+)@}\"" -- {2..} &%+abort'''
-  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
-  '--filepath-word'
-  '--jump-labels=''qwertyuiop[]'''
-  '--no-hscroll'
-  '--sort'
+  --bind='''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c ''"''"''"${(@Z+c+)@}"''"''"'' -- {2..} &%+abort'''
+  --bind='''ctrl-r:toggle-sort'''
+  --jump-labels='''qwertyuiop[]'''
+  --border
+  --filepath-word
+  --no-cycle
+  --no-hscroll
+  --sort
 )
 
 typeset -xT FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
 fzf_ctrl_t_opts=(
-  '--bind=''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c "exec xdg-open \"\${(@Z+c+)@}\"" -- {} &%+abort'''
-  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
-  '--filepath-word'
-  '--jump-labels=''qwertyuiop[]'''
-  '--no-hscroll'
-  '--no-sort'
+  --bind='''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c ''"''"''exec xdg-open "${(@Z+c+)@}"''"''"'' -- {} &%+abort'''
+  --bind='''ctrl-r:toggle-sort'''
+  --jump-labels='''qwertyuiop[]'''
+  --border
+  --filepath-word
+  --no-cycle
+  --no-hscroll
+  --no-sort
 )
 
 typeset -xT FZF_ALT_C_OPTS fzf_alt_c_opts " "
 fzf_alt_c_opts=(
-  '--bind=''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c "exec \"\${EDITOR:-editor}\" -- \"\${(@Z+c+)@}\"" -- {} &%+abort'''
-  '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
-  '--filepath-word'
-  '--jump-labels=''qwertyuiop[]'''
-  '--no-hscroll'
-  '--no-sort'
-  '--preview ''tree -CF -- {} | head -n "$((FZF_PREVIEW_LINES))"'''
+  --bind='''alt-enter:execute-silent%exec x-terminal-emulator -e tmux new zsh -i -c ''"''"''exec "${EDITOR:-editor}" -- "${(@Z+c+)@}"''"''"'' -- {} &%+abort'''
+  --bind='''ctrl-r:toggle-sort'''
+  --jump-labels='''qwertyuiop[]'''
+  --preview='''tree -CFl -- {} | head -n "$((FZF_PREVIEW_LINES))"'''
+  --border
+  --filepath-word
+  --no-cycle
+  --no-hscroll
+  --no-sort
 )
 
 if command -v rg > /dev/null
 then
   typeset -xT FZF_DEFAULT_COMMAND fzf_default_command " "
-  fzf_default_command=(
-    'rg'
-    '--auto-hybrid-regex'
-    '--color=auto'
-    '--files-with-matches'
-    '--follow'
-    '--smart-case'
+  fzf_default_command_prefix=(
+    rg
+    --color=auto
+    --smart-case
   )
 fi
 
 
 # zsh syntax highlighting
-typeset -a ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
+
+typeset -a ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets cursor pattern)
 typeset -A ZSH_HIGHLIGHT_STYLES
 ZSH_HIGHLIGHT_STYLES[alias]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=magenta'
-ZSH_HIGHLIGHT_STYLES[assign]='fg=white'
+ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=green'
+ZSH_HIGHLIGHT_STYLES[assign]='none'
 ZSH_HIGHLIGHT_STYLES[autodirectory]='fg=green,underline'
 ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]='fg=red'
 ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='none'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument-unclosed]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=black,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=white'
 ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=magenta'
@@ -416,43 +424,43 @@ ZSH_HIGHLIGHT_STYLES[bracket-level-6]='fg=green'
 ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
 ZSH_HIGHLIGHT_STYLES[command]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]='none'
-ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-unquoted]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[command-substitution]='none'
 ZSH_HIGHLIGHT_STYLES[command-substitution-quoted]='none'
 ZSH_HIGHLIGHT_STYLES[command-substitution-unquoted]='none'
-ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=white,bold'
-ZSH_HIGHLIGHT_STYLES[comment]='fg=black,bold'
-ZSH_HIGHLIGHT_STYLES[cursor]='standout'
-ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]='standout'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='bold'
+ZSH_HIGHLIGHT_STYLES[comment]='bg=black,bold,standout'
+ZSH_HIGHLIGHT_STYLES[cursor]='underline'
+ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]='bold,underline'
 ZSH_HIGHLIGHT_STYLES[default]='none'
-ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=red'
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=cyan'
 #ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument-unclosed]='fg=cyan,bold'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='none'
 ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=blue'
 #ZSH_HIGHLIGHT_STYLES[double-quoted-argument-unclosed]='fg=blue,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[function]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[line]='none'
-ZSH_HIGHLIGHT_STYLES[named-fd]='fg=white,underline'
-ZSH_HIGHLIGHT_STYLES[numeric-fd]='fg=white,underline'
-ZSH_HIGHLIGHT_STYLES[path]='fg=white,underline'
-ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[named-fd]='underline'
+ZSH_HIGHLIGHT_STYLES[numeric-fd]='underline'
+ZSH_HIGHLIGHT_STYLES[path]='underline'
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]='underline'
 ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=''
-ZSH_HIGHLIGHT_STYLES[precommand]='fg=red'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[process-substitution]='none'
 ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[rc-quote]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[redirection]='fg=white,underline'
-ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[redirection]='underline'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=red'
 ZSH_HIGHLIGHT_STYLES[root]='standout'
 ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='none'
 ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
 #ZSH_HIGHLIGHT_STYLES[single-quoted-argument-unclosed]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=black,bold'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=white'
 
 
 # start a tmux session

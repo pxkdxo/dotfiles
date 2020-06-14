@@ -1,0 +1,56 @@
+! W         W         W         W         W         W         W         W !
+! Wm,     .mWm,     .mWm,     .mWm,     .mWm,     .mWm,     .mWm,     .mW !
+! W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W !
+! W         W         W         W         W         W         W         W !
+! m  .mm    m         m         m         m         m  .m,    m         m !
+! W  ]P:W   W         W         W         W         W  ;T[    W         W !
+! W  ][ ][  W   WdW[  W   dWW,  W   dWW,  W  ][ ][  W   ][    W   dWW,  W !
+! W  ][ ][  W   W`    W   `md[  W  ]P  `  W  ][ ][  W   ][    W   `md[  W !
+! W  ][ ][  W   W     W  .W:T[  W  ][     W  ][ ][  W   ][    W  .W:T[  W !
+! W  ]bmW   W   W     W  ]bmW[  W  ;Wmm[  W  ]bmW[  W   ]bm   W  ]bmW[  W !
+! W  ;::    W   :     W   ::;`  W   ;::   W   ::;`  W    ::   W   ::;`  W !
+! :         :         :         :         :         :         :         : !
+! W         W         W         W         W         W         W         W !
+! Wm,     .mWm,     .mWm,     .mWm,     .mWm,     .mWm,     .mWm,     .mW !
+! W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W:` WW[ ;:W !
+! W         W         W         W         W         W         W         W !
+
+
+! special
+*.foreground:   #eaeaea
+*.background:   #212326
+*.cursorColor:  #eaeaea
+
+! black
+*.color0:       #0a0e10
+*.color8:       #575b5f
+                
+! red    
+*.color1:       #ff5555
+*.color9:       #ff6e67
+                
+! green
+*.color2:       #50fa7b
+*.color10:      #5af78e
+                
+! yellow
+*.color3:       #fff892
+*.color11:      #faf2a9                
+
+! blue   
+*.color4:       #a9b1fa
+*.color12:      #caa9fa
+                
+! magenta
+*.color5:       #ff79c6
+*.color13:      #f2a9fa
+                
+! cyan
+*.color6:       #8cf1fa
+*.color14:      #a9faf2
+                
+! white
+*.color7:       #bfbfbf
+*.color15:      #f8f8f2
+
+! vi:ft=xresources

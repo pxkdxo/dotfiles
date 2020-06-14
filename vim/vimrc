@@ -158,7 +158,7 @@ endif
 
 if has('autocmd')
   autocmd vimrc OptionSet *
-    \silent! if <amatch> =~ '^\(\(no)\?relative\)\?\(number\|text\)\(width\)\?$'
+    \silent! if <amatch> =~ '^\(\(no\)\?relative\)\?\(number\|text\)\(width\)\?$'
     \|  call UpdateColorColumn()
     \|endif
 endif
@@ -241,21 +241,21 @@ set virtualedit=block
 
 " Completion
 
+" Tweak insert-mode completion
+set completeopt=menu,preview,noselect
+
 " Enable command completion
 set wildmenu
 
 " Ignore case for filename completion
 set wildignorecase
 
-" Tweak insert-mode completion
-set completeopt=menu,preview,noselect
-
 " Tweak command-mode completion
-set wildmode=list:longest,full
+set wildmode=longest:full,full
 
 " Use <Left> and <Right> to move cursor rather than selecting completions
-cnoremap <Left>  <Space><BS><Left>
-cnoremap <Right> <Space><BS><Right>
+cnoremap <Left>  <C-]><Left>
+cnoremap <Right> <C-]><Right>
 
 
 " Key Timeout
@@ -368,22 +368,26 @@ if has('mouse')
 endif
 
 
+" Mappings
+
+" Set a key to act as <leader> in mappings
+let g:mapleader = ','
+
+
 " Colors
 
 " Set 'colors' cap
-if !has('nvim')
-  if $COLORTERM =~? '^truecolor$'
-    let &t_Co = 16777216
-  elseif $COLORTERM =~ '^rxvt-xpm$' || $TERM =~ '^.*-256color\%(-.*\)\?$'
-    let &t_Co = 256
-  endif
+if $COLORTERM =~? '^truecolor$'
+  let &t_Co = 16777216
+elseif $COLORTERM =~ '^rxvt-xpm$' || $TERM =~ '^.*-256color\%(-.*\)\?$'
+  let &t_Co = 256
 endif
 
 " Try to guess color capabilities
 if exists('+termguicolors')
   if $TERM =~ '^\%(rxvt\|screen\|interix\|putty\)\%(-.*\)\?$'
       set notermguicolors
-  elseif $TERM =~ '^\%(iterm\|vte\|gnome\|st\)\%(-.*\)\?$'
+  elseif $TERM =~ '^\%(alacritty\|iterm\|vte\|gnome\|st\)\%(-.*\)\?$'
     if !has('nvim')
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -407,30 +411,28 @@ endif
 
 " Choose some colors
 let g:colorschemes = []
-
-if &termguicolors
-  let g:colorschemes += [
-    \ 'nightshimmer',
-    \ '3dglasses',
-    \ 'grunge-contrast',
-    \ 'grunge',
-    \ 'candycode',
-    \ 'neonwave',
-    \ 'afterglow',
-    \ 'kiss',
-    \ 'neverland2-darker',
-    \ 'neverland2',
-    \ 'candy',
-    \ 'fruity',
-    \ 'darkZ',
-    \ ]
-endif
-
 if &t_Co > 16
+  if &termguicolors
+    let g:colorschemes += [
+      \ 'neonwave',
+      \ 'nightshimmer',
+      \ '3dglasses',
+      \ 'grunge-contrast',
+      \ 'grunge',
+      \ 'candycode',
+      \ 'afterglow',
+      \ 'kiss',
+      \ 'neverland2-darker',
+      \ 'neverland2',
+      \ 'candy',
+      \ 'fruity',
+      \ 'darkZ',
+      \ ]
+  endif
   let g:colorschemes += [
     \ 'Tomorrow-Night-Eighties',
-    \ 'squidink',
     \ 'skittles_berry',
+    \ 'squidink',
     \ 'desertink',
     \ '1989',
     \ 'dracula',
@@ -439,9 +441,7 @@ if &t_Co > 16
     \ 'Benokai',
     \ 'lucius',
     \ ]
-endif
-
-if &t_Co > 0
+else
   let g:colorschemes += [
     \ 'evening',
     \ 'desert',
@@ -455,56 +455,33 @@ execute join(['colorscheme', g:colorschemes[0]])
 function RotateColorscheme(n)
   if exists('g:colorschemes')
     try
-      let l:start = index(g:colorschemes, g:colors_name)
+      let l:index = max([index(g:colorschemes, g:colors_name), 0])
     catch /^Vim(let)\=:E121/
-      let l:start = -1
-    endtry
-    if l:start > -1
-      let l:index = l:start + a:n
-    else
       let l:index = 0
-    endif
-    while 1
-      let l:index = l:index % len(g:colorschemes)
+    endtry
+    let l:shift = 0
+    let l:limit = len(g:colorschemes)
+    while l:shift < l:limit
+      let l:index = (l:index + a:n) % l:limit
       try
-        execute join(['colorscheme', g:colorschemes[l:index]])
+        execute 'colorscheme' g:colorschemes[l:index]
+        break
       catch /^Vim(colorscheme):/
-        if l:index != l:start + 1
-          let l:index += 1
-          continue
-        endif
       endtry
-      break
+      let l:shift += 1
     endwhile
   endif
 endfunction
 
-" F10: Rotate to next colorscheme with <F10>
-nnoremap <silent><F10> :
+" F8: Rotate to prev colorscheme
+nnoremap <silent> <F8> :
   \
-  \call RotateColorscheme(1)<Bar>
-  \if exists('g:colors_charged')<Bar>
-  \ unlet g:colors_charged<Bar>
-  \endif<CR>
+  \silent! call RotateColorscheme(-1)<CR>
 
-" F9: Rotate to prev colorscheme with <F9>
-nnoremap <silent><F9> :
+" F9: Rotate to next colorscheme
+nnoremap <silent> <F9> :
   \
-  \call RotateColorscheme(-1)<Bar>
-  \if exists('g:colors_charged')<Bar>
-  \ unlet g:colors_charged<Bar>
-  \endif<CR>
-
-" F8: Supercharge the current colorscheme with <F8>
-nnoremap <silent><F8> :
-  \
-  \if exists('g:colors_charged')<Bar>
-  \ execute join(['colorscheme', g:colors_name])<Bar>
-  \ unlet g:colors_charged<Bar>
-  \else<Bar>
-  \ execute join(['colorscheme', 'charged-256'])<Bar>
-  \ let g:colors_charged = 1<Bar>
-  \endif<CR>
+  \silent! call RotateColorscheme(1)<CR>
 
 
 " C / C++
@@ -517,10 +494,10 @@ let g:c_gnu = 1
 " Highlight space errors
 let g:c_space_errors = 1
 
-" Set local options upon opening a C or C++ file
+" Set local options for C and C++ files
 if has('autocmd')
   autocmd vimrc FileType c,cpp
-    \ silent! setlocal cin cino=:0,(8 noet sts=0 sw=8 ts=8
+        \ silent! setlocal cin cino=:0,(8 noet sts=0 sw=8 ts=8
 endif
 
 
@@ -529,8 +506,7 @@ endif
 " Set textwidth for commit messages
 if has('autocmd')
   autocmd vimrc FileType gitcommit
-    \ silent! setlocal
-    \ textwidth=50
+    \ silent! setlocal tw=50
 endif
 
 
@@ -538,13 +514,13 @@ endif
 
 " Set local options for markdown documents (e.g. README, etc.)
 if has('autocmd')
-  autocmd vimrc FileType markdown
-    \ silent! setlocal
-    \ nonumber
-    \ norelativenumber
-    \ wrap
-    \ linebreak
-    \ breakindent
+  if has('linebreak')
+    autocmd vimrc FileType markdown
+      \ silent! setlocal nonu nornu wrap lbr bri
+  else
+    autocmd vimrc FileType markdown
+      \ silent! setlocal nonu nornu wrap
+  endif
 endif
 
 
@@ -559,14 +535,7 @@ set keywordprg=:Man
 " Set local options for man pages
 if has('autocmd')
   autocmd vimrc FileType man
-    \ silent! setlocal
-    \ nohidden
-    \ nomodifiable
-    \ nonumber
-    \ norelativenumber
-    \ noswapfile
-    \ noundofile
-    \ textwidth=0
+    \ silent! setlocal nohid noma nonu nornu noswf noudf tw=0
 endif
 
 
@@ -575,12 +544,7 @@ endif
 " Set local options for python scripts
 if has('autocmd')
   autocmd vimrc FileType python
-    \ silent! setlocal
-    \ expandtab
-    \ softtabstop=4
-    \ shiftwidth=4
-    \ tabstop=8
-    \ textwidth=79
+    \ silent! setlocal et sts=4 sw=4 ts=8 tw=79
 endif
 
 " Enable all available highlighting
@@ -624,23 +588,16 @@ let g:sh_no_error = 1
 
 " Set local options when opening a shell script
 if has("autocmd")
-  autocmd vimrc FileType sh,zsh
-    \ silent! setlocal
-    \ expandtab
-    \ softtabstop=2
-    \ shiftwidth=2
-    \ tabstop=8
+  autocmd vimrc FileType bash,ksh,sh,zsh
+    \ silent! setlocal et sts=2 sw=2 ts=8
 endif
 
 " Set filetype to sh when editing a shell command line
 if has("autocmd")
-  autocmd vimrc BufRead bash-fc.?*
-    \ silent! setlocal
-    \ filetype=sh
-    \ noswapfile
-    \ noundofile
-    \|let b:is_bash = 1
-    \|syntax enable
+  autocmd vimrc BufRead bash-fc.*
+    \ silent! setlocal et ft=sh noswf noudf
+    \|silent! let b:is_bash = 1
+    \|silent! syntax enable
 endif
 
 
@@ -649,9 +606,7 @@ endif
 " Set local options when opening vim help
 if has("autocmd")
   autocmd vimrc FileType help
-    \ silent! setlocal
-    \ noswapfile
-    \ noundofile
+    \ silent! setlocal noswf noudf
 endif
 
 
@@ -670,63 +625,13 @@ set completeopt+=preview
 set completeopt+=noselect
 set completeopt+=menuone
 
-" omnicompletion fallback 
+" omnifunc fallback
 if has("autocmd") && exists("+omnifunc")
   autocmd vimrc Filetype *
-    \ if &omnifunc == ''
-    \|  setlocal omnifunc=syntaxcomplete#Complete
-    \|endif
+    \ silent! if &omnifunc == ''
+    \|  silent! setlocal omnifunc=syntaxcomplete#Complete
+    \|silent! endif
 endif
-
-
-" YouCompleteMe
-
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_key_list_stop_completion = ['<C-\\>']
-
-if has('autocmd')
-  autocmd vimrc FileType *
-    \ let b:ycm_hover = {
-    \ 'command': 'GetDoc',
-    \ 'syntax': &syntax
-    \ }
-endif
-
-
-" CtrlP
-
-"let g:ctrlp_map = '<C-@>'
-
-
-" FZF
-let g:fzf_colors = {
-  \   'fg':       ['fg', 'Normal'],
-  \   'bg':       ['bg', 'Normal'],
-  \   'hl':       ['fg', 'Comment'],
-  \   'fg+':      ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \   'bg+':      ['bg', 'CursorLine', 'CursorColumn'],
-  \   'hl+':      ['fg', 'Statement'],
-  \   'info':     ['fg', 'PreProc'],
-  \   'border':   ['fg', 'Ignore'],
-  \   'prompt':   ['fg', 'Conditional'],
-  \   'pointer':  ['fg', 'Exception'],
-  \   'marker':   ['fg', 'Keyword'],
-  \   'spinner':  ['fg', 'Label'],
-  \   'header':   ['fg', 'Comment'],
-  \ }
-
-let g:fzf_buffers_jump = 1
-let g:fzf_tags_command = 'ctags -f .tags -R'
-let g:fzf_commands_expect = 'alt-enter'
-
-
-" Syntastic
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 0
 
 
 " Airline
@@ -767,6 +672,73 @@ let g:airline#extensions#tabline#overflow_marker = '…'
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
 
+"let g:airline#extensions#tagbar#enabled = 1
+
+"let g:airline#extensions#ycm#enabled = 1
+
+" Put some Airline themes in a list
+let g:airline_themes = [
+    \ 'owo',
+    \ 'base16_ashes',
+    \ 'biogoo',
+    \ 'atomic',
+    \ 'tomorrow',
+    \ 'behelit',
+    \ 'kolor',
+    \ 'night_owl',
+    \ 'base16_eighties',
+    \ 'base16_snazzy',
+    \ 'base16color',
+    \ ]
+
+" Set an Airline theme
+let g:airline_theme = g:airline_themes[0]
+
+" Define a function to rotate the Airline theme
+function RotateAirlineTheme(n)
+  if exists('g:airline_themes')
+    try
+      let l:index = max([index(g:airline_themes, g:airline_theme), 0])
+    catch /^Vim(let)\=:E121/
+      let l:index = 0
+    endtry
+    let l:shift = 0
+    let l:limit = len(g:airline_themes)
+    while l:shift < l:limit
+      let l:index = (l:index + a:n) % l:limit
+      try
+        execute 'AirlineTheme' g:airline_themes[l:index]
+        break
+      catch /^Vim(AirlineTheme):/
+      endtry
+      let l:shift += 1
+    endwhile
+  endif
+endfunction
+
+" Alt F8: Rotate to prev airline theme
+nnoremap <silent> <Esc><F8> :
+  \
+  \silent! call RotateAirlineTheme(-1)<CR>
+
+" Alt F9: Rotate to next airline theme
+nnoremap <silent> <Esc><F9> :
+  \
+  \silent! call RotateAirlineTheme(1)<CR>
+
+" Refresh airline when the colorscheme changes
+if has('autocmd')
+  autocmd vimrc ColorScheme *
+    \
+    \silent! AirlineRefresh
+endif
+
+
+" CtrlP
+
+let g:ctrlp_map = '<C-]>'
+
+
 " DevIcons
 let g:webdevicons_enable = 1
 let g:webdevicons_enable_nerdtree = 1
@@ -779,87 +751,27 @@ let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:DevIconsEnableFoldersOpenClose = 1
 let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 
-" Disable arrow icons at the left side of folder icons
-let g:NERDTreeDirArrowExpandable  = "\U202F"
-let g:NERDTreeDirArrowCollapsible = "\U202F"
 
-" NERDTree git icons
-let g:NERDTreeIndicatorMapCustom = {
-    \   'Modified'  : '',
-    \   'Staged'    : '',
-    \   'Untracked' : '',
-    \   'Renamed'   : '',
-    \   'Unmerged'  : '',
-    \   'Deleted'   : '',
-    \   'Dirty'     : '',
-    \   'Clean'     : '',
-    \   'Ignored'   : '',
-    \   'Unknown'   : '',
-    \ }
+" FZF
+let g:fzf_colors = {
+  \   'fg':       ['fg', 'Normal'],
+  \   'bg':       ['bg', 'Normal'],
+  \   'hl':       ['fg', 'Comment'],
+  \   'fg+':      ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \   'bg+':      ['bg', 'CursorLine', 'CursorColumn'],
+  \   'hl+':      ['fg', 'Statement'],
+  \   'info':     ['fg', 'PreProc'],
+  \   'border':   ['fg', 'Ignore'],
+  \   'prompt':   ['fg', 'Conditional'],
+  \   'pointer':  ['fg', 'Exception'],
+  \   'marker':   ['fg', 'Keyword'],
+  \   'spinner':  ['fg', 'Label'],
+  \   'header':   ['fg', 'Comment'],
+  \ }
 
-" Put some Airline themes in a list
-let g:airline_themes = [
-    \   'owo',
-    \   'base16_ashes',
-    \   'biogoo',
-    \   'atomic',
-    \   'tomorrow',
-    \   'behelit',
-    \   'kolor',
-    \   'base16_eighties',
-    \ ]
-
-" Set an Airline theme
-let g:airline_theme = g:airline_themes[0]
-
-" Define a function to rotate the Airline theme
-function RotateAirlineTheme(n)
-  if exists('g:airline_themes')
-    try
-      let l:start = index(g:airline_themes, g:airline_theme)
-    catch /^Vim(let)\=:E121/
-      let l:start = -1
-    endtry
-    if l:start > -1
-      let l:index = l:start + a:n
-    else
-      let l:index = 0
-    endif
-    while 1
-      let l:index = l:index % len(g:airline_themes)
-      try
-        execute join(['AirlineTheme', g:airline_themes[l:index]])
-      catch /^Vim(AirlineTheme):/
-        if l:index + 1 != l:start + 1
-          let l:index += 1
-          continue
-        endif
-      endtry
-      break
-    endwhile
-  endif
-endfunction
-
-" Shift F9: Rotate to prev airline theme
-nnoremap <silent><S-F9> :
-  \
-  \call RotateAirlineTheme(-1)<CR>
-
-" Shift F10: Rotate to next airline theme
-nnoremap <silent><S-F10> :
-  \
-  \call RotateAirlineTheme(1)<CR>
-
-" Refresh airline when the colorscheme changes
-autocmd vimrc ColorScheme *
-  \
-  \silent! AirlineRefresh
-
-
-" Mappings
-
-" Set a key to act as <leader> in mappings
-let g:mapleader = ','
+let g:fzf_buffers_jump = 1
+let g:fzf_tags_command = 'ctags -f .tags -R'
+let g:fzf_commands_expect = 'alt-enter'
 
 nnoremap <silent> <leader><F12> :
   \
@@ -874,28 +786,77 @@ nnoremap <silent> <leader><F12> :
   \})
   \<CR>
 
+
+" NERDTree
+let g:NERDTreeIndicatorMapCustom = {
+    \   'Modified'  : '',
+    \   'Staged'    : '',
+    \   'Untracked' : '',
+    \   'Renamed'   : '',
+    \   'Unmerged'  : '',
+    \   'Deleted'   : 'Ɇ',
+    \   'Dirty'     : '',
+    \   'Clean'     : '',
+    \   'Ignored'   : '',
+    \   'Unknown'   : '',
+    \ }
+
+" Disable arrow icons at the left side of folder icons
+let g:NERDTreeDirArrowExpandable  = "\U202F"
+let g:NERDTreeDirArrowCollapsible = "\U202F"
+
+
+" Syntastic
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:pymode_lint_on_write = 0
+
+
+" YouCompleteMe
+
+let g:ycm_max_num_candidates = 40
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_key_list_stop_completion = ['<C-]>']
+
+if has('autocmd')
+  autocmd vimrc FileType *
+    \ let b:ycm_hover = {
+    \ 'command': 'GetDoc',
+    \ 'syntax': &syntax
+    \ }
+endif
+
+nmap <leader>D <plug>(YCMHover)
+
+
+" Tabs
+
 " Next tab
-nnoremap <silent><M-Right> :
+nnoremap <silent> <M-Right> :
   \
   \tabnext<CR>
 
 " Previous tab
-nnoremap <silent><M-Left> :
+nnoremap <silent> <M-Left> :
   \
   \tabprev<CR>
 
 " Create tab
-nnoremap <silent><leader>c :
+nnoremap <silent> <leader>c :
   \
   \tabnew<CR>
 
 " Destroy tab
-nnoremap <silent><leader>x :
+nnoremap <silent> <leader>x :
   \
   \tabprev<CR>
 
 " Insert: Toggle 'paste' mode
-nnoremap <silent><Insert> :
+nnoremap <silent> <Insert> :
   \
   \set paste!<CR>
 
@@ -903,18 +864,18 @@ set pastetoggle=<Insert>
 
 
 " F6: Toggle line numbers
-nnoremap <silent><F6> :
+nnoremap <silent> <F6> :
   \
   \let &l:nu = !&l:nu<Bar>
   \let &l:rnu = &l:nu<CR>
 
 " F7: Toggle search highlighting
-nnoremap <silent><F7> :
+nnoremap <silent> <F7> :
   \
   \setlocal hlsearch!<CR>
 
 " Insert a shebang as the first line
-nnoremap <silent><leader>#! ggI<C-R>=
+nnoremap <silent> <leader>#! ggI<C-R>=
   \
   \substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
   \<ESC>``
@@ -956,7 +917,7 @@ if !has('nvim')
   vmap <ESC>[1;2B <S-Down>
   vmap <ESC>[1;2C <S-Right>
   vmap <ESC>[1;2D <S-Left>
-  
+
   " Map xterm sequences for <M-Arrow> combinations
   map! <ESC>[1;3A <M-Up>
   map! <ESC>[1;3B <M-Down>
@@ -970,7 +931,7 @@ if !has('nvim')
   vmap <ESC>[1;3B <M-Down>
   vmap <ESC>[1;3C <M-Right>
   vmap <ESC>[1;3D <M-Left>
-  
+
   " Map xterm sequences for <M-S-Arrow> combinations
   map! <ESC>[1;4A <M-S-Up>
   map! <ESC>[1;4B <M-S-Down>
@@ -984,7 +945,7 @@ if !has('nvim')
   vmap <ESC>[1;4B <M-S-Down>
   vmap <ESC>[1;4C <M-S-Right>
   vmap <ESC>[1;4D <M-S-Left>
-  
+
   " Map xterm sequences for <C-Arrow> combinations
   map! <ESC>[1;5A <C-Up>
   map! <ESC>[1;5B <C-Down>
@@ -998,7 +959,7 @@ if !has('nvim')
   vmap <ESC>[1;5B <C-Down>
   vmap <ESC>[1;5C <C-Right>
   vmap <ESC>[1;5D <C-Left>
-  
+
   " Map xterm sequences for <C-S-Arrow> combinations
   map! <ESC>[1;6A <C-S-Up>
   map! <ESC>[1;6B <C-S-Down>
@@ -1012,7 +973,7 @@ if !has('nvim')
   vmap <ESC>[1;6B <C-S-Down>
   vmap <ESC>[1;6C <C-S-Right>
   vmap <ESC>[1;6D <C-S-Left>
-  
+
   " Map xterm sequences for <C-M-Arrow> combinations
   map! <ESC>[1;7A <C-M-Up>
   map! <ESC>[1;7B <C-M-Down>
@@ -1026,7 +987,7 @@ if !has('nvim')
   vmap <ESC>[1;7B <C-M-Down>
   vmap <ESC>[1;7C <C-M-Right>
   vmap <ESC>[1;7D <C-M-Left>
-  
+
   " Map xterm sequences for <C-M-S-Arrow> combinations
   map! <ESC>[1;8A <C-M-S-Up>
   map! <ESC>[1;8B <C-M-S-Down>
@@ -1040,7 +1001,7 @@ if !has('nvim')
   vmap <ESC>[1;8B <C-M-S-Down>
   vmap <ESC>[1;8C <C-M-S-Right>
   vmap <ESC>[1;8D <C-M-S-Left>
-  
+
   " Map xterm and rxvt escape sequences for <Fn> keys
   map! <ESC>OP   <F1>
   map! <ESC>OQ   <F2>
@@ -1090,7 +1051,7 @@ if !has('nvim')
   vmap <ESC>[21~ <F10>
   vmap <ESC>[23~ <F11>
   vmap <ESC>[24~ <F12>
-  
+
   " Map xterm and rxvt escape sequences for <S-Fn> combinations
   map! <ESC>[23~   <S-F1>
   map! <ESC>[24~   <S-F2>

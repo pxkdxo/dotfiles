@@ -1,4 +1,4 @@
--- devilspie2/xterm.lua : Apply transparency to XTerm windows
+-- devilspie2/xterm.lua : Apply transparency to xterm windows
 
 debug_print("application    : " .. get_application_name())
 debug_print("window class   : " .. get_window_class())
@@ -15,5 +15,6 @@ if get_window_class() == "XTerm" then
     end
     --]]
     set_window_opacity(tonumber(
-    os.getenv('XTERM_WINDOW_OPACITY') or os.getenv('TERM_WINDOW_OPACITY') or "0.9"))
+    os.getenv('XTERM_WINDOW_OPACITY') or
+    os.getenv('TERM_WINDOW_OPACITY') or "0.92"))
 end

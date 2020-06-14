@@ -20,35 +20,35 @@
 *.background:   #1a1a1a
 *.cursorColor:  #dadada
 
-! black         Black
+! black
 *.color0:       #0a0a0a
 *.color8:       #808080
                 
-! red           Pink    
+! red    
 *.color1:       #ff87c3
 *.color9:       #ffafd7
                 
-! green         Teal
+! green
 *.color2:       #87ffc3
 *.color10:      #afffd7
                 
-! yellow        Yellow
+! yellow
 *.color3:       #ffff87
 *.color11:      #ffffaf
                 
-! blue          Blue   
+! blue   
 *.color4:       #87c3ff
 *.color12:      #afd7ff
                 
-! magenta       Magenta
+! magenta
 *.color5:       #ff87ff
 *.color13:      #ffafff
                 
-! cyan          Cyan
+! cyan
 *.color6:       #87ffff
 *.color14:      #afffff
                 
-! white         White
+! white
 *.color7:       #cccccc
 *.color15:      #ffffff
 

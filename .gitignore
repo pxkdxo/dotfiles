@@ -14,6 +14,7 @@
 # whitelist specified files
 !/Xresources
 !/Xresources.d/**
+!/alacritty/alacritty.yml
 !/asoundrc
 !/awesome/rc.lua
 !/bash_completion
@@ -61,7 +62,7 @@
 !/systemd/user/urxvtd.service
 !/tmux.conf
 !/tmuxline.conf
-!/user-dirs.dirs
+!/user-dirs.dirscursorcolumn
 !/user-dirs.locale
 !/user-tmpfiles.d/**
 !/vim/autoload/**
