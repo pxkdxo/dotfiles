@@ -2,79 +2,45 @@
 # see bash(1), dash(1), sh(1), zsh(1), ...
 
 # Initialize terminal
-if test -t 1
-then
-  if command -v tput 1> /dev/null
-  then
+if test -t 1; then
+  if command -v tput 1> /dev/null; then
     tput init
   fi
-  if command -v stty 1> /dev/null
-  then
+  if command -v stty 1> /dev/null; then
     stty start '^-' stop '^-'
   fi
 fi
 
 # Set file creation mode mask
-if test "${UID:-$(id -u)}" -eq 0
-then
+if test "${UID:-$(id -u)}" -eq 0; then
   umask 0002
 else
   umask 0022
 fi
 
-## If HOME is unset or NULL, try to set it
-#if test -z "${HOME-}"
-#then
-#  IFS=':' read -r _ _ _ _ _ HOME _
-#fi << END
-#$(getent passwd -- "${USER:-${UID:-$(id -u)}}" 2> /dev/null)
-#END
-#export HOME
-
-## Import user environment from systemd
-#while read -r REPLY
-#do
-#  case "${REPLY%%=*}" in
-#    (*[!0-9A-Za-z_]*)
-#      ;;
-#    (?*)
-#      if eval test -z '"${'"${REPLY%%=*}"'+_}"'
-#      then
-#        eval export "${REPLY}"
-#      fi
-#      ;;
-#  esac
-#done << STOP
-#$(systemctl --user show-environment 2>/dev/null)
-#STOP
-#unset -v REPLY
-
 # Prepend executable paths
-if test -d "${HOME}/.bin"
-then
+if test -d "${HOME}/.bin"; then
   case ":${PATH}:" in
     *:"${HOME}/.bin":*) ;;
-    *) export PATH="${HOME}/.bin${PATH:+:${PATH}}"
+    *) export PATH="${HOME}/.bin${PATH:+:${PATH}}" ;;
   esac
 fi
-if test -d "${HOME}/.local/bin"
-then
+if test -d "${HOME}/.local/bin"; then
   case ":${PATH}:" in
     *:"${HOME}/.local/bin":*) ;;
-    *) export PATH="${HOME}/.local/bin${PATH:+:${PATH}}"
+    *) export PATH="${HOME}/.local/bin${PATH:+:${PATH}}" ;;
   esac
 fi
  
 # Load additional profile config
-if test -d "${HOME}/.profile.d"
-then
-  for _ in "${HOME}/.profile.d"/*.sh
-  do
-    if test -f "$_" && test -r "$_"
-    then
-      . "$_"
+if test -d "${HOME}/.profile.d"; then
+  for name in "${HOME}/.profile.d"/*.sh; do
+    if test -f "${name}" && test -r "${name}"; then
+      . "${name}"
     fi
   done
 fi
+unset -v name
+
 
 # vi:ft=sh

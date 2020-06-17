@@ -77,8 +77,8 @@ pcm.mix20 {
 ctl.pulse { type pulse }
 pcm.pulse { type pulse }
 
-#ctl.!default ctl.pulse
-#pcm.!default pcm.pulse
+ctl.!default ctl.pulse
+pcm.!default pcm.pulse
 
 
 # card 0 definitions
@@ -100,8 +100,8 @@ pcm.dsp0 pcm.duplex0
 
 ctl.mixer0 ctl.dsp0
 
-ctl.!default ctl.dsp0
-pcm.!default pcm.dsp0
+#ctl.!default ctl.dsp0
+#pcm.!default pcm.dsp0
 
 
 # card 1 definitions

@@ -2,7 +2,7 @@
 
 ## Set RLWRAP_EDITOR to based on the value of EDITOR
 case "${EDITOR##*/}" in
-  vim|nvim)
+  vim|[mn]vim)
     export RLWRAP_EDITOR="${EDITOR} -c 'call cursor(%L,%C)' %F"
     ;;
   emacs)

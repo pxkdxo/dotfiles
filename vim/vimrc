@@ -1,6 +1,8 @@
-" vimrc: vim initialization script
+" vimrc: (neo)vim initialization script
 
-" Use vim defaults - not vi
+" Prologue
+
+" Use vim defaults
 if &compatible
   set nocompatible
 endif
@@ -10,34 +12,26 @@ silent! while 0
 set nocompatible
 silent! endwhile
 
-" Skip the rest in VSCode
+" Skip the rest if this is actually VSCode
 if exists('g:vscode')
   finish
 endif
 
-" Always use UTF-8
+" Always use UTF-8 encoding
 set encoding=utf-8
 
+" Set the leader key (i.e. <leader>)
+let g:mapleader = ','
 
-"" Disable filetype plugins
-" filetype off
-"
-"" Load plugins with pathogen
-" try
-"   execute pathogen#infect()
-" catch /^Vim(execute):/
-" endtry
-"
-" " Enable filetype plugins & indentation style
-" filetype plugin indent on
-"
-" " Perform syntax highlighting
-" if (has("syntax"))
-"   syntax enable
-" endif
+" Clear the rc autocmd group
+if has('autocmd')
+  augroup rc
+    autocmd!
+  augroup END
+endif
 
 
-" Load plugins with vim plug
+" Load plugins
 "
 call plug#begin(join(split(&runtimepath, ',')[:0] + ['plug'], '/'))
 " NOTE: use single quotes around plugin names
@@ -70,14 +64,6 @@ Plug 'ycm-core/YouCompleteMe'
 call plug#end()
 
 
-" Clear vimrc autocommand group
-if has('autocmd')
-  augroup vimrc
-    autocmd!
-  augroup END
-endif
-
-
 " Tabs and Spaces
 
 " Insert spaces insted of tab characters
@@ -100,6 +86,11 @@ set textwidth=79
 
 
 " Display and Verbosity
+
+" Show lines that don't fit as @@@ and nonprintable characters as hexadecimal
+if v:version >= 800
+  set display=truncate,uhex
+endif
 
 " Display line numbers
 set number
@@ -124,62 +115,6 @@ set title
 
 " Define terminal titles
 let &titlestring = "%t%( [%M%R]%)%( (%{expand(\"%:p:~:h\")})%)%<"
-
-" Show lines that don't fit as @@@ and nonprintable characters as hexadecimal
-if v:version >= 800
-  set display=truncate,uhex
-endif
-
-" Define a function to set 'colorcolumn' to match all columns past 'texwidth'
-function UpdateColorColumn()
-  if &textwidth
-    if &number || &relativenumber
-      let l:columns = winwidth(0) - &textwidth - &numberwidth
-    else
-      let l:columns = winwidth(0) - &textwidth
-    endif
-    if l:columns > 0
-      let &colorcolumn = join(map(range(1, l:columns), '"+" . v:val'), ',')
-    else
-      let &colorcolumn = ''
-    endif
-  endif
-endfunction
-
-" Set 'colorcolumn' to match all columns past 'textwidth'
-call UpdateColorColumn()
-
-" Update 'colorcolumn' upon resizing window
-
-if has('autocmd')
-  autocmd vimrc FocusGained,VimEnter,VimResized *
-    \ silent! call UpdateColorColumn()
-endif
-
-if has('autocmd')
-  autocmd vimrc OptionSet *
-    \silent! if <amatch> =~ '^\(\(no\)\?relative\)\?\(number\|text\)\(width\)\?$'
-    \|  call UpdateColorColumn()
-    \|endif
-endif
-
-
-" Window Splitting
-
-" Split windows off toward to right
-set splitright
-
-" Split windows off down below
-set splitbelow
-
-
-" Buffer Behavior
-
-" Re-read file if it was changed, unless it was deleted
-set autoread
-
-" Hide closed buffers rather than unloading them
-set hidden
 
 
 " Line Wrapping
@@ -258,20 +193,39 @@ cnoremap <Left>  <C-]><Left>
 cnoremap <Right> <C-]><Right>
 
 
+" Window Splitting
+
+" Split windows off toward to right
+set splitright
+
+" Split windows off down below
+set splitbelow
+
+
+" Buffer Behavior
+
+" Re-read file if it was changed, unless it was deleted
+set autoread
+
+" Hide closed buffers rather than unloading them
+set hidden
+
+
 " Key Timeout
 
-" Timeout on mappings and keycodes
+" Timeout on mappings
 set timeout
 
-" milliseconds to wait for completion of a mapping
-set timeoutlen=1000
-
-" milliseconds to wait for completion of a key code
-set ttimeoutlen=80
-
+" Don't timeout on keycodes
 if has('nvim')
   set nottimeout
 endif
+
+" milliseconds to wait for completion of a mapping
+set timeoutlen=750
+
+" milliseconds to wait for completion of a key code
+set ttimeoutlen=75
 
 
 " History
@@ -289,15 +243,16 @@ set undoreload=-1
 set updatecount=40
 
 " Max milliseconds elapsed between swapfile syncs (also used by gitgutter)
-set updatetime=200
+set updatetime=100
 
 
-" Tags File Locations
+" Tag files
 set tags=
 set tags+=./tags
 set tags+=./.tags
 set tags+=tags
 set tags+=.tags
+
 
 " Swapfile and Undofile
 
@@ -368,78 +323,135 @@ if has('mouse')
 endif
 
 
-" Mappings
+" Completion
 
-" Set a key to act as <leader> in mappings
-let g:mapleader = ','
+set complete=
+set complete+=.
+set complete+=w
+set complete+=b
+set complete+=u
+set complete+=d
+set complete+=t
 
+set completeopt=
+set completeopt+=preview
+set completeopt+=noselect
+set completeopt+=menuone
 
-" Colors
-
-" Set 'colors' cap
-if $COLORTERM =~? '^truecolor$'
-  let &t_Co = 16777216
-elseif $COLORTERM =~ '^rxvt-xpm$' || $TERM =~ '^.*-256color\%(-.*\)\?$'
-  let &t_Co = 256
+" omnifunc fallback
+if has("autocmd") && exists("+omnifunc")
+  autocmd rc Filetype *
+    \ if &omnifunc == ''
+    \|silent! setlocal omnifunc=syntaxcomplete#Complete
+    \|endif
 endif
 
+
+" colorcolumn highlighting
+
+" Define a function to apply 'colorcolumn' to all columns past 'texwidth'
+function UpdateColorColumn()
+  if &textwidth
+    if &number || &relativenumber
+      let l:columns = winwidth(0) - &textwidth - &numberwidth
+    else
+      let l:columns = winwidth(0) - &textwidth
+    endif
+    if l:columns > 0
+      let &colorcolumn = join(map(range(1, l:columns), '"+" . v:val'), ',')
+    else
+      let &colorcolumn = ''
+    endif
+  endif
+endfunction
+
+" Set 'colorcolumn' to match all columns past 'textwidth'
+call UpdateColorColumn()
+
+" Update 'colorcolumn' upon entering or modifying window
+if has('autocmd')
+  autocmd rc FocusGained,VimEnter,VimResized *
+    \ silent! call UpdateColorColumn()
+endif
+if has('autocmd')
+  autocmd rc OptionSet *
+    \ if "\<amatch>" =~ '^\(\(no\)\?relative\)\?\(number\|text\)\(width\)\?$'
+    \|silent! call UpdateColorColumn()
+    \|endif
+endif
+
+
+" Colors and Colorschemes
+
 " Try to guess color capabilities
+
+" Check COLORTERM environment variable
+if $COLORTERM =~? '^\s*truecolor\s*$'
+  if !has('nvim')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    let &t_Co = 16777216
+  endif
+endif
+
+" Check TERM environment variable
 if exists('+termguicolors')
-  if $TERM =~ '^\%(rxvt\|screen\|interix\|putty\)\%(-.*\)\?$'
-      set notermguicolors
-  elseif $TERM =~ '^\%(alacritty\|iterm\|vte\|gnome\|st\)\%(-.*\)\?$'
+  if $TERM =~ '^[^-]\+-direct$'
     if !has('nvim')
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     endif
     set termguicolors
-  elseif $TERM =~ '^\%(tmux\|xterm\)\%(-.*\)\?$'
+  elseif $TERM =~ '^\%(linux\|interix\|putty\|rxvt\|screen\)\%(-.*\)\?$'
+    if !has('nvim')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
+    set notermguicolors
+  elseif $TERM =~ '^\%(alacritty\|gnome\|iterm\|st\|tmux\|vte\)\%(-.*\)\?$'
+    if !has('nvim')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
+    set termguicolors
+  elseif $TERM =~ '^\%(xterm\)\%(-.*\)\?$'
+    if !has('nvim')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
     if $XTERM_VERSION != '' || $VTE_VERSION != '' || $KONSOLE_PROFILE_NAME != ''
-      if !has('nvim')
-        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-      endif
       set termguicolors
     else
       set notermguicolors
     endif
-  else
-    set notermguicolors
   endif
 endif
-
 
 " Choose some colors
 let g:colorschemes = []
 if &t_Co > 16
   if &termguicolors
     let g:colorschemes += [
-      \ 'neonwave',
-      \ 'nightshimmer',
-      \ '3dglasses',
+      \ 'crisp-contrast',
+      \ 'hawaii-contrast',
       \ 'grunge-contrast',
-      \ 'grunge',
-      \ 'candycode',
       \ 'afterglow',
+      \ 'neonwave',
       \ 'kiss',
-      \ 'neverland2-darker',
-      \ 'neverland2',
-      \ 'candy',
-      \ 'fruity',
-      \ 'darkZ',
       \ ]
   endif
   let g:colorschemes += [
     \ 'Tomorrow-Night-Eighties',
     \ 'skittles_berry',
+    \ 'vibrantink',
     \ 'squidink',
     \ 'desertink',
     \ '1989',
     \ 'dracula',
     \ 'vice',
     \ 'evolution',
-    \ 'Benokai',
     \ 'lucius',
+    \ 'base16-synth-midnight-dark'
     \ ]
 else
   let g:colorschemes += [
@@ -474,18 +486,15 @@ function RotateColorscheme(n)
 endfunction
 
 " F8: Rotate to prev colorscheme
-nnoremap <silent> <F8> :
-  \
-  \silent! call RotateColorscheme(-1)<CR>
+nnoremap <silent> <F8> :call RotateColorscheme(-1)<CR>
 
 " F9: Rotate to next colorscheme
-nnoremap <silent> <F9> :
-  \
-  \silent! call RotateColorscheme(1)<CR>
+nnoremap <silent> <F9> :call RotateColorscheme(1)<CR>
 
 
-" C / C++
-" Recognize strings & numbers inside comments
+" C and C++
+
+" Highlight strings & numbers inside comments
 let g:c_comment_strings = 1
 
 " Highlight GNU specific items
@@ -496,35 +505,37 @@ let g:c_space_errors = 1
 
 " Set local options for C and C++ files
 if has('autocmd')
-  autocmd vimrc FileType c,cpp
-        \ silent! setlocal cin cino=:0,(8 noet sts=0 sw=8 ts=8
+  autocmd rc FileType c,cpp
+    \ silent! setlocal cin noet sts=0 tw=79
+    \|silent! let &l:shiftwidth = &tabstop
+    \|silent! let &l:cinoptions = ':0,(' . &tabstop
 endif
 
 
-" Gitcommit
+" gitcommit
 
 " Set textwidth for commit messages
 if has('autocmd')
-  autocmd vimrc FileType gitcommit
-    \ silent! setlocal tw=50
+  autocmd rc FileType gitcommit
+    \ silent! setlocal tw=72
 endif
 
 
-" Markdown
+" markdown
 
 " Set local options for markdown documents (e.g. README, etc.)
 if has('autocmd')
   if has('linebreak')
-    autocmd vimrc FileType markdown
+    autocmd rc FileType markdown
       \ silent! setlocal nonu nornu wrap lbr bri
   else
-    autocmd vimrc FileType markdown
+    autocmd rc FileType markdown
       \ silent! setlocal nonu nornu wrap
   endif
 endif
 
 
-" Man pages
+" man pages
 
 " Load the Man plugin
 runtime ftplugin/man.vim
@@ -534,16 +545,16 @@ set keywordprg=:Man
 
 " Set local options for man pages
 if has('autocmd')
-  autocmd vimrc FileType man
-    \ silent! setlocal nohid noma nonu nornu noswf noudf tw=0
+  autocmd rc FileType man
+    \ silent! setlocal cc= nohid noma nonu nornu noswf noudf tw=0
 endif
 
 
-" Python
+" python
 
 " Set local options for python scripts
 if has('autocmd')
-  autocmd vimrc FileType python
+  autocmd rc FileType python
     \ silent! setlocal et sts=4 sw=4 ts=8 tw=79
 endif
 
@@ -563,19 +574,19 @@ if has('pythonx')
 endif
 
 
-" Readline
+" readline
 
 " Highlight bash additions
 let g:readline_has_bash = 1
 
 
-" Sed
+" sed
 
 " Highlight real tabs in sed scripts
 let g:highlight_sedtabs = 1
 
 
-" Sh
+" sh
 
 " Default highlighting for shell scripts
 let g:is_posix = 1
@@ -588,13 +599,13 @@ let g:sh_no_error = 1
 
 " Set local options when opening a shell script
 if has("autocmd")
-  autocmd vimrc FileType bash,ksh,sh,zsh
+  autocmd rc FileType bash,ksh,sh,zsh
     \ silent! setlocal et sts=2 sw=2 ts=8
 endif
 
 " Set filetype to sh when editing a shell command line
 if has("autocmd")
-  autocmd vimrc BufRead bash-fc.*
+  autocmd rc BufRead bash-fc.*
     \ silent! setlocal et ft=sh noswf noudf
     \|silent! let b:is_bash = 1
     \|silent! syntax enable
@@ -605,32 +616,8 @@ endif
 
 " Set local options when opening vim help
 if has("autocmd")
-  autocmd vimrc FileType help
+  autocmd rc FileType help
     \ silent! setlocal noswf noudf
-endif
-
-
-" Completion
-
-set complete=
-set complete+=.
-set complete+=w
-set complete+=b
-set complete+=u
-set complete+=d
-set complete+=t
-
-set completeopt=
-set completeopt+=preview
-set completeopt+=noselect
-set completeopt+=menuone
-
-" omnifunc fallback
-if has("autocmd") && exists("+omnifunc")
-  autocmd vimrc Filetype *
-    \ silent! if &omnifunc == ''
-    \|  silent! setlocal omnifunc=syntaxcomplete#Complete
-    \|silent! endif
 endif
 
 
@@ -647,24 +634,16 @@ if !(exists('g:airline_symbols'))
 endif
 let g:airline_symbols.branch      = ''
 let g:airline_symbols.crypt       = ''
-let g:airline_symbols.dirty       = '  '
+let g:airline_symbols.dirty       = '  '
 let g:airline_symbols.ellipsis    = '…'
 let g:airline_symbols.linenr      = '﬌'
 let g:airline_symbols.maxlinenr   = ''
 let g:airline_symbols.notexists   = ' Ɇ '
 let g:airline_symbols.modified    = '  '
-let g:airline_symbols.readonly    = ''
+let g:airline_symbols.readonly    = ''
 let g:airline_symbols.paste       = ''
 let g:airline_symbols.space       = ' '
 let g:airline_symbols.whitespace  = ''
-"let g:airline_symbols.readonly   = ''
-"let g:airline_symbols.dirty      = ''
-"let g:airline_symbols.crypt      = ''
-"let g:airline_symbols.linenr     = ''
-"let g:airline_symbols.maxlinenr  = ''
-"let g:airline_symbols.notexists  = ''
-"let g:airline_symbols.spell      = ''
-"let g:airline_symbols.whitespace = ''
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = "unique_tail_improved"
@@ -672,11 +651,7 @@ let g:airline#extensions#tabline#overflow_marker = '…'
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
 
-"let g:airline#extensions#tagbar#enabled = 1
-
-"let g:airline#extensions#ycm#enabled = 1
-
-" Put some Airline themes in a list
+" Choose some airline themes
 let g:airline_themes = [
     \ 'owo',
     \ 'base16_ashes',
@@ -691,10 +666,10 @@ let g:airline_themes = [
     \ 'base16color',
     \ ]
 
-" Set an Airline theme
+" Set an airline theme
 let g:airline_theme = g:airline_themes[0]
 
-" Define a function to rotate the Airline theme
+" Define a function to rotate the airline theme
 function RotateAirlineTheme(n)
   if exists('g:airline_themes')
     try
@@ -717,20 +692,15 @@ function RotateAirlineTheme(n)
 endfunction
 
 " Alt F8: Rotate to prev airline theme
-nnoremap <silent> <Esc><F8> :
-  \
-  \silent! call RotateAirlineTheme(-1)<CR>
+nnoremap <silent> <Esc><F8> :call RotateAirlineTheme(-1)<CR>
 
 " Alt F9: Rotate to next airline theme
-nnoremap <silent> <Esc><F9> :
-  \
-  \silent! call RotateAirlineTheme(1)<CR>
+nnoremap <silent> <Esc><F9> :call RotateAirlineTheme(1)<CR>
 
 " Refresh airline when the colorscheme changes
 if has('autocmd')
-  autocmd vimrc ColorScheme *
-    \
-    \silent! AirlineRefresh
+  autocmd rc ColorScheme *
+    \ silent! AirlineRefresh
 endif
 
 
@@ -740,6 +710,7 @@ let g:ctrlp_map = '<C-]>'
 
 
 " DevIcons
+
 let g:webdevicons_enable = 1
 let g:webdevicons_enable_nerdtree = 1
 let g:webdevicons_enable_airline_tabline = 1
@@ -753,6 +724,7 @@ let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 
 
 " FZF
+
 let g:fzf_colors = {
   \   'fg':       ['fg', 'Normal'],
   \   'bg':       ['bg', 'Normal'],
@@ -773,7 +745,8 @@ let g:fzf_buffers_jump = 1
 let g:fzf_tags_command = 'ctags -f .tags -R'
 let g:fzf_commands_expect = 'alt-enter'
 
-nnoremap <silent> <leader><F12> :
+" F12: browse colorschemes
+nnoremap <silent> <F12> :
   \
   \call fzf#run({
   \ 'source': map(
@@ -787,23 +760,40 @@ nnoremap <silent> <leader><F12> :
   \<CR>
 
 
+" GitGutter
+
+" run diffs in the background
+let g:gitgutter_async = 1
+
+" Bring colorscheme harmony
+highlight! link SignColumn LineNr
+if has('autocmd')
+  autocmd rc ColorScheme *
+    \ highlight! link SignColumn LineNr
+endif
+
+" F5: toggle GitGutter
+nnoremap <silent> <F5> :GitGutterToggle<CR>
+
+
 " NERDTree
+
 let g:NERDTreeIndicatorMapCustom = {
     \   'Modified'  : '',
     \   'Staged'    : '',
     \   'Untracked' : '',
     \   'Renamed'   : '',
     \   'Unmerged'  : '',
-    \   'Deleted'   : 'Ɇ',
-    \   'Dirty'     : '',
-    \   'Clean'     : '',
+    \   'Deleted'   : 'ﮊ',
+    \   'Dirty'     : '',
+    \   'Clean'     : '',
     \   'Ignored'   : '',
     \   'Unknown'   : '',
     \ }
 
 " Disable arrow icons at the left side of folder icons
-let g:NERDTreeDirArrowExpandable  = "\U202F"
-let g:NERDTreeDirArrowCollapsible = "\U202F"
+ let g:NERDTreeDirArrowExpandable  = "\U202F"
+ let g:NERDTreeDirArrowCollapsible = "\U202F"
 
 
 " Syntastic
@@ -812,323 +802,160 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
-let g:pymode_lint_on_write = 0
 
 
 " YouCompleteMe
 
-let g:ycm_max_num_candidates = 40
+let g:ycm_auto_hover = ''
+let g:ycm_autoclose_preview_window_after_completion = 0
+let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_key_list_stop_completion = ['<C-]>']
+let g:ycm_max_num_candidates = 35
+let g:ycm_key_list_stop_completion = ['<M-]>']
 
 if has('autocmd')
-  autocmd vimrc FileType *
+  autocmd rc FileType *
     \ let b:ycm_hover = {
     \ 'command': 'GetDoc',
     \ 'syntax': &syntax
     \ }
 endif
 
-nmap <leader>D <plug>(YCMHover)
+nmap <leader><leader> <plug>(YCMHover)
 
 
 " Tabs
 
-" Next tab
-nnoremap <silent> <M-Right> :
-  \
-  \tabnext<CR>
-
-" Previous tab
-nnoremap <silent> <M-Left> :
-  \
-  \tabprev<CR>
-
 " Create tab
-nnoremap <silent> <leader>c :
-  \
-  \tabnew<CR>
+nnoremap <silent> <leader>c :tabnew<CR>
 
 " Destroy tab
-nnoremap <silent> <leader>x :
-  \
-  \tabprev<CR>
+nnoremap <silent> <leader>x :tabclose<CR>
 
-" Insert: Toggle 'paste' mode
-nnoremap <silent> <Insert> :
-  \
-  \set paste!<CR>
+" Next tab
+nnoremap <silent> <C-PageUp> :tabnext<CR>
 
+" Previous tab
+nnoremap <silent> <C-PageDown> :tabprev<CR>
+
+
+" Misc
+
+" Insert: 'paste' mode
 set pastetoggle=<Insert>
-
+nnoremap <silent> <Insert>  :set paste!<CR>
 
 " F6: Toggle line numbers
-nnoremap <silent> <F6> :
-  \
-  \let &l:nu = !&l:nu<Bar>
-  \let &l:rnu = &l:nu<CR>
+nnoremap <silent> <F6> : let &l:nu = !&l:nu<Bar> let &l:rnu = &l:nu<CR>
 
 " F7: Toggle search highlighting
-nnoremap <silent> <F7> :
-  \
-  \setlocal hlsearch!<CR>
+nnoremap <silent> <F7> : setlocal hlsearch!<CR>
 
 " Insert a shebang as the first line
-nnoremap <silent> <leader>#! ggI<C-R>=
-  \
-  \substitute(&filetype, "..*", "#!" . exepath(&filetype) . "\\r", "")<CR>
-  \<ESC>``
+nnoremap <silent> <leader>#!
+  \ ggI<C-R>=substitute(&ft, "..*", "#!" . exepath(&ft) . "\\r", "")<CR><Esc>``
 
 " Search forward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern
-vnoremap <silent> * :
-  \
-  \<C-U>let old_reg=getreg('"')<Bar>
-  \let old_regtype=getregtype('"')<CR>
-  \gvy/<C-R><C-R>=
-  \substitute(escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \gV:call setreg('"',old_reg,old_regtype)<CR>
+vnoremap <silent> *
+  \ :<C-U>let old_reg=getreg('"')<Bar>
+  \ let old_regtype=getregtype('"')<CR>
+  \ gvy/<C-R><C-R>=substitute(
+  \ escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+  \ gV:call setreg('"',old_reg,old_regtype)<CR>
 
 " Search backward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern
-vnoremap <silent> # :
-  \
-  \<C-U>let old_reg=getreg('"')<Bar>
-  \let old_regtype=getregtype('"')<CR>
-  \gvy?<C-R><C-R>=
-  \substitute(escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \gV:call setreg('"',old_reg,old_regtype)<CR>
+vnoremap <silent> #
+  \ :<C-U>let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \ gvy?<C-R><C-R>=substitute(
+  \ escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+  \ gV:call setreg('"',old_reg,old_regtype)<CR>
 
 
-" Fix escape sequences in vim
+" Fix vim escape codes
+
 if !has('nvim')
 
-  " Map xterm sequences for <S-Arrow> combinations
-  map! <ESC>[1;2A <S-Up>
-  map! <ESC>[1;2B <S-Down>
-  map! <ESC>[1;2C <S-Right>
-  map! <ESC>[1;2D <S-Left>
-  nmap <ESC>[1;2A <S-Up>
-  nmap <ESC>[1;2B <S-Down>
-  nmap <ESC>[1;2C <S-Right>
-  nmap <ESC>[1;2D <S-Left>
-  vmap <ESC>[1;2A <S-Up>
-  vmap <ESC>[1;2B <S-Down>
-  vmap <ESC>[1;2C <S-Right>
-  vmap <ESC>[1;2D <S-Left>
+  let &t_SI = "\<Esc>[5 q "
+  let &t_EI = "\<Esc>[1 q"
 
-  " Map xterm sequences for <M-Arrow> combinations
-  map! <ESC>[1;3A <M-Up>
-  map! <ESC>[1;3B <M-Down>
-  map! <ESC>[1;3C <M-Right>
-  map! <ESC>[1;3D <M-Left>
-  nmap <ESC>[1;3A <M-Up>
-  nmap <ESC>[1;3B <M-Down>
-  nmap <ESC>[1;3C <M-Right>
-  nmap <ESC>[1;3D <M-Left>
-  vmap <ESC>[1;3A <M-Up>
-  vmap <ESC>[1;3B <M-Down>
-  vmap <ESC>[1;3C <M-Right>
-  vmap <ESC>[1;3D <M-Left>
+  " Home and End sequences
+  execute "set <Home>=\<Esc>[OH"
+  execute "set <S-Home>=\<Esc>[1;*H"
+  "execute "set <xHome>=\<Esc>[1~"
+  execute "set <xHome>=\<Esc>[7~"
+  execute "set <End>=\<Esc>[OF"
+  execute "set <S-End>=\<Esc>[1;*F"
+  "execute "set <xEnd>=\<Esc>[4~"
+  execute "set <xEnd>=\<Esc>[8~"
 
-  " Map xterm sequences for <M-S-Arrow> combinations
-  map! <ESC>[1;4A <M-S-Up>
-  map! <ESC>[1;4B <M-S-Down>
-  map! <ESC>[1;4C <M-S-Right>
-  map! <ESC>[1;4D <M-S-Left>
-  nmap <ESC>[1;4A <M-S-Up>
-  nmap <ESC>[1;4B <M-S-Down>
-  nmap <ESC>[1;4C <M-S-Right>
-  nmap <ESC>[1;4D <M-S-Left>
-  vmap <ESC>[1;4A <M-S-Up>
-  vmap <ESC>[1;4B <M-S-Down>
-  vmap <ESC>[1;4C <M-S-Right>
-  vmap <ESC>[1;4D <M-S-Left>
+  " Insert, Del, PageUp and PageDown sequences
+  execute "set <Insert>=\<Esc>[2;*~"
+  execute "set <Del>=\<Esc>[3;*~"
+  execute "set <PageUp>=\<Esc>[5;*~"
+  execute "set <PageDown>=\<Esc>[6;*~"
 
-  " Map xterm sequences for <C-Arrow> combinations
-  map! <ESC>[1;5A <C-Up>
-  map! <ESC>[1;5B <C-Down>
-  map! <ESC>[1;5C <C-Right>
-  map! <ESC>[1;5D <C-Left>
-  nmap <ESC>[1;5A <C-Up>
-  nmap <ESC>[1;5B <C-Down>
-  nmap <ESC>[1;5C <C-Right>
-  nmap <ESC>[1;5D <C-Left>
-  vmap <ESC>[1;5A <C-Up>
-  vmap <ESC>[1;5B <C-Down>
-  vmap <ESC>[1;5C <C-Right>
-  vmap <ESC>[1;5D <C-Left>
+  " arrowkey sequences
+  execute "set <Up>=\<Esc>OA"
+  execute "set <xUp>=\<Esc>[A"
+  execute "set <Down>=\<Esc>OB"
+  execute "set <xDown>=\<Esc>[B"
+  execute "set <Right>=\<Esc>OC"
+  execute "set <xRight>=\<Esc>[C"
+  execute "set <Left>=\<Esc>OD"
+  execute "set <xLeft>=\<Esc>[D"
 
-  " Map xterm sequences for <C-S-Arrow> combinations
-  map! <ESC>[1;6A <C-S-Up>
-  map! <ESC>[1;6B <C-S-Down>
-  map! <ESC>[1;6C <C-S-Right>
-  map! <ESC>[1;6D <C-S-Left>
-  nmap <ESC>[1;6A <C-S-Up>
-  nmap <ESC>[1;6B <C-S-Down>
-  nmap <ESC>[1;6C <C-S-Right>
-  nmap <ESC>[1;6D <C-S-Left>
-  vmap <ESC>[1;6A <C-S-Up>
-  vmap <ESC>[1;6B <C-S-Down>
-  vmap <ESC>[1;6C <C-S-Right>
-  vmap <ESC>[1;6D <C-S-Left>
+  " mod + arrowkey combinations
+  execute "set <S-Up>=\<Esc>[1;*A"
+  execute "set <S-Down>=\<Esc>[1;*B"
+  execute "set <S-Right>=\<Esc>[1;*C"
+  execute "set <S-Left>=\<Esc>[1;*D"
 
-  " Map xterm sequences for <C-M-Arrow> combinations
-  map! <ESC>[1;7A <C-M-Up>
-  map! <ESC>[1;7B <C-M-Down>
-  map! <ESC>[1;7C <C-M-Right>
-  map! <ESC>[1;7D <C-M-Left>
-  nmap <ESC>[1;7A <C-M-Up>
-  nmap <ESC>[1;7B <C-M-Down>
-  nmap <ESC>[1;7C <C-M-Right>
-  nmap <ESC>[1;7D <C-M-Left>
-  vmap <ESC>[1;7A <C-M-Up>
-  vmap <ESC>[1;7B <C-M-Down>
-  vmap <ESC>[1;7C <C-M-Right>
-  vmap <ESC>[1;7D <C-M-Left>
+  " Fn keys
+  execute "set <F1>=\<Esc>[11~"
+  execute "set <xF1>=\<Esc>OP"
+  execute "set <F2>=\<Esc>[12~"
+  execute "set <xF2>=\<Esc>OQ"
+  execute "set <F3>=\<Esc>[13~"
+  execute "set <xF3>=\<Esc>OR"
+  execute "set <F4>=\<Esc>[14~"
+  execute "set <xF4>=\<Esc>OS"
+  execute "set <F5>=\<Esc>[15~"
+  execute "set <F6>=\<Esc>[17~"
+  execute "set <F7>=\<Esc>[18~"
+  execute "set <F8>=\<Esc>[19~"
+  execute "set <F9>=\<Esc>[20~"
+  execute "set <F10>=\<Esc>[21~"
+  execute "set <F11>=\<Esc>[23~"
+  execute "set <F12>=\<Esc>[24~"
 
-  " Map xterm sequences for <C-M-S-Arrow> combinations
-  map! <ESC>[1;8A <C-M-S-Up>
-  map! <ESC>[1;8B <C-M-S-Down>
-  map! <ESC>[1;8C <C-M-S-Right>
-  map! <ESC>[1;8D <C-M-S-Left>
-  nmap <ESC>[1;8A <C-M-S-Up>
-  nmap <ESC>[1;8B <C-M-S-Down>
-  nmap <ESC>[1;8C <C-M-S-Right>
-  nmap <ESC>[1;8D <C-M-S-Left>
-  vmap <ESC>[1;8A <C-M-S-Up>
-  vmap <ESC>[1;8B <C-M-S-Down>
-  vmap <ESC>[1;8C <C-M-S-Right>
-  vmap <ESC>[1;8D <C-M-S-Left>
-
-  " Map xterm and rxvt escape sequences for <Fn> keys
-  map! <ESC>OP   <F1>
-  map! <ESC>OQ   <F2>
-  map! <ESC>OR   <F3>
-  map! <ESC>OS   <F4>
-  map! <ESC>[11~ <F1>
-  map! <ESC>[12~ <F2>
-  map! <ESC>[13~ <F3>
-  map! <ESC>[14~ <F4>
-  map! <ESC>[15~ <F5>
-  map! <ESC>[17~ <F6>
-  map! <ESC>[18~ <F7>
-  map! <ESC>[19~ <F8>
-  map! <ESC>[20~ <F9>
-  map! <ESC>[21~ <F10>
-  map! <ESC>[23~ <F11>
-  map! <ESC>[24~ <F12>
-  nmap <ESC>OP   <F1>
-  nmap <ESC>OQ   <F2>
-  nmap <ESC>OR   <F3>
-  nmap <ESC>OS   <F4>
-  nmap <ESC>[11~ <F1>
-  nmap <ESC>[12~ <F2>
-  nmap <ESC>[13~ <F3>
-  nmap <ESC>[14~ <F4>
-  nmap <ESC>[15~ <F5>
-  nmap <ESC>[17~ <F6>
-  nmap <ESC>[18~ <F7>
-  nmap <ESC>[19~ <F8>
-  nmap <ESC>[20~ <F9>
-  nmap <ESC>[21~ <F10>
-  nmap <ESC>[23~ <F11>
-  nmap <ESC>[24~ <F12>
-  vmap <ESC>OP   <F1>
-  vmap <ESC>OQ   <F2>
-  vmap <ESC>OR   <F3>
-  vmap <ESC>OS   <F4>
-  vmap <ESC>[11~ <F1>
-  vmap <ESC>[12~ <F2>
-  vmap <ESC>[13~ <F3>
-  vmap <ESC>[14~ <F4>
-  vmap <ESC>[15~ <F5>
-  vmap <ESC>[17~ <F6>
-  vmap <ESC>[18~ <F7>
-  vmap <ESC>[19~ <F8>
-  vmap <ESC>[20~ <F9>
-  vmap <ESC>[21~ <F10>
-  vmap <ESC>[23~ <F11>
-  vmap <ESC>[24~ <F12>
-
-  " Map xterm and rxvt escape sequences for <S-Fn> combinations
-  map! <ESC>[23~   <S-F1>
-  map! <ESC>[24~   <S-F2>
-  map! <ESC>[1;2P  <S-F3>
-  map! <ESC>[1;2Q  <S-F4>
-  map! <ESC>[1;2R  <S-F5>
-  map! <ESC>[1;2S  <S-F6>
-  map! <ESC>[15;2~ <S-F7>
-  map! <ESC>[17;2~ <S-F8>
-  map! <ESC>[18;2~ <S-F9>
-  map! <ESC>[19;2~ <S-F10>
-  map! <ESC>[23;2~ <S-F11>
-  map! <ESC>[24;2~ <S-F12>
-  map! <ESC>[25~   <S-F3>
-  map! <ESC>[26~   <S-F4>
-  map! <ESC>[28~   <S-F5>
-  map! <ESC>[29~   <S-F6>
-  map! <ESC>[31~   <S-F7>
-  map! <ESC>[32~   <S-F8>
-  map! <ESC>[33~   <S-F9>
-  map! <ESC>[34~   <S-F10>
-  map! <ESC>[23$   <S-F11>
-  map! <ESC>[24$   <S-F12>
-  nmap <ESC>[23~   <S-F1>
-  nmap <ESC>[24~   <S-F2>
-  nmap <ESC>[1;2P  <S-F3>
-  nmap <ESC>[1;2Q  <S-F4>
-  nmap <ESC>[1;2R  <S-F5>
-  nmap <ESC>[1;2S  <S-F6>
-  nmap <ESC>[15;2~ <S-F7>
-  nmap <ESC>[17;2~ <S-F8>
-  nmap <ESC>[18;2~ <S-F9>
-  nmap <ESC>[19;2~ <S-F10>
-  nmap <ESC>[23;2~ <S-F11>
-  nmap <ESC>[24;2~ <S-F12>
-  nmap <ESC>[25~   <S-F3>
-  nmap <ESC>[26~   <S-F4>
-  nmap <ESC>[28~   <S-F5>
-  nmap <ESC>[29~   <S-F6>
-  nmap <ESC>[31~   <S-F7>
-  nmap <ESC>[32~   <S-F8>
-  nmap <ESC>[33~   <S-F9>
-  nmap <ESC>[34~   <S-F10>
-  nmap <ESC>[23$   <S-F11>
-  nmap <ESC>[24$   <S-F12>
-  vmap <ESC>[23~   <S-F1>
-  vmap <ESC>[24~   <S-F2>
-  vmap <ESC>[1;2P  <S-F3>
-  vmap <ESC>[1;2Q  <S-F4>
-  vmap <ESC>[1;2R  <S-F5>
-  vmap <ESC>[1;2S  <S-F6>
-  vmap <ESC>[15;2~ <S-F7>
-  vmap <ESC>[17;2~ <S-F8>
-  vmap <ESC>[18;2~ <S-F9>
-  vmap <ESC>[19;2~ <S-F10>
-  vmap <ESC>[23;2~ <S-F11>
-  vmap <ESC>[24;2~ <S-F12>
-  vmap <ESC>[25~   <S-F3>
-  vmap <ESC>[26~   <S-F4>
-  vmap <ESC>[28~   <S-F5>
-  vmap <ESC>[29~   <S-F6>
-  vmap <ESC>[31~   <S-F7>
-  vmap <ESC>[32~   <S-F8>
-  vmap <ESC>[33~   <S-F9>
-  vmap <ESC>[34~   <S-F10>
-  vmap <ESC>[23$   <S-F11>
-  vmap <ESC>[24$   <S-F12>
+  " mod + Fn combinations
+  execute "set <S-F1>=\<Esc>[11;*~"
+  execute "set <S-xF1>=\<Esc>[1;*P"
+  execute "set <S-F2>=\<Esc>[12;*~"
+  execute "set <S-xF2>=\<Esc>[1;*Q"
+  execute "set <S-F3>=\<Esc>[13;*~"
+  execute "set <S-xF3>=\<Esc>[1;*R"
+  execute "set <S-F4>=\<Esc>[14;*~"
+  execute "set <S-xF4>=\<Esc>[1;*S"
+  execute "set <S-F5>=\<Esc>[15;*~"
+  execute "set <S-F6>=\<Esc>[17;*~"
+  execute "set <S-F7>=\<Esc>[18;*~"
+  execute "set <S-F8>=\<Esc>[20;*~"
+  execute "set <S-F9>=\<Esc>[21;*~"
+  execute "set <S-F11>=\<Esc>[23;*~"
+  execute "set <S-F12>=\<Esc>[24;*~"
 
 endif
 
 
-" End
+" Epilogue
 
 " Allow options to be set from a modeline
 set modeline
 
-" Restrict editor if SWIM owns this file (should be last in vimrc)
+" Restrict editor if SWIM owns this file
 set secure
 
 

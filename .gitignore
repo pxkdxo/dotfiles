@@ -12,8 +12,8 @@
 !/README.md
 
 # whitelist specified files
-!/Xresources
-!/Xresources.d/**
+!/autostart/devilspie2.desktop
+!/autostart/urxvtd.desktop
 !/alacritty/alacritty.yml
 !/asoundrc
 !/awesome/rc.lua
@@ -23,6 +23,7 @@
 !/bash_profile
 !/bashrc
 !/bashrc.d/**
+!/cabal/config
 !/colors/**
 !/compton.conf
 !/devilspie2/**
@@ -75,6 +76,8 @@
 !/xinitrc.d/**
 !/xprofile
 !/xsession
+!/Xresources
+!/Xresources.d/**
 !/xserverrc
 !/zlogin
 !/zlogout

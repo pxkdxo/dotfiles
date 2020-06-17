@@ -11,31 +11,36 @@ URxvt.iconFile: /usr/share/icons/HighContrast/48x48/apps/utilities-terminal.png
 
 ! fonts
 URxvt.font: \
-xft:Monofur Nerd Font Mono-18:style=Book, \
-xft:Fantasque Sans Mono-18:style=Regular, \
-xft:JetBrainsMono Nerd Font Mono-18:style=Regular, \
-xft:mononoki Nerd Font Mono-18:style=Regular, \
-xft:SauceCodePro Nerd Font Mono-18:style=Regular, \
-xft:SpaceMono Nerd Font Mono-18:style=Regular, \
-xft:Ubuntu Mono-18:style=Regular
+xft:JetBrainsMono Nerd Font Mono-15:style=Regular, \
+xft:mononoki Nerd Font Mono-16:style=Regular, \
+xft:FantasqueSansMono Nerd Font Mono-17:style=Regular, \
+xft:JetBrains Mono-15:style=Regular, \
+xft:mononoki-16:style=Regular, \
+xft:Fantasque Sans Mono-17:style=Regular, \
+xft:Ubuntu Mono-16:style=Regular
 
 URxvt.boldFont: \
-xft:Monofurbold Nerd Font Mono-18:style=bold, \
-xft:Fantasque Sans Mono-18:style=Bold, \
-xft:JetBrainsMono Nerd Font Mono-18:style=Bold, \
-xft:mononoki Nerd Font Mono-18:style=Bold, \
-xft:SauceCodePro Nerd Font Mono-18:style=Semibold,Regular, \
-xft:SpaceMono Nerd Font Mono-18:style=Bold, \
-xft:Ubuntu Mono-18:style=Bold
+xft:JetBrainsMono Nerd Font Mono-15:style=Bold, \
+xft:mononoki Nerd Font Mono-16:style=Bold, \
+xft:FantasqueSansMono Nerd Font Mono-17:style=Bold, \
+xft:JetBrains Mono-15:style=Bold, \
+xft:mononoki-16:style=Bold, \
+xft:Fantasque Sans Mono-17:style=Bold, \
+xft:Ubuntu Mono-16:style=Bold
 
 URxvt.italicFont: \
-xft:Monofuritalic Nerd Font Mono-18:style=italic, \
-xft:Fantasque Sans Mono-18:style=Italic, \
-xft:JetBrainsMono Nerd Font Mono-18:style=Italic, \
-xft:mononoki Nerd Font Mono-18:style=Italic, \
-xft:SauceCodePro Nerd Font Mono-18:style=Medium Italic,Italic, \
-xft:SpaceMono Nerd Font Mono-18:style=Italic, \
-xft:Ubuntu Mono-18:style=Italic
+xft:JetBrainsMono Nerd Font Mono-15:style=Italic, \
+xft:mononoki Nerd Font Mono-16:style=Italic, \
+xft:FantasqueSansMono Nerd Font Mono-17:style=Italic, \
+xft:JetBrains Mono-15:style=Italic, \
+xft:mononoki-16:style=Italic, \
+xft:Fantasque Sans Mono-17:style=Italic, \
+xft:Ubuntu Mono-16:style=Italic
+
+URxvt.bolditalicFont: \
+xft:JetBrainsMono Nerd Font Mono-15:style=Bold Italic, \
+xft:JetBrains Mono-15:style=Bold Italic, \
+xft:Ubuntu Mono-16:style=Bold Italic
 
 URxvt.skipBuiltinGlyphs: True
 

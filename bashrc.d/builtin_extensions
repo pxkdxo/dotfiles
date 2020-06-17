@@ -188,6 +188,7 @@ addalias()
   local OPTIND=1
   local option
   local output="${BASH_ALIASES_FILE:-${HOME-}/.bash_aliases}"
+  local string
 
   while getopts ':o:h' option
   do
@@ -204,13 +205,13 @@ addalias()
     esac
   done
   shift "$((OPTIND - 1))"
-  for _
+  for string
   do
-    if [[ $_ == *=* ]]
+    if [[ ${string} == *=* ]]
     then
-      alias -- "$_" "${_%%=*}"
+      alias -- "${string}" "${string%%=*}"
     else
-      alias -- "$_"
+      alias -- "${string}"
     fi
   done 1>> "${output}"
 }

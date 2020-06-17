@@ -63,6 +63,7 @@ if has("gui_running")
         hi Normal         gui=NONE   guifg=#cfbfad   guibg=#000000
     endif
 
+
     hi CursorLine         guibg=#2e2e37
 
     hi IncSearch      gui=BOLD   guifg=#303030   guibg=#cd8b60
@@ -99,7 +100,7 @@ if has("gui_running")
     hi FoldColumn     gui=NONE   guifg=#8b8bcd   guibg=#2e2e2e
 
     hi Directory      gui=NONE   guifg=#00ff8b   guibg=NONE
-    hi LineNr         gui=NONE   guifg=#8b8bcd   guibg=#2e2e2e
+    hi LineNr         gui=NONE   guifg=#8b8bcd   guibg=#3e3e5e
     hi NonText        gui=BOLD   guifg=#8b8bcd   guibg=NONE
     hi SpecialKey     gui=BOLD   guifg=#3b205d   guibg=NONE
     hi Title          gui=BOLD   guifg=#af4f4b   guibg=NONE
@@ -152,7 +153,7 @@ if has("gui_running")
     endif
     if v:version >= 703
         hi Conceal      gui=NONE      guifg=#c080d0   guibg=NONE
-        hi ColorColumn  gui=NONE                      guibg=#2e2e2e
+        hi! link ColorColumn  LineNr
     endif
     if has('signs')
         hi SignColumn   gui=bold                      guibg=#2e2e2e
@@ -190,7 +191,7 @@ else
     exec "hi FoldColumn     cterm=NONE   ctermfg=" . <SID>X(39) . " ctermbg=" . <SID>X(80)
 
     exec "hi Directory      cterm=NONE   ctermfg=" . <SID>X(28) . " ctermbg=" . "NONE"
-    exec "hi LineNr         cterm=NONE   ctermfg=" . <SID>X(39) . " ctermbg=" . "NONE"
+    exec "hi LineNr         cterm=NONE   ctermfg=" . <SID>X(39) . " ctermbg=" . <SID>X(81)
     exec "hi NonText        cterm=BOLD   ctermfg=" . <SID>X(39) . " ctermbg=" . "NONE"
     exec "hi SpecialKey     cterm=BOLD   ctermfg=" . <SID>X(55) . " ctermbg=" . "NONE"
     exec "hi Title          cterm=BOLD   ctermfg=" . <SID>X(48) . " ctermbg=" . "NONE"
@@ -218,18 +219,18 @@ else
         exec "hi PmenuSbar      cterm=BOLD  ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(39)
         exec "hi PmenuThumb     cterm=BOLD  ctermfg=" . <SID>X(87) . " ctermbg=" . <SID>X(39)
 
-        exec "hi SpellBad       cterm=NONE  ctermbg=" . <SID>X(32)
-        exec "hi SpellRare      cterm=NONE  ctermbg=" . <SID>X(33)
-        exec "hi SpellLocal     cterm=NONE  ctermbg=" . <SID>X(36)
-        exec "hi SpellCap       cterm=NONE  ctermbg=" . <SID>X(21)
-        exec "hi MatchParen     cterm=NONE  ctermbg=" . <SID>X(14) . " ctermfg=" . <SID>X(25)
+        exec "hi SpellBad       cterm=NONE                             ctermbg=" . <SID>X(32)
+        exec "hi SpellRare      cterm=NONE                             ctermbg=" . <SID>X(33)
+        exec "hi SpellLocal     cterm=NONE                             ctermbg=" . <SID>X(36)
+        exec "hi SpellCap       cterm=NONE                             ctermbg=" . <SID>X(21)
+        exec "hi MatchParen     cterm=NONE  ctermfg=" . <SID>X(25) . " ctermbg=" . <SID>X(14)
     endif
     if v:version >= 703
         exec "hi Conceal        cterm=NONE  ctermfg=" . <SID>X(55) . " ctermbg=" . "NONE"
-        exec "hi ColorColumn    cterm=NONE  ctermbg=" . <SID>X(81)
+        exec "hi! link ColorColumn  LineNr"
     endif
     if has('signs')
-        exec "hi SignColumn     cterm=bold  ctermbg=" . "NONE"
+      exec "hi SignColumn     cterm=bold                             ctermbg=" . <SID>X(81)
     endif
 endif
 

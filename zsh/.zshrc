@@ -237,7 +237,7 @@ fi
 
 # Zsh Params
 # see zshparam(1)
-#
+
 LISTMAX=0
 DIRSTACKSIZE=0
 CORRECT_IGNORE='_*'
