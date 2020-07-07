@@ -3,14 +3,14 @@
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
-#env:
+env:
   # TERM variable
   #
   # This value is used to set the `$TERM` environment variable for
   # each instance of Alacritty. If it is not present, alacritty will
   # check the local terminfo database and use `alacritty` if it is
   # available, otherwise `xterm-256color` is used.
-  #TERM: alacritty
+  TERM: alacritty
 
 window:
   # Window dimensions (changes require restart)
@@ -61,7 +61,8 @@ window:
   #
   # Values for `startup_mode` (macOS only):
   #   - SimpleFullscreen
-  startup_mode: Maximized
+  #startup_mode: Maximized
+  startup_mode: Fullscreen
 
   # Window title
   #title: Alacritty
@@ -82,7 +83,7 @@ window:
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
-  #history: 10000
+  history: 16384
 
   # Scrolling distance multiplier.
   multiplier: 2
@@ -92,71 +93,119 @@ font:
   # Normal (roman) font face
   normal:
     # Font family
+    # The `style` can be specified to pick a specific face.
     #
     # Default:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    #family: Monofur NF
-    #family: mononoki NF
-    family: JetBrainsMono NF
-
-    # The `style` can be specified to pick a specific face.
+    #
+    #family: Monofur Nerd Font Mono
     #style: Book
-    #style: Regular
+    #
+    family: mononoki Nerd Font Mono
     style: Regular
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Regular
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Medium
+    #
+    #family: Operator Mono Book
+    #style: Book
+    #
+    #family: DaddyTimeMono Nerd Font Mono
+    #style: Book
+    #
+    #family: agave Nerd Font Mono
+    #style: r
 
   # Bold font face
   bold:
     # Font family
+    # The `style` can be specified to pick a specific face.
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: Monofurbold NF
-    #family: mononoki NF
-    family: JetBrainsMono NF
-
-    # The `style` can be specified to pick a specific face.
+    #
+    #family: Monofurbold Nerd Font Mono
     #style: bold
-    #style: Bold
+    #
+    family: mononoki Nerd Font Mono
     style: Bold
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Bold
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Bold
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold
+    #
+    #family: Operator Mono Bold
+    #style: Bold
+    #
+    #family: M+ 2m
+    #style: bold
 
   # Italic font face
   italic:
     # Font family
+    # The `style` can be specified to pick a specific face.
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: Monofuritalic NF
-    #family: mononoki NF
-    family: JetBrainsMono NF
-
-    # The `style` can be specified to pick a specific face.
+    #
+    #family: Monofuritalic Nerd Font Mono
     #style: italic
+    #
+    #family: mononoki Nerd Font Mono
+    #style: Italic
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Italic
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Medium Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Medium Italic
+    #
+    family: Operator Mono Medium
     style: Italic
 
   # Bold italic font face
   bold_italic:
     # Font family
+    # The `style` can be specified to pick a specific face.
     #
     # If the bold italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    #family: Monofuritalic NF
-    #family: mononoki NF
-    family: JetBrainsMono NF
-
-    # The `style` can be specified to pick a specific face.
-    #style: italic
+    #
+    #family: mononoki Nerd Font Mono
     #style: BoldItalic
-    style: Bold Italic
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    family: Operator Mono Bold
+    style: Italic
 
   # Point size
-  size: 15.0
+  size: 16
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
   offset:
-    x: 0
+    x: -1
     y: 0
 
   # Glyph offset determines the locations of the glyphs within their cells with
@@ -175,12 +224,18 @@ font:
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
 
-# Colors (Dracula)
+# Colors
 colors:
   # Default colors
   primary:
-    background: '#212326'
+
+    # Dracula
+    background: '#212324'
     foreground: '#eaeaea'
+
+    # 1989
+    #background: '#212324'
+    #foreground: '#dadada'
 
     # Bright and dim foreground colors
     #
@@ -205,7 +260,6 @@ colors:
   #vi_mode_cursor:
   #  text: '#000000'
   #  cursor: '#ffffff'
-
   # Selection colors
   #
   # Colors which should be used to draw the selection area. If selection
@@ -217,6 +271,8 @@ colors:
 
   # Normal colors
   normal:
+
+    # Dracula
     black:   '#0a0e10'
     red:     '#ff5555'
     green:   '#50fa7b'
@@ -226,8 +282,20 @@ colors:
     cyan:    '#8cf1fa'
     white:   '#bfbfbf'
 
-  # Bright colors
+    # 1989
+    #black:   '#0a0a0a'
+    #red:     '#ff87c3'
+    #green:   '#87ffc3'
+    #yellow:  '#ffff87'
+    #blue:    '#87c3ff'
+    #magenta: '#ff87ff'
+    #cyan:    '#87ffff'
+    #white:   '#cccccc'
+
+  # Bright colors (dracula)
   bright:
+
+    # Dracula
     black:   '#575b5f'
     red:     '#ff6e67'
     green:   '#5af78e'
@@ -236,6 +304,16 @@ colors:
     magenta: '#f2a9fa'
     cyan:    '#a9faf2'
     white:   '#f8f8f2'
+
+    # 1989
+    #black:   '#808080'
+    #red:     '#ffafd7'
+    #green:   '#afffd7'
+    #yellow:  '#ffffaf'
+    #blue:    '#afd7ff'
+    #magenta: '#ffafff'
+    #cyan:    '#afffff'
+    #white:   '#ffffff'
 
   # Dim colors
   #
@@ -260,7 +338,7 @@ colors:
   #   `- { index: 16, color: '#ff00ff' }`
   #
   #indexed_colors: []
- 
+
 # Visual Bell
 #
 # Any time the BEL code is received, Alacritty "rings" the visual bell. Once
@@ -291,7 +369,7 @@ visual_bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.85
+background_opacity: 0.88
 
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
@@ -317,7 +395,7 @@ cursor:
   # the style of the active value of the normal cursor.
   #
   # See `cursor.style` for available options.
-  #vi_mode_style: None
+  vi_mode_style: Beam
 
   # If this is `true`, the cursor will be rendered as a hollow box when the
   # window is not focused.

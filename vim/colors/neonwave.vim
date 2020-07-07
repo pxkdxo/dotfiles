@@ -31,7 +31,7 @@ if v:version >= 700
                 " (Oh, the irony.)
                 
                 " If you do not need it then do with it as you wish.
-                set t_Co=256
+                "set t_Co=256
                 syntax reset
                 hi clear
                 let g:colors_name = "neonwave"

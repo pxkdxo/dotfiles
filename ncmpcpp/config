@@ -21,7 +21,9 @@ visualizer_in_stereo      = "yes"
 visualizer_sync_interval  = "30"
 visualizer_type           = "wave_filled"
 visualizer_color          = "52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22"
-visualizer_look           = "┿"
+#visualizer_look           = "┿"
+#visualizer_look           = "┿⁕"
+visualizer_look           = "┿※"
 
 ##### delays #####
 ## Time of inactivity (in seconds) after playlist highlighting will be disabled

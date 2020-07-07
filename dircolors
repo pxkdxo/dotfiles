@@ -8,6 +8,7 @@
 # Below are TERM entries, which can be a glob patterns, to match
 # against the TERM environment variable to determine if it is colorizable.
 TERM Eterm
+TERM alacritty
 TERM ansi
 TERM *color*
 TERM con[0-9]*x[0-9]*
@@ -40,26 +41,45 @@ TERM xterm*
 # Background color codes:
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
 #NORMAL 00 # no color code at all
-#FILE 97 # regular file: use no color at all
+#FILE 00;39;49 # regular file: use no color at all
+#RESET 00 # reset to "normal" color
+#DIR 03;96 # directory
+#LINK 03;94 # symbolic link (set to 'target' to use the color of the target file)
+#MULTIHARDLINK 03;37  # regular file with more than one link
+#FIFO 03;93 # pipe
+#SOCK 03;35 # socket
+#DOOR 00;03;38;5;203 03;35 # door
+#BLK 03;36 # block device driver
+#CHR 03;34 # character device driver
+#ORPHAN 03;09;31 # symlink to nonexistent file, or non-stat'able file ...
+#MISSING 02;03;37 # ... and the files they point to
+#SETUID 01;03;91 #file that is setuid (u+s)
+#SETGID 01;03;93 # file that is setgid (g+s)
+#CAPABILITY 01;03;97 # file with capability
+#STICKY_OTHER_WRITABLE 01;03;95 # dir that is sticky and other-writable
+#OTHER_WRITABLE 1;03;96 # dir that is other-writable (o+w) and not sticky
+#STICKY 03;95 # dir with the sticky bit set (+t) and not other-writable
+#EXEC 01;03;92
+NORMAL 00;03 # no color code at all
+FILE 00;03;39;49 # regular file: use no color at all
 RESET 00 # reset to "normal" color
-DIR 96 # directory
-LINK 95 # symbolic link (set to 'target' to use the color of the target file)
-MULTIHARDLINK 03;97 # regular file with more than one link
-FIFO 33 # pipe
-SOCK 34 # socket
-DOOR 34 # door
-BLK 94 # block device driver
-CHR 93 # character device driver
-ORPHAN 09;31 # symlink to nonexistent file, or non-stat'able file ...
-MISSING 37 # ... and the files they point to
-SETUID 97;45 #file that is setuid (u+s)
-SETGID 97;44 # file that is setgid (g+s)
-CAPABILITY 30;101 # file with capability
-STICKY_OTHER_WRITABLE 30;107 # dir that is sticky and other-writable
-OTHER_WRITABLE 30;107 # dir that is other-writable (o+w) and not sticky
-STICKY 30;106 # dir with the sticky bit set (+t) and not other-writable
-# This is for files with execute permission:
-EXEC 92
+DIR 00;03;38;5;84 # directory
+LINK 00;03;38;5;219 # symbolic link (set to 'target' to use the color of the target file)
+MULTIHARDLINK 00;01;03;39;49  # regular file with more than one link
+FIFO 00;03;38;5;228 # pipe
+SOCK 00;03;38;5;93 # socket
+DOOR 00;03;38;5;93 # door
+BLK 00;03;38;5;45 # block device driver
+CHR 00;03;38;5;198 # character device driver
+ORPHAN 00;03;02;09;38;5;161 # symlink to nonexistent file, or non-stat'able file ...
+MISSING 02;38;5;246 # ... and the files they point to
+CAPABILITY 00;03;38;5;255 # file with capability
+STICKY 00;03;38;5;205 # dir with the sticky bit set (+t) and not other-writable
+OTHER_WRITABLE 00;03;38;5;33 dir that is other-writable (o+w) and not sticky
+STICKY_OTHER_WRITABLE 00;03;38;5;33 # dir that is sticky and other-writable
+EXEC 00;03;38;5;87 # This is for files with execute permission
+SETUID 00;03;38;5;63 #file that is setuid (u+s)
+SETGID 00;03;38;5;129  # file that is setgid (g+s)
 # List any file extensions like '.gz' or '.tar' that you would like ls
 # to colorize below. Put the extension, a space, and the color init string.
 # (and any comments you want to add after a '#')
@@ -74,122 +94,122 @@ EXEC 92
 #.sh 01;32
 #.csh 01;32
 # archives or compressed (bright red)
-.tar 91
-.tgz 91
-.arc 91
-.arj 91
-.taz 91
-.lha 91
-.lz4 91
-.lzh 91
-.lzma 91
-.tlz 91
-.txz 91
-.tzo 91
-.t7z 91
-.zip 91
-.z 91
-.Z 91
-.dz 91
-.gz 91
-.lrz 91
-.lz 91
-.lzo 91
-.xz 91
-.zst 91
-.tzst 91
-.bz2 91
-.bz 91
-.tbz 91
-.tbz2 91
-.tz 91
-.deb 91
-.rpm 91
-.jar 91
-.war 91
-.ear 91
-.sar 91
-.rar 91
-.alz 91
-.ace 91
-.zoo 91
-.cpio 91
-.7z 91
-.rz 91
-.cab 91
-.wim 91
-.swm 91
-.dwm 91
-.esd 91
+.tar 03;32
+.tgz 00;38;5;47
+.arc 03;32
+.arj 03;32
+.taz 03;32
+.lha 03;32
+.lz4 03;32
+.lzh 03;32
+.lzma 03;32
+.tlz 03;32
+.txz 03;32
+.tzo 03;32
+.t7z 03;32
+.zip 03;32
+.z 03;32
+.Z 03;32
+.dz 03;32
+.gz 03;32
+.lrz 03;32
+.lz 03;32
+.lzo 03;32
+.xz 03;32
+.zst 03;32
+.tzst 03;32
+.bz2 03;32
+.bz 03;32
+.tbz 03;32
+.tbz2 03;32
+.tz 03;32
+.deb 03;32
+.rpm 03;32
+.jar 03;32
+.war 03;32
+.ear 03;32
+.sar 03;32
+.rar 03;32
+.alz 03;32
+.ace 03;32
+.zoo 03;32
+.cpio 03;32
+.7z 03;32
+.rz 03;32
+.cab 03;32
+.wim 03;32
+.swm 03;32
+.dwm 03;32
+.esd 03;32
 # image formats
-.jpg 35
-.jpeg 35
-.mjpg 35
-.mjpeg 35
-.gif 35
-.bmp 35
-.pbm 35
-.pgm 35
-.ppm 35
-.tga 35
-.xbm 35
-.xpm 35
-.tif 35
-.tiff 35
-.png 35
-.svg 35
-.svgz 35
-.mng 35
-.pcx 35
-.mov 35
-.mpg 35
-.mpeg 35
-.m2v 35
-.mkv 35
-.webm 35
-.ogm 35
-.mp4 35
-.m4v 35
-.mp4v 35
-.vob 35
-.qt 35
-.nuv 35
-.wmv 35
-.asf 35
-.rm 35
-.rmvb 35
-.flc 35
-.avi 35
-.fli 35
-.flv 35
-.gl 35
-.dl 35
-.xcf 35
-.xwd 35
-.yuv 35
-.cgm 35
-.emf 35
+.jpg 03;96
+.jpeg 03;96
+.mjpg 03;96
+.mjpeg 03;96
+.gif 03;96
+.bmp 03;96
+.pbm 03;96
+.pgm 03;96
+.ppm 03;96
+.tga 03;96
+.xbm 03;96
+.xpm 03;96
+.tif 03;96
+.tiff 03;96
+.png 03;96
+.svg 03;96
+.svgz 03;96
+.mng 03;96
+.pcx 03;96
+.mov 03;95
+.mpg 03;95
+.mpeg 03;95
+.m2v 03;95
+.mkv 03;95
+.webm 03;95
+.ogm 03;95
+.mp4 03;95
+.m4v 03;95
+.mp4v 03;95
+.vob 03;95
+.qt 03;95
+.nuv 03;95
+.wmv 03;95
+.asf 03;95
+.rm 03;95
+.rmvb 03;95
+.flc 03;95
+.avi 03;95
+.fli 03;95
+.flv 03;95
+.gl 03;95
+.dl 03;95
+.xcf 03;95
+.xwd 03;95
+.yuv 03;95
+.cgm 03;95
+.emf 03;95
 # https://wiki.xiph.org/MIME_Types_and_File_Extensions
-.ogv 35
-.ogx 35
+.ogv 03;95
+.ogx 03;95
 # audio formats
-.aac 36
-.au 36
-.flac 36
-.m4a 36
-.mid 36
-.midi 36
-.mka 36
-.mp3 36
-.mpc 36
-.ogg 36
-.ra 36
-.wav 36
+.aac 03;94
+.au 03;94
+.flac 03;94
+.m4a 03;94
+.mid 03;94
+.midi 03;94
+.mka 03;94
+.mp3 03;94
+.mpc 03;94
+.ogg 03;94
+.ra 03;94
+.wav 03;94
 # https://wiki.xiph.org/MIME_Types_and_File_Extensions
-.oga 36
-.opus 36
-.spx 36
-.xspf 36
+.oga 03;94
+.opus 03;94
+.spx 03;94
+.xspf 03;94
 
 
 # vim: ft=dircolors

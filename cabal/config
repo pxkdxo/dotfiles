@@ -50,10 +50,10 @@ world-file: /home/pat/.cache/cabal/world
 -- user-install: True
 -- package-db:
 -- flags:
-extra-include-dirs: /home/pat/.local/share/cabal/include
-extra-lib-dirs: /home/pat/.local/share/cabal/lib
+extra-include-dirs: /home/pat/.local/include
+extra-lib-dirs: /home/pat/.local/lib
 -- extra-framework-dirs:
-extra-prog-path: /home/pat/.local/share/cabal/bin
+extra-prog-path: /home/pat/.local/bin
 -- tests: False
 -- coverage: False
 -- library-coverage:
@@ -76,7 +76,7 @@ extra-prog-path: /home/pat/.local/share/cabal/bin
 -- force-reinstalls: False
 -- upgrade-dependencies: False
 -- root-cmd:
--- symlink-bindir:
+symlink-bindir: /home/pat/.local/bin
 build-summary: /home/pat/.config/log/cabal/build.log
 -- build-log:
 remote-build-reporting: anonymous
@@ -106,7 +106,7 @@ haddock
   -- contents-location:
 
 install-dirs user
-  prefix: /home/pat/.local
+  prefix: /home/pat/.local/share/cabal
   -- bindir: $prefix/bin
   -- libdir: $prefix/lib
   -- libsubdir: $abi/$libname

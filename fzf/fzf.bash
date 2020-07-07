@@ -10,4 +10,4 @@ fi
 
 # Key bindings
 # ------------
-source "/home/pat/.local/share/fzf/shell/key-bindings.bash"
+# source "/home/pat/.local/share/fzf/shell/key-bindings.bash"

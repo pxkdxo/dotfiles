@@ -31,7 +31,7 @@ if test -d "${HOME}/.local/bin"; then
     *) export PATH="${HOME}/.local/bin${PATH:+:${PATH}}" ;;
   esac
 fi
- 
+
 # Load additional profile config
 if test -d "${HOME}/.profile.d"; then
   for name in "${HOME}/.profile.d"/*.sh; do

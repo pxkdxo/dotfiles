@@ -1,6 +1,10 @@
-# zprofile: second user initialization script for zsh login shells
+# zprofile: login shell initialization script
+# Initalization script evaluation order:
+# zshenv, zprofile, zshrc, zlogin
+# see zsh(1)
 
-# Load config for login shells
+
+# Load login shell config
 if [[ -f ~/.profile && -r ~/.profile ]]
 then
   source ~/.profile

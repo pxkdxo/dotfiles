@@ -1,4 +1,7 @@
 # zlogin: final initialization script for zsh login shells
+# Initalization script evaluation order:
+# zshenv, zprofile, zshrc, zlogin
+# see zsh(1)
 
 # Import the systemd user environment into the shell
 #() {

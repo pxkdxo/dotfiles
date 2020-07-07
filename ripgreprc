@@ -1,8 +1,13 @@
-# ripgreprc: ripgrep default options 
+# ripgreprc: ripgrep default config 
 
---auto-hybrid-regex
 --color=auto
+--engine=auto
 --follow
+--hidden
+--ignore
+--line-number
+--no-column
+--no-heading
 --smart-case
 
 # vim:ft=conf
