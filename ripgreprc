@@ -4,10 +4,12 @@
 --engine=auto
 --follow
 --hidden
---ignore
+--smart-case
+--ignore-dot
+--ignore-global
+--ignore-parent
 --line-number
 --no-column
 --no-heading
---smart-case
 
 # vim:ft=conf
