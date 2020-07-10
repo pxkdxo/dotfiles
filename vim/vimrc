@@ -422,9 +422,9 @@ endif
 " ColorColumn
 "
 " Link colorcolumn highlighting to that of the current line number
-if has('autocmd')
-  autocmd rc ColorScheme * silent! highlight! link ColorColumn CursorLineNr
-endif
+"if has('autocmd')
+"  autocmd rc ColorScheme * silent! highlight! link ColorColumn CursorLineNr
+"endif
 "
 " Define a function to apply 'colorcolumn' to all columns past 'texwidth'
 function UpdateColorColumn()
@@ -927,7 +927,7 @@ let g:startify_update_oldfiles = 1
 " Syntastic
 "
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 0
+let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 let g:syntastic_mode_map = {
@@ -940,22 +940,27 @@ let g:syntastic_mode_map = {
 " YouCompleteMe
 "
 if (has("quickfix") && has("textprop") && exists("&completepopup"))
-  let g:ycm_add_preview_to_completeopt = 'popuphidden'
+  let g:ycm_add_preview_to_completeopt = 'popup'
+else
+  let g:ycm_add_preview_to_completeopt = '1'
 endif
 let g:ycm_auto_hover = ''
 let g:ycm_auto_trigger = 1
-let g:ycm_key_list_stop_completion = ['<C-s>', '<C-y>', '<Enter>']
-let g:ycm_key_invoke_completion = '<C-q>'
-let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
 let g:ycm_autoclose_preview_window_after_completion = 0
 let g:ycm_autoclose_preview_window_after_insertion = 0
 let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_complete_in_comments = 1
 let g:ycm_filetype_specific_completion_to_disable = {'gitcommit': 1}
+let g:ycm_global_ycm_extra_conf = split(&runtimepath, ',')[0] . '/autoload/ycm_extra_conf.py'
+let g:ycm_key_invoke_completion = '<C-Space>'
+let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
+let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
+let g:ycm_key_list_stop_completion = ['<C-s>', '<Enter>']
 let g:ycm_max_num_candidates = 40
 let g:ycm_max_num_identifier_candidates = 10
 let g:ycm_min_num_identifier_candidate_chars = 3
 let g:ycm_min_num_of_chars_for_completion = 3
+let g:ycm_seed_identifiers_with_syntax = 1
 "
 " Toggle preview window
 nmap <silent> <leader><Space> <plug>(YCMHover)
