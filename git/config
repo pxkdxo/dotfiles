@@ -1,0 +1,24 @@
+# ~/.config/git/config: git user global config
+# see git(1)  git-config(1)
+
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+	interactive = auto
+
+[color "decorate"]
+	branch = green
+	remoteBranch = red
+	stash = blue
+	tag = yellow
+
+[credential]
+	helper = cache --timeoutglobal =43200
+
+[advice]
+	pushUpdateRejected
+
+[user]
+	email = pdeyoreo@gmail.com
+	name = Patrick DeYoreo

@@ -31,6 +31,8 @@
 !/elinks/elinks.conf
 !/environment.d/**
 !/fzf/**
+!/git/config
+!/git/ignore
 !/gnupg/dirmngr.conf
 !/gnupg/gpg-agent.conf
 !/gnupg/gpg.conf
@@ -69,6 +71,7 @@
 !/vim/autoload/**
 !/vim/bundle
 !/vim/colors/**
+/vim/plug/**
 !/vim/plugin/**
 !/vim/syntax/**
 !/vim/vimrc
