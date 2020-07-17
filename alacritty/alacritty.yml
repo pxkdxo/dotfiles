@@ -120,6 +120,9 @@ font:
     #
     #family: agave Nerd Font Mono
     #style: r
+    #
+    #family: Hurmit Nerd Font Mono
+    #style: medium
 
   # Bold font face
   bold:
@@ -148,6 +151,9 @@ font:
     #style: Bold
     #
     #family: M+ 2m
+    #style: bold
+    #
+    #family: Hurmit Nerd Font Mono
     #style: bold
 
   # Italic font face
@@ -200,7 +206,7 @@ font:
     style: Italic
 
   # Point size
-  size: 17
+  size: 16
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.

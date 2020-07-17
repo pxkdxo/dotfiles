@@ -724,9 +724,8 @@ let g:airline_symbols.dirty       = "\u00a0\u00a0"
 "let g:airline_symbols.dirty      = ''
 let g:airline_symbols.ellipsis    = ''
 let g:airline_symbols.linenr      = ""
-"let g:airline_symbols.linenr     = ''
 "let g:airline_symbols.linenr     = ''
-let g:airline_symbols.maxlinenr   = "\u00a0"
+let g:airline_symbols.maxlinenr   = "\u00a0"
 "let g:airline_symbols.maxlinenr  = ''
 "let g:airline_symbols.maxlinenr  = ''
 "let g:airline_symbols.maxlinenr  = 'ﬠ'
@@ -741,8 +740,8 @@ let g:airline_symbols.readonly    = "\u00a0\u00a0"
 "let g:airline_symbols.readonly   = ''
 "let g:airline_symbols.readonly   = 'ﰸ'
 let g:airline_symbols.space       = "\u00a0"
-let g:airline_symbols.whitespace = ''
-"let g:airline_symbols.whitespace  = ''
+let g:airline_symbols.whitespace  = ''
+"let g:airline_symbols.whitespace = ''
 "let g:airline_symbols.whitespace = ''
 "let g:airline_symbols.whitespace = ''
 "let g:airline_symbols.whitespace = ''
@@ -951,7 +950,8 @@ let g:ycm_autoclose_preview_window_after_insertion = 0
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_complete_in_comments = 1
 let g:ycm_filetype_specific_completion_to_disable = {'gitcommit': 1}
-let g:ycm_global_ycm_extra_conf = split(&runtimepath, ',')[0] . '/autoload/ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = join(
+  \ [split(&runtimepath, ',')[0], 'autoload/ycm_extra_conf.py'], '/')
 let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
 let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
@@ -959,7 +959,7 @@ let g:ycm_key_list_stop_completion = ['<C-s>', '<Enter>']
 let g:ycm_max_num_candidates = 40
 let g:ycm_max_num_identifier_candidates = 10
 let g:ycm_min_num_identifier_candidate_chars = 3
-let g:ycm_min_num_of_chars_for_completion = 3
+let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_seed_identifiers_with_syntax = 1
 "
 " Toggle preview window
@@ -1063,7 +1063,7 @@ nnoremap <silent> <C-PageUp> :tabnext<CR>
 nnoremap <silent> <C-PageDown> :tabprev<CR>
 
 
-" Miscellaneous
+" Misc
 "
 set pastetoggle=<Insert>
 "

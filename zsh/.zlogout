@@ -3,10 +3,11 @@
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
+# Clear the terminal
+clear
+
 # Reset the terminal
-if command -v reset > /dev/null; then
-  reset
-fi
+#reset
 
 # If leaving console, clear the screen
 # if (( SHLVL == 1 )) && command -v clear_console > /dev/null; then
