@@ -37,9 +37,6 @@ window:
   #  x: 0
   #  y: 0
 
-  # Spread additional padding evenly around the terminal content.
-  dynamic_padding: true
-
   # Window decorations
   #
   # Values for `decorations`:
@@ -51,6 +48,12 @@ window:
   #     - buttonless: Title bar, transparent background, but no title bar buttons
   #decorations: full
   decorations: none
+
+  # Spread additional padding evenly around the terminal content.
+  dynamic_padding: true
+
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
 
   # Startup Mode (changes require restart)
   #
@@ -100,11 +103,11 @@ font:
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
     #
-    #family: Monofur Nerd Font Mono
-    #style: Book
+    family: Monofur Nerd Font Mono
+    style: Book
     #
-    family: mononoki Nerd Font Mono
-    style: Regular
+    #family: mononoki Nerd Font Mono
+    #style: Regular
     #
     #family: FantasqueSansMono Nerd Font Mono
     #style: Regular
@@ -132,11 +135,11 @@ font:
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
     #
-    #family: Monofurbold Nerd Font Mono
-    #style: bold
+    family: Monofurbold Nerd Font Mono
+    style: bold
     #
-    family: mononoki Nerd Font Mono
-    style: Bold
+    #family: mononoki Nerd Font Mono
+    #style: Bold
     #
     #family: FantasqueSansMono Nerd Font Mono
     #style: Bold
@@ -206,7 +209,7 @@ font:
     style: Italic
 
   # Point size
-  size: 16
+  size: 18
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -345,31 +348,47 @@ colors:
   #
   #indexed_colors: []
 
-# Visual Bell
+# Bell
 #
-# Any time the BEL code is received, Alacritty "rings" the visual bell. Once
-# rung, the terminal background will be set to white and transition back to the
-# default background color. You can control the rate of this transition by
-# setting the `duration` property (represented in milliseconds). You can also
-# configure the transition function by setting the `animation` property.
-#
-# Values for `animation`:
-#   - Ease
-#   - EaseOut
-#   - EaseOutSine
-#   - EaseOutQuad
-#   - EaseOutCubic
-#   - EaseOutQuart
-#   - EaseOutQuint
-#   - EaseOutExpo
-#   - EaseOutCirc
-#   - Linear
-#
-# Specifying a `duration` of `0` will disable the visual bell.
-visual_bell:
-  animation: EaseOutSine
-  duration: 33
+# The bell is rung every time the BEL control character is received.
+bell:
+  # Visual Bell Animation
+  #
+  # Animation effect for flashing the screen when the visual bell is rung.
+  #
+  # Values for `animation`:
+  #   - Ease
+  #   - EaseOut
+  #   - EaseOutSine
+  #   - EaseOutQuad
+  #   - EaseOutCubic
+  #   - EaseOutQuart
+  #   - EaseOutQuint
+  #   - EaseOutExpo
+  #   - EaseOutCirc
+  #   - Linear
+  animation: EaseOutExpo
+
+  # Duration of the visual bell flash. A `duration` of `0` will disable the
+  # visual bell animation.
+  duration: 25
+
+  # Visual bell animation color.
+  #color: '#ffffff'
   color: '#575b70'
+
+  # Bell Command
+  #
+  # This program is executed whenever the bell is rung.
+  #
+  # When set to `command: None`, no command will be executed.
+  #
+  # Example:
+  #   command:
+  #     program: notify-send
+  #     args: ["Hello, World!"]
+  #
+  #command: None
 
 # Background opacity
 #
@@ -382,9 +401,6 @@ background_opacity: 0.88
 
   # When set to `true`, selected text will be copied to the primary clipboard.
   #save_to_clipboard: false
-
-# Allow terminal applications to change Alacritty's window title.
-dynamic_title: true
 
 cursor:
   # Cursor style

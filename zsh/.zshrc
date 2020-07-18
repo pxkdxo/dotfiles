@@ -95,7 +95,7 @@ plugins=(
   extract
   fancy-ctrl-z
   #fzf
-  fzf-interactive-cd
+  #fzf-interactive-cd
   fzf-extensions
   git
   git-extras

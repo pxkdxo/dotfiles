@@ -723,9 +723,9 @@ let g:airline_symbols.dirty       = "\u00a0\u00a0"
 "let g:airline_symbols.dirty      = ''
 "let g:airline_symbols.dirty      = ''
 let g:airline_symbols.ellipsis    = ''
-let g:airline_symbols.linenr      = ""
+let g:airline_symbols.linenr      = "\u00a0"
 "let g:airline_symbols.linenr     = ''
-let g:airline_symbols.maxlinenr   = "\u00a0"
+let g:airline_symbols.maxlinenr   = "\u00a0\u00a0"
 "let g:airline_symbols.maxlinenr  = ''
 "let g:airline_symbols.maxlinenr  = ''
 "let g:airline_symbols.maxlinenr  = 'ﬠ'
@@ -757,6 +757,7 @@ let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Choose some airline themes
 let g:airline_themes = [
+  \ 'base16color',
   \ 'owo',
   \ 'base16_ashes',
   \ 'biogoo',
@@ -767,7 +768,6 @@ let g:airline_themes = [
   \ 'night_owl',
   \ 'base16_eighties',
   \ 'base16_snazzy',
-  \ 'base16color',
   \ ]
 
 " Set an airline theme
@@ -941,7 +941,7 @@ let g:syntastic_mode_map = {
 if (has("quickfix") && has("textprop") && exists("&completepopup"))
   let g:ycm_add_preview_to_completeopt = 'popup'
 else
-  let g:ycm_add_preview_to_completeopt = '1'
+  let g:ycm_add_preview_to_completeopt = 1
 endif
 let g:ycm_auto_hover = ''
 let g:ycm_auto_trigger = 1
@@ -956,14 +956,14 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
 let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
 let g:ycm_key_list_stop_completion = ['<C-s>', '<Enter>']
-let g:ycm_max_num_candidates = 40
-let g:ycm_max_num_identifier_candidates = 10
+let g:ycm_max_num_candidates = 35
+let g:ycm_max_num_identifier_candidates = 7
 let g:ycm_min_num_identifier_candidate_chars = 3
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_seed_identifiers_with_syntax = 1
 "
 " Toggle preview window
-nmap <silent> <leader><Space> <plug>(YCMHover)
+nmap <silent> <leader><leader> <plug>(YCMHover)
 "
 if (has('autocmd'))
   autocmd rc FileType *
