@@ -271,10 +271,10 @@ set ttimeoutlen=50
 " History
 "
 " Number of search patterns and ``:'' commands to remember (max: 10000)
-set history=4000
+set history=5000
 "
 " Number of modifications to remember for a given file
-set undolevels=2000
+set undolevels=2500
 "
 " Always save entire buffer for undo when reloading it
 set undoreload=-1
@@ -492,45 +492,45 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
-    \ 'kolor',
-    \ 'afterglow',
-    \ 'janah',
-    \ 'colorsbox-steighties',
-    \ 'skittles_berry',
-    \ 'dracula',
-    \ 'desertink',
-    \ 'Tomorrow-Night-Eighties',
-    \ '1989',
-    \ 'evolution',
-    \ 'kiss',
-    \ 'vice',
-    \ 'joker',
-    \ 'joker-contrast',
-    \ 'grunge',
-    \ 'grunge-contrast',
-    \ 'violaceous',
-    \ 'violaceous-contrast',
-    \ 'neonwave',
+    \   'kolor',
+    \   'afterglow',
+    \   'janah',
+    \   'colorsbox-steighties',
+    \   'skittles_berry',
+    \   'dracula',
+    \   'desertink',
+    \   'Tomorrow-Night-Eighties',
+    \   '1989',
+    \   'evolution',
+    \   'kiss',
+    \   'vice',
+    \   'joker',
+    \   'joker-contrast',
+    \   'grunge',
+    \   'grunge-contrast',
+    \   'violaceous',
+    \   'violaceous-contrast',
+    \   'neonwave',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
-    \ 'Tomorrow-Night-Eighties',
-    \ 'colorsbox-steighties',
-    \ 'skittles_berry',
-    \ 'vibrantink',
-    \ 'squidink',
-    \ 'desertink',
-    \ '1989',
-    \ 'dracula',
-    \ 'evolution',
-    \ 'lucius',
-    \ 'base16-synth-midnight-dark'
+    \   'Tomorrow-Night-Eighties',
+    \   'colorsbox-steighties',
+    \   'skittles_berry',
+    \   'vibrantink',
+    \   'squidink',
+    \   'desertink',
+    \   '1989',
+    \   'dracula',
+    \   'evolution',
+    \   'lucius',
+    \   'base16-synth-midnight-dark'
     \ ]
 else
   let g:colorschemes = [
-    \ 'evening',
-    \ 'desert',
-    \ 'default'
+    \   'evening',
+    \   'desert',
+    \   'default'
     \ ]
 endif
 "
@@ -757,17 +757,18 @@ let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Choose some airline themes
 let g:airline_themes = [
-  \ 'base16color',
-  \ 'owo',
-  \ 'base16_ashes',
-  \ 'biogoo',
-  \ 'atomic',
-  \ 'tomorrow',
-  \ 'behelit',
-  \ 'kolor',
-  \ 'night_owl',
-  \ 'base16_eighties',
-  \ 'base16_snazzy',
+  \   'night_owl',
+  \   'base16color',
+  \   'owo',
+  \   'base16_ashes',
+  \   'biogoo',
+  \   'atomic',
+  \   'tomorrow',
+  \   'behelit',
+  \   'kolor',
+  \   'night_owl',
+  \   'base16_eighties',
+  \   'base16_snazzy',
   \ ]
 
 " Set an airline theme
@@ -1008,36 +1009,37 @@ let g:fzf_colors = {
 function! Colors(query, fullscreen)
   call fzf#run(fzf#wrap({
     \ 'options': [
-    \ '--cycle',
-    \ '--bind=tab:down,shift-tab:up',
-    \ '--border=sharp',
-    \ '--info=hidden',
-    \ '--layout=reverse',
-    \ '--query', a:query,
+    \   '--cycle',
+    \   '--bind=tab:down,shift-tab:up',
+    \   '--border=sharp',
+    \   '--info=hidden',
+    \   '--layout=reverse',
+    \   '--query', a:query,
     \ ],
     \ 'source': map(
-    \ split(globpath(&rtp, "colors/*.vim")), "fnamemodify(v:val, ':t:r')"
+    \   split(globpath(&rtp, "colors/*.vim")), "fnamemodify(v:val, ':t:r')"
     \ ),
     \ 'sink': 'color',
-    \ 'window': join(['vertical', 'aboveleft', '30new'])
-    \ }))
+    \ 'window': join([
+    \   'vertical', 'aboveleft', '30new'
+    \ ])}))
 endfunction
 "
-command! -nargs=* -bang Colors call Colors(<q-args>, <bang>0)
+command! -nargs=* -bang Colors
+  \ call Colors(<q-args>, <bang>0)
 "
 " Search for files
-command! -bang -nargs=? -complete=dir Files call fzf#vim#files(
-  \ <q-args>,
-  \ fzf#vim#with_preview(fzf#wrap({
-  \ 'options': [
-  \ '--bind=tab:down,shift-tab:up',
-  \ '--border=sharp',
-  \ '--info=inline'
-  \ '--layout=reverse',
-  \ ]
-  \ })),
-  \ <bang>0
-  \ )
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(
+  \   <q-args>,
+  \   fzf#vim#with_preview(fzf#wrap({
+  \   'options': [
+  \     '--bind=tab:down,shift-tab:up',
+  \     '--border=sharp',
+  \     '--info=inline'
+  \     '--layout=reverse',
+  \   ]})),
+  \   <bang>0)
 "
 " F1:
 " Find helptags
