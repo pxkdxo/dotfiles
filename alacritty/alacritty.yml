@@ -3,14 +3,14 @@
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
-env:
+#env:
   # TERM variable
   #
   # This value is used to set the `$TERM` environment variable for
   # each instance of Alacritty. If it is not present, alacritty will
   # check the local terminfo database and use `alacritty` if it is
   # available, otherwise `xterm-256color` is used.
-  TERM: alacritty
+  #TERM: alacritty
 
 window:
   # Window dimensions (changes require restart)
@@ -103,8 +103,8 @@ font:
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
     #
-    family: Monofur Nerd Font Mono
-    style: Book
+    #family: Monofur Nerd Font Mono
+    #style: Book
     #
     #family: mononoki Nerd Font Mono
     #style: Regular
@@ -124,8 +124,8 @@ font:
     #family: agave Nerd Font Mono
     #style: r
     #
-    #family: Hurmit Nerd Font Mono
-    #style: medium
+    family: Hurmit Nerd Font Mono
+    style: medium
 
   # Bold font face
   bold:
@@ -135,8 +135,8 @@ font:
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
     #
-    family: Monofurbold Nerd Font Mono
-    style: bold
+    #family: Monofurbold Nerd Font Mono
+    #style: bold
     #
     #family: mononoki Nerd Font Mono
     #style: Bold
@@ -156,8 +156,8 @@ font:
     #family: M+ 2m
     #style: bold
     #
-    #family: Hurmit Nerd Font Mono
-    #style: bold
+    family: Hurmit Nerd Font Mono
+    style: bold
 
   # Italic font face
   italic:
@@ -184,6 +184,9 @@ font:
     #
     family: Operator Mono Medium
     style: Italic
+    #
+    #family: Cartograph CF Demi Bold
+    #style: Italic
 
   # Bold italic font face
   bold_italic:
@@ -207,14 +210,17 @@ font:
     #
     family: Operator Mono Bold
     style: Italic
+    #
+    #family: Cartograph CF Extra Bold
+    #style: Italic
 
   # Point size
-  size: 18
+  size: 14.5
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
   offset:
-    x: -1
+    x: 0
     y: 0
 
   # Glyph offset determines the locations of the glyphs within their cells with
@@ -239,12 +245,16 @@ colors:
   primary:
 
     # Dracula
-    background: '#212324'
-    foreground: '#eaeaea'
+    #background: '#212324'
+    #foreground: '#eaeaea'
 
     # 1989
     #background: '#212324'
     #foreground: '#dadada'
+
+    # Base16 Isotope
+    background:  '#202020'
+    foreground:  '#d0d0d0'
 
     # Bright and dim foreground colors
     #
@@ -282,14 +292,14 @@ colors:
   normal:
 
     # Dracula
-    black:   '#0a0e10'
-    red:     '#ff5555'
-    green:   '#50fa7b'
-    yellow:  '#fff892'
-    blue:    '#a9b1fa'
-    magenta: '#ff79c6'
-    cyan:    '#8cf1fa'
-    white:   '#bfbfbf'
+    #black:   '#0a0e10'
+    #red:     '#ff5555'
+    #green:   '#50fa7b'
+    #yellow:  '#fff892'
+    #blue:    '#a9b1fa'
+    #magenta: '#ff79c6'
+    #cyan:    '#8cf1fa'
+    #white:   '#bfbfbf'
 
     # 1989
     #black:   '#0a0a0a'
@@ -301,18 +311,28 @@ colors:
     #cyan:    '#87ffff'
     #white:   '#cccccc'
 
+    # Base16 Isotope
+    black:   '#0a0a0a'
+    red:     '#ff0000'
+    green:   '#33ff00'
+    yellow:  '#ff0099'
+    blue:    '#0066ff'
+    magenta: '#cc00ff'
+    cyan:    '#00ffff'
+    white:   '#d0d0d0'
+
   # Bright colors (dracula)
   bright:
 
     # Dracula
-    black:   '#575b5f'
-    red:     '#ff6e67'
-    green:   '#5af78e'
-    yellow:  '#faf2a9'
-    blue:    '#caa9fa'
-    magenta: '#f2a9fa'
-    cyan:    '#a9faf2'
-    white:   '#f8f8f2'
+    #black:   '#575b5f'
+    #red:     '#ff6e67'
+    #green:   '#5af78e'
+    #yellow:  '#faf2a9'
+    #blue:    '#caa9fa'
+    #magenta: '#f2a9fa'
+    #cyan:    '#a9faf2'
+    #white:   '#f8f8f2'
 
     # 1989
     #black:   '#808080'
@@ -323,6 +343,16 @@ colors:
     #magenta: '#ffafff'
     #cyan:    '#afffff'
     #white:   '#ffffff'
+
+    # Base16 Isotope
+    black:   '#808080'
+    red:     '#ff0000'
+    green:   '#33ff00'
+    yellow:  '#ff0099'
+    blue:    '#0066ff'
+    magenta: '#cc00ff'
+    cyan:    '#00ffff'
+    white:   '#f8f8f8'
 
   # Dim colors
   #
@@ -394,7 +424,7 @@ bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.88
+background_opacity: 0.9
 
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"

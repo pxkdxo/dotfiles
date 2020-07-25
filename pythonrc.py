@@ -1,6 +1,6 @@
-"""Initialization script for the interactive Pythhon interpreter (v3.6+)"""
-# pylint: disable=invalid-name,unused-import
-
+"""
+Initialize an interactive Python interpreter (version 3.6+)
+"""
 import ast
 import base64
 import bisect
@@ -55,6 +55,15 @@ try:
 except ImportError:
     pass
 import uuid
+
+
+try:
+    import jedi
+    import jedi.utils
+except ImportError:
+    pass
+else:
+    jedi.utils.setup_readline(fuzzy=False)
 
 
 try:

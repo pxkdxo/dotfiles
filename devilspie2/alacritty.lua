@@ -5,10 +5,10 @@ debug_print("window class   : " .. get_window_class())
 debug_print("class instance : " .. get_class_instance_name())
 debug_print("")
 
---[[ Set window opacity
+-- Set window opacity
 if get_window_class() == "Alacritty" then
     set_window_opacity(tonumber(
     os.getenv('ALACRITTY_WINDOW_OPACITY') or
-    os.getenv('TERM_WINDOW_OPACITY') or "0.92"))
+    os.getenv('TERM_WINDOW_OPACITY') or "0.96"))
 end
---]]
+-- ]]

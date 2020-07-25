@@ -11,26 +11,28 @@ export LESSBINFMT='*d<%02x>'
 export LESSUTFBINFMT='<U+%04lx>'
 
 ## Enable text attributes
-#if LESS_TERMCAP_mb="$(tput sitm)"; then
-#  export LESS_TERMCAP_mb
-#fi
-#if LESS_TERMCAP_md="$(tput bold)"; then
-#  export LESS_TERMCAP_md
-#fi
-#if LESS_TERMCAP_me="$(tput sgr0)"; then
-#  export LESS_TERMCAP_me
-#fi
-#if LESS_TERMCAP_se="$(tput rmso)"; then
-#  export LESS_TERMCAP_se
-#fi
-#if LESS_TERMCAP_so="$(tput smso)"; then
-#  export LESS_TERMCAP_so
-#fi
-#if LESS_TERMCAP_us="$(tput smul)"; then
-#  export LESS_TERMCAP_us
-#fi
-#if LESS_TERMCAP_ue="$(tput rmul)"; then
-#  export LESS_TERMCAP_ue
-#fi
+if test -n "${TERM}"; then
+  if LESS_TERMCAP_mb="$(tput sitm)"; then
+    export LESS_TERMCAP_mb
+  fi
+  if LESS_TERMCAP_md="$(tput bold)"; then
+    export LESS_TERMCAP_md
+  fi
+  if LESS_TERMCAP_me="$(tput sgr0)"; then
+    export LESS_TERMCAP_me
+  fi
+  if LESS_TERMCAP_se="$(tput rmso)"; then
+    export LESS_TERMCAP_se
+  fi
+  if LESS_TERMCAP_so="$(tput smso)"; then
+    export LESS_TERMCAP_so
+  fi
+  if LESS_TERMCAP_us="$(tput smul)"; then
+    export LESS_TERMCAP_us
+  fi
+  if LESS_TERMCAP_ue="$(tput rmul)"; then
+    export LESS_TERMCAP_ue
+  fi
+fi 2> /dev/null
 
 # vim:ft=sh

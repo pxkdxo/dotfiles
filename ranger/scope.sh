@@ -44,10 +44,10 @@ dump() { /bin/echo "$output"; }
 trim() { head -n "$maxln"; }
 
 # wraps highlight to treat exit code 141 (killed by SIGPIPE) as success
-safepipe() { "$@"; test "$?" -eq 0 || test "$?" -eq 141 || return 1; }
+safepipe() { "$@"; test $? = 0 -o $? = 141; }
 
 # Image previews, if enabled in ranger.
-if test "$preview_images" = "True"; then
+if [ "$preview_images" = "True" ]; then
     case "$mimetype" in
         # Image previews for SVG files, disabled by default.
         image/svg+xml)
@@ -90,8 +90,8 @@ case "$extension" in
     # HTML Pages:
     htm|html|xhtml)
         try w3m    -dump "$path" && { dump | trim | fmt -s -w $width; exit 4; }
-        try lynx   -dump "$path" && { dump | trim | fmt -s -w $width; exit 4; }
         try elinks -dump "$path" && { dump | trim | fmt -s -w $width; exit 4; }
+        try lynx   -dump "$path" && { dump | trim | fmt -s -w $width; exit 4; }
         ;; # fall back to highlight/cat if the text browsers fail
 esac
 
@@ -105,8 +105,6 @@ case "$mimetype" in
             pygmentize_format=terminal
             highlight_format=ansi
         fi
-        
-        try bat --style=numbers --color=always --paging=never "$path" && { dump | trim; exit 5; }
         try safepipe highlight --out-format=${highlight_format} "$path" && { dump | trim; exit 5; }
         try safepipe pygmentize -f ${pygmentize_format} "$path" && { dump | trim; exit 5; }
         exit 2;;

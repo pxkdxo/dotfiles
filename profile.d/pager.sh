@@ -11,6 +11,6 @@ while IFS=$' \t\n' read -r REPLY; do
     break
   fi
 done << EOF
-$(update-alternatives --query pager)
+$(update-alternatives --query pager 2> /dev/null)
 EOF
 unset REPLY

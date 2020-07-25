@@ -13,9 +13,11 @@
 #} < <(systemctl --user show-environment 2> /dev/null)
 
 # Start an Xsession upon an login at tty1
-if [[ $- == *i* && -z ${DISPLAY-} && ${XDG_VTNR} -eq 1 ]] && command -v startx >/dev/null
-then
-  exec startx
+if [[ -z ${DISPLAY} && ${XDG_VTNR} -eq 1 && $- == *i* ]]; then
+  read < <(command -v startx)
+  if [[ -r ${REPLY} && -x ${REPLY} ]]; then
+    exec -- "${REPLY}"
+  fi
 fi
 
 # vi:ft=zsh

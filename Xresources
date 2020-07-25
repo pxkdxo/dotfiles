@@ -4,6 +4,7 @@
 !#include ".Xresources.d/colors/1984-black"
 !#include ".Xresources.d/colors/1989"
 #include ".Xresources.d/colors/dracula"
+!#include ".Xresources.d/colors/base16_isotope"
 !#include ".Xresources.d/colors/grandshell"
 !#include ".Xresources.d/colors/farside"
 !#include ".Xresources.d/colors/dazed"

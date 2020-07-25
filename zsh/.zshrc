@@ -12,9 +12,6 @@ esac
 # Path to your oh-my-zsh installation.
 export ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/oh-my-zsh"
 
-# Path to your fzf installation.
-export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
-
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -136,7 +133,7 @@ source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
-# Environment vars
+# Configure environment
 #
 if command -v nvim > /dev/null; then
   export MANPAGER="${MANPAGER:-nvim '+Man!'}"
@@ -149,19 +146,19 @@ if command -v vimpager > /dev/null; then
   export PAGER="${PAGER:-vimpager}"
 fi
 if command -v bat > /dev/null; then
-  export BAT_PAGER="${BAT_PAGER:-${PAGER:-pager}}"
-  export BAT_STYLE="${BAT_STYLE:-grid,numbers}"
+  export BAT_PAGER="${BAT_PAGER:-less ${LESS--FgiMqRX-2}}"
+  export BAT_STYLE="${BAT_STYLE:-grid,header}"
   export BAT_THEME="${BAT_THEME:-Sublime Snazzy}"
 fi
 
 
 # Load completions
-
+#
 autoload -U -z compinit
 compinit -i -d "${ZSH_COMPDUMP:-${ZDOTDIR:-${HOME}}/.zcompdump}"
 
 
-# Configure FZF
+# Load FZF
 #
 if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]; then
   if [[ :${PATH}: != *:${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin:* ]]; then
@@ -178,15 +175,15 @@ if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]; then
 fi
 
 # Configure FZF
-
+#
 if (( ${+TMUX} )); then
-  export FZF_TMUX=1 FZF_TMUX_HEIGHT='48%'
+  export FZF_TMUX=1
+  export FZF_TMUX_HEIGHT="${FZF_TMUX_HEIGHT:-48%}"
 else
   unset -v FZF_TMUX
 fi
 
 export FZF_COMPLETION_TRIGGER=''
-
 bindkey '^]' fzf-completion
 bindkey '^I' "${fzf_default_completion:-expand-or-complete}"
 
@@ -220,7 +217,7 @@ fzf_alt_c_opts=(
   '--no-sort'
   '--layout=reverse-list'
   '--preview-window=top:48%'
-  '--preview=''tree -CFlv --dirsfirst -- {} | rg --color=always --no-column --no-heading --no-line-number --passthru --  {q}'''
+  '--preview=''tree -CFlv --dirsfirst -- {} | rg --color=always --no-column --no-heading --no-line-number --passthru -- {q}'''
 )
 
 typeset -Tx FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "

@@ -71,7 +71,6 @@
 !/vim/autoload/**
 !/vim/bundle
 !/vim/colors/**
-/vim/plug/**
 !/vim/plugin/**
 !/vim/syntax/**
 !/vim/vimrc
@@ -97,6 +96,9 @@
 !/zsh/zshrc
 !/zshenv
 !/zshrc
+
+# ignore vim plugins
+/vim/plug/**
 
 # ignore temporary files
 *~

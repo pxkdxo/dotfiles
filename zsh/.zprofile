@@ -5,8 +5,7 @@
 
 
 # Load login shell config
-if [[ -f ~/.profile && -r ~/.profile ]]
-then
+if [[ -f ~/.profile && -r ~/.profile ]]; then
   source ~/.profile
 fi
 
