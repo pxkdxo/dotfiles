@@ -1,11 +1,8 @@
 ! https://github.com/mashaal/wild-cherry
+*.background:   #1F1626
+*.foreground:   #FFFFFF
+*.cursorColor:  #0F9DBA
 *.color0:       #099BD7
-*.color10:      #2AB250
-*.color11:      #FFD16F
-*.color12:      #883CDB
-*.color13:      #099BD7
-*.color14:      #4F5D95
-*.color15:      #FFF8DE
 *.color1:       #D94085
 *.color2:       #2AB250
 *.color3:       #FFD16F
@@ -15,6 +12,9 @@
 *.color7:       #FFF8DD
 *.color8:       #099BD7
 *.color9:       #D94084
-*.background:   #1F1626
-*.cursorColor:  #0F9DBA
-*.foreground:   #FFFFFF
+*.color10:      #2AB250
+*.color11:      #FFD16F
+*.color12:      #883CDB
+*.color13:      #099BD7
+*.color14:      #4F5D95
+*.color15:      #FFF8DE

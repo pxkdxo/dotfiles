@@ -89,7 +89,7 @@ scrolling:
   history: 16384
 
   # Scrolling distance multiplier.
-  multiplier: 2
+  multiplier: 1
 
 # Font configuration
 font:
@@ -103,29 +103,29 @@ font:
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
     #
-    #family: Monofur Nerd Font Mono
-    #style: Book
-    #
-    #family: mononoki Nerd Font Mono
-    #style: Regular
+    #family: agave Nerd Font Mono
+    #style: r
     #
     #family: FantasqueSansMono Nerd Font Mono
     #style: Regular
     #
+    #family: Hurmit Nerd Font Mono
+    #style: medium
+    #
     #family: JetBrainsMono Nerd Font Mono
-    #style: Medium
+    #style: Regular
+    #
+    family: Monofur Nerd Font Mono
+    style: Book
+    #
+    #family: mononoki Nerd Font Mono
+    #style: Regular
     #
     #family: Operator Mono Book
     #style: Book
     #
-    #family: DaddyTimeMono Nerd Font Mono
-    #style: Book
-    #
-    #family: agave Nerd Font Mono
-    #style: r
-    #
-    family: Hurmit Nerd Font Mono
-    style: medium
+    #family: VictorMono Nerd Font Mono
+    #style: Medium
 
   # Bold font face
   bold:
@@ -135,29 +135,29 @@ font:
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
     #
-    #family: Monofurbold Nerd Font Mono
-    #style: bold
-    #
-    #family: mononoki Nerd Font Mono
-    #style: Bold
-    #
     #family: FantasqueSansMono Nerd Font Mono
     #style: Bold
+    #
+    #family: Hurmit Nerd Font Mono
+    #style: bold
     #
     #family: JetBrainsMono Nerd Font Mono
     #style: Bold
     #
-    #family: VictorMono Nerd Font Mono
-    #style: Bold
+    family: Monofurbold Nerd Font Mono
+    style: bold
     #
-    #family: Operator Mono Bold
+    #family: mononoki Nerd Font Mono
     #style: Bold
     #
     #family: M+ 2m
     #style: bold
     #
-    family: Hurmit Nerd Font Mono
-    style: bold
+    #family: Operator Mono Bold
+    #style: Bold
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold
 
   # Italic font face
   italic:
@@ -167,26 +167,32 @@ font:
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
     #
-    #family: Monofuritalic Nerd Font Mono
-    #style: italic
+    #family: Cartograph CF
+    #style: Italic
     #
-    #family: mononoki Nerd Font Mono
+    #family: Ellograph CF
     #style: Italic
     #
     #family: FantasqueSansMono Nerd Font Mono
     #style: Italic
     #
     #family: JetBrainsMono Nerd Font Mono
-    #style: Medium Italic
+    #style: Italic
     #
-    #family: VictorMono Nerd Font Mono
-    #style: Medium Italic
+    #family: Monofuritalic Nerd Font Mono
+    #style: italic
+    #
+    #family: mononoki Nerd Font Mono
+    #style: Italic
     #
     family: Operator Mono Medium
     style: Italic
     #
-    #family: Cartograph CF Demi Bold
-    #style: Italic
+    #family: VictorMono Nerd Font Mono
+    #style: Medium Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Medium Oblique
 
   # Bold italic font face
   bold_italic:
@@ -196,8 +202,11 @@ font:
     # If the bold italic family is not specified, it will fall back to the
     # value specified for the normal font.
     #
-    #family: mononoki Nerd Font Mono
-    #style: BoldItalic
+    #family: Cartograph CF Extra Bold
+    #style: Italic
+    #
+    #family: Ellograph CF Extra Bold
+    #style: Italic
     #
     #family: FantasqueSansMono Nerd Font Mono
     #style: Bold Italic
@@ -205,17 +214,20 @@ font:
     #family: JetBrainsMono Nerd Font Mono
     #style: Bold Italic
     #
-    #family: VictorMono Nerd Font Mono
-    #style: Bold Italic
+    #family: mononoki Nerd Font Mono
+    #style: BoldItalic
     #
     family: Operator Mono Bold
     style: Italic
     #
-    #family: Cartograph CF Extra Bold
-    #style: Italic
+    #family: VictorMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold Oblique
 
   # Point size
-  size: 14.5
+  size: 16.5
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -244,17 +256,25 @@ colors:
   # Default colors
   primary:
 
-    # Dracula
-    #background: '#212324'
-    #foreground: '#eaeaea'
-
     # 1989
     #background: '#212324'
     #foreground: '#dadada'
 
-    # Base16 Isotope
-    background:  '#202020'
-    foreground:  '#d0d0d0'
+    # Dracula
+    #background: '#212324'
+    #foreground: '#eaeaea'
+
+    # Isotope
+    #background:  '#1b1720'
+    #foreground:  '#fffaff'
+
+    # Wild Cherry
+    #background:  '#1F1626'
+    #foreground:  '#F8F2FF'
+
+    # Cherry Baby
+    background:  '#19191a'
+    foreground:  '#f8f2ff'
 
     # Bright and dim foreground colors
     #
@@ -269,8 +289,26 @@ colors:
   # Colors which should be used to draw the terminal cursor. If these are
   # unset, the cursor color will be the inverse of the cell color.
   #cursor:
-  #  text: '#000000'
-  #  cursor: '#ffffff'
+
+    # 1989
+    #text: '#212324'
+    #cursor: '#dadada'
+
+    # Dracula
+    #text: '#212324'
+    #cursor: '#eaeaea'
+
+    # Isotope
+    #text: '#1b1720'
+    #cursor: '#fffaff'
+
+    # Wild Cherry
+    #text: '#0F9DBA'
+    #cursor: '#FFF8DD'
+
+    # Cherry Baby
+    #text: '#1a1622'
+    #cursor: '#ede8f4'
 
   # Vi mode cursor colors
   #
@@ -284,22 +322,13 @@ colors:
   # Colors which should be used to draw the selection area. If selection
   # background is unset, selection color will be the inverse of the cell colors.
   # If only text is unset the cell text color will remain the same.
-  selection:
-  #  text: '#eaeaea'
-    background: '#7f7f7f'
+  #selection:
+
+    #text: '#eaeaea'
+    #background: '#7f7f7f'
 
   # Normal colors
   normal:
-
-    # Dracula
-    #black:   '#0a0e10'
-    #red:     '#ff5555'
-    #green:   '#50fa7b'
-    #yellow:  '#fff892'
-    #blue:    '#a9b1fa'
-    #magenta: '#ff79c6'
-    #cyan:    '#8cf1fa'
-    #white:   '#bfbfbf'
 
     # 1989
     #black:   '#0a0a0a'
@@ -311,28 +340,48 @@ colors:
     #cyan:    '#87ffff'
     #white:   '#cccccc'
 
-    # Base16 Isotope
-    black:   '#0a0a0a'
-    red:     '#ff0000'
-    green:   '#33ff00'
-    yellow:  '#ff0099'
-    blue:    '#0066ff'
-    magenta: '#cc00ff'
-    cyan:    '#00ffff'
-    white:   '#d0d0d0'
+    # Dracula
+    #black:   '#0a0e10'
+    #red:     '#ff5555'
+    #green:   '#50fa7b'
+    #yellow:  '#fff892'
+    #blue:    '#a9b1fa'
+    #magenta: '#ff79c6'
+    #cyan:    '#8cf1fa'
+    #white:   '#bfbfbf'
+
+    # Isotope
+    #black:   '#0a0a0a'
+    #red:     '#ff0000'
+    #green:   '#33ff00'
+    #yellow:  '#ff0099'
+    #blue:    '#0066ff'
+    #magenta: '#cc00ff'
+    #cyan:    '#00ffff'
+    #white:   '#d0d0d0'
+
+    # Wild Cherry
+    #black:   '#099BD7'
+    #red:     '#D94085'
+    #green:   '#2AB250'
+    #yellow:  '#FFD16F'
+    #blue:    '#883CDC'
+    #magenta: '#0F9DBA'
+    #cyan:    '#4F5D95'
+    #white:   '#F8F2FF'
+
+    # Cherry Baby
+    black:   '#19191a'
+    red:     '#d70966'
+    green:   '#19d054'
+    yellow:  '#FFD16F'
+    blue:    '#4f1db4'
+    magenta: '#900d9e'
+    cyan:    '#0F9DBA'
+    white:   '#e9e4f0'
 
   # Bright colors (dracula)
   bright:
-
-    # Dracula
-    #black:   '#575b5f'
-    #red:     '#ff6e67'
-    #green:   '#5af78e'
-    #yellow:  '#faf2a9'
-    #blue:    '#caa9fa'
-    #magenta: '#f2a9fa'
-    #cyan:    '#a9faf2'
-    #white:   '#f8f8f2'
 
     # 1989
     #black:   '#808080'
@@ -344,15 +393,45 @@ colors:
     #cyan:    '#afffff'
     #white:   '#ffffff'
 
-    # Base16 Isotope
-    black:   '#808080'
-    red:     '#ff0000'
-    green:   '#33ff00'
-    yellow:  '#ff0099'
-    blue:    '#0066ff'
-    magenta: '#cc00ff'
-    cyan:    '#00ffff'
-    white:   '#f8f8f8'
+    # Dracula
+    #black:   '#575b5f'
+    #red:     '#ff6e67'
+    #green:   '#5af78e'
+    #yellow:  '#faf2a9'
+    #blue:    '#caa9fa'
+    #magenta: '#f2a9fa'
+    #cyan:    '#a9faf2'
+    #white:   '#f8f8f2'
+
+    # Isotope
+    #black:   '#808080'
+    #red:     '#ff0000'
+    #green:   '#33ff00'
+    #yellow:  '#ff0099'
+    #blue:    '#0066ff'
+    #magenta: '#cc00ff'
+    #cyan:    '#00ffff'
+    #white:   '#f8f8f8'
+
+    # Wild Cherry
+    #black:   '#099BD7'
+    #red:     '#D94085'
+    #green:   '#2AB250'
+    #yellow:  '#FFD16F'
+    #blue:    '#883CDC'
+    #magenta: '#0F9DBA'
+    #cyan:    '#4F5D95'
+    #white:   '#FFFAFF'
+
+    # Cherry Baby
+    black:   '#3e3d40'
+    red:     '#f03b93'
+    green:   '#84ef42'
+    yellow:  '#fbd95a'
+    blue:    '#2c7cf1'
+    magenta: '#ff6fee'
+    cyan:    '#883CDC'
+    white:   '#f8f2ff'
 
   # Dim colors
   #
@@ -404,8 +483,9 @@ bell:
   duration: 25
 
   # Visual bell animation color.
-  #color: '#ffffff'
-  color: '#575b70'
+  #color:  '#ffffff'
+  #color:  '#575b70'
+  color:  '#0F9DBA'
 
   # Bell Command
   #

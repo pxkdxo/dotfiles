@@ -1,50 +1,49 @@
 #!/usr/bin/env python3
 """Provide defaults for YCM semantic analysis"""
+# pylint: disable=invalid-name,missing-function-docstring
 
 import os
 import sys
 
 
-class LanguageParams:
-
-    @staticmethod
-    def c(**kwgs):
-        return {
-            'flags': ['-x', 'c', '-Wall', '-Werror', '-Wextra', '-pedantic']
-        }
-
-    @staticmethod
-    def cpp(**kwgs):
-        return {
-            'flags': ['-x', 'c++', '-Wall', '-Werror', '-Wextra', '-pedantic']
-        }
-
-    @staticmethod
-    def python(**kwgs):
-        if 'VIRTUAL_ENV' in os.environ:
-            interp = os.path.join(os.getenv('VIRTUAL_ENV'), 'bin', 'python')
-        else:
-            interp = sys.executable
-        return {
-            'interpreter_path': interp
-        }
-
-    @staticmethod
-    def rust(**kwgs):
-        return {
-            'ls': {
-                'rust': {
-                    'features': [],
-                    'all_targets': False,
-                    'wait_to_build': 1500
-                }
-            }
-        }
+def c(**kwargs):
+    return {
+        'flags': ['-x', 'c', '-Wall', '-Werror', '-Wextra', '-pedantic']
+    }
 
 
-LanguageParams.cxx = LanguageParams.cpp
-LanguageParams.py = LanguageParams.python
-LanguageParams.rs = LanguageParams.rust
+def cpp(**kwargs):
+    return {
+        'flags': ['-x', 'c++', '-Wall', '-Werror', '-Wextra', '-pedantic']
+    }
+
+
+def python(**kwargs):
+    if 'VIRTUAL_ENV' in os.environ:
+        interpreter = os.path.join(os.getenv('VIRTUAL_ENV'), 'bin', 'python')
+    else:
+        interpreter = sys.executable
+    return {
+        'interpreter_path': interpreter
+    }
+
+
+SETTINGS = {
+    'c': c,
+    'cpp': cpp,
+    'cxx': cpp,
+    'py': python,
+    'python': python,
+}
+
+
+def Settings(**kwgs):
+    """Support semantic completion"""
+    filename = kwgs.get('filename', '').casefold()
+    language = kwgs.get('language', '').casefold()
+    extension = os.path.splitext(filename)[-1][1:]
+    settings = SETTINGS.get(language) or SETTINGS.get(extension)
+    return settings(**kwgs) if callable(settings) else {}
 
 
 def PythonSysPath(**kwgs):
@@ -54,12 +53,3 @@ def PythonSysPath(**kwgs):
         vers = 'python{}.{}'.format(*sys.version_info)
         path.append(os.path.join(venv, 'lib', vers, 'site-packages'))
     return path
-
-
-def Settings(**kwgs):
-    """Support semantic completion"""
-    filename = kwgs.get('filename', '').casefold()
-    language = kwgs.get('language', '').casefold()
-    ext = os.path.splitext(filename)[-1][1:]
-    obj = getattr(LanguageParams, language, getattr(LanguageParams, ext, None))
-    return obj(**kwgs) if callable(obj) else dict()

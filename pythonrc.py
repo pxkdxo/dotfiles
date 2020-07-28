@@ -37,7 +37,6 @@ except ImportError:
     pass
 import random
 import re
-import readline
 import shlex
 import shutil
 import signal
@@ -56,12 +55,17 @@ except ImportError:
     pass
 import uuid
 
-
 try:
     import jedi
     import jedi.utils
 except ImportError:
-    pass
+    print("'jedi' is not installed. Falling back to 'readline'...")
+    try:
+        import readline
+        import rlcompleter
+        readline.parse_and_bind("tab: complete")
+    except ImportError:
+        print("'readline' is not installed. Completion is not available.")
 else:
     jedi.utils.setup_readline(fuzzy=False)
 
@@ -189,5 +193,5 @@ except SyntaxError:
         raise
 
 
-sys.ps1 = PS('{self[setattr(self, "prompt", "> ")]}{clock}\n> ')
+sys.ps1 = PS('{self[setattr(self, "prompt", "> ")]}{line}\n{clock}\n{line}\n> ')
 sys.ps2 = PS('+ ')
