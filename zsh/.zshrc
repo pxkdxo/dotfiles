@@ -66,7 +66,11 @@ DISABLE_AUTO_UPDATE="true"
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
+if (( ${+TIME_STYLE} )); then
+  HIST_STAMPS="${TIME_STYLE#"${TIME_STYLE%%[^+]*}"}"
+else
+  HIST_STAMPS='%a %b %d %R %Y'
+fi
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -78,21 +82,19 @@ DISABLE_AUTO_UPDATE="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   alacritty
-  command-not-found
   cargo
   cdls
-  copybuffer
-  copydir
-  copyfile
+  clipboard-keybindings
+  command-not-found
   ctags
   dircolors
   docker
   docker-shortcuts
-  encode64
   extract
   fancy-ctrl-z
   #fzf
   #fzf-interactive-cd
+  emoji
   fzf-extensions
   git
   git-extras
@@ -108,9 +110,11 @@ plugins=(
   #npm
   pass
   pip
+  python
   ripgrep
   rsync
   rust
+  rustup
   systemadmin
   systemd
   tmux
@@ -119,6 +123,7 @@ plugins=(
   vagrant
   venv
   virtualenv
+  z
   zsh-autosuggestions
   zsh-completions
   zsh-navigation-tools
@@ -147,8 +152,8 @@ if command -v vimpager > /dev/null; then
 fi
 if command -v bat > /dev/null; then
   export BAT_PAGER="${BAT_PAGER:-less ${LESS--FgiMqRX-2}}"
-  export BAT_STYLE="${BAT_STYLE:-grid,header}"
-  export BAT_THEME="${BAT_THEME:-Sublime Snazzy}"
+  export BAT_STYLE="${BAT_STYLE:-grid,header,numbers}"
+  export BAT_THEME="${BAT_THEME:-Dracula}"
 fi
 
 
@@ -178,54 +183,53 @@ fi
 #
 if (( ${+TMUX} )); then
   export FZF_TMUX=1
-  export FZF_TMUX_HEIGHT="${FZF_TMUX_HEIGHT:-48%}"
+  export FZF_TMUX_HEIGHT="${FZF_TMUX_HEIGHT:-42%}"
 else
   unset -v FZF_TMUX
 fi
 
 export FZF_COMPLETION_TRIGGER=''
-bindkey '^]' fzf-completion
+bindkey '^ ' fzf-completion
 bindkey '^I' "${fzf_default_completion:-expand-or-complete}"
 
 typeset -Tx FZF_DEFAULT_OPTS fzf_default_opts " "
 fzf_default_opts=(
-  '--bind=''insert:replace-query'''
-  '--bind=''ctrl-\:print-query'''
   '--bind=''ctrl-b:page-up'''
   '--bind=''ctrl-f:page-down'''
   '--bind=''ctrl-j:replace-query+print-query'''
   '--bind=''ctrl-k:kill-line'''
   '--bind=''ctrl-o:execute-silent(printf %s {} | xclip -selection clipboard)'''
-  '--bind=''ctrl-space:jump-accept'''
-  '--bind=''alt-/:toggle-preview'''
+  '--bind=''alt-space:toggle-preview'''
+  '--bind=''alt-/:jump-accept'''
+  '--bind=''insert:replace-query'''
   '--color=''dark'''
   '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
   '--border=sharp'
   '--info=hidden'
   '--layout=reverse'
-  '--jump-labels=''123456789'''
+  '--jump-labels=''qwertyuiop'''
 )
 
 typeset -Tx FZF_ALT_C_OPTS fzf_alt_c_opts " "
 fzf_alt_c_opts=(
   "${fzf_default_opts[@]}"
-  '--bind=''alt-enter:execute-silent%tmux new-window nvim -- {}%+abort'''
-  '--bind=''ctrl-x:execute-silent%tmux new-window ranger -- {}%+abort'''
   '--bind=''ctrl-r:toggle-sort'''
+  '--bind=''ctrl-x:execute-silent%tmux new-window ranger --selectfile={}%+abort'''
+  '--bind=''alt-v:execute-silent%tmux new-window vim -- {}%+abort'''
   '--filepath-word'
   '--no-cycle'
   '--no-sort'
   '--layout=reverse-list'
-  '--preview-window=top:48%'
+  '--preview-window=top:42%'
   '--preview=''tree -CFlv --dirsfirst -- {} | rg --color=always --no-column --no-heading --no-line-number --passthru -- {q}'''
 )
 
 typeset -Tx FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
 fzf_ctrl_r_opts=(
   "${fzf_default_opts[@]}"
-  '--bind=''alt-enter:execute-silent%tmux new-window zsh -c ''"$@"'' {}%+abort'''
-  '--bind=''ctrl-o:execute-silent(printf %s {2..} | xclip -selection clipboard)'''
   '--bind=''ctrl-r:toggle-sort'''
+  '--bind=''alt-o:execute-silent(printf %s {2..} | xclip -selection clipboard)'''
+  '--bind=''alt-x:execute-silent%tmux new-window zsh -c ''"$@"'' {}%+abort'''
   '--filepath-word'
   '--cycle'
   '--sort'
@@ -235,8 +239,9 @@ fzf_ctrl_r_opts=(
 typeset -Tx FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
 fzf_ctrl_t_opts=(
   "${fzf_default_opts[@]}"
-  '--bind=''alt-enter:execute-silent%tmux new-window xdg-open {}%+abort'''
   '--bind=''ctrl-r:toggle-sort'''
+  '--bind=''ctrl-x:execute-silent%rifle -- {}%+abort'''
+  '--bind=''alt-x:execute-silent%tmux new-window ranger --selectfile={}%+abort'''
   '--filepath-word'
   '--no-cycle'
   '--no-sort'
