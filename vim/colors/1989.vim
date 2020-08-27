@@ -1,13 +1,15 @@
 " Vim color file
 
-set background=dark
-highlight clear
-
-if exists("syntax_on")
-  syntax reset
+if version > 580
+  hi clear
+  if exists("syntax_on")
+    syntax reset
+  endif
 endif
 
 let g:colors_name = "1989"
+
+set background=dark
 
 let s:darker_gray = [235, "#2c2c2c"]
 let s:dark_gray = [236, "#303030"]
@@ -71,7 +73,7 @@ call <SID>set_hi("WarningMsg", s:default_white, s:dark_pink, "NONE")
 
 call <SID>set_hi("Boolean", s:lavender, s:none, "NONE")
 call <SID>set_hi("Character", s:lavender, s:none, "NONE")
-call <SID>set_hi("Comment", s:gray_purple, s:none, "NONE")
+call <SID>set_hi("Comment", s:gray_purple, s:none, "italic")
 call <SID>set_hi("Conditional", s:pink, s:none, "NONE")
 call <SID>set_hi("Constant", s:mint, s:none, "NONE")
 call <SID>set_hi("Float", s:lavender, s:none, "NONE")

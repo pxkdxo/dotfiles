@@ -1,6 +1,7 @@
-"""
-Initialize an interactive Python interpreter (version 3.6+)
-"""
+#!/usr/bin/env python3
+"""Initialize an interactive Python interpreter."""
+# pylint: disable=unused-import
+
 import ast
 import base64
 import bisect
@@ -59,60 +60,58 @@ try:
     import jedi
     import jedi.utils
 except ImportError:
-    print("'jedi' is not installed. Falling back to 'readline'...")
+    print("'jedi' is not installed; falling back to 'readline'...")
     try:
         import readline
-        import rlcompleter
         readline.parse_and_bind("tab: complete")
     except ImportError:
-        print("'readline' is not installed. Completion is not available.")
+        print("'readline' is not installed; completion is unavailable.")
 else:
-    jedi.utils.setup_readline(fuzzy=False)
+    try:
+        jedi.utils.setup_readline(fuzzy=False)
+    except TypeError:
+        jedi.utils.setup_readline()
 
 
 try:
-    class PS(dict):
-        """Prompt class providing formatting via descriptors"""
-        # pylint: disable=no-member
+    class PS:
+        """Provide a dynamic prompt allowing formatting via descriptors."""
 
-        def __init__(self, prompt, *args, **kwargs):
-            """Initialize a prompt"""
-            super(PS, self).__init__(*args, **kwargs)
+        __old_prompt = ''
+
+        def __init__(self, prompt):
+            """Initialize a prompt instance."""
             self.prompt = prompt
             self.lineno = 0
-            self.timefmt = os.getenv('TIME_STYLE', '%c').lstrip('+')
 
-        def __getitem__(self, item):
-            if item in self:
-                return super().__getitem__(self)
-            return eval(parser.compilest(parser.expr(item))) or ""
+        def __str__(self):
+            """Format the prompt."""
+            self.lineno += 1
+            return self.prompt.format(
+                **dict((key, getattr(self, key)) for key in dir(self)))
+
+        def __getitem__(self, key):
+            """Evaluate an expression within the namespace of the instance."""
+            return self.eval(key)
+
+        def eval(self, expression):
+            """Evaluate an expression within the namespace of the instance."""
+            # pylint: disable=eval-used,no-self-use
+            return eval(parser.compilest(parser.expr(expression))) or ""
 
         @property
         def self(self):
-            """Get a reference to the object from which this is called"""
+            """Get a reference to the invoking instance."""
             return self
 
         @property
-        def lineno(self):
-            """Get the current line number"""
-            return self.__lineno
-
-        @lineno.setter
-        def lineno(self, value):
-            """Set the current line number"""
-            if not isinstance(value, int):
-                raise TypeError(
-                    "expected an integer (got '{}')".format(type(value)))
-            self.__lineno = value
-
-        @property
         def prompt(self):
-            """Get the prompt string"""
+            """Get the prompt format string."""
             return self.__prompt
 
         @prompt.setter
         def prompt(self, value):
-            """Set the prompt string"""
+            """Set the prompt format string."""
             try:
                 if not isinstance(value, (str, unicode)):
                     raise TypeError(
@@ -121,77 +120,75 @@ try:
                 if not isinstance(value, str):
                     raise TypeError(
                         "expected a string (got '{}')".format(type(value)))
+            self.__old_prompt = getattr(self, '__prompt', '')
             self.__prompt = value
 
         @property
-        def timefmt(self):
-            """Get the template used to format dates and times as strings"""
-            return self.__timefmt
+        def old_prompt(self):
+            """Get the previous prompt format string."""
+            return self.__old_prompt
 
-        @timefmt.setter
-        def timefmt(self, value):
-            """Get the template used to format dates and times as strings"""
-            try:
-                if not isinstance(value, (str, unicode)):
-                    raise TypeError(
-                        "expected a string (got '{}')".format(type(value)))
-            except NameError:
-                if not isinstance(value, (str)):
-                    raise TypeError(
-                        "expected a string (got '{}')".format(type(value)))
-            self.__timefmt = value
+        @property
+        def lineno(self):
+            """Get the current line number."""
+            return self.__lineno
+
+        @lineno.setter
+        def lineno(self, value):
+            """Set the current line number."""
+            if not isinstance(value, int):
+                raise TypeError(
+                    "expected an integer (got '{}')".format(type(value)))
+            self.__lineno = value
 
         @property
         def user(self):
-            """Get the login name of the user executing this file"""
+            """Get the login name of the user."""
             return os.getlogin()
 
         @property
         def host(self):
-            """Get the hostname of the machine executing this file"""
+            """Get the hostname of the machine."""
             return socket.gethostname()
 
         @property
         def cwd(self):
-            """Get a path to the current directory as a string"""
+            """Get the current working directory of the process."""
             return os.getcwd()
 
         @property
         def tty(self):
-            """Get the name of the terminal attached on stdin"""
+            """Get a path to terminal device attached on stdin."""
             return os.ttyname(sys.stdin.fileno())
 
         @property
+        def time(self):
+            """Format the current date and time."""
+            return datetime.datetime.now().strftime(
+                os.getenv('TIME_STYLE', '%c').lstrip('+'))
+
+        @property
         def version(self):
-            """Get the Python version info (i.e. MAJOR.MINOR.MICRO)"""
+            """Get Python version info (i.e. MAJOR.MINOR.MICRO)."""
             return '.'.join(map(str, sys.version_info[:3]))
 
-        if hasattr(os, 'get_terminal_size'):
+        if sys.version_info[0] < 3:
             @property
             def line(self):
-                """Get the prompt string prompt"""
-                return u'\u2500' * os.get_terminal_size().columns
+                """Get a horizontal line spanning the width of the terminal."""
+                cols = int(os.getenv('COLUMNS', '0'))
+                return '{}\n'.format('=' * cols) if cols > 0 else ""
         else:
             @property
             def line(self):
-                """Get the prompt string prompt"""
-                return u'\u2500' * os.getenv('COLUMNS', 0)
-
-        @property
-        def clock(self):
-            """Format the current date & time as a string (see TIME_STYLE)"""
-            return datetime.datetime.now().strftime(self.timefmt)
-
-        def __str__(self):
-            """Format the prompt string"""
-            self.lineno += 1
-            return self.prompt.format(
-                **dict((key, getattr(self, key)) for key in vars(type(self))))
+                """Get a horizontal line spanning the width of the terminal."""
+                cols = os.get_terminal_size().columns
+                return '{}\n'.format('\u2500' * cols) if cols > 0 else ""
 
 except SyntaxError:
     if sys.version_info.major >= 3 or sys.version_info.minor >= 6:
         raise
 
 
-sys.ps1 = PS('{self[setattr(self, "prompt", "> ")]}{line}\n{clock}\n{line}\n> ')
-sys.ps2 = PS('+ ')
+sys.ps1 = PS('{self[setattr(self, "prompt", ">> ")]}{line}>> ')
+sys.ps2 = PS('.> ')

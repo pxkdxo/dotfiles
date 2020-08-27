@@ -40,26 +40,26 @@ TERM xterm*
 # 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
 # Background color codes:
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
-NORMAL 00;03 # no color code at all
-FILE 00;03;39;49 # regular file: use no color at all
+NORMAL 00 # no color code at all
+FILE 00;39;49 # regular file: use no color at all
 RESET 00 # reset to "normal" color
-DIR 00;03;96 # directory
+DIR 00;34;49 # directory
 LINK target # 00;94 # symbolic link (set to 'target' to use the color of the target file)
-MULTIHARDLINK 00;01;03;39;49  # regular file with more than one link
-FIFO 00;03;33 # pipe
-SOCK 00;03;35 # socket
-DOOR 00;03;35 # door
-BLK 00;03;36 # block device driver
-CHR 00;03;34 # character device driver
-ORPHAN 00;03;31 # symlink to nonexistent file, or non-stat'able file ...
-MISSING 00;03;90 # ... and the files they point to
-SETUID 00;03;94 #file that is setuid (u+s)
-SETGID 00;03;93 # file that is setgid (g+s)
-CAPABILITY 00;03;97 # file with capability
-STICKY_OTHER_WRITABLE 00;03;95 # dir that is sticky and other-writable
-OTHER_WRITABLE 00;03;95 # dir that is other-writable (o+w) and not sticky
-STICKY 00;03;96 # dir with the sticky bit set (+t) and not other-writable
-EXEC 00;03;92
+MULTIHARDLINK 00;01;39;49  # regular file with more than one link
+FIFO 00;93;49 # pipe
+SOCK 00;96;49 # socket
+DOOR 00;96;49 # door
+BLK 00;95;49 # block device driver
+CHR 00;94;49 # character device driver
+ORPHAN 00;09;37;49 # symlink to nonexistent file, or non-stat'able file ...
+MISSING 00;90 # ... and the files they point to
+SETUID 00;91;49 #file that is setuid (u+s)
+SETGID 00;33;49 # file that is setgid (g+s)
+CAPABILITY 00;97;49 # file with capability
+STICKY_OTHER_WRITABLE 00;35;49 # dir that is sticky and other-writable
+OTHER_WRITABLE 00;35;49 # dir that is other-writable (o+w) and not sticky
+STICKY 00;34;49 # dir with the sticky bit set (+t) and not other-writable
+EXEC 00;32;49
 #NORMAL 00;39;49 # no color code at all
 #FILE 00;39;49 # regular file: use no color at all
 #RESET 00 # reset to "normal" color
@@ -94,122 +94,122 @@ EXEC 00;03;92
 #.sh 01;32
 #.csh 01;32
 # archives or compressed (bright red)
-.tar 03;32
-.tgz 03;32
-.arc 03;32
-.arj 03;32
-.taz 03;32
-.lha 03;32
-.lz4 03;32
-.lzh 03;32
-.lzma 03;32
-.tlz 03;32
-.txz 03;32
-.tzo 03;32
-.t7z 03;32
-.zip 03;32
-.z 03;32
-.Z 03;32
-.dz 03;32
-.gz 03;32
-.lrz 03;32
-.lz 03;32
-.lzo 03;32
-.xz 03;32
-.zst 03;32
-.tzst 03;32
-.bz2 03;32
-.bz 03;32
-.tbz 03;32
-.tbz2 03;32
-.tz 03;32
-.deb 03;32
-.rpm 03;32
-.jar 03;32
-.war 03;32
-.ear 03;32
-.sar 03;32
-.rar 03;32
-.alz 03;32
-.ace 03;32
-.zoo 03;32
-.cpio 03;32
-.7z 03;32
-.rz 03;32
-.cab 03;32
-.wim 03;32
-.swm 03;32
-.dwm 03;32
-.esd 03;32
+.tar 00;38;5;129;49
+.tgz 00;38;5;129;49
+.arc 00;38;5;129;49
+.arj 00;38;5;129;49
+.taz 00;38;5;129;49
+.lha 00;38;5;129;49
+.lz4 00;38;5;129;49
+.lzh 00;38;5;129;49
+.lzma 00;38;5;129;49
+.tlz 00;38;5;129;49
+.txz 00;38;5;129;49
+.tzo 00;38;5;129;49
+.t7z 00;38;5;129;49
+.zip 00;38;5;129;49
+.z 00;38;5;129;49
+.Z 00;38;5;129;49
+.dz 00;38;5;129;49
+.gz 00;38;5;129;49
+.lrz 00;38;5;129;49
+.lz 00;38;5;129;49
+.lzo 00;38;5;129;49
+.xz 00;38;5;129;49
+.zst 00;38;5;129;49
+.tzst 00;38;5;129;49
+.bz2 00;38;5;129;49
+.bz 00;38;5;129;49
+.tbz 00;38;5;129;49
+.tbz2 00;38;5;129;49
+.tz 00;38;5;129;49
+.deb 00;38;5;129;49
+.rpm 00;38;5;129;49
+.jar 00;38;5;129;49
+.war 00;38;5;129;49
+.ear 00;38;5;129;49
+.sar 00;38;5;129;49
+.rar 00;38;5;129;49
+.alz 00;38;5;129;49
+.ace 00;38;5;129;49
+.zoo 00;38;5;129;49
+.cpio 00;38;5;129;49
+.7z 00;38;5;129;49
+.rz 00;38;5;129;49
+.cab 00;38;5;129;49
+.wim 00;38;5;129;49
+.swm 00;38;5;129;49
+.dwm 00;38;5;129;49
+.esd 00;38;5;129;49
 # image formats
-.jpg 03;93
-.jpeg 03;93
-.mjpg 03;93
-.mjpeg 03;93
-.gif 03;93
-.bmp 03;93
-.pbm 03;93
-.pgm 03;93
-.ppm 03;93
-.tga 03;93
-.xbm 03;93
-.xpm 03;93
-.tif 03;93
-.tiff 03;93
-.png 03;93
-.svg 03;93
-.svgz 03;93
-.mng 03;93
-.pcx 03;93
-.mov 03;94
-.mpg 03;94
-.mpeg 03;94
-.m2v 03;94
-.mkv 03;94
-.webm 03;94
-.ogm 03;94
-.mp4 03;94
-.m4v 03;94
-.mp4v 03;94
-.vob 03;94
-.qt 03;94
-.nuv 03;94
-.wmv 03;94
-.asf 03;94
-.rm 03;94
-.rmvb 03;94
-.flc 03;94
-.avi 03;94
-.fli 03;94
-.flv 03;94
-.gl 03;94
-.dl 03;94
-.xcf 03;94
-.xwd 03;94
-.yuv 03;94
-.cgm 03;94
-.emf 03;94
+.jpg 00;38;5;220;49
+.jpeg 00;38;5;220;49
+.mjpg 00;38;5;220;49
+.mjpeg 00;38;5;220;49
+.gif 00;38;5;220;49
+.bmp 00;38;5;220;49
+.pbm 00;38;5;220;49
+.pgm 00;38;5;220;49
+.ppm 00;38;5;220;49
+.tga 00;38;5;220;49
+.xbm 00;38;5;220;49
+.xpm 00;38;5;220;49
+.tif 00;38;5;220;49
+.tiff 00;38;5;220;49
+.png 00;38;5;220;49
+.svg 00;38;5;220;49
+.svgz 00;38;5;220;49
+.mng 00;38;5;220;49
+.pcx 00;38;5;220;49
+.mov 00;38;5;198;49
+.mpg 00;38;5;198;49
+.mpeg 00;38;5;198;49
+.m2v 00;38;5;198;49
+.mkv 00;38;5;198;49
+.webm 00;38;5;198;49
+.ogm 00;38;5;198;49
+.mp4 00;38;5;198;49
+.m4v 00;38;5;198;49
+.mp4v 00;38;5;198;49
+.vob 00;38;5;198;49
+.qt 00;38;5;198;49
+.nuv 00;38;5;198;49
+.wmv 00;38;5;198;49
+.asf 00;38;5;198;49
+.rm 00;38;5;198;49
+.rmvb 00;38;5;198;49
+.flc 00;38;5;198;49
+.avi 00;38;5;198;49
+.fli 00;38;5;198;49
+.flv 00;38;5;198;49
+.gl 00;38;5;198;49
+.dl 00;38;5;198;49
+.xcf 00;38;5;198;49
+.xwd 00;38;5;198;49
+.yuv 00;38;5;198;49
+.cgm 00;38;5;198;49
+.emf 00;38;5;198;49
 # https://wiki.xiph.org/MIME_Types_and_File_Extensions
-.ogv 03;94
-.ogx 03;94
+.ogv 00;38;5;198;49
+.ogx 00;38;5;198;49
 # audio formats
-.aac 03;91
-.au 03;91
-.flac 03;91
-.m4a 03;91
-.mid 03;91
-.midi 03;91
-.mka 03;91
-.mp3 03;91
-.mpc 03;91
-.ogg 03;91
-.ra 03;91
-.wav 03;91
+.aac 00;38;5;39;49
+.au 00;38;5;39;49
+.flac 00;38;5;39;49
+.m4a 00;38;5;39;49
+.mid 00;38;5;39;49
+.midi 00;38;5;39;49
+.mka 00;38;5;39;49
+.mp3 00;38;5;39;49
+.mpc 00;38;5;39;49
+.ogg 00;38;5;39;49
+.ra 00;38;5;39;49
+.wav 00;38;5;39;49
 # https://wiki.xiph.org/MIME_Types_and_File_Extensions
-.oga 03;91
-.opus 03;91
-.spx 03;91
-.xspf 03;91
+.oga 00;38;5;39;49
+.opus 00;38;5;39;49
+.spx 00;38;5;39;49
+.xspf 00;38;5;39;49
 
 
 # vim: ft=dircolors

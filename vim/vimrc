@@ -1,4 +1,4 @@
-" vimrc: (neo)vim initialization script
+" vimrc: vim initialization script
 
 " Apply vim defaults
 "
@@ -54,7 +54,6 @@ call plug#begin(join(split(&runtimepath, ',')[:0] + ['plug'], '/'))
 Plug 'jlanzarotta/bufexplorer'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/goyo.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'Valloric/ListToggle'
 Plug 'scrooloose/nerdtree'
@@ -81,6 +80,7 @@ Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
 Plug 'ycm-core/YouCompleteMe'
+"
 "if has('nvim')
 "  Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -95,10 +95,10 @@ Plug 'ycm-core/YouCompleteMe'
 "endif
 "
 "let g:deoplete#enable_at_startup = 1
+"
 let g:jedi#auto_initialization = 1
 let g:jedi#completions_enabled = 0
-let g:jedi#show_call_signatures = 1
-let g:jedi#smart_auto_mappings = 1
+let g:jedi#show_call_signatures = 0
 "
 call plug#end()
 
@@ -249,7 +249,7 @@ endif
 " Use a popup window for previews
 if (exists('&previewpopup'))
   set previewpopup=
-  set previewpopup+=highlight:PmenuSel
+  set previewpopup+=highlight:PmenuThumb
 endif
 
 
@@ -329,7 +329,7 @@ if (has("quickfix") && has("textprop") && exists("&completepopup"))
   set completeopt+=popup
   set completepopup=
 " set completepopup+=height:15
-  set completepopup+=highlight:PmenuSel
+  set completepopup+=highlight:Pmenu
   set completepopup+=border:off
 endif
 "
@@ -505,15 +505,13 @@ endif
 if (&termguicolors)
   let g:colorschemes = [
     \   'kolor',
-    \   'colorsbox-steighties',
-    \   'dracula',
-    \   'neonwave',
     \   'janah',
-    \   'evolution',
-    \   'joker-contrast',
-    \   'grunge-contrast',
-    \   'violaceous-contrast',
+    \   'colorsbox-steighties',
+    \   'neonwave',
+    \   'dracula',
     \   '1989',
+    \   'evolution',
+    \   'violaceous-contrast',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
@@ -562,13 +560,13 @@ function RotateColorscheme(n)
   endif
 endfunction
 "
-" F10:
-" Rotate to previous colorscheme
-nnoremap <silent> <F10> :call RotateColorscheme(-1)<CR>
-"
 " F11:
+" Rotate to previous colorscheme
+nnoremap <silent> <F11> :call RotateColorscheme(-1)<CR>
+"
+" F12:
 " Rotate to next colorscheme
-nnoremap <silent> <F11> :call RotateColorscheme(1)<CR>
+nnoremap <silent> <F12> :call RotateColorscheme(1)<CR>
 
 
 " C and C++
@@ -585,7 +583,7 @@ let g:c_space_errors = 1
 " Set local options for C and C++ files
 if (has('autocmd'))
   autocmd rc FileType c,cpp
-    \ silent! setlocal cin noet sts=0 tw=79
+    \ silent! setlocal cin noet sts=0 sw=4 ts=4 tw=79
     \|silent! let &l:shiftwidth = &tabstop
     \|silent! let &l:cinoptions = ':0,(' . &tabstop
 endif
@@ -614,10 +612,12 @@ nmap <leader>K
   \ :let &keywordprg = substitute(&keywordprg, '^:vert \s*', ':', '')<CR>
 
 
-" man pages
+" man page
 "
 " Load the Man plugin
 runtime ftplugin/man.vim
+"
+let g:man_hardwrap=0
 "
 " Use K to open man pages
 set keywordprg=:Man
@@ -739,8 +739,8 @@ let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Choose some airline themes
 let g:airline_themes = [
-  \   'atomic',
   \   'biogoo',
+  \   'atomic',
   \   'tomorrow',
   \   'base16color',
   \   'base16_ashes',
@@ -773,13 +773,13 @@ function RotateAirlineTheme(n)
   endif
 endfunction
 "
-" Alt F10:
-" Rotate to the previous airline theme
-nnoremap <silent> <Esc><F10> :call RotateAirlineTheme(-1)<CR>
-"
 " Alt F11:
+" Rotate to the previous airline theme
+nnoremap <silent> <Esc><F11> :call RotateAirlineTheme(-1)<CR>
+"
+" Alt F12:
 " Rotate to the next airline theme
-nnoremap <silent> <Esc><F11> :call RotateAirlineTheme(1)<CR>
+nnoremap <silent> <Esc><F12> :call RotateAirlineTheme(1)<CR>
 "
 " Refresh airline when the colorscheme changes
 if (has('autocmd'))
@@ -796,14 +796,14 @@ let g:bufExplorerShowNoName = 1
 let g:bufExplorerShowTabBuffer = 1
 let g:bufExplorerShowUnlisted = 1
 "
-" Alt F12: Toggle the buffer explorer
-nnoremap <silent> <Esc><F12> :ToggleBufExplorer<CR>
+" F8: Toggle the buffer explorer
+nnoremap <silent> <F8> :ToggleBufExplorer<CR>
 
 
 " CtrlP
 "
-let g:ctrlp_map = '<C-p>'
-let g:ctrlp_cmd = 'FZF'
+let g:ctrlp_map = '<C-q>'
+let g:ctrlp_cmd = 'Rz'
 let g:ctrlp_switch_buffer = 'Et'
 let g:ctrlp_show_hidden = 0
 let g:ctrlp_mruf_exclude = '^\(.*/\)\?\.\?tmp\(/.*\)\?$'
@@ -838,8 +838,8 @@ endif
 " Set sign colors automatically
 let g:gitgutter_set_sign_backgrounds = 1
 "
-" F8: Toggle GitGutter
-nnoremap <silent> <F8> :GitGutterBufferToggle<CR>
+" F7: Toggle GitGutter
+nnoremap <silent> <F7> :GitGutterBufferToggle<CR>
 "
 " Bring colorscheme harmony
 highlight! link SignColumn LineNr
@@ -847,17 +847,6 @@ if (has('autocmd'))
   autocmd rc ColorScheme *
     \ highlight! link SignColumn LineNr
 endif
-
-
-" Goyo (zen mode)
-"
-" Set sign colors automatically
-let g:goyo_line_nr = 1
-let g:goyo_height = '92%'
-let g:goyo_width = 79
-
-" F9: Enter zen mode
-nnoremap <silent> <F9> :Goyo<CR>
 
 
 " ListToggle
@@ -869,7 +858,7 @@ let g:lt_quickfix_list_toggle_map = '<leader>q'
 
 " NERDTree
 "
-let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusIndicatorMapCustom = {
   \   'Clean'     : '',
   \   'Deleted'   : '',
   \   'Dirty'     : '',
@@ -892,8 +881,11 @@ let NERDTreeNodeDelimiter="\u00a0"
 " Disable the "Bookmarks" label
 let g:NERDTreeMinimalUI = 1
 "
-" Single click to open stuff
-let g:NERDTreeMouseMode = 3
+" Single click to open directories
+let g:NERDTreeMouseMode = 2
+
+" F9: Toggle the file explorer
+nnoremap <silent> <F9> :NERDTreeToggle<CR>
 
 
 " Startify
@@ -909,17 +901,17 @@ let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_check_on_w = 1
-"let g:syntastic_mode_map = {
-"  \   "mode": "active",
-"  \   "active_filetypes": [],
-"  \   "passive_filetypes": ["python"]
-"  \ }
+let g:syntastic_mode_map = {
+  \   "mode": "active",
+  \   "active_filetypes": [],
+  \   "passive_filetypes": ["python"]
+  \ }
 
 
 " Tagbar
 "
-" F12: Toggle the tagbar
-nnoremap <silent> <F12> :TagbarToggle<CR>
+" F10: Toggle the tagbar
+nnoremap <silent> <F10> :TagbarToggle<CR>
 
 
 " YouCompleteMe
@@ -940,7 +932,7 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
 let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
 let g:ycm_key_list_stop_completion = ['<C-y>', '<Enter>']
-let g:ycm_max_num_candidates = 48
+let g:ycm_max_num_candidates = 60
 let g:ycm_max_num_identifier_candidates = 12
 let g:ycm_min_num_of_chars_for_completion = 3
 let g:ycm_seed_identifiers_with_syntax = 0
@@ -959,7 +951,7 @@ if (has('autocmd'))
 endif
 
 
-" FZF
+" fzf
 "
 " Bring colorscheme harmony
 let g:fzf_colors = {
@@ -979,64 +971,107 @@ let g:fzf_colors = {
   \ }
 "
 " Set fzf window layout
-if ($TMUX != '' && $FZF_TMUX != '')
-  let g:fzf_layout =  {'tmux':  $FZF_TMUX_HEIGHT ? '-d' . $FZF_TMUX_HEIGHT : '-d38%'}
+if (empty($TMUX) || empty($FZF_TMUX))
+  let g:fzf_layout = {'window': join([
+  \ 'split', 'belowright', join([float2nr(winheight(0) * 0.42),  'new'], '')
+  \ ])}
 else
-  let g:fzf_layout =  {'window': 'belowright 34new'}
+  let g:fzf_layout = {'tmux': join([
+  \ '-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT
+  \ ])}
 endif
 "
 let g:fzf_command_prefix = ''
-let g:fzf_commands_expect = 'alt-enter'
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 let g:fzf_buffers_jump = 1
 let g:fzf_tags_command = 'ctags -f .tags -R'
 "
-" Browse colorschemes
-function! Colors(query, fullscreen)
-  call fzf#run(fzf#wrap({
-    \ 'options': [
-    \   '--cycle',
-    \   '--bind=tab:down,shift-tab:up',
-    \   '--info=hidden',
-    \   '--layout=reverse',
-    \   '--query', a:query,
-    \ ],
-    \ 'source': map(
-    \   split(globpath(&rtp, "colors/*.vim")), "fnamemodify(v:val, ':t:r')"
-    \ ),
-    \ 'sink': 'color',
-    \ 'window': join(['vertical', 'aboveleft', '30new'])
-    \ }))
-endfunction
-command! -nargs=* -bang Colors
-  \ call Colors(<q-args>, <bang>0)
 "
-" Search for files
+" Select files
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(
   \   <q-args>,
-  \   fzf#vim#with_preview(fzf#wrap({
-  \     'options': [
-  \       '--bind=tab:down,shift-tab:up',
-  \       '--info=inline',
-  \       '--layout=reverse',
-  \   ]})),
+  \   fzf#vim#with_preview(
+  \     fzf#wrap({
+  \       'options': [
+  \         '--bind=tab:down,shift-tab:up',
+  \         '--info=inline',
+  \         '--layout=reverse',
+  \         ]
+  \       })
+  \     ),
   \   <bang>0
   \ )
+"
+"
+" Select files with ripgrep
+function! Rz(query, fullscreen)
+  let l:commandfmt = 'rg --no-column --no-heading --line-number --color=always --smart-case -- %s || true'
+  let l:command = printf(l:commandfmt, shellescape(a:query))
+  let l:command_reload = printf(l:commandfmt, '{q}')
+  let l:spec = {'options': ['--phony', '--layout=reverse', '--query', a:query, '--bind', join(['change', 'reload', l:command_reload], ':')]}
+  call fzf#vim#grep(l:command, 0, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+"
+command! -nargs=* -bang Rz call Rz(<q-args>, <bang>0)
+"
+"
+" Select colorschemes
+function! Colors(query, fullscreen)
+  let l:options = [
+    \ '--cycle',
+    \ '--bind=tab:down,shift-tab:up',
+    \ '--info=hidden',
+    \ '--layout=reverse',
+    \ '--query', a:query,
+    \ ]
+  let l:source = map(split(globpath(&rtp, "colors/*.vim")), "fnamemodify(v:val, ':t:r')")
+  if (empty($TMUX) || empty($FZF_TMUX))
+    let l:spec = {
+    \ 'options': l:options, 'source': l:source, 'sink': 'color',
+    \ 'window': join([
+    \   'vertical', 'aboveleft', join([float2nr(winwidth(0) * 0.28), 'new'], '')
+    \ ])
+    \ }
+  else
+    let l:spec = {
+    \ 'options': l:options, 'source': l:source, 'sink': 'color',
+    \ 'tmux': join(['-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT])
+    \ }
+  endif
+  call fzf#run(fzf#wrap(l:spec, a:fullscreen))
+endfunction
+"
+command! -nargs=* -bang Colors call Colors(<q-args>, <bang>0)
+"
 "
 " F1:
 " Find helptags
 nnoremap <silent> <F1> :Helptags<CR>
 inoremap <silent> <F1> <Esc>:Helptags<CR>
+nnoremap <silent> <Esc><F1> :Helptags!<CR>
+inoremap <silent> <Esc><F1> <Esc>:Helptags!<CR>
 
 " F2:
-" Find buffers
-nnoremap <silent> <F2> :Buffers<CR>
-inoremap <silent> <F2> <Esc>:Buffers<CR>
+" Find commands
+nnoremap <silent> <F2> :Commands<CR>
+inoremap <silent> <F2> <Esc>:Commands<CR>
+nnoremap <silent> <Esc><F2> :Commands!<CR>
+inoremap <silent> <Esc><F2> <Esc>:Commands!<CR>
 
 " F3:
-" Find commands
-nnoremap <silent> <F3> :Commands<CR>
-inoremap <silent> <F3> <Esc>:Commands<CR>
+" Find buffers
+nnoremap <silent> <F3> :Buffers<CR>
+inoremap <silent> <F3> <Esc>:Buffers<CR>
+nnoremap <silent> <Esc><F3> :Buffers!<CR>
+inoremap <silent> <Esc><F3> <Esc>:Buffers!<CR>
+
+" F4:
+" Find files
+nnoremap <silent> <F4> :Files<CR>
+inoremap <silent> <F4> <Esc>:Files<CR>
+nnoremap <silent> <Esc><F4> :Files!<CR>
+inoremap <silent> <Esc><F4> <Esc>:Files!<CR>
 
 
 " Tabs
@@ -1066,18 +1101,26 @@ nnoremap <silent> <Insert>
 
 " Misc
 "
-" F7: Toggle line numbers
-nnoremap <silent> <F7>
+" F6: Toggle line numbers
+nnoremap <silent> <F6>
   \ : let &l:nu = !&l:nu<Bar>
   \   let &l:rnu = &l:nu<CR>
 "
-" F6: Toggle search highlighting
-nnoremap <silent> <F6>
+" F5: Toggle search highlighting
+nnoremap <silent> <F5>
   \ : setlocal hlsearch!<CR>
 "
 " Insert a shebang above the first line
 "nnoremap <silent> <leader>#!
 "  \ ggI<C-R>=substitute(&ft, "..*", "#!" . exepath(&ft) . "\\r", "")<CR><Esc>``
+"
+" Copy the current visual selection to the clipboard
+vnoremap <silent> - "+y
+nnoremap <silent> - "+y
+"
+" Paste the contents of the clipboard
+vnoremap <silent> + "+p
+nnoremap <silent> + "+p
 "
 " Search forward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern

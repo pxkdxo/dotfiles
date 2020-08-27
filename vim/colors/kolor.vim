@@ -51,7 +51,7 @@
 " let g:kolor_alternative_matchparen=0
 "
 " White foreground 'MatchParen' color that might work better with some terminals. Default: 0
-" let g:kolor_inverted_matchparen=0
+" let g:kolor_inverted_matchparen = 0
 "
 " --------------------------------------------------------------------------
 " DONATIONS
@@ -62,8 +62,8 @@
 
 set background=dark
 if version > 580
+    highlight clear
     if exists("syntax_on")
-        highlight clear
         syntax reset
     endif
 endif

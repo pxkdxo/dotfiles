@@ -86,10 +86,10 @@ window:
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
-  history: 16384
+  history: 20000
 
   # Scrolling distance multiplier.
-  multiplier: 1
+  multiplier: 2
 
 # Font configuration
 font:
@@ -185,7 +185,7 @@ font:
     #family: mononoki Nerd Font Mono
     #style: Italic
     #
-    family: Operator Mono Medium
+    family: Operator Mono Book
     style: Italic
     #
     #family: VictorMono Nerd Font Mono
@@ -257,12 +257,16 @@ colors:
   primary:
 
     # 1989
-    #background: '#212324'
-    #foreground: '#dadada'
+    #background:  '#212324'
+    #foreground:  '#dadada'
+
+    # Kolor
+    background:   '#2d2d2d'
+    foreground:   '#cccccc'
 
     # Dracula
-    #background: '#212324'
-    #foreground: '#eaeaea'
+    #background:  '#212324'
+    #foreground:  '#eaeaea'
 
     # Isotope
     #background:  '#1b1720'
@@ -273,8 +277,8 @@ colors:
     #foreground:  '#F8F2FF'
 
     # Cherry Baby
-    background:  '#19191a'
-    foreground:  '#f8f2ff'
+    #background:  '#2c2c2c'
+    #foreground:  '#dadada'
 
     # Bright and dim foreground colors
     #
@@ -282,7 +286,7 @@ colors:
     # If the bright foreground color is not set, or `draw_bold_text_with_bright_colors`
     # is `false`, the normal foreground color will be used.
     #dim_foreground: '#828482'
-    #bright_foreground: '#eaeaea'
+    bright_foreground: '#e2e2e2'
 
   # Cursor colors
   #
@@ -303,12 +307,8 @@ colors:
     #cursor: '#fffaff'
 
     # Wild Cherry
-    #text: '#0F9DBA'
-    #cursor: '#FFF8DD'
-
-    # Cherry Baby
-    #text: '#1a1622'
-    #cursor: '#ede8f4'
+    #text: '#0f9dba'
+    #cursor: '#fff8dd'
 
   # Vi mode cursor colors
   #
@@ -324,7 +324,7 @@ colors:
   # If only text is unset the cell text color will remain the same.
   #selection:
 
-    #text: '#eaeaea'
+    #text: '#242322'
     #background: '#7f7f7f'
 
   # Normal colors
@@ -338,6 +338,16 @@ colors:
     #blue:    '#87c3ff'
     #magenta: '#ff87ff'
     #cyan:    '#87ffff'
+    #white:   '#cccccc'
+
+    # colorsbox-steighties
+    #black:   '#343434'
+    #red:     '#f2777a'
+    #green:   '#99cc99'
+    #yellow:  '#ffcc66'
+    #blue:    '#6699cc'
+    #magenta: '#cc99cc'
+    #cyan:    '#66cccc'
     #white:   '#cccccc'
 
     # Dracula
@@ -360,6 +370,16 @@ colors:
     #cyan:    '#00ffff'
     #white:   '#d0d0d0'
 
+    # Kolor
+    black:   '#383734'
+    red:     '#f95789'
+    green:   '#88da77'
+    yellow:  '#dbc570'
+    blue:    '#7eaefd'
+    magenta: '#ce6bd0'
+    cyan:    '#75d7d8'
+    white:   '#b3b3b3'
+
     # Wild Cherry
     #black:   '#099BD7'
     #red:     '#D94085'
@@ -370,15 +390,15 @@ colors:
     #cyan:    '#4F5D95'
     #white:   '#F8F2FF'
 
-    # Cherry Baby
-    black:   '#19191a'
-    red:     '#d70966'
-    green:   '#19d054'
-    yellow:  '#FFD16F'
-    blue:    '#4f1db4'
-    magenta: '#900d9e'
-    cyan:    '#0F9DBA'
-    white:   '#e9e4f0'
+    # Wild Cherry [Alt]
+    #black:   '#19191a'
+    #red:     '#d70966'
+    #green:   '#19d054'
+    #yellow:  '#FFD16F'
+    #blue:    '#4f1db4'
+    #magenta: '#900d9e'
+    #cyan:    '#0F9DBA'
+    #white:   '#e9e4f0'
 
   # Bright colors (dracula)
   bright:
@@ -392,6 +412,16 @@ colors:
     #magenta: '#ffafff'
     #cyan:    '#afffff'
     #white:   '#ffffff'
+
+    # colorsbox-steighties
+    #black:   '#616161'
+    #red:     '#f95789'
+    #green:   '#a7ff9c'
+    #yellow:  '#f9ff9c'
+    #blue:    '#7657f9'
+    #magenta: '#ff5fd7'
+    #cyan:    '#9cffd3'
+    #white:   '#efefef'
 
     # Dracula
     #black:   '#575b5f'
@@ -413,6 +443,25 @@ colors:
     #cyan:    '#00ffff'
     #white:   '#f8f8f8'
 
+    # Kolor
+    black:   '#808080'
+    red:     '#ad8788'
+    red:     '#e6987a'
+    red:     '#df005f'
+    red:     '#f99157'
+    red:     '#f2777a'
+    red:     '#ffa0a0'
+    green:   '#87ff5f'
+    green:   '#8cd991'
+    yellow:  '#ffdfaf'
+    yellow:  '#ffcc66'
+    blue:    '#a080ea'
+    magenta: '#ff5fd7'
+    cyan:    '#66cccc'
+    cyan:    '#87dfaf'
+    cyan:    '#87dfdf'
+    white:   '#e2e2e2'
+
     # Wild Cherry
     #black:   '#099BD7'
     #red:     '#D94085'
@@ -423,15 +472,15 @@ colors:
     #cyan:    '#4F5D95'
     #white:   '#FFFAFF'
 
-    # Cherry Baby
-    black:   '#3e3d40'
-    red:     '#f03b93'
-    green:   '#84ef42'
-    yellow:  '#fbd95a'
-    blue:    '#2c7cf1'
-    magenta: '#ff6fee'
-    cyan:    '#883CDC'
-    white:   '#f8f2ff'
+    # Wild Cherry [Alt]
+    #black:   '#3e3d40'
+    #red:     '#f03b93'
+    #green:   '#84ef42'
+    #yellow:  '#fbd95a'
+    #blue:    '#2c7cf1'
+    #magenta: '#ff6fee'
+    #cyan:    '#883CDC'
+    #white:   '#f8f2ff'
 
   # Dim colors
   #
@@ -504,7 +553,7 @@ bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.9
+background_opacity: 0.98
 
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
