@@ -9,6 +9,6 @@ debug_print("")
 if get_window_class() == "Alacritty" then
     set_window_opacity(tonumber(
     os.getenv('ALACRITTY_WINDOW_OPACITY') or
-    os.getenv('TERM_WINDOW_OPACITY') or "0.95"))
+    os.getenv('TERM_WINDOW_OPACITY') or "0.96"))
 end
 -- ]]
