@@ -504,14 +504,14 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
-    \   'kolor',
     \   'janah',
-    \   'colorsbox-steighties',
+    \   'kolor',
     \   'neonwave',
     \   'dracula',
     \   '1989',
     \   'evolution',
     \   'violaceous-contrast',
+    \   'colorsbox-steighties',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
@@ -708,10 +708,10 @@ endif
 " Airline
 "
 let g:airline_powerline_fonts = 1
-let g:airline_left_sep = "\UE0C0"
-let g:airline_right_sep = "\UE0C2"
-let g:airline_left_alt_sep = "\UE0B1"
-let g:airline_right_alt_sep = "\UE0B3"
+"let g:airline_left_sep = "\UE0C0"
+"let g:airline_right_sep = "\UE0C2"
+"let g:airline_left_alt_sep = "\UE0B1"
+"let g:airline_right_alt_sep = "\UE0B3"
 "
 if (!exists('g:airline_symbols'))
   let g:airline_symbols = {}
@@ -739,8 +739,8 @@ let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Choose some airline themes
 let g:airline_themes = [
-  \   'biogoo',
   \   'atomic',
+  \   'biogoo',
   \   'tomorrow',
   \   'base16color',
   \   'base16_ashes',
