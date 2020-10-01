@@ -1,5 +1,13 @@
 # Configuration for Alacritty, the GPU enhanced terminal emulator.
 
+# Import additional configuration files
+#
+# These configuration files will be loaded in order, replacing values in files
+# loaded earlier with those loaded later in the chain. The file itself will
+# always be loaded last.
+#import:
+#  - /path/to/alacritty.yml
+
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
@@ -15,8 +23,9 @@
 window:
   # Window dimensions (changes require restart)
   #
-  # Specified in number of columns/lines, not pixels.
-  # If both are `0`, this setting is ignored.
+  # Number of lines/columns (not pixels) in the terminal. The number of columns
+  # must be at least `2`, while using a value of `0` for columns and lines will
+  # fall back to the window manager's recommended size.
   #dimensions:
   #  columns: 0
   #  lines: 0
@@ -37,6 +46,10 @@ window:
   #  x: 0
   #  y: 0
 
+  # Spread additional padding evenly around the terminal content.
+  #dynamic_padding: false
+  dynamic_padding: true
+
   # Window decorations
   #
   # Values for `decorations`:
@@ -49,12 +62,6 @@ window:
   #decorations: full
   decorations: none
 
-  # Spread additional padding evenly around the terminal content.
-  dynamic_padding: true
-
-  # Allow terminal applications to change Alacritty's window title.
-  dynamic_title: true
-
   # Startup Mode (changes require restart)
   #
   # Values for `startup_mode`:
@@ -64,11 +71,14 @@ window:
   #
   # Values for `startup_mode` (macOS only):
   #   - SimpleFullscreen
-  #startup_mode: Maximized
+  #startup_mode: Windowed
   startup_mode: Fullscreen
 
   # Window title
   #title: Alacritty
+
+  # Allow terminal applications to change Alacritty's window title.
+  #dynamic_title: true
 
   # Window class (Linux/BSD only):
   #class:
@@ -86,9 +96,11 @@ window:
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
-  history: 20000
+  #history: 10000
+  history: 16384
 
   # Scrolling distance multiplier.
+  #multiplier: 3
   multiplier: 2
 
 # Font configuration
@@ -109,14 +121,14 @@ font:
     #family: FantasqueSansMono Nerd Font Mono
     #style: Regular
     #
-    #family: Hurmit Nerd Font Mono
-    #style: medium
+    family: Hurmit Nerd Font Mono
+    style: medium
     #
     #family: JetBrainsMono Nerd Font Mono
     #style: Regular
     #
-    family: Monofur Nerd Font Mono
-    style: Book
+    #family: Monofur Nerd Font Mono
+    #style: Book
     #
     #family: mononoki Nerd Font Mono
     #style: Regular
@@ -138,14 +150,14 @@ font:
     #family: FantasqueSansMono Nerd Font Mono
     #style: Bold
     #
-    #family: Hurmit Nerd Font Mono
-    #style: bold
+    family: Hurmit Nerd Font Mono
+    style: bold
     #
     #family: JetBrainsMono Nerd Font Mono
     #style: Bold
     #
-    family: Monofurbold Nerd Font Mono
-    style: bold
+    #family: Monofurbold Nerd Font Mono
+    #style: bold
     #
     #family: mononoki Nerd Font Mono
     #style: Bold
@@ -227,17 +239,17 @@ font:
     #style: Bold Oblique
 
   # Point size
-  size: 16.5
+  #size: 11.0
+  size: 14.5
 
-  # Offset is the extra space around each character. `offset.y` can be thought of
-  # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
-  offset:
-    x: 0
-    y: 0
+  # Offset is the extra space around each character. `offset.y` can be thought of # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
+  #offset:
+  #  x: 0
+  #  y: 0
 
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the right,
-  # increasing `y` moves the glyph upwards.
+  # increasing `y` moves the glyph upward.
   #glyph_offset:
   #  x: 0
   #  y: 0
@@ -249,6 +261,7 @@ font:
   #use_thin_strokes: true
 
 # If `true`, bold text is drawn using the bright color variants.
+#draw_bold_text_with_bright_colors: false
 draw_bold_text_with_bright_colors: true
 
 # Colors
@@ -282,17 +295,22 @@ colors:
 
     # Bright and dim foreground colors
     #
-    # The dimmed foreground color is calculated automatically if it is not present.
+    # # The dimmed foreground color is calculated automatically if it is not present.
     # If the bright foreground color is not set, or `draw_bold_text_with_bright_colors`
     # is `false`, the normal foreground color will be used.
     #dim_foreground: '#828482'
+    #bright_foreground: '#eaeaea'
     bright_foreground: '#e2e2e2'
 
   # Cursor colors
   #
-  # Colors which should be used to draw the terminal cursor. If these are
-  # unset, the cursor color will be the inverse of the cell color.
+  # Colors which should be used to draw the terminal cursor.
+  #
+  # Allowed values are CellForeground and CellBackground, which reference the
+  # affected cell, or hexadecimal colors like #ff00ff.
   #cursor:
+  #  text: CellBackground
+  #  cursor: CellForeground
 
     # 1989
     #text: '#212324'
@@ -312,20 +330,37 @@ colors:
 
   # Vi mode cursor colors
   #
-  # Colors for the cursor when the vi mode is active. If these are unset, the
-  # cursor color will be the inverse of the cell color.
+  # Colors for the cursor when the vi mode is active.
+  #
+  # Allowed values are CellForeground and CellBackground, which reference the
+  # affected cell, or hexadecimal colors like #ff00ff.
   #vi_mode_cursor:
-  #  text: '#000000'
-  #  cursor: '#ffffff'
+  #  text: CellBackground
+  #  cursor: CellForeground
+
   # Selection colors
   #
-  # Colors which should be used to draw the selection area. If selection
-  # background is unset, selection color will be the inverse of the cell colors.
-  # If only text is unset the cell text color will remain the same.
+  # Colors which should be used to draw the selection area.
+  #
+  # Allowed values are CellForeground and CellBackground, which reference the
+  # affected cell, or hexadecimal colors like #ff00ff.
   #selection:
+  #  text: CellBackground
+  #  background: CellForeground
 
-    #text: '#242322'
-    #background: '#7f7f7f'
+  # Search colors
+  #
+  # Colors used for the search bar and match highlighting.
+  #search:
+    # Allowed values are CellForeground and CellBackground, which reference the
+    # affected cell, or hexadecimal colors like #ff00ff.
+    #matches:
+    #  foreground: '#000000'
+    #  background: '#ffffff'
+
+    #bar:
+    #  background: '#c5c8c6'
+    #  foreground: '#1d1f21'
 
   # Normal colors
   normal:
@@ -378,6 +413,7 @@ colors:
     blue:    '#7eaefd'
     magenta: '#ce6bd0'
     cyan:    '#75d7d8'
+    cyan:    '#66cccc'
     white:   '#b3b3b3'
 
     # Wild Cherry
@@ -400,7 +436,7 @@ colors:
     #cyan:    '#0F9DBA'
     #white:   '#e9e4f0'
 
-  # Bright colors (dracula)
+  # Bright colors
   bright:
 
     # 1989
@@ -445,21 +481,15 @@ colors:
 
     # Kolor
     black:   '#808080'
-    red:     '#ad8788'
-    red:     '#e6987a'
-    red:     '#df005f'
-    red:     '#f99157'
-    red:     '#f2777a'
     red:     '#ffa0a0'
-    green:   '#87ff5f'
     green:   '#8cd991'
-    yellow:  '#ffdfaf'
+    green:   '#5fff87'
     yellow:  '#ffcc66'
     blue:    '#a080ea'
     magenta: '#ff5fd7'
-    cyan:    '#66cccc'
-    cyan:    '#87dfaf'
-    cyan:    '#87dfdf'
+    magenta: '#ff87d7'
+    cyan:    '#87d7ff'
+    cyan:    '#75d7d8'
     white:   '#e2e2e2'
 
     # Wild Cherry
@@ -525,16 +555,15 @@ bell:
   #   - EaseOutExpo
   #   - EaseOutCirc
   #   - Linear
-  animation: EaseOutExpo
+  #animation: EaseOutExpo
 
   # Duration of the visual bell flash. A `duration` of `0` will disable the
   # visual bell animation.
   duration: 25
 
   # Visual bell animation color.
-  #color:  '#ffffff'
-  #color:  '#575b70'
-  color:  '#0F9DBA'
+  #color: '#ffffff'
+  color:  '#0f9dba'
 
   # Bell Command
   #
@@ -553,9 +582,11 @@ bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
+#background_opacity: 1.0
 background_opacity: 0.98
 
 #selection:
+  # This string contains all characters that are used as separators for "semantic words" in Alacritty.
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
 
   # When set to `true`, selected text will be copied to the primary clipboard.
@@ -568,7 +599,7 @@ cursor:
   #   - ▇ Block
   #   - _ Underline
   #   - | Beam
-  style: Block
+  #style: Block
 
   # Vi mode cursor style
   #
@@ -580,10 +611,11 @@ cursor:
 
   # If this is `true`, the cursor will be rendered as a hollow box when the
   # window is not focused.
-  unfocused_hollow: true
+  #unfocused_hollow: true
 
   # Thickness of the cursor relative to the cell width as floating point number
   # from `0.0` to `1.0`.
+  #thickness: 0.15
   thickness: 0.2
 
 # Live config reload (changes require restart)
@@ -607,13 +639,13 @@ cursor:
 #
 # Directory the shell is started in. If this is unset, or `None`, the working
 # directory of the parent process will be used.
-working_directory: None
+#working_directory: None
 
 # WinPTY backend (Windows only)
 #
 # Alacritty defaults to using the newer ConPTY backend if it is available,
 # since it resolves a lot of bugs and is quite a bit faster. If it is not
-# available, the the WinPTY backend will be used instead.
+# available, the WinPTY backend will be used instead.
 #
 # Setting this option to `true` makes Alacritty use the legacy WinPTY backend,
 # even if the ConPTY backend is available.
@@ -632,6 +664,7 @@ mouse:
   #triple_click: { threshold: 300 }
 
   # If this is `true`, the cursor is temporarily hidden when typing.
+  #hide_when_typing: false
   hide_when_typing: true
 
   url:
@@ -646,14 +679,15 @@ mouse:
     #   - (macOS) open
     #   - (Linux/BSD) xdg-open
     #   - (Windows) explorer
-    launcher:
-      program: xdg-open
-      args: []
+    #launcher:
+    #  program: xdg-open
+    #  args: []
 
     # URL modifiers
     #
     # These are the modifiers that need to be held down for opening URLs when clicking
     # on them. The available modifiers are documented in the key binding section.
+    #modifiers: None
     modifiers: Super
 
 # Mouse bindings
@@ -720,9 +754,12 @@ mouse:
 # - `action`: Execute a predefined action
 #
 #   - ToggleViMode
+#   - SearchForward
+#       Start searching toward the right of the search origin.
+#   - SearchBackward
+#       Start searching toward the left of the search origin.
 #   - Copy
 #   - Paste
-#   - PasteSelection
 #   - IncreaseFontSize
 #   - DecreaseFontSize
 #   - ResetFontSize
@@ -735,47 +772,88 @@ mouse:
 #   - ScrollToTop
 #   - ScrollToBottom
 #   - ClearHistory
+#       Remove the terminal's scrollback history.
 #   - Hide
+#       Hide the Alacritty window.
 #   - Minimize
+#       Minimize the Alacritty window.
 #   - Quit
+#       Quit Alacritty.
 #   - ToggleFullscreen
 #   - SpawnNewInstance
+#       Spawn a new instance of Alacritty.
 #   - ClearLogNotice
+#       Clear Alacritty's UI warning and error notice.
 #   - ClearSelection
+#       Remove the active selection.
 #   - ReceiveChar
 #   - None
 #
 #   (`mode: Vi` only):
 #   - Open
+#       Open URLs at the cursor location with the launcher configured in `url.launcher`.
 #   - Up
+#       Move the vi mode cursor up by one line.
 #   - Down
+#       Move the vi mode cursor down by one line.
 #   - Left
+#       Move the vi mode cursor left by one character.
 #   - Right
+#       Move the vi mode cursor right by one character.
 #   - First
+#       Move the vi mode cursor to the start of the line, searching across newlines if it is already at the beginning.
 #   - Last
+#       Move the vi mode cursor to the end of the line, searching across newlines if it is already at the end.
 #   - FirstOccupied
+#       Move the vi mode cursor to the first non-empty cell in this line, searching across newlines if it is already at the first one.
 #   - High
+#       Move the vi mode cursor to the top of the screen.
 #   - Middle
+#       Move the vi mode cursor to the middle of the screen.
 #   - Low
+#       Move the vi mode cursor to the bottom of the screen.
 #   - SemanticLeft
+#       Move the vi mode cursor to the start of the previous semantically separated word.
 #   - SemanticRight
+#       Move the vi mode cursor to the start of the next semantically separated word.
 #   - SemanticLeftEnd
+#       Move the vi mode cursor to the end of the previous semantically separated word.
 #   - SemanticRightEnd
-#   - WordRight
+#       Move the vi mode cursor to the end of the next semantically separated word.
 #   - WordLeft
-#   - WordRightEnd
+#       Move the vi mode cursor to the start of the previous whitespace separated word.
+#   - WordRight
+#       Move the vi mode cursor to the start of the next whitespace separated word.
 #   - WordLeftEnd
+#       Move the vi mode cursor to the end of the previous whitespace separated word.
+#   - WordRightEnd
+#       Move the vi mode cursor to the end of the next whitespace separated word.
 #   - Bracket
+#       Move the vi mode cursor to the next character that matches the bracket at the cursor's
+#       current location.
 #   - ToggleNormalSelection
 #   - ToggleLineSelection
 #   - ToggleBlockSelection
 #   - ToggleSemanticSelection
+#       Toggle semantic selection based on `selection.semantic_escape_chars`.
+#   - SearchNext
+#       Jump to the beginning of the next match.
+#   - SearchPrevious
+#       Jump to the beginning of the previous match.
+#   - SearchStart
+#       Jump to the next start of a match to the left of the vi mode cursor.
+#   - SearchEnd
+#       Jump to the next end of a match to the left of the vi mode cursor.
 #
 #   (macOS only):
-#   - ToggleSimpleFullscreen: Enters fullscreen without occupying another space
+#   - ToggleSimpleFullscreen
+#       Enter fullscreen without occupying another space.
 #
 #   (Linux/BSD only):
-#   - CopySelection: Copies into selection buffer
+#   - CopySelection
+#       Copy from the selection buffer.
+#   - PasteSelection
+#       Paste from the selection buffer.
 #
 # - `command`: Fork and execute a specified command plus arguments
 #
@@ -806,6 +884,7 @@ mouse:
 #    - AppCursor
 #    - AppKeypad
 #    - Alt
+#    - Vi
 #
 #    A `~` operator can be used before a mode to apply the binding whenever
 #    the mode is *not* active, e.g. `~Alt`.
@@ -816,7 +895,7 @@ mouse:
 # a no-op if you do not wish to receive input characters for that binding.
 #
 # If the same trigger is assigned to multiple actions, all of them are executed
-# at once.
+# in the order they were defined in.
 #key_bindings:
   #- { key: Paste,                                action: Paste          }
   #- { key: Copy,                                 action: Copy           }
@@ -833,6 +912,7 @@ mouse:
   #- { key: Escape,                      mode: Vi, action: ClearSelection          }
   #- { key: I,                           mode: Vi, action: ScrollToBottom          }
   #- { key: I,                           mode: Vi, action: ToggleViMode            }
+  #- { key: C,      mods: Control,       mode: Vi, action: ToggleViMode            }
   #- { key: Y,      mods: Control,       mode: Vi, action: ScrollLineUp            }
   #- { key: E,      mods: Control,       mode: Vi, action: ScrollLineDown          }
   #- { key: G,                           mode: Vi, action: ScrollToTop             }
@@ -870,10 +950,16 @@ mouse:
   #- { key: W,      mods: Shift,         mode: Vi, action: WordRight               }
   #- { key: E,      mods: Shift,         mode: Vi, action: WordRightEnd            }
   #- { key: Key5,   mods: Shift,         mode: Vi, action: Bracket                 }
+  #- { key: Slash,                       mode: Vi, action: SearchForward           }
+  #- { key: Slash,  mods: Shift,         mode: Vi, action: SearchBackward          }
+  #- { key: N,                           mode: Vi, action: SearchNext              }
+  #- { key: N,      mods: Shift,         mode: Vi, action: SearchPrevious          }
 
   # (Windows, Linux, and BSD only)
   #- { key: V,        mods: Control|Shift,           action: Paste            }
   #- { key: C,        mods: Control|Shift,           action: Copy             }
+  #- { key: F,        mods: Control|Shift,           action: SearchForward    }
+  #- { key: B,        mods: Control|Shift,           action: SearchBackward   }
   #- { key: C,        mods: Control|Shift, mode: Vi, action: ClearSelection   }
   #- { key: Insert,   mods: Shift,                   action: PasteSelection   }
   #- { key: Key0,     mods: Control,                 action: ResetFontSize    }
@@ -901,6 +987,8 @@ mouse:
   #- { key: W,      mods: Command,            action: Quit             }
   #- { key: N,      mods: Command,            action: SpawnNewInstance }
   #- { key: F,      mods: Command|Control,    action: ToggleFullscreen }
+  #- { key: F,      mods: Command,            action: SearchForward    }
+  #- { key: B,      mods: Command,            action: SearchBackward   }
 
 #debug:
   # Display the time it takes to redraw each frame.
