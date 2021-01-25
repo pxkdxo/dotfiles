@@ -123,7 +123,7 @@ set softtabstop=2
 set tabstop=8
 "
 " Length past which lines will be broken automatically
-set textwidth=75
+set textwidth=79
 
 
 " Verbosity
@@ -584,7 +584,7 @@ let g:c_space_errors = 1
 " Set local options for C and C++ files
 if (has('autocmd'))
   autocmd rc FileType c,cpp
-    \ silent! setlocal cin noet sts=0 sw=8 ts=8 tw=75
+    \ silent! setlocal cin noet sts=0 sw=8 ts=8 tw=79
     \|silent! let &l:shiftwidth = &tabstop
     \|silent! let &l:cinoptions = ':0,(' . &tabstop
 endif
@@ -595,7 +595,7 @@ endif
 " Set textwidth for commit messages
 if (has('autocmd'))
   autocmd rc FileType gitcommit
-    \ silent! setlocal tw=72
+    \ silent! setlocal tw=71
 endif
 
 
@@ -636,7 +636,7 @@ endif
 if (has('autocmd'))
   if (has('linebreak'))
     autocmd rc FileType markdown
-      \ silent! setlocal cc= nonu nornu wrap lbr bri tw=75
+      \ silent! setlocal cc= nonu nornu wrap lbr bri tw=79
   else
     autocmd rc FileType markdown
       \ silent! setlocal cc= nonu nornu wrap
@@ -656,7 +656,7 @@ let g:syntastic_javascript_standard_exec = 'semistandard'
 " Set local options for python scripts
 if (has('autocmd'))
   autocmd rc FileType python
-    \ silent! setlocal et sts=4 sw=4 ts=8 tw=75
+    \ silent! setlocal et sts=4 sw=4 ts=8 tw=79
 endif
 
 " Enable all available highlighting
@@ -701,7 +701,7 @@ let g:sh_no_error = 1
 " Set local options when opening a shell script
 if (has("autocmd"))
   autocmd rc FileType bash,ksh,sh,zsh
-    \ silent! setlocal et sts=2 sw=2 ts=8 tw=75
+    \ silent! setlocal et sts=2 sw=2 ts=8 tw=79
 endif
 "
 " Set filetype to sh when editing a shell command line
@@ -1240,4 +1240,4 @@ set modeline
 set secure
 
 
-" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=75
+" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=79

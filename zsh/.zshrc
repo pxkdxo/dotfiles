@@ -214,8 +214,9 @@ typeset -Tx FZF_ALT_C_OPTS fzf_alt_c_opts " "
 fzf_alt_c_opts=(
   "${fzf_default_opts[@]}"
   '--bind=''ctrl-r:toggle-sort'''
-  '--bind=''ctrl-x:execute-silent%tmux new-window ranger --selectfile={}%+abort'''
-  '--bind=''alt-v:execute-silent%tmux new-window vim -- {}%+abort'''
+  '--bind=''ctrl-x:execute-silent%rifle -- {}%+abort'''
+  '--bind=''alt-e:execute-silent%tmux new-window vim -- {}%+abort'''
+  '--bind=''alt-x:execute-silent%tmux new-window ranger --selectfile={}%+abort'''
   '--filepath-word'
   '--no-cycle'
   '--no-sort'
@@ -228,7 +229,7 @@ typeset -Tx FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
 fzf_ctrl_r_opts=(
   "${fzf_default_opts[@]}"
   '--bind=''ctrl-r:toggle-sort'''
-  '--bind=''alt-o:execute-silent(printf %s {2..} | xclip -selection clipboard)'''
+  '--bind=''ctrl-o:execute-silent(printf %s {2..} | xclip -selection clipboard)'''
   '--bind=''alt-x:execute-silent%tmux new-window zsh -c ''"$@"'' {}%+abort'''
   '--filepath-word'
   '--cycle'
@@ -241,6 +242,7 @@ fzf_ctrl_t_opts=(
   "${fzf_default_opts[@]}"
   '--bind=''ctrl-r:toggle-sort'''
   '--bind=''ctrl-x:execute-silent%rifle -- {}%+abort'''
+  '--bind=''alt-e:execute-silent%tmux new-window vim -- {}%+abort'''
   '--bind=''alt-x:execute-silent%tmux new-window ranger --selectfile={}%+abort'''
   '--filepath-word'
   '--no-cycle'
