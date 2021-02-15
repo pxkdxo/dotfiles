@@ -2,6 +2,8 @@
 
 ## User Configuration Files
 
+![dotfiles](github.com/patrickdeyoreo/dotfiles/blob/assets/dotfiles.png)
+
 ---
 
 ### Installation
