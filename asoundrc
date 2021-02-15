@@ -77,8 +77,8 @@ pcm.mix20 {
 ctl.pulse { type pulse }
 pcm.pulse { type pulse }
 
-ctl.!default ctl.pulse
-pcm.!default pcm.pulse
+#ctl.!default ctl.pulse
+#pcm.!default pcm.pulse
 
 
 # card 0 definitions
@@ -123,8 +123,8 @@ pcm.dsp1 pcm.duplex1
 
 ctl.mixer1 ctl.dsp1
 
-#ctl.!default ctl.dsp1
-#pcm.!default pcm.dsp1
+ctl.!default ctl.dsp1
+pcm.!default pcm.dsp1
 
 
 # vim:ft=alsaconf
