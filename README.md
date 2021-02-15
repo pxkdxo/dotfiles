@@ -14,6 +14,9 @@
 
 ## Author
 
-[*Patrick DeYoreo*](github.com/patrickdeyoreo)
-- [Twitter](twitter.com/deyoreopatrick)
-- [LinkedIn](linkedin.com/in/patrickdeyoreo)
+[**Patrick DeYoreo**](https://github.com/patrickdeyoreo) is a software
+engineering student at Holberton School with a history in devops and
+system administration.
+
+- [Twitter](https://twitter.com/deyoreopatrick)
+- [LinkedIn](https://linkedin.com/in/patrickdeyoreo)
