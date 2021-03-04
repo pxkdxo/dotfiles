@@ -103,6 +103,10 @@ plugins=(
   history-substring-search
   jsontools
   keybindings
+  kind
+  kubectl
+  kubernetes
+  minikube
   mkcd
   mkmv
   mvcd
@@ -204,6 +208,7 @@ fzf_default_opts=(
   '--bind=''insert:replace-query'''
   '--color=''dark'''
   '--color=''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'''
+  '--prompt=''? '''
   '--border=sharp'
   '--info=hidden'
   '--layout=reverse'
@@ -287,13 +292,12 @@ ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='none'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument-unclosed]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=white'
-ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=magenta'
-ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=red'
-ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[bracket-level-6]='fg=green'
+ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=white,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=yellow,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=cyan,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=blue,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=magenta,bold'
 ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
 ZSH_HIGHLIGHT_STYLES[command]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]='none'
@@ -327,13 +331,13 @@ ZSH_HIGHLIGHT_STYLES[process-substitution]='none'
 ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[rc-quote]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[redirection]='underline'
-ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=red'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[root]='standout'
 ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='none'
 ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
 #ZSH_HIGHLIGHT_STYLES[single-quoted-argument-unclosed]='fg=yellow,bold'
 ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=white'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
 
 
 # start a tmux session

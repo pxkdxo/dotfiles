@@ -159,8 +159,11 @@ font:
     #family: JetBrainsMono Nerd Font Mono
     #style: Bold
     #
-    family: Monofurbold Nerd Font Mono
-    style: bold
+    family: Monofur Nerd Font Mono
+    style: Bold
+    #
+    #family: Monofurbold Nerd Font Mono
+    #style: bold
     #
     #family: mononoki Nerd Font Mono
     #style: Bold
@@ -192,6 +195,9 @@ font:
     #style: Italic
     #
     #family: JetBrainsMono Nerd Font Mono
+    #style: Italic
+    #
+    #family: Monofur Nerd Font Mono
     #style: Italic
     #
     #family: Monofuritalic Nerd Font Mono
@@ -229,6 +235,15 @@ font:
     #family: JetBrainsMono Nerd Font Mono
     #style: Bold Italic
     #
+    #family: Monofur Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: Monofurbold Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: Monofuritalic Nerd Font Mono
+    #style: Bold Italic
+    #
     #family: mononoki Nerd Font Mono
     #style: BoldItalic
     #
@@ -243,7 +258,7 @@ font:
 
   # Point size
   #size: 11.0
-  size: 15.0
+  size: 15
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
