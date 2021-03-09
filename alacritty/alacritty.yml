@@ -121,8 +121,8 @@ font:
     #family: agave Nerd Font Mono
     #style: r
     #
-    #family: FantasqueSansMono Nerd Font Mono
-    #style: Regular
+    family: FantasqueSansMono Nerd Font Mono
+    style: Regular
     #
     #family: Hurmit Nerd Font Mono
     #style: medium
@@ -130,8 +130,8 @@ font:
     #family: JetBrainsMono Nerd Font Mono
     #style: Regular
     #
-    family: Monofur Nerd Font Mono
-    style: Book
+    #family: Monofur Nerd Font Mono
+    #style: Book
     #
     #family: mononoki Nerd Font Mono
     #style: Regular
@@ -150,8 +150,8 @@ font:
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
     #
-    #family: FantasqueSansMono Nerd Font Mono
-    #style: Bold
+    family: FantasqueSansMono Nerd Font Mono
+    style: Bold
     #
     #family: Hurmit Nerd Font Mono
     #style: bold
@@ -159,8 +159,8 @@ font:
     #family: JetBrainsMono Nerd Font Mono
     #style: Bold
     #
-    family: Monofur Nerd Font Mono
-    style: Bold
+    #family: Monofur Nerd Font Mono
+    #style: Bold
     #
     #family: Monofurbold Nerd Font Mono
     #style: bold
@@ -258,7 +258,7 @@ font:
 
   # Point size
   #size: 11.0
-  size: 15
+  size: 15.5
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter

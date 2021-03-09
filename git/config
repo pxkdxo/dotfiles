@@ -14,7 +14,7 @@
 	tag = yellow
 
 [credential]
-	helper = cache --timeoutglobal =43200
+	helper = cache --timeout 43200
 
 [advice]
 	pushUpdateRejected
