@@ -139,7 +139,7 @@ endif
 set number
 "
 " Display line numbers relative to current line
-set relativenumber
+"set relativenumber
 "
 " Display cursor coordinates (e.g. LINE,COLUMN)
 set ruler
@@ -1117,9 +1117,11 @@ nnoremap <silent> <Insert>
 " Misc
 "
 " F6: Toggle line numbers
+"nnoremap <silent> <F6>
+"  \ : let &l:nu = !&l:nu<Bar>
+"  \   let &l:rnu = &l:nu<CR>
 nnoremap <silent> <F6>
-  \ : let &l:nu = !&l:nu<Bar>
-  \   let &l:rnu = &l:nu<CR>
+  \ : let &l:nu = !&l:nu<CR>
 "
 " F5: Toggle search highlighting
 nnoremap <silent> <F5>
