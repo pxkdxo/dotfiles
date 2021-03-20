@@ -1,6 +1,9 @@
 # ~/.config/git/config: git user global config
 # see git(1)  git-config(1)
 
+[advice]
+	pushUpdateRejected
+
 [color]
 	branch = auto
 	diff = auto
@@ -13,11 +16,14 @@
 	stash = blue
 	tag = yellow
 
+[core]
+	hooksPath = ~/.local/share/git/hooks
+
 [credential]
 	helper = cache --timeout 43200
 
-[advice]
-	pushUpdateRejected
+[init]
+	templateDir = ~/.local/share/git/templates
 
 [user]
 	email = pdeyoreo@gmail.com
