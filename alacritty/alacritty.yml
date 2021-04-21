@@ -451,6 +451,7 @@ colors:
     cyan:    '#66cccc'
     cyan:    '#75d7d8'
     white:   '#b3b3b3'
+    white:   '#c6c6c6'
 
     # Wild Cherry
     #black:   '#099BD7'
@@ -519,6 +520,7 @@ colors:
     black:   '#4a4a4a'
     black:   '#5c5c5c'
     black:   '#808080'
+    # black:   '#9e9e9e'
     red:     '#ffa0a0'
     red:     '#ff8901'
     red:     '#e6987a'
