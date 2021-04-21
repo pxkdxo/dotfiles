@@ -505,9 +505,9 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
+    \   'kolor',
     \   'colorsbox-steighties',
     \   'janah',
-    \   'kolor',
     \   'dracula',
     \   'neonwave',
     \   '1989',
@@ -748,8 +748,8 @@ let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Choose some airline themes
 let g:airline_themes = [
-  \   'atomic',
   \   'biogoo',
+  \   'atomic',
   \   'tomorrow',
   \   'base16color',
   \   'base16_ashes',

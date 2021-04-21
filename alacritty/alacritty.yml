@@ -294,7 +294,8 @@ colors:
     #foreground:  '#dadada'
 
     # Kolor
-    background:   '#2d2d2d'
+    # background:   '#2d2d2d'
+    background:   '#242322'
     foreground:   '#cccccc'
 
     # Dracula
@@ -442,12 +443,13 @@ colors:
     # Kolor
     black:   '#383734'
     red:     '#f95789'
+    red:     '#d96e8a'
     green:   '#88da77'
     yellow:  '#dbc570'
     blue:    '#7eaefd'
     magenta: '#ce6bd0'
-    cyan:    '#75d7d8'
     cyan:    '#66cccc'
+    cyan:    '#75d7d8'
     white:   '#b3b3b3'
 
     # Wild Cherry
@@ -514,16 +516,20 @@ colors:
     #white:   '#f8f8f8'
 
     # Kolor
+    black:   '#4a4a4a'
+    black:   '#5c5c5c'
     black:   '#808080'
     red:     '#ffa0a0'
+    red:     '#ff8901'
+    red:     '#e6987a'
     green:   '#8cd991'
     green:   '#5fff87'
     yellow:  '#ffcc66'
     blue:    '#a080ea'
-    magenta: '#ff5fd7'
     magenta: '#ff87d7'
-    cyan:    '#87d7ff'
+    magenta: '#ff5fd7'
     cyan:    '#75d7d8'
+    cyan:    '#87d7ff'
     white:   '#e2e2e2'
 
     # Wild Cherry
