@@ -443,13 +443,14 @@ colors:
     # Kolor
     black:   '#383734'
     red:     '#f95789'
+    red:     '#f2777a'
     red:     '#d96e8a'
     green:   '#88da77'
     yellow:  '#dbc570'
     blue:    '#7eaefd'
     magenta: '#ce6bd0'
-    cyan:    '#66cccc'
     cyan:    '#75d7d8'
+    cyan:    '#66cccc'
     white:   '#b3b3b3'
     white:   '#c6c6c6'
 
@@ -530,8 +531,8 @@ colors:
     blue:    '#a080ea'
     magenta: '#ff87d7'
     magenta: '#ff5fd7'
-    cyan:    '#75d7d8'
     cyan:    '#87d7ff'
+    cyan:    '#75d7d8'
     white:   '#e2e2e2'
 
     # Wild Cherry
@@ -625,8 +626,8 @@ bell:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
-#background_opacity: 0.96
+#background_opacity: 1.0
+background_opacity: 0.96
 
 #selection:
   # This string contains all characters that are used as separators for

@@ -46,7 +46,7 @@ RESET 00 # reset to "normal" color
 DIR 00;34;49 # directory
 LINK target # 00;94 # symbolic link (set to 'target' to use the color of the target file)
 MULTIHARDLINK 00;01;39;49  # regular file with more than one link
-FIFO 00;91;49 # pipe
+FIFO 00;93;49 # pipe
 SOCK 00;95;49 # socket
 DOOR 00;95;49 # door
 BLK 00;94;49 # block device driver
@@ -56,9 +56,9 @@ MISSING 00;90 # ... and the files they point to
 SETUID 00;31;49 #file that is setuid (u+s)
 SETGID 00;33;49 # file that is setgid (g+s)
 CAPABILITY 00;97;49 # file with capability
-STICKY_OTHER_WRITABLE 00;35;49 # dir that is sticky and other-writable
-OTHER_WRITABLE 00;35;49 # dir that is other-writable (o+w) and not sticky
-STICKY 00;96;49 # dir with the sticky bit set (+t) and not other-writable
+STICKY_OTHER_WRITABLE 00;91;49 # dir that is sticky and other-writable
+OTHER_WRITABLE 00;91;49 # dir that is other-writable (o+w) and not sticky
+STICKY 00;35;49 # dir with the sticky bit set (+t) and not other-writable
 EXEC 00;32;49
 #NORMAL 00;39;49 # no color code at all
 #FILE 00;39;49 # regular file: use no color at all
