@@ -279,6 +279,7 @@ font:
   # Thin strokes are suitable for retina displays, but for non-retina screens
   # it is recommended to set `use_thin_strokes` to `false`.
   #use_thin_strokes: true
+  use_thin_strokes: false
 
 # If `true`, bold text is drawn using the bright color variants.
 #draw_bold_text_with_bright_colors: false
@@ -445,7 +446,9 @@ colors:
     red:     '#f95789'
     red:     '#f2777a'
     red:     '#d96e8a'
+    green:   '#8cd991'
     green:   '#88da77'
+    #green:   '#99cc99'
     yellow:  '#dbc570'
     blue:    '#7eaefd'
     magenta: '#ce6bd0'
@@ -521,18 +524,26 @@ colors:
     black:   '#4a4a4a'
     black:   '#5c5c5c'
     black:   '#808080'
-    # black:   '#9e9e9e'
+    #black:   '#9e9e9e'
     red:     '#ffa0a0'
     red:     '#ff8901'
     red:     '#e6987a'
+    #red:     '#f2777a'
+    #red:     '#f99157'
+    #red:     '#ff5555'
     green:   '#8cd991'
-    green:   '#5fff87'
+    #green:   '#5fff87'
+    #green:   '#50fa7b'
     yellow:  '#ffcc66'
+    #yellow:  '#f1fa8c'
     blue:    '#a080ea'
+    #blue:    '#bd93f9'
     magenta: '#ff87d7'
     magenta: '#ff5fd7'
+    #magenta: '#ff79c6'
     cyan:    '#87d7ff'
     cyan:    '#75d7d8'
+    #cyan:    '#8be9fd'
     white:   '#e2e2e2'
 
     # Wild Cherry
