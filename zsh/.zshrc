@@ -226,8 +226,8 @@ fzf_alt_c_opts=(
   '--no-cycle'
   '--no-sort'
   '--layout=reverse-list'
-  '--preview-window=top:42%'
-  '--preview=''tree -CFlv --dirsfirst -- {} | rg --color=always --no-column --no-heading --no-line-number --passthru -- {q}'''
+#  '--preview-window=top:42%'
+#  '--preview=''tree -CFlv --dirsfirst -- {} | rg --color=always --no-column --no-heading --no-line-number --passthru -- {q}'''
 )
 
 typeset -Tx FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
