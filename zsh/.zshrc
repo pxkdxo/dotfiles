@@ -16,7 +16,7 @@ export ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="space-travel"
+ZSH_THEME="daisy-picker"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -121,10 +121,12 @@ plugins=(
   rustup
   systemadmin
   systemd
+  terraform
   tmux
   ufw
   urltools
   vagrant
+  vault
   venv
   virtualenv
   z
@@ -282,9 +284,9 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(
   cursor
 )
 typeset -A ZSH_HIGHLIGHT_STYLES
-ZSH_HIGHLIGHT_STYLES[alias]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=green'
+ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[assign]='none'
 ZSH_HIGHLIGHT_STYLES[autodirectory]='fg=green,underline'
 ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]='fg=red'
@@ -298,7 +300,7 @@ ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=green,bold'
 ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=cyan,bold'
 ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=blue,bold'
 ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=magenta,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[command]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]='none'
 ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]='fg=magenta'
@@ -317,7 +319,7 @@ ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='none'
 ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=blue'
 #ZSH_HIGHLIGHT_STYLES[double-quoted-argument-unclosed]='fg=blue,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[function]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[line]='none'
@@ -326,7 +328,7 @@ ZSH_HIGHLIGHT_STYLES[numeric-fd]='underline'
 ZSH_HIGHLIGHT_STYLES[path]='underline'
 ZSH_HIGHLIGHT_STYLES[path_pathseparator]='underline'
 ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=''
-ZSH_HIGHLIGHT_STYLES[precommand]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[process-substitution]='none'
 ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[rc-quote]='fg=cyan'

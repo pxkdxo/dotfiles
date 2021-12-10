@@ -37,6 +37,7 @@
 !/gnupg/gpg-agent.conf
 !/gnupg/gpg.conf
 !/htop/htoprc
+!/httpie/config.json
 !/inputrc
 !/inputrc.d/**
 !/mpd/mpd.conf
