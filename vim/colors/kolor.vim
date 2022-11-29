@@ -81,7 +81,7 @@ if !exists("g:kolor_underlined")
   let g:kolor_underlined=1
 endif
 if !exists("g:kolor_alternative_matchparen")
-  let g:kolor_alternative_matchparen=0
+  let g:kolor_alternative_matchparen=1
 endif
 if !exists("g:kolor_inverted_matchparen")
   let g:kolor_inverted_matchparen=0

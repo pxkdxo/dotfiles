@@ -64,7 +64,6 @@ Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'edkolev/tmuxline.vim'
-Plug 'danilo-augusto/vim-afterglow'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'flazz/vim-colorschemes'
@@ -75,7 +74,7 @@ Plug 'fatih/vim-go'
 Plug 'pangloss/vim-javascript'
 "Plug 'prabirshrestha/vim-lsp'
 "Plug 'mattn/vim-lsp-settings'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
@@ -150,11 +149,8 @@ set showcmd
 " Briefly jump to match upon completing pair in 'matchpairs'
 set showmatch
 "
-" Silence messages about searches wrapping across a file
-set terse
-"
-" Update terminal titles
-set title
+" Do not Update terminal titles
+set notitle
 "
 " Hide text with the "conceal" syntax attribute
 set conceallevel=3
@@ -494,7 +490,7 @@ if (exists('+termguicolors'))
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     endif
-    if ($XTERM_VERSION != '' || $VTE_VERSION != '')
+    if ($COLORTERM =~? '^\s*truecolor\s*$')
       set termguicolors
     else
       set notermguicolors
@@ -505,29 +501,22 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
-    \   'kolor',
-    \   'colorsbox-steighties',
     \   'janah',
-    \   'dracula',
+    \   'colorsbox-steighties',
     \   'neonwave',
+    \   'kolor',
     \   '1989',
+    \   'Tomorrow-Night-Eighties',
+    \   'dracula',
     \   'evolution',
-    \   'violaceous-contrast',
-    \   'grunge-contrast',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
-    \   'Tomorrow-Night-Eighties',
-    \   'colorsbox-steighties',
-    \   'skittles_berry',
-    \   'vibrantink',
-    \   'squidink',
-    \   'desertink',
     \   '1989',
+    \   'Tomorrow-Night-Eighties',
+    \   'squidink',
     \   'dracula',
     \   'evolution',
-    \   'lucius',
-    \   'base16-synth-midnight-dark',
     \ ]
 else
   let g:colorschemes = [
@@ -637,7 +626,7 @@ endif
 if (has('autocmd'))
   if (has('linebreak'))
     autocmd rc FileType markdown
-      \ silent! setlocal cc= nonu nornu wrap lbr bri tw=79
+      \ silent! setlocal cc= nonu nornu wrap lbr bri
   else
     autocmd rc FileType markdown
       \ silent! setlocal cc= nonu nornu wrap
@@ -702,7 +691,7 @@ let g:sh_no_error = 1
 " Set local options when opening a shell script
 if (has("autocmd"))
   autocmd rc FileType bash,ksh,sh,zsh
-    \ silent! setlocal et sts=2 sw=2 ts=8 tw=79
+    \ silent! setlocal et sts=2 sw=2 ts=8
 endif
 "
 " Set filetype to sh when editing a shell command line
@@ -748,8 +737,8 @@ let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Choose some airline themes
 let g:airline_themes = [
-  \   'biogoo',
   \   'atomic',
+  \   'biogoo',
   \   'tomorrow',
   \   'base16color',
   \   'base16_ashes',
@@ -785,10 +774,12 @@ endfunction
 " Alt F11:
 " Rotate to the previous airline theme
 nnoremap <silent> <Esc><F11> :call RotateAirlineTheme(-1)<CR>
+nnoremap <silent> <F59> :call RotateAirlineTheme(-1)<CR>
 "
 " Alt F12:
 " Rotate to the next airline theme
 nnoremap <silent> <Esc><F12> :call RotateAirlineTheme(1)<CR>
+nnoremap <silent> <F60> :call RotateAirlineTheme(1)<CR>
 "
 " Refresh airline when the colorscheme changes
 if (has('autocmd'))
