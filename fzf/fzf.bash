@@ -1,7 +1,7 @@
 # Setup fzf
 # ---------
 if [[ ! "$PATH" == */home/pat/.local/share/fzf/bin* ]]; then
-  export PATH="${PATH:+${PATH}:}/home/pat/.local/share/fzf/bin"
+  PATH="${PATH:+${PATH}:}/home/pat/.local/share/fzf/bin"
 fi
 
 # Auto-completion
