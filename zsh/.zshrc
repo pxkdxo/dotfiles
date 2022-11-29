@@ -9,14 +9,24 @@ case $- in
     (*) return ;;
 esac
 
-# Path to your oh-my-zsh installation.
-export ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/oh-my-zsh"
+# # Use manjaro zsh config
+# if [[ -e /usr/share/zsh/manjaro-zsh-config ]]; then
+#   source /usr/share/zsh/manjaro-zsh-config
+# fi
+
+# # Use manjaro zsh prompt
+# if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
+#   source /usr/share/zsh/manjaro-zsh-prompt
+# fi
+
+# Path to the ohmyzsh installation.
+export ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="daisy-picker"
+ZSH_THEME="p5kd5o"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -81,8 +91,8 @@ fi
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  alacritty
-  cargo
+  #alacritty
+  aws
   cdls
   clipboard-keybindings
   command-not-found
@@ -94,36 +104,36 @@ plugins=(
   fancy-ctrl-z
   #fzf
   #fzf-interactive-cd
-  emoji
+  #emoji
   fzf-extensions
   git
-  git-extras
+  #git-extras
   globalias-rev
+  golang
   gpg-agent
   history-substring-search
   jsontools
   keybindings
-  kind
+  #kind
   kubectl
   kubernetes
-  minikube
+  #minikube
   mkcd
   mkmv
   mvcd
   nmap
-  #npm
+  npm
   pass
   pip
   python
   ripgrep
   rsync
   rust
-  rustup
-  systemadmin
+  #systemadmin
   systemd
   terraform
   tmux
-  ufw
+  #ufw
   urltools
   vagrant
   vault
@@ -189,7 +199,7 @@ fi
 #
 if (( ${+TMUX} )); then
   export FZF_TMUX=1
-  export FZF_TMUX_HEIGHT="${FZF_TMUX_HEIGHT:-42%}"
+  export FZF_TMUX_HEIGHT="${FZF_TMUX_HEIGHT:-45%}"
 else
   unset -v FZF_TMUX
 fi
@@ -284,61 +294,62 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(
   cursor
 )
 typeset -A ZSH_HIGHLIGHT_STYLES
-ZSH_HIGHLIGHT_STYLES[alias]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[arg0]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=green'
+ZSH_HIGHLIGHT_STYLES[arg0]='none'
+ZSH_HIGHLIGHT_STYLES[arithmetic-expansion]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[assign]='none'
 ZSH_HIGHLIGHT_STYLES[autodirectory]='fg=green,underline'
-ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]='fg=red'
-ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='none'
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument-unclosed]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=white,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=yellow,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=cyan,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=blue,bold'
-ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=magenta,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[command]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-unclosed]='fg=none'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]='fg=blue,bold'
+ZSH_HIGHLIGHT_STYLES[bracket-error]='fg=red'
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[bracket-level-5]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[bracket-level-6]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=green'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green'
 ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter]='none'
-ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]='fg=magenta'
-ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-unquoted]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-unquoted]='fg=blue'
 ZSH_HIGHLIGHT_STYLES[command-substitution]='none'
 ZSH_HIGHLIGHT_STYLES[command-substitution-quoted]='none'
 ZSH_HIGHLIGHT_STYLES[command-substitution-unquoted]='none'
 ZSH_HIGHLIGHT_STYLES[commandseparator]='bold'
-ZSH_HIGHLIGHT_STYLES[comment]='bg=black,bold,standout'
-ZSH_HIGHLIGHT_STYLES[cursor]='underline'
-ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]='bold,underline'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=black,bold'
+ZSH_HIGHLIGHT_STYLES[cursor]='none'
+ZSH_HIGHLIGHT_STYLES[cursor-matchingbracket]='standout'
 ZSH_HIGHLIGHT_STYLES[default]='none'
 ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=yellow'
 #ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument-unclosed]='fg=cyan,bold'
 ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='none'
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=yellow'
 #ZSH_HIGHLIGHT_STYLES[double-quoted-argument-unclosed]='fg=blue,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=magenta'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=blue'
-ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[function]='fg=green'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=magenta,bold'
 ZSH_HIGHLIGHT_STYLES[line]='none'
-ZSH_HIGHLIGHT_STYLES[named-fd]='underline'
-ZSH_HIGHLIGHT_STYLES[numeric-fd]='underline'
+ZSH_HIGHLIGHT_STYLES[named-fd]='none'
+ZSH_HIGHLIGHT_STYLES[numeric-fd]='none'
 ZSH_HIGHLIGHT_STYLES[path]='underline'
 ZSH_HIGHLIGHT_STYLES[path_pathseparator]='underline'
 ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=''
-ZSH_HIGHLIGHT_STYLES[precommand]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[process-substitution]='none'
-ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[rc-quote]='fg=cyan'
-ZSH_HIGHLIGHT_STYLES[redirection]='underline'
-ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[process-substitution-delimiter]='none'
+ZSH_HIGHLIGHT_STYLES[rc-quote]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[redirection]='none'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=magenta'
 ZSH_HIGHLIGHT_STYLES[root]='standout'
 ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='none'
 ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
 #ZSH_HIGHLIGHT_STYLES[single-quoted-argument-unclosed]='fg=yellow,bold'
-ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
 
 
