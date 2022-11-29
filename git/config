@@ -17,14 +17,16 @@
 	tag = yellow
 
 [core]
-	hooksPath = ~/.local/share/git/hooks
 
 [credential]
-	helper = cache --timeout 43200
+	helper = cache --timeout 3600
 
 [init]
 	templateDir = ~/.local/share/git/templates
+	defaultBranch = main
 
 [user]
 	email = pdeyoreo@gmail.com
 	name = Patrick DeYoreo
+[pull]
+	rebase = false
