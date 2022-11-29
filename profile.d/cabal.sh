@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # cabal.sh: cabal path config
 
 if test -n "${CABAL_HOME}"; then

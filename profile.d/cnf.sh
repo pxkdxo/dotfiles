@@ -1,8 +1,10 @@
-# cnf.sh : command-not-found hooks for bash and zsh
+#!/usr/bin/env sh
+# cnf.sh: command-not-found hooks for bash and zsh
 
 # bash definition
+# shellcheck disable=SC2112
 if test -n "${BASH}"; then
-  function command_not_found_handle {
+  function command_not_found_handle() {
     if command -v cnf-lookup > /dev/null; then
       if test -t 1; then
         cnf-lookup --colors -- ${1+"$1"}
@@ -25,8 +27,9 @@ if test -n "${BASH}"; then
 fi
 
 # zsh definition
+# shellcheck disable=SC2112
 if test -n "${ZSH_NAME}"; then
-  function command_not_found_handler {
+  function command_not_found_handler() {
     if command -v cnf-lookup > /dev/null; then
       if test -t 1; then
         cnf-lookup --colors -- ${1+"$1"}

@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # cargo.sh: cargo environment config
 
 if test -d "${CARGO_HOME-}"

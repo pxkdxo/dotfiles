@@ -1,4 +1,5 @@
-# gpg-agent.sh : gpg-agent config
+#!/usr/bin/env sh
+# gpg-agent.sh: gpg-agent config
 # see gpg-agent(1)
 
 AGENT_SOCK="$(gpgconf --list-dirs agent-socket)"

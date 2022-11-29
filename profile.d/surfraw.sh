@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # surfraw.sh: surfraw elvi path config
 
 if command -v surfraw > /dev/null; then

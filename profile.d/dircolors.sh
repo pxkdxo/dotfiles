@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # dircolors.sh : dircolors config
 # see dircolors(1)
 

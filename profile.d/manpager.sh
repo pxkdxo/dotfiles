@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # manpager.sh : manual pager configuration
 
 # Use vim or nvim if availabe

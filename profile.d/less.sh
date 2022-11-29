@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # less.sh : less environment config
 # see less(1)
 
@@ -21,11 +22,11 @@ if test -n "${TERM}"; then
   if LESS_TERMCAP_me="$(tput sgr0)"; then
     export LESS_TERMCAP_me
   fi
-  if LESS_TERMCAP_se="$(tput rmso)"; then
-    export LESS_TERMCAP_se
-  fi
   if LESS_TERMCAP_so="$(tput smso)"; then
     export LESS_TERMCAP_so
+  fi
+  if LESS_TERMCAP_se="$(tput rmso)"; then
+    export LESS_TERMCAP_se
   fi
   if LESS_TERMCAP_us="$(tput smul)"; then
     export LESS_TERMCAP_us

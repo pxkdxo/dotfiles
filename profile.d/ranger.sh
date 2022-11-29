@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 ## ranger.sh : setup ranger to skip the default rc if a user-specific rc exists
 
 if test -d "${XDG_CONFIG_HOME:-${HOME-}/.config}/ranger"; then

@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # go.sh: go environment config
 
 if test -n "${GOBIN}"; then
