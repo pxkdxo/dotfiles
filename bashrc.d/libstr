@@ -163,7 +163,7 @@ unicode_range()
         printf '%b' "\U${char}"
         if (( char = (16#${char}), char + incr != stop ))
         then
-            printf '%s' "${sep-, }"
+            printf '%s' "${sep- }"
         else
             echo
         fi

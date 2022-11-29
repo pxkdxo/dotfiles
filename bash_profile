@@ -13,7 +13,7 @@ then
 fi
 
 # Upon login in at tty1, start an Xsession
-if [[ -z ${DISPLAY-} ]] && ((XDG_VTNR == 1 )) && command -v startx > /dev/null
+if [[ -z ${DISPLAY-} ]] && (( XDG_VTNR == 1 )) && command -v startx > /dev/null
 then
   exec startx
 fi
