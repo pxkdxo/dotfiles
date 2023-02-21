@@ -43,6 +43,7 @@
 !/mpd/mpd.conf
 !/nanorc
 !/ncmpcpp/config
+!/neofetch/**
 !/nvim/autoload
 !/nvim/bundle
 !/nvim/colors
@@ -84,6 +85,7 @@
 !/xserverrc
 !/zlogin
 !/zlogout
+!/znt/**
 !/zprofile
 !/zsh/.zlogin
 !/zsh/.zlogout
@@ -113,8 +115,10 @@
 *.so
 
 # ignore tag files
-tags
 .tags
+.TAGS
+tags
+TAGS
 
 # ignore index files
 .DS_Store
