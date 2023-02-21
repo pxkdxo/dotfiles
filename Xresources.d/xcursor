@@ -1,5 +1,5 @@
 ! ~/.Xresources.d/Xcursor: Xcursor config
 
-Xcursor.theme                 : Vanilla-DMZ
+!Xcursor.theme                 : Vanilla-DMZ
 
 ! vim: ft=xdefaults

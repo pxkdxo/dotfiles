@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=urxvt terminal daemon
-Exec=urxvtd --quiet --opendisplay --fork
-X-GNOME-Autostart-enabled=true
-X-GNOME-Autostart-Phase=Initialization
-X-GNOME-AutoRestart=true

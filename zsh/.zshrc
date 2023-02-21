@@ -82,6 +82,23 @@ else
   HIST_STAMPS='%a %b %d %R %Y'
 fi
 
+
+# Find fzf and add it to the PATH
+if [[ -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf" ]]; then
+  export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
+elif [[ -d '/usr/local/share/fzf' ]]; then
+  export FZF_BASE='/usr/local/share/fzf'
+elif [[ -d '/usr/share/fzf' ]]; then
+  export FZF_BASE='/usr/share/fzf'
+else
+  unset -v FZF_BASE
+fi
+if [[ -v FZF_BASE ]]; then
+  if [[ :"${PATH}": != *:"${FZF_BASE}/bin":* ]]; then
+    export PATH="${PATH:+${PATH}:}${FZF_BASE}/bin"
+  fi
+fi
+
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
@@ -102,7 +119,7 @@ plugins=(
   docker-shortcuts
   extract
   fancy-ctrl-z
-  #fzf
+  fzf
   #fzf-interactive-cd
   #emoji
   fzf-extensions
@@ -112,11 +129,13 @@ plugins=(
   golang
   gpg-agent
   history-substring-search
+  httpie
   jsontools
   keybindings
   #kind
   kubectl
   kubernetes
+  #magic-enter
   #minikube
   mkcd
   mkmv
@@ -125,24 +144,25 @@ plugins=(
   npm
   pass
   pip
+  pylint
   python
+  qrcode
   ripgrep
   rsync
   rust
-  #systemadmin
+  shrink-path
   systemd
   terraform
   tmux
-  #ufw
   urltools
   vagrant
-  vault
   venv
   virtualenv
   z
   zsh-autosuggestions
   zsh-completions
   zsh-navigation-tools
+  #zsh-interactive-cd
   zsh-syntax-highlighting
   zshaliases
   zshoptions
@@ -178,22 +198,6 @@ fi
 autoload -U -z compinit
 compinit -i -d "${ZSH_COMPDUMP:-${ZDOTDIR:-${HOME}}/.zcompdump}"
 
-
-# Load FZF
-#
-if [[ -d ${XDG_DATA_HOME:-${HOME}/.local/share}/fzf ]]; then
-  if [[ :${PATH}: != *:${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin:* ]]; then
-    export PATH="${PATH:+${PATH}:}${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin"
-  fi
-  if [[ $- == *i* ]]; then
-    if test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/completion.zsh"; then
-      source -- "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/completion.zsh"
-    fi
-    if test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"; then
-      source -- "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/shell/key-bindings.zsh"
-    fi
-  fi 2> /dev/null
-fi
 
 # Configure FZF
 #

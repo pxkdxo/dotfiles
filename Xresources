@@ -16,8 +16,8 @@
 #include ".Xresources.d/colors/colorsbox-steighties"
 #include ".Xresources.d/xterm"
 #include ".Xresources.d/urxvt"
-#include ".Xresources.d/xcursor"
-#include ".Xresources.d/xft"
+!#include ".Xresources.d/xcursor"
+!#include ".Xresources.d/xft"
 
 *locale: true
 *customization: -color

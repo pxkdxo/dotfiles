@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=devilspie2
-Exec=devilspie2
-Type=Application
-X-GNOME-Autostart-enabled=false
-X-GNOME-Autostart-Phase=Initialization
-X-GNOME-AutoRestart=true
