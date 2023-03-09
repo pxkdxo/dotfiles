@@ -85,7 +85,6 @@
 !/xserverrc
 !/zlogin
 !/zlogout
-!/znt/**
 !/zprofile
 !/zsh/.zlogin
 !/zsh/.zlogout
