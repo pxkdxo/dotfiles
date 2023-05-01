@@ -120,7 +120,6 @@ plugins=(
   extract
   fancy-ctrl-z
   fzf
-  #fzf-interactive-cd
   #emoji
   fzf-extensions
   git
@@ -161,7 +160,7 @@ plugins=(
   z
   zsh-autosuggestions
   zsh-completions
-  zsh-navigation-tools
+  #zsh-navigation-tools
   #zsh-interactive-cd
   zsh-syntax-highlighting
   zshaliases
