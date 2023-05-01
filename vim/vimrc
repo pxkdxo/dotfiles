@@ -79,22 +79,7 @@ Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
-Plug 'ycm-core/YouCompleteMe'
-"
-"if has('nvim')
-"  Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
-"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"  Plug 'deoplete-plugins/deoplete-jedi', { 'do': ':UpdateRemotePlugins' }
-"else
-"  Plug 'roxma/nvim-yarp'
-"  Plug 'roxma/vim-hug-neovim-rpc'
-"  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-"  Plug 'Shougo/denite.nvim'
-"  Plug 'Shougo/deoplete.nvim'
-"  Plug 'deoplete-plugins/deoplete-jedi'
-"endif
-"
-"let g:deoplete#enable_at_startup = 1
+"Plug 'ycm-core/YouCompleteMe'
 "
 let g:jedi#auto_initialization = 1
 let g:jedi#completions_enabled = 0
