@@ -501,10 +501,10 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
+    \   'kolor',
     \   'janah',
     \   'colorsbox-steighties',
     \   'neonwave',
-    \   'kolor',
     \   '1989',
     \   'Tomorrow-Night-Eighties',
     \   'dracula',
