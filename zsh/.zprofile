@@ -10,3 +10,5 @@ if [[ -f ~/.profile && -r ~/.profile ]]; then
 fi
 
 # vi:ft=zsh
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
