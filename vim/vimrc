@@ -79,6 +79,7 @@ Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
+Plug 'hashivim/vim-terraform'
 "Plug 'ycm-core/YouCompleteMe'
 "
 let g:jedi#auto_initialization = 1

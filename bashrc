@@ -492,3 +492,7 @@ if [[ -d ~/.bashrc.d ]]
 then
   sourcedir ~/.bashrc.d
 fi
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/pat/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

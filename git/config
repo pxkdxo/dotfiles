@@ -23,10 +23,10 @@
 
 [init]
 	templateDir = ~/.local/share/git/templates
-	defaultBranch = main
+	defaultBranch = master
 
 [user]
-	email = pdeyoreo@gmail.com
+	email = pdeyoreo@altimetrik.com
 	name = Patrick DeYoreo
 [pull]
 	rebase = false

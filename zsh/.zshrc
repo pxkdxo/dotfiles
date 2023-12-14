@@ -363,3 +363,7 @@ ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red'
 # fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/pat/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
