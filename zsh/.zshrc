@@ -126,7 +126,7 @@ plugins=(
   #git-extras
   globalias-rev
   golang
-  #gpg-agent
+  gpg-agent
   history-substring-search
   httpie
   jsontools
