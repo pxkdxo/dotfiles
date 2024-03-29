@@ -59,6 +59,7 @@ Plug 'davidhalter/jedi-vim'
 Plug 'Valloric/ListToggle'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'macguirerintoul/night_owl_light.vim'
 Plug 'edkolev/promptline.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-syntastic/syntastic'
@@ -66,15 +67,11 @@ Plug 'majutsushi/tagbar'
 Plug 'edkolev/tmuxline.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'flazz/vim-colorschemes'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'fatih/vim-go'
 Plug 'pangloss/vim-javascript'
-"Plug 'prabirshrestha/vim-lsp'
-"Plug 'mattn/vim-lsp-settings'
-"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
@@ -487,28 +484,26 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
-    \   'janah',
-    \   'colorsbox-steighties',
-    \   'neonwave',
+    \   'night_owl_light',
     \   'kolor',
-    \   '1989',
-    \   'Tomorrow-Night-Eighties',
+    \   'janah',
     \   'dracula',
-    \   'evolution',
+    \   '1989',
+    \   'colorsbox-steighties',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
     \   '1989',
-    \   'Tomorrow-Night-Eighties',
     \   'squidink',
+    \   'Tomorrow-Night-Eighties',
     \   'dracula',
-    \   'evolution',
     \ ]
 else
   let g:colorschemes = [
+    \   'default',
     \   'evening',
     \   'desert',
-    \   'default',
+    \   'peachpuff',
     \ ]
 endif
 "
@@ -1220,4 +1215,4 @@ set modeline
 set secure
 
 
-" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=79
+" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=119

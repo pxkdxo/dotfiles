@@ -126,7 +126,7 @@ plugins=(
   #git-extras
   globalias-rev
   golang
-  #gpg-agent
+  gpg-agent
   history-substring-search
   httpie
   jsontools
@@ -188,7 +188,7 @@ fi
 if command -v bat > /dev/null; then
   export BAT_PAGER="${BAT_PAGER:-less ${LESS--FgiMqRX-2}}"
   export BAT_STYLE="${BAT_STYLE:-grid,header,numbers}"
-  export BAT_THEME="${BAT_THEME:-Dracula}"
+  export BAT_THEME="${BAT_THEME:-GitHub}"
 fi
 
 

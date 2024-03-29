@@ -3,12 +3,15 @@
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
-
 # Load login shell config
 if [[ -f ~/.profile && -r ~/.profile ]]; then
   source ~/.profile
 fi
 
-# vi:ft=zsh
+# Load homebrew
+if [[ -f /opt/homebrew/bin/brew && -x /opt/homebrew/bin/brew ]]
+then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# vi:ft=zsh
