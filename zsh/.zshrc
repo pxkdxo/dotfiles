@@ -116,11 +116,12 @@ plugins=(
   ctags
   dircolors
   docker
+  docker-compose
   docker-shortcuts
   extract
   fancy-ctrl-z
+  fd
   fzf
-  #emoji
   fzf-extensions
   git
   #git-extras
@@ -145,18 +146,19 @@ plugins=(
   pip
   pylint
   python
-  qrcode
   ripgrep
   rsync
   rust
   shrink-path
   systemd
   terraform
+  themes
   tmux
   urltools
   vagrant
   venv
   virtualenv
+  yarn
   z
   zsh-autosuggestions
   zsh-completions
