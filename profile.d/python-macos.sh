@@ -3,13 +3,16 @@
 
 case "$(uname)" in
   [Dd]arwin*)
-    for directory in /Users/"$(id -un)"/Library/Python/*/bin
-    do
-      case ":${PATH}:" in
-        *:"${directory}":*) ;;
-        *) export PATH="${PATH:+${PATH}:}${directory}" ;;
-      esac
-    done
+    if [[ -d /Users/"$(id -un)"/Library/Python ]]
+    then
+      for directory in /Users/"$(id -un)"/Library/Python/*/bin
+      do
+        case ":${PATH}:" in
+          *:"${directory}":*) ;;
+          *) export PATH="${PATH:+${PATH}:}${directory}" ;;
+        esac
+      done
+    fi
     ;;
 esac
 unset directory
