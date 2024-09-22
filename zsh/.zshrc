@@ -82,7 +82,6 @@ else
   HIST_STAMPS='%a %b %d %R %Y'
 fi
 
-
 # Find fzf and add it to the PATH
 if [[ -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf" ]]; then
   export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
@@ -102,6 +101,9 @@ fi
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Temporary fix for git prompts
+zstyle ':omz:alpha:lib:git' async-prompt no
+
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -120,11 +122,9 @@ plugins=(
   docker-shortcuts
   extract
   fancy-ctrl-z
-  fd
   fzf
   fzf-extensions
   git
-  #git-extras
   globalias-rev
   golang
   gpg-agent
@@ -135,7 +135,6 @@ plugins=(
   #kind
   kubectl
   kubernetes
-  #magic-enter
   #minikube
   mkcd
   mkmv
@@ -146,7 +145,6 @@ plugins=(
   pip
   pylint
   python
-  ripgrep
   rsync
   rust
   shrink-path
