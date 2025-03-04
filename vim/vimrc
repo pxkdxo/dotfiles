@@ -483,12 +483,12 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
-    \   'night_owl_light',
     \   'kolor',
     \   'janah',
-    \   'dracula',
     \   '1989',
+    \   'dracula',
     \   'colorsbox-steighties',
+    \   'night_owl_light',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
@@ -499,9 +499,9 @@ elseif (&t_Co >= 88)
     \ ]
 else
   let g:colorschemes = [
+    \   'desert',
     \   'default',
     \   'evening',
-    \   'desert',
     \   'peachpuff',
     \ ]
 endif
@@ -1032,11 +1032,11 @@ command! -nargs=* -bang Colors call Colors(<q-args>, <bang>0)
 "
 "
 " F1:
-" Find helptags
-nnoremap <silent> <F1> :Helptags<CR>
-inoremap <silent> <F1> <Esc>:Helptags<CR>
-nnoremap <silent> <Esc><F1> :Helptags!<CR>
-inoremap <silent> <Esc><F1> <Esc>:Helptags!<CR>
+" Find buffers
+nnoremap <silent> <F1> :Buffers<CR>
+inoremap <silent> <F1> <Esc>:Buffers<CR>
+nnoremap <silent> <Esc><F1> :Buffers!<CR>
+inoremap <silent> <Esc><F1> <Esc>:Buffers!<CR>
 
 " F2:
 " Find commands
@@ -1046,18 +1046,19 @@ nnoremap <silent> <Esc><F2> :Commands!<CR>
 inoremap <silent> <Esc><F2> <Esc>:Commands!<CR>
 
 " F3:
-" Find buffers
-nnoremap <silent> <F3> :Buffers<CR>
-inoremap <silent> <F3> <Esc>:Buffers<CR>
-nnoremap <silent> <Esc><F3> :Buffers!<CR>
-inoremap <silent> <Esc><F3> <Esc>:Buffers!<CR>
+" Find files
+nnoremap <silent> <F3> :Files<CR>
+inoremap <silent> <F3> <Esc>:Files<CR>
+nnoremap <silent> <Esc><F3> :Files!<CR>
+inoremap <silent> <Esc><F3> <Esc>:Files!<CR>
 
 " F4:
-" Find files
-nnoremap <silent> <F4> :Files<CR>
-inoremap <silent> <F4> <Esc>:Files<CR>
-nnoremap <silent> <Esc><F4> :Files!<CR>
-inoremap <silent> <Esc><F4> <Esc>:Files!<CR>
+" Find helptags
+nnoremap <silent> <F4> :Helptags<CR>
+inoremap <silent> <F4> <Esc>:Helptags<CR>
+nnoremap <silent> <Esc><F4> :Helptags!<CR>
+inoremap <silent> <Esc><F4> <Esc>:Helptags!<CR>
+
 
 
 " Tabs
