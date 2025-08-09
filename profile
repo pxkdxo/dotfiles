@@ -44,3 +44,4 @@ unset -v name
 
 
 # vi:ft=sh
+. "/Users/patrick.deyoreo/.local/share/cargo/env"

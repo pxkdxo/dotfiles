@@ -1,13 +1,7 @@
 # Setup fzf
 # ---------
-if [[ ! "$PATH" == */Users/pat/.local/share/fzf/bin* ]]; then
-  PATH="${PATH:+${PATH}:}/Users/pat/.local/share/fzf/bin"
+if [[ ! "$PATH" == */Users/patrick.deyoreo/.local/share/fzf/bin* ]]; then
+  PATH="${PATH:+${PATH}:}/Users/patrick.deyoreo/.local/share/fzf/bin"
 fi
 
-# Auto-completion
-# ---------------
-# [[ $- == *i* ]] && source "/Users/pat/.local/share/fzf/shell/completion.zsh" 2> /dev/null
-
-# Key bindings
-# ------------
-source "/Users/pat/.local/share/fzf/shell/key-bindings.zsh"
+source <(fzf --zsh)

@@ -3,7 +3,7 @@
 
 case "$(uname)" in
   [Dd]arwin*)
-    if [[ -d /Users/"$(id -un)"/Library/Python ]]
+    if test -d /Users/"$(id -un)"/Library/Python
     then
       for directory in /Users/"$(id -un)"/Library/Python/*/bin
       do
