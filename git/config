@@ -2,31 +2,35 @@
 # see git(1)  git-config(1)
 
 [advice]
-	pushUpdateRejected
+  pushUpdateRejected = true
 
 [color]
-	branch = auto
-	diff = auto
-	status = auto
-	interactive = auto
+  branch = auto
+  diff = auto
+  status = auto
+  interactive = auto
 
 [color "decorate"]
-	branch = green
-	remoteBranch = red
-	stash = blue
-	tag = yellow
+  branch = green
+  remoteBranch = magenta
+  stash = blue
+  tag = yellow
 
 [core]
 
 [credential]
-	helper = cache --timeout 3600
+  helper = cache --timeout 3600
 
 [init]
-	templateDir = ~/.local/share/git/templates
-	defaultBranch = main
+  defaultBranch = main
+  templateDir = ~/.local/share/git/templates
 
 [user]
-	email = pdeyoreo@gmail.com
-	name = Patrick DeYoreo
+  email = pdeyoreo@gmail.com
+  name = Patrick DeYoreo
+
 [pull]
-	rebase = false
+  rebase = false
+
+[push]
+  autoSetupRemote = true

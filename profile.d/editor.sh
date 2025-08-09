@@ -2,8 +2,11 @@
 # editor.sh: configure the EDITOR environment variable
 # see environ(7) and select-editor(1)
 
+SEP="$(printf ' \t\n:')"
+SEP="${SEP%:}"
+
 if command -v update-alternatives > /dev/null; then
-  while IFS=$' \t\n' read -r REPLY; do
+  while IFS="${SEP}" read -r REPLY; do
     REPLY="${REPLY#"${REPLY%%[![:blank:]]*}"}"
     REPLY="${REPLY%"${REPLY##*[![:blank:]]}"}"
     if test "${REPLY%%[[:blank:]]*}" = 'Value:'; then

@@ -110,7 +110,6 @@ zstyle ':omz:alpha:lib:git' async-prompt no
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  #alacritty
   aws
   cdls
   clipboard-keybindings
@@ -158,10 +157,11 @@ plugins=(
   virtualenv
   yarn
   z
+  zsh-kitty
   zsh-autosuggestions
   zsh-completions
   #zsh-navigation-tools
-  #zsh-interactive-cd
+  zsh-interactive-cd
   zsh-syntax-highlighting
   zshaliases
   zshoptions

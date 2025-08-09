@@ -76,7 +76,11 @@ Plug 'rodjek/vim-puppet'
 Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-surround'
-Plug 'ycm-core/YouCompleteMe'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'junegunn/seoul256.vim'
+Plug 'haishanh/night-owl.vim'
+Plug 'connorholyday/vim-snazzy'
+"Plug 'ycm-core/YouCompleteMe'
 "
 let g:jedi#auto_initialization = 1
 let g:jedi#completions_enabled = 0
@@ -426,14 +430,14 @@ endif
 " ColorColumn
 "
 " Link colorcolumn highlighting to that of the current line number
-"if has('autocmd')
-"  autocmd rc ColorScheme *
-"    \ silent! highlight! link ColorColumn CursorLineNr
-"endif
-"
-" Define a function to apply 'colorcolumn' to all columns past 'textwidth'
+if has('autocmd')
+  autocmd rc ColorScheme *
+    \ silent! highlight! link ColorColumn CursorLineNr
+endif
+
+" Apply 'colorcolumn' to all columns past 'textwidth'
 let &colorcolumn = join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
-"
+
 " Update 'colorcolumn' upon resizing a window
 if (has('autocmd'))
   autocmd rc BufEnter,VimEnter,VimResized,WinEnter *
@@ -483,25 +487,40 @@ endif
 " Choose some colors
 if (&termguicolors)
   let g:colorschemes = [
+    \   'seoul256',
+    \   'nightfox',
+    \   'night-owl',
+    \   'duskfox',
+    \   'seoul256-light',
+    \   'dawnfox',
+    \   'night_owl_light',
+    \   'snazzy',
+    \   'carbonfox',
+    \   'kiss',
+    \   'colorsbox-steighties',
     \   'kolor',
     \   'janah',
-    \   '1989',
-    \   'dracula',
-    \   'colorsbox-steighties',
-    \   'night_owl_light',
     \ ]
 elseif (&t_Co >= 88)
   let g:colorschemes = [
-    \   '1989',
-    \   'squidink',
-    \   'Tomorrow-Night-Eighties',
-    \   'dracula',
+    \   'seoul256',
+    \   'nightfox',
+    \   'night-owl',
+    \   'duskfox',
+    \   'seoul256-light',
+    \   'dawnfox',
+    \   'night_owl_light',
+    \   'snazzy',
+    \   'carbonfox',
+    \   'kiss',
+    \   'colorsbox-steighties',
     \ ]
 else
   let g:colorschemes = [
-    \   'desert',
-    \   'default',
+    \   'sorbet',
     \   'evening',
+    \   'wildcharm',
+    \   'default',
     \   'peachpuff',
     \ ]
 endif
@@ -695,19 +714,19 @@ if (!exists('g:airline_symbols'))
   let g:airline_symbols = {}
 endif
 "
-let g:airline_symbols.branch      = "  "
-let g:airline_symbols.crypt       = "  "
-let g:airline_symbols.dirty       = "  "
-let g:airline_symbols.ellipsis    = '  '
-let g:airline_symbols.linenr      = " ﬌ "
-let g:airline_symbols.maxlinenr   = "  "
-let g:airline_symbols.notexists   = "  "
-let g:airline_symbols.modified    = "  "
-"let g:airline_symbols.modified   = "  "
-let g:airline_symbols.paste       = "  "
-let g:airline_symbols.readonly    = "  "
-let g:airline_symbols.space       = " "
-let g:airline_symbols.whitespace  = ""
+let g:airline_symbols.branch      = " "
+let g:airline_symbols.crypt       = " "
+let g:airline_symbols.dirty       = " "
+let g:airline_symbols.ellipsis    = '...'
+let g:airline_symbols.linenr      = "﬌ "
+let g:airline_symbols.maxlinenr   = " "
+let g:airline_symbols.notexists   = " "
+let g:airline_symbols.modified    = " "
+"let g:airline_symbols.modified   = " "
+let g:airline_symbols.paste       = " "
+let g:airline_symbols.readonly    = " "
+let g:airline_symbols.space       = "  "
+let g:airline_symbols.whitespace  = " "
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = "unique_tail_improved"
@@ -783,7 +802,7 @@ nnoremap <silent> <F8> :ToggleBufExplorer<CR>
 " CtrlP
 "
 let g:ctrlp_map = '<C-q>'
-let g:ctrlp_cmd = 'Rz'
+let g:ctrlp_cmd = 'Rg'
 let g:ctrlp_switch_buffer = 'Et'
 let g:ctrlp_show_hidden = 0
 let g:ctrlp_mruf_exclude = '^\(.*/\)\?\.\?tmp\(/.*\)\?$'
@@ -845,16 +864,16 @@ let g:lt_quickfix_list_toggle_map = '<leader>q'
 " NERDTree
 "
 let g:NERDTreeGitStatusIndicatorMapCustom = {
-  \   'Clean'     : '',
-  \   'Deleted'   : '',
-  \   'Dirty'     : '',
-  \   'Ignored'   : 'ﰸ',
-  \   'Modified'  : '',
-  \   'Renamed'   : '',
-  \   'Staged'    : '',
-  \   'Unknown'   : '',
-  \   'Unmerged'  : '',
-  \   'Untracked' : '',
+  \   'Clean'     : '\uf6c8',
+  \   'Dirty'     : '\uf7d3',
+  \   'Modified'  : '\ue214',
+  \   'Renamed'   : '\u279C',
+  \   'Deleted'   : '\u2620',
+  \   'Ignored'   : '\u2717',
+  \   'Staged'    : '\uf569',
+  \   'Untracked' : '\u2691',
+  \   'Unknown'   : '\u2BD1',
+  \   'Unmerged'  : '\u26A1',
   \ }
 "
 " Disable arrow icons at the left side of folder icons
@@ -991,7 +1010,7 @@ command! -bang -nargs=? -complete=dir Files
 "
 "
 " Select files with ripgrep
-function! Rz(query, fullscreen)
+function! Rg(query, fullscreen)
   let l:commandfmt = 'rg --no-column --no-heading --line-number --color=always --smart-case -- %s || true'
   let l:command = printf(l:commandfmt, shellescape(a:query))
   let l:command_reload = printf(l:commandfmt, '{q}')
@@ -999,13 +1018,14 @@ function! Rz(query, fullscreen)
   call fzf#vim#grep(l:command, 0, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 "
-command! -nargs=* -bang Rz call Rz(<q-args>, <bang>0)
+command! -nargs=* -bang Rg call Rg(<q-args>, <bang>0)
 "
 "
 " Select colorschemes
 function! Colors(query, fullscreen)
   let l:options = [
     \ '--cycle',
+    \ '--no-sort',
     \ '--bind=tab:down,shift-tab:up',
     \ '--info=hidden',
     \ '--layout=reverse',
@@ -1015,43 +1035,41 @@ function! Colors(query, fullscreen)
   if (empty($TMUX) || empty($FZF_TMUX))
     let l:spec = {
     \ 'options': l:options, 'source': l:source, 'sink': 'color',
-    \ 'window': join([
-    \   'vertical', 'aboveleft', join([float2nr(winwidth(0) * 0.28), 'new'], '')
-    \ ])
+    \ 'window': join(['vertical', 'aboveleft', join([float2nr(winwidth(0) * 0.28), 'new'], '')])
     \ }
   else
     let l:spec = {
     \ 'options': l:options, 'source': l:source, 'sink': 'color',
     \ 'tmux': join(['-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT])
     \ }
-  endif
+  endifPlug 'connorholyday/vim-snazzy'
   call fzf#run(fzf#wrap(l:spec, a:fullscreen))
 endfunction
 "
 command! -nargs=* -bang Colors call Colors(<q-args>, <bang>0)
-"
-"
+
+
 " F1:
-" Find buffers
-nnoremap <silent> <F1> :Buffers<CR>
-inoremap <silent> <F1> <Esc>:Buffers<CR>
-nnoremap <silent> <Esc><F1> :Buffers!<CR>
-inoremap <silent> <Esc><F1> <Esc>:Buffers!<CR>
-
-" F2:
-" Find commands
-nnoremap <silent> <F2> :Commands<CR>
-inoremap <silent> <F2> <Esc>:Commands<CR>
-nnoremap <silent> <Esc><F2> :Commands!<CR>
-inoremap <silent> <Esc><F2> <Esc>:Commands!<CR>
-
-" F3:
 " Find files
-nnoremap <silent> <F3> :Files<CR>
-inoremap <silent> <F3> <Esc>:Files<CR>
-nnoremap <silent> <Esc><F3> :Files!<CR>
-inoremap <silent> <Esc><F3> <Esc>:Files!<CR>
-
+nnoremap <silent> <F1> :Rg<CR>
+inoremap <silent> <F1> <Esc>:Rg<CR>
+nnoremap <silent> <Esc><F1> :Rg!<CR>
+inoremap <silent> <Esc><F1> <Esc>:Rg!<CR>
+"
+" F2:
+" Find buffers
+nnoremap <silent> <F2> :Buffers<CR>
+inoremap <silent> <F2> <Esc>:Buffers<CR>
+nnoremap <silent> <Esc><F2> :Buffers!<CR>
+inoremap <silent> <Esc><F2> <Esc>:Buffers!<CR>
+"
+" F3:
+" Find commands
+nnoremap <silent> <F3> :Commands<CR>
+inoremap <silent> <F3> <Esc>:Commands<CR>
+nnoremap <silent> <Esc><F3> :Commands!<CR>
+inoremap <silent> <Esc><F3> <Esc>:Commands!<CR>
+"
 " F4:
 " Find helptags
 nnoremap <silent> <F4> :Helptags<CR>
@@ -1067,7 +1085,7 @@ inoremap <silent> <Esc><F4> <Esc>:Helptags!<CR>
 nnoremap <silent> <leader>c :tabnew<CR>
 "
 " Destroy a tab
-nnoremap <silent> <leader>x :tabclose<CR>
+nnoremap <silent> <leader>d :tabclose<CR>
 "
 " Go to the next tab
 nnoremap <silent> <C-PageUp> :tabnext<CR>
@@ -1078,7 +1096,7 @@ nnoremap <silent> <C-PageDown> :tabprev<CR>
 
 " Paste mode
 "
-set pastetoggle=<Insert>
+"set pastetoggle=<Insert>
 "
 " Insert:
 " Toggle paste mode
@@ -1089,19 +1107,12 @@ nnoremap <silent> <Insert>
 " Misc
 "
 " F6: Toggle line numbers
-"nnoremap <silent> <F6>
-"  \ : let &l:nu = !&l:nu<Bar>
-"  \   let &l:rnu = &l:nu<CR>
 nnoremap <silent> <F6>
   \ : let &l:nu = !&l:nu<CR>
 "
 " F5: Toggle search highlighting
 nnoremap <silent> <F5>
   \ : setlocal hlsearch!<CR>
-"
-" Insert a shebang above the first line
-"nnoremap <silent> <leader>#!
-"  \ ggI<C-R>=substitute(&ft, "..*", "#!" . exepath(&ft) . "\\r", "")<CR><Esc>``
 "
 " Copy the current visual selection to the clipboard
 vnoremap <silent> - "+y
@@ -1128,83 +1139,6 @@ vnoremap <silent> #
   \   escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
   \   gV:call setreg('"',old_reg,old_regtype)<CR>
 
-
-" Fix vim escape codes
-"
-if (!has('nvim'))
-  "
-  " Cursor style sequences
-  let &t_SI = "\<Esc>[5 q "
-  let &t_EI = "\<Esc>[1 q"
-  "
-  " Home and End sequences
-  execute "set <Home>=\<Esc>[OH"
-  execute "set <S-Home>=\<Esc>[1;*H"
-  "execute "set <xHome>=\<Esc>[1~"
-  execute "set <xHome>=\<Esc>[7~"
-  execute "set <End>=\<Esc>[OF"
-  execute "set <S-End>=\<Esc>[1;*F"
-  "execute "set <xEnd>=\<Esc>[4~"
-  execute "set <xEnd>=\<Esc>[8~"
-  "
-  " Insert, Delete, PgUp and PgDn sequences
-  execute "set <Insert>=\<Esc>[2;*~"
-  execute "set <Del>=\<Esc>[3;*~"
-  execute "set <PageUp>=\<Esc>[5;*~"
-  execute "set <PageDown>=\<Esc>[6;*~"
-  "
-  " Arrowkey sequences
-  execute "set <Up>=\<Esc>OA"
-  execute "set <xUp>=\<Esc>[A"
-  execute "set <Down>=\<Esc>OB"
-  execute "set <xDown>=\<Esc>[B"
-  execute "set <Right>=\<Esc>OC"
-  execute "set <xRight>=\<Esc>[C"
-  execute "set <Left>=\<Esc>OD"
-  execute "set <xLeft>=\<Esc>[D"
-  "
-  " Arrowkey + modifier combinations
-  execute "set <S-Up>=\<Esc>[1;*A"
-  execute "set <S-Down>=\<Esc>[1;*B"
-  execute "set <S-Right>=\<Esc>[1;*C"
-  execute "set <S-Left>=\<Esc>[1;*D"
-  "
-  " Fn keys
-  execute "set <F1>=\<Esc>[11~"
-  execute "set <xF1>=\<Esc>OP"
-  execute "set <F2>=\<Esc>[12~"
-  execute "set <xF2>=\<Esc>OQ"
-  execute "set <F3>=\<Esc>[13~"
-  execute "set <xF3>=\<Esc>OR"
-  execute "set <F4>=\<Esc>[14~"
-  execute "set <xF4>=\<Esc>OS"
-  execute "set <F5>=\<Esc>[15~"
-  execute "set <F6>=\<Esc>[17~"
-  execute "set <F7>=\<Esc>[18~"
-  execute "set <F8>=\<Esc>[19~"
-  execute "set <F9>=\<Esc>[20~"
-  execute "set <F10>=\<Esc>[21~"
-  execute "set <F11>=\<Esc>[23~"
-  execute "set <F12>=\<Esc>[24~"
-  "
-  " Fn + modifier combinations
-  execute "set <S-F1>=\<Esc>[11;*~"
-  execute "set <S-xF1>=\<Esc>[1;*P"
-  execute "set <S-F2>=\<Esc>[12;*~"
-  execute "set <S-xF2>=\<Esc>[1;*Q"
-  execute "set <S-F3>=\<Esc>[13;*~"
-  execute "set <S-xF3>=\<Esc>[1;*R"
-  execute "set <S-F4>=\<Esc>[14;*~"
-  execute "set <S-xF4>=\<Esc>[1;*S"
-  execute "set <S-F5>=\<Esc>[15;*~"
-  execute "set <S-F6>=\<Esc>[17;*~"
-  execute "set <S-F7>=\<Esc>[18;*~"
-  execute "set <S-F8>=\<Esc>[20;*~"
-  execute "set <S-F9>=\<Esc>[21;*~"
-  execute "set <S-F11>=\<Esc>[23;*~"
-  execute "set <S-F12>=\<Esc>[24;*~"
-
-endif
 
 " Epilogue
 "
