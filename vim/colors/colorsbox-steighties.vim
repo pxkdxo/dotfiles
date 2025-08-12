@@ -18,7 +18,7 @@ endif
 
 let g:colors_name='colorsbox-steighties'
 
-if !has("gui_running") && &t_Co < 256
+if !has('gui_running') && &t_Co != 256
   finish
 endif
 
@@ -29,12 +29,11 @@ if !exists('g:colorsbox_bold')
   let g:colorsbox_bold=1
 endif
 if !exists('g:colorsbox_italic')
-  "if has('gui_running') || $TERM_ITALICS == 'true'
-  "  let g:colorsbox_italic=1
-  "else
-  "  let g:colorsbox_italic=0
-  "endif
-  let g:colorsbox_italic=1
+  if has('gui_running') || $TERM_ITALICS == 'true'
+    let g:colorsbox_italic=1
+  else
+    let g:colorsbox_italic=0
+  endif
 endif
 if !exists('g:colorsbox_undercurl')
   let g:colorsbox_undercurl=1
@@ -55,8 +54,7 @@ if !exists('g:colorsbox_improved_strings')
 endif
 
 if !exists('g:colorsbox_improved_warnings')
-  "let g:colorsbox_improved_warnings=0
-  let g:colorsbox_improved_warnings=1
+  let g:colorsbox_improved_warnings=0
 endif
 
 if !exists('g:colorsbox_termcolors')
@@ -855,8 +853,8 @@ hi! link clojureUnquote colorsboxYellow
 " }}}
 " C: {{{
 
-"hi! link cOperator colorsboxPurple
-"hi! link cStructure colorsboxOrange
+hi! link cOperator colorsboxPurple
+hi! link cStructure colorsboxOrange
 
 " }}}
 " Python: {{{
