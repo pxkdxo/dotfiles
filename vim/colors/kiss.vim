@@ -34,7 +34,6 @@ hi Question     guifg=#bf81fa gui=none
 hi WildMenu     guifg=#eeeeec guibg=#0e1416
 hi LineNr       guifg=#696567 guibg=#000000
 hi SignColumn   guibg=#bf81fa
-hi ColorColumn  guifg=#696567 guibg=#000000
 
 " Pmenu
 hi Pmenu      guibg=#2e3436 guifg=#eeeeec
