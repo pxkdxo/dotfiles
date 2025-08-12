@@ -51,35 +51,35 @@ call plug#begin(join(split(&runtimepath, ',')[:0] + ['plug'], '/'))
 "
 " NOTE: use single quotes around plugin names
 "
-Plug 'jlanzarotta/bufexplorer'
+if (has('nvim'))
+  Plug 'EdenEast/nightfox.nvim'
+  Plug 'echasnovski/mini.nvim'
+  Plug 'folke/snacks.nvim'
+  Plug 'kevinhwang91/rnvimr'
+  Plug 'nvim-tree/nvim-web-devicons'
+  Plug 'nvim-treesitter/nvim-treesitter'
+  Plug 'nvim-treesitter/nvim-treesitter-context'
+endif
+Plug 'airblade/vim-gitgutter'
+Plug 'connorholyday/vim-snazzy'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'davidhalter/jedi-vim'
+Plug 'edkolev/tmuxline.vim'
+Plug 'fatih/vim-go'
+Plug 'haishanh/night-owl.vim'
+Plug 'jlanzarotta/bufexplorer'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'davidhalter/jedi-vim'
-Plug 'Valloric/ListToggle'
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'junegunn/seoul256.vim'
 Plug 'macguirerintoul/night_owl_light.vim'
-Plug 'edkolev/promptline.vim'
-Plug 'rust-lang/rust.vim'
-Plug 'vim-syntastic/syntastic'
 Plug 'majutsushi/tagbar'
-Plug 'edkolev/tmuxline.vim'
+Plug 'mhinz/vim-startify'
+Plug 'pangloss/vim-javascript'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ryanoasis/vim-devicons'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'fatih/vim-go'
-Plug 'pangloss/vim-javascript'
-Plug 'rodjek/vim-puppet'
-Plug 'tpope/vim-repeat'
-Plug 'mhinz/vim-startify'
-Plug 'tpope/vim-surround'
-Plug 'EdenEast/nightfox.nvim'
-Plug 'junegunn/seoul256.vim'
-Plug 'haishanh/night-owl.vim'
-Plug 'connorholyday/vim-snazzy'
 "Plug 'ycm-core/YouCompleteMe'
 "
 let g:jedi#auto_initialization = 1
@@ -116,7 +116,7 @@ set tabstop=8
 " Show lines that don't fit as @@@ and nonprintable characters as hexadecimal
 if (v:version >= 800)
   set display=
-  set display+=truncate
+  set display+=lastline
   set display+=uhex
 endif
 "
@@ -154,10 +154,7 @@ set laststatus=2
 set nostartofline
 "
 " Allow backspacing over everything in insert mode
-set backspace=
-set backspace+=indent
-set backspace+=eol
-set backspace+=start
+set backspace=indent,eol,start
 "
 " Highlight current line number
 if (exists('&cursorlineopt'))
@@ -257,7 +254,7 @@ endif
 " History
 "
 " Number of search patterns and ``:'' commands to remember (max: 10000)
-set history=5000
+set history=10000
 "
 " Number of modifications to remember for a given file
 set undolevels=2500
@@ -285,35 +282,25 @@ set timeout
 "
 " Don't timeout on keycodes
 if (has('nvim'))
-  set nottimeout
+  set ttimeout
 endif
 
 
 " Completion and Tags
 "
 " Enable insert-mode completion types
-set complete=
-set complete+=.
-set complete+=w
-set complete+=b
-set complete+=u
-set complete+=t
-set complete+=i
+set complete=.,w,b,u,t,i
 "
 " Configure insert-mode completion
 set completeopt=
-set completeopt+=menuone
-set completeopt+=longest
-set completeopt+=noinsert
-set completeopt+=preview
-"
-" Enable completion popup window
-if (has("quickfix") && has("textprop") && exists("&completepopup"))
-  set completeopt+=popup
-  set completepopup=
-" set completepopup+=height:15
-  set completepopup+=highlight:Pmenu
-  set completepopup+=border:off
+if (has('nvim'))
+  set completeopt=fuzzy,menuone,noselect,preview,popup
+elseif (exists("&completepopup"))
+  " Enable completion popup window
+  set completeopt=menuone,noselect,preview,popup
+  set completepopup=height:15,highlight:Pmenu,border:off
+else
+  set completeopt=menuone,noselect,preview
 endif
 "
 " Enable command-mode completion
@@ -406,7 +393,7 @@ endif
 "
 " Use ripgrep instead
 if (executable('rg') == 1)
-  let &grepprg = 'rg --color=auto --no-heading --no-column -- $* -'
+  let &grepprg = 'rg --vimgrep --smart-case --unrestricted -- $*'
 endif
 
 
@@ -453,33 +440,28 @@ if ($COLORTERM =~? '^\s*truecolor\s*$')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   endif
-  "let &t_Co = 256
-  "let &t_Co = 16777216
 endif
 "
 " Check type of terminal
 if (exists('+termguicolors'))
-  if ($TERM =~ '^\%(alacritty\|gnome\|st\|tmux\|vte\)\%(-.*\)\?$')
-    if (!has('nvim') && $TERM !~ '^.*-direct\%(-.*\)\?$')
+  if ($COLORTERM =~? '^\s*truecolor\s*$')
+    set termguicolors
+  elseif ($TERM =~ '^\%(st\|iterm\|vte\|gnome\)\%(-.*\)\?$')
+    if (!has('nvim'))
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     endif
     set termguicolors
-  elseif ($TERM =~ '^\%(linux\|putty\|rxvt\|screen\)\%(-.*\)\?$')
-    if (!has('nvim') && $TERM !~ '^.*-direct\%(-.*\)\?$')
+  elseif ($TERM =~ '^\(linux\|rxvt\|screen\|interix\|putty\)\(-.*\)\?$')
+    if (!has('nvim'))
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     endif
     set notermguicolors
   elseif ($TERM =~ '^\%(xterm\)\%(-.*\)\?$')
-    if (!has('nvim') && $TERM !~ '^.*-direct\%(-.*\)\?$')
+    if (!has('nvim'))
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    endif
-    if ($COLORTERM =~? '^\s*truecolor\s*$')
-      set termguicolors
-    else
-      set notermguicolors
     endif
   endif
 endif
@@ -551,12 +533,8 @@ function RotateColorscheme(n)
 endfunction
 "
 " F11:
-" Rotate to previous colorscheme
-nnoremap <silent> <F11> :call RotateColorscheme(-1)<CR>
-"
-" F12:
 " Rotate to next colorscheme
-nnoremap <silent> <F12> :call RotateColorscheme(1)<CR>
+nnoremap <silent> <F11> :call RotateColorscheme(1)<CR>
 
 
 " C / C++
@@ -605,7 +583,9 @@ nmap <leader>K
 " man page
 "
 " Load the Man plugin
-runtime ftplugin/man.vim
+if (!has('nvim'))
+  runtime ftplugin/man.vim
+endif
 "
 let g:man_hardwrap=0
 "
@@ -771,14 +751,9 @@ function RotateAirlineTheme(n)
 endfunction
 "
 " Alt F11:
-" Rotate to the previous airline theme
-nnoremap <silent> <Esc><F11> :call RotateAirlineTheme(-1)<CR>
-nnoremap <silent> <F59> :call RotateAirlineTheme(-1)<CR>
-"
-" Alt F12:
 " Rotate to the next airline theme
-nnoremap <silent> <Esc><F12> :call RotateAirlineTheme(1)<CR>
-nnoremap <silent> <F60> :call RotateAirlineTheme(1)<CR>
+nnoremap <silent> <Esc><F11> :call RotateAirlineTheme(1)<CR>
+nnoremap <silent> <F59> :call RotateAirlineTheme(1)<CR>
 "
 " Refresh airline when the colorscheme changes
 if (has('autocmd'))
@@ -921,39 +896,39 @@ nnoremap <silent> <F10> :TagbarToggle<CR>
 
 " YouCompleteMe
 "
-if (has("quickfix") && has("textprop") && exists("&completepopup"))
-  let g:ycm_add_preview_to_completeopt = 'popup'
-else
-  let g:ycm_add_preview_to_completeopt = 1
-endif
-let g:ycm_auto_hover = ''
-let g:ycm_auto_trigger = 1
-let g:ycm_autoclose_preview_window_after_completion = 0
-let g:ycm_autoclose_preview_window_after_insertion = 0
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_complete_in_comments = 1
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_key_invoke_completion = '<C-Space>'
-let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
-let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
-let g:ycm_key_list_stop_completion = ['<C-y>', '<Enter>']
-let g:ycm_max_num_candidates = 60
-let g:ycm_max_num_identifier_candidates = 12
-let g:ycm_min_num_of_chars_for_completion = 3
-let g:ycm_seed_identifiers_with_syntax = 0
-let g:ycm_global_ycm_extra_conf =
-  \ split(&runtimepath, ',')[0] . '/autoload/ycm_extra_conf.py'
+"if (has("quickfix") && has("textprop") && exists("&completepopup"))
+"  let g:ycm_add_preview_to_completeopt = 'popup'
+"else
+"  let g:ycm_add_preview_to_completeopt = 1
+"endif
+"let g:ycm_auto_hover = ''
+"let g:ycm_auto_trigger = 1
+"let g:ycm_autoclose_preview_window_after_completion = 0
+"let g:ycm_autoclose_preview_window_after_insertion = 0
+"let g:ycm_collect_identifiers_from_tags_files = 1
+"let g:ycm_complete_in_comments = 1
+"let g:ycm_confirm_extra_conf = 0
+"let g:ycm_key_invoke_completion = '<C-Space>'
+"let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
+"let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
+"let g:ycm_key_list_stop_completion = ['<C-y>', '<Enter>']
+"let g:ycm_max_num_candidates = 60
+"let g:ycm_max_num_identifier_candidates = 12
+"let g:ycm_min_num_of_chars_for_completion = 3
+"let g:ycm_seed_identifiers_with_syntax = 0
+"let g:ycm_global_ycm_extra_conf =
+"  \ split(&runtimepath, ',')[0] . '/autoload/ycm_extra_conf.py'
 "
 " Toggle preview window
-nmap <silent> <leader><leader> <plug>(YCMHover)
+"nmap <silent> <leader><leader> <plug>(YCMHover)
 "
-if (has('autocmd'))
-  autocmd rc FileType c,cpp
-    \ let b:ycm_hover = {
-    \   'command': 'GetDoc',
-    \   'syntax': &filetype,
-    \ }
-endif
+"if (has('autocmd'))
+"  autocmd rc FileType c,cpp
+"    \ let b:ycm_hover = {
+"    \   'command': 'GetDoc',
+"    \   'syntax': &filetype,
+"    \ }
+"endif
 
 
 " fzf
@@ -1014,8 +989,11 @@ function! Rg(query, fullscreen)
   let l:commandfmt = 'rg --no-column --no-heading --line-number --color=always --smart-case -- %s || true'
   let l:command = printf(l:commandfmt, shellescape(a:query))
   let l:command_reload = printf(l:commandfmt, '{q}')
-  let l:spec = {'options': ['--phony', '--layout=reverse', '--query', a:query, '--bind', join(['change', 'reload', l:command_reload], ':')]}
-  call fzf#vim#grep(l:command, 0, fzf#vim#with_preview(spec), a:fullscreen)
+  let l:spec = fzf#wrap({
+        \ 'options': ['--disabled', '--layout=reverse', '--query', a:query, '--bind',
+        \     join(['change', 'reload', l:command_reload, ''], ':')]
+        \ })
+  call fzf#vim#grep(l:command, 0, fzf#vim#with_preview(l:spec), a:fullscreen)
 endfunction
 "
 command! -nargs=* -bang Rg call Rg(<q-args>, <bang>0)
@@ -1042,7 +1020,7 @@ function! Colors(query, fullscreen)
     \ 'options': l:options, 'source': l:source, 'sink': 'color',
     \ 'tmux': join(['-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT])
     \ }
-  endifPlug 'connorholyday/vim-snazzy'
+  endif
   call fzf#run(fzf#wrap(l:spec, a:fullscreen))
 endfunction
 "
