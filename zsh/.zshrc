@@ -98,11 +98,11 @@ if [[ -v FZF_BASE ]]; then
   fi
 fi
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
 # Temporary fix for git prompts
 zstyle ':omz:alpha:lib:git' async-prompt no
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
@@ -110,31 +110,32 @@ zstyle ':omz:alpha:lib:git' async-prompt no
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  #kind
+  #macos
+  #minikube
+  #zsh-navigation-tools
+  #zsh-syntax-highlighting
+  #vi-mode
+  1password
   aws
   cdls
-  clipboard-keybindings
   command-not-found
   ctags
   dircolors
   docker
-  docker-compose
-  docker-shortcuts
   extract
   fancy-ctrl-z
+  firewalld
   fzf
-  fzf-extensions
+  gh
   git
-  globalias-rev
+  git-prompt
   golang
   gpg-agent
   history-substring-search
-  httpie
-  jsontools
-  keybindings
-  #kind
+  iterm2
   kubectl
   kubernetes
-  #minikube
   mkcd
   mkmv
   mvcd
@@ -147,26 +148,25 @@ plugins=(
   rsync
   rust
   shrink-path
+  sudo
   systemd
   terraform
-  themes
   tmux
   urltools
-  vagrant
+  uv
   venv
-  virtualenv
-  yarn
   z
-  zsh-kitty
-  zsh-autosuggestions
-  zsh-completions
-  #zsh-navigation-tools
-  zsh-interactive-cd
-  zsh-syntax-highlighting
   zshaliases
   zshoptions
   zshparam
-  zstyle-completion
+  keybindings
+  clipboard-keybindings
+  globalias-rev
+  fast-syntax-highlighting
+  zsh-interactive-cd
+  zsh-autosuggestions
+  zsh-completions
+  zsh-kitty
 )
 
 source "$ZSH/oh-my-zsh.sh"
@@ -208,7 +208,7 @@ else
 fi
 
 export FZF_COMPLETION_TRIGGER=''
-bindkey '^ ' fzf-completion
+bindkey '^]' zic-completion
 bindkey '^I' "${fzf_default_completion:-expand-or-complete}"
 
 typeset -Tx FZF_DEFAULT_OPTS fzf_default_opts " "

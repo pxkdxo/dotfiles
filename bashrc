@@ -4,7 +4,6 @@
 # Stop if this is a non-interactive shell
 [[ $- == *i* ]] || return 0
 
-
 # Make a cache directory for shell data (e.g. history, hash table, etc.)
 BASH_CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/bash"
 if mkdir -p -- "${BASH_CACHE_DIR}"
@@ -12,7 +11,7 @@ then
   export BASH_CACHE_DIR
 else
   unset -v BASH_CACHE_DIR
-fi 2> /dev/null
+  fi 2> /dev/null
 
 # Synchronize LINES and COLUMNS with window after each command
 shopt -s checkwinsize
@@ -88,87 +87,30 @@ shopt -s histreedit
 # With readline, load history sub results into buffer for editing
 shopt -s histverify
 
-colors() {
-	local fgc bgc vals seq0
-
-	printf "Color escapes are %s\n" '\e[${value};...;${value}m'
-	printf "Values 30..37 are \e[33mforeground colors\e[m\n"
-	printf "Values 40..47 are \e[43mbackground colors\e[m\n"
-	printf "Value  1 gives a  \e[1mbold-faced look\e[m\n\n"
-
-	# foreground colors
-	for fgc in {30..37}; do
-		# background colors
-		for bgc in {40..47}; do
-			fgc=${fgc#37} # white
-			bgc=${bgc#40} # black
-
-			vals="${fgc:+$fgc;}${bgc}"
-			vals=${vals%%;}
-
-			seq0="${vals:+\e[${vals}m}"
-			printf "  %-9s" "${seq0:-(default)}"
-			printf " ${seq0}TEXT\e[m"
-			printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
-		done
-		echo; echo
-	done
-}
-
-[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
-
 # Change the window title of X terminals
 case ${TERM} in
-	xterm*|rxvt*|Eterm*|aterm|kterm|gnome*|interix|konsole*)
-		PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\007"'
-		;;
-	screen*)
-		PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\033\\"'
-		;;
+  xterm*|rxvt*|Eterm*|aterm|kterm|gnome*|interix|konsole*)
+    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\007"'
+    ;;
+  screen*)
+    PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\033\\"'
+    ;;
 esac
 
-use_color=true
-
-# Set colorful PS1 only on colorful terminals.
-# dircolors --print-database uses its own built-in database
-# instead of using /etc/DIR_COLORS.  Try to use the external file
-# first to take advantage of user additions.  Use internal bash
-# globbing instead of external grep binary.
-safe_term=${TERM//[^[:alnum:]]/?}   # sanitize TERM
-match_lhs=""
-[[ -f ~/.dir_colors   ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
-[[ -f /etc/DIR_COLORS ]] && match_lhs="${match_lhs}$(</etc/DIR_COLORS)"
-[[ -z ${match_lhs}    ]] \
-	&& type -P dircolors >/dev/null \
-	&& match_lhs=$(dircolors --print-database)
-[[ $'\n'${match_lhs} == *$'\n'"TERM "${safe_term}* ]] && use_color=true
-
-if ${use_color} ; then
-	# Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
-	if type -P dircolors >/dev/null ; then
-		if [[ -f ~/.dir_colors ]] ; then
-			eval $(dircolors -b ~/.dir_colors)
-		elif [[ -f /etc/DIR_COLORS ]] ; then
-			eval $(dircolors -b /etc/DIR_COLORS)
-		fi
-	fi
-
-	if [[ ${EUID} == 0 ]] ; then
-		PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
-	else
-		PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \W\[\033[01;32m\]]\$\[\033[00m\] '
-	fi
-
-else
-	if [[ ${EUID} == 0 ]] ; then
-		# show root@ when we don't have colors
-		PS1='\u@\h \W \$ '
-	else
-		PS1='\u@\h \w \$ '
-	fi
+# Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+if type -P dircolors >/dev/null ; then
+  if [[ -r ~/.dir_colors ]] ; then
+    eval $(dircolors -b ~/.dir_colors)
+  elif [[ -r /etc/DIR_COLORS ]] ; then
+    eval $(dircolors -b /etc/DIR_COLORS)
+  fi
 fi
 
-unset use_color safe_term match_lhs sh
+if [[ ${EUID} == 0 ]] ; then
+  PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
+else
+  PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \W\[\033[01;32m\]]\$\[\033[00m\] '
+fi
 
 xhost +local:root > /dev/null 2>&1
 
@@ -177,12 +119,12 @@ __disable_bp_debug_trap() {
   # shellcheck disable=SC2064
   trap "
   $(: "$(trap -p RETURN)"
-    printf '%s\n' "${_:-trap RETURN}")
+  printf '%s\n' "${_:-trap RETURN}")
   $(__bp_debug_trap_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
-    __bp_debug_trap_context_re=$'^[ \t\n]*((.*[[:graph:]])?)[ \t\n]*\n[ \t\n]*((.*[[:graph:]])?)[ \t\n]*$'
-    [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_re} && ${BASH_REMATCH[2]}$'\n'${BASH_REMATCH[4]} =~ ${__bp_debug_trap_context_re} ]]
-    # shellcheck disable=SC2064
-    printf 'trap %q DEBUG\n' "${BASH_REMATCH[1]:+${BASH_REMATCH[1]$'\n'}}${BASH_REMATCH[3]:+${BASH_REMATCH[3]$'\n'}}")
+  __bp_debug_trap_context_re=$'^[ \t\n]*((.*[[:graph:]])?)[ \t\n]*\n[ \t\n]*((.*[[:graph:]])?)[ \t\n]*$'
+  [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_re} && ${BASH_REMATCH[2]}$'\n'${BASH_REMATCH[4]} =~ ${__bp_debug_trap_context_re} ]]
+  # shellcheck disable=SC2064
+  printf 'trap %q DEBUG\n' "${BASH_REMATCH[1]:+${BASH_REMATCH[1]$'\n'}}${BASH_REMATCH[3]:+${BASH_REMATCH[3]$'\n'}}")
   " RETURN
 }
 declare -ft __disable_bp_debug_trap
@@ -310,42 +252,42 @@ __PS0_update() {
 # Set the primary prompt
 __PS1_update() {
   PS1="\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\u'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
-"'@'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\h'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
-"':'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\w'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\n'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\$>'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"' '
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'\u'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
+    "'@'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'\h'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
+    "':'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'\w'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\n'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'\$>'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "' '
   return "$(($1))"
 }
 
 # Set the secondary prompt
 __PS2_update() {
   PS2="\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'"\
-"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"' '
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+    "'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'"\
+    "'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'"\
+    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+    "' '
   return "$(($1))"
 }
 
@@ -357,16 +299,17 @@ __PS3_update() {
 
 # Set the execution-trace prompt
 __PS4_update() {
-  PS4='.> '
+  PS4='+> '
   return "$(($1))"
 }
 
 # Update the prompt strings
 __PS_update() {
-  for _ in {0..4}
-  do
-    "__PS${_}_update" "${?#0}"
-  done
+  __PS0_update "${?#0}"
+  __PS1_update "${?#0}"
+  __PS2_update "${?#0}"
+  __PS3_update "${?#0}"
+  __PS4_update "${?#0}"
 }
 
 # Add to precmd functions
@@ -402,12 +345,15 @@ then
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
-  #add_precmd_functions __window_title_precmd
-  add_preexec_functions __window_title_preexec
+#add_precmd_functions __window_title_precmd
+add_preexec_functions __window_title_preexec
 fi
 
 # Set GPG_TTY to device on stdin and add it to the environment
-[[ -t 0 ]] && GPG_TTY=$(tty) || export GPG_TTY=''
+if ! { [[ -t 0 ]] && GPG_TTY=$(tty); }
+then
+  export GPG_TTY=''
+fi
 
 # Refresh gpg-agent in case we switched to an Xsession
 gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
@@ -447,41 +393,14 @@ then
 fi
 
 
-#
-# # extract - archive extractor
-# # usage: extract <file>
-extract ()
-{
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *)           echo "'$1' cannot be extracted via extract()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
-  fi
-}
 # sourcedir - recursively source a directory
 sourcedir()
 {
-  if [[ -d $1 ]]
-  then
-    for _ in "$1"/*
-    do
-      "${FUNCNAME[0]}" "${_}" "${@:2}"
+  if [[ -d $1 ]]; then
+    for _ in "$1"/*; do
+      sourcedir "${_}" "${@:2}"
     done
-  elif [[ -f $1 ]]
-  then
+  elif [[ -f $1 ]]; then
     source -- "$@"
   fi
 }
