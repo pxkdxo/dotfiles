@@ -122,7 +122,6 @@ plugins=(
   extract
   fancy-ctrl-z
   fzf
-  fzf-extensions
   git
   globalias-rev
   golang
