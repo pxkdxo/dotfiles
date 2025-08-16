@@ -4,4 +4,3 @@
 # see zsh(1)
 
 # vi:ft=zsh
-. "/Users/patrick.deyoreo/.local/share/cargo/env"

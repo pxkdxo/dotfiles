@@ -48,6 +48,8 @@
 !/nvim/bundle
 !/nvim/colors
 !/nvim/init.vim
+!/nvim/init.lua
+!/nvim/lua/**
 !/nvim/plugin
 !/nvim/syntax
 !/ohmyzsh/custom/**
