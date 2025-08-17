@@ -19,3 +19,8 @@ then
 fi
 
 # vi:ft=sh
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/pat/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+. "/Users/patrick.deyoreo/.local/share/cargo/env"

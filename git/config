@@ -2,7 +2,7 @@
 # see git(1)  git-config(1)
 
 [advice]
-  pushUpdateRejected = true
+  pushUpdateRejected
 
 [color]
   branch = auto
@@ -33,4 +33,4 @@
   rebase = false
 
 [push]
-  autoSetupRemote = true
+  autoSetupRemote

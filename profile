@@ -53,3 +53,4 @@ if test -d "${HOME}/.profile.d/"; then
 fi
 
 # vi:ft=sh
+. "/Users/patrick.deyoreo/.local/share/cargo/env"
