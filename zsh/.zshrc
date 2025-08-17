@@ -107,34 +107,24 @@ plugins=(
   aws
   cdls
   clipboard-keybindings
-  clipboard-keybindings
   command-not-found
   ctags
   dircolors
   docker
   extract
   fancy-ctrl-z
-  fancy-ctrl-z
-  fast-syntax-highlighting
   fast-syntax-highlighting
   firewalld
   fzf
-  fzf
   gh
-  git
   git
   git-prompt
   globalias-rev
-  globalias-rev
-  golang
   golang
   gpg-agent
   history-substring-search
-  history-substring-search
   iterm2
   keybindings
-  keybindings
-  kubectl
   kubectl
   kubernetes
   mkcd
@@ -156,23 +146,14 @@ plugins=(
   uv
   vagrant
   venv
-  venv
   virtualenv
-  yq
-  z
   z
   zsh-autosuggestions
-  zsh-autosuggestions
   zsh-completions
-  zsh-completions
-  zsh-interactive-cd
   zsh-interactive-cd
   zsh-kitty
   zshaliases
-  zshaliases
   zshoptions
-  zshoptions
-  zshparam
   zshparam
   zstyle-completion
 )
@@ -189,9 +170,6 @@ if command -v nvim > /dev/null; then
 fi
 if command -v vim > /dev/null; then
   export MANPAGER="${MANPAGER:-vim -M +MANPAGER -}"
-fi
-if command -v vimpager > /dev/null; then
-  export PAGER="${PAGER:-vimpager}"
 fi
 if command -v bat > /dev/null; then
   export BAT_PAGER="${BAT_PAGER:-less ${LESS:--FgiMqRX-2}}"

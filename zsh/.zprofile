@@ -8,10 +8,4 @@ if [[ -f ~/.profile && -r ~/.profile ]]; then
   source ~/.profile
 fi
 
-# Load homebrew
-if [[ -f /opt/homebrew/bin/brew && -x /opt/homebrew/bin/brew ]]
-then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
 # vi:ft=zsh
