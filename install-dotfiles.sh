@@ -29,7 +29,7 @@ git ls-tree --name-only -z HEAD | xargs -0 -n 1 -I '{}' -o -- sh -c '
 case "$3" in (.*|*.md) exit 0 ;;
 esac
 set -x
-ln -sniv -- "$1/$3" "$2/.$3"
+ln -snfbv -- "$1/$3" "$2/.$3"
 ' -- "${tree_relative_to_home_path}" "${home_abspath}" '{}' || :
 
 exit 0
