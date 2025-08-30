@@ -94,7 +94,7 @@
 
 !/user-tmpfiles.d/**
 
-/vim/plug/*
+/vim/*/
 !/vim/autoload/**
 !/vim/colors/**
 !/vim/bundle
@@ -126,3 +126,8 @@
 !/zprofile
 !/zshenv
 !/zshrc
+
+/yazi/*
+!/yazi/config.toml
+!/yazi/keymap.toml
+!/yazi/theme.toml
