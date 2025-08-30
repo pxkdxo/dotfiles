@@ -271,14 +271,11 @@ set updatetime=100
 " milliseconds to wait for completion of a mapping
 set timeoutlen=750
 "
-" milliseconds to wait for completion of a key code
-set ttimeoutlen=25
-"
 " Timeout on mappings
 set timeout
 "
-" Don't timeout on keycodes
-set nottimeout
+"" Timeout on keycodes
+"set ttimeout
 
 
 " Completion and Tags
@@ -1085,4 +1082,4 @@ set modeline
 set secure
 
 
-" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=119
+" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=120
