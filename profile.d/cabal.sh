@@ -1,24 +1,31 @@
 #!/usr/bin/env sh
 # cabal.sh: cabal path config
 
-for directory in \
-    "${CABAL_HOME-}" \
-    "${XDG_DATA_HOME:+"${XDG_DATA_HOME}/cabal"}" \
-    "${HOME}/.local/share/cabal" \
-    "${HOME}/.local/opt/cabal" \
-    "${HOME}/.local/cabal" \
-    "${HOME}/.cabal" \
-    "${HOME}/cabal"
-do
-    if test -d "${directory}/bin"; then
-        case ":${PATH}:" in
-            *:"${directory}/bin":*) ;;
-            *) export PATH="${PATH:+${PATH}:}${directory}/bin" ;;
-        esac
-        if test -z "${CABAL_HOME+X}"; then
-            export CABAL_HOME="${directory}"
-        fi
-    fi
-done
+if test -n "${CABAL_HOME}"; then
+  case ":${PATH}:" in
+    *:"${CABAL_HOME}/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${CABAL_HOME}/bin" ;;
+  esac
+elif test -d "${HOME}/.local/share/cabal"; then
+  case ":${PATH}:" in
+    *:"${HOME}/.local/share/cabal/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/share/cabal/bin" ;;
+  esac
+elif test -d "${HOME}/.local/cabal"; then
+  case ":${PATH}:" in
+    *:"${HOME}/.local/cabal/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/cabal/bin" ;;
+  esac
+elif test -d "${HOME}/.cabal"; then
+  case ":${PATH}:" in
+    *:"${HOME}/.cabal/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.cabal/bin" ;;
+  esac
+elif test -d "${HOME}/cabal"; then
+  case ":${PATH}:" in
+    *:"${HOME}/cabal/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/cabal/bin" ;;
+  esac
+fi
 
 # vim:ft=sh

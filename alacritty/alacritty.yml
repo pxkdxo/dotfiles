@@ -117,14 +117,157 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    family: ComicShannsMono Nerd Font
-    style: Bold
+    # Font family
+    #
+    # Default:
+    #   - (macOS) Menlo
+    #   - (Linux/BSD) monospace
+    #   - (Windows) Consolas
+    #family: monospace
+
+    # The `style` can be specified to pick a specific face.
+
+    #family: agave Nerd Font Mono
+    #style: r
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Regular
+    #
+    #family: Hurmit Nerd Font Mono
+    #style: medium
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Regular
+    #
+    family: Monofur Nerd Font Mono
+    style: Book
+    #
+    #family: mononoki Nerd Font Mono
+    #style: Regular
+    #
+    #family: Operator Mono Book
+    #style: Book
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Medium
+
+  # Bold font face
   bold:
-    family: ComicShannsMono Nerd Font
-    style: Bold
+    # Font family
+    #
+    # If the bold family is not specified, it will fall back to the
+    # value specified for the normal font.
+    #family: monospace
+
+    # The `style` can be specified to pick a specific face.
+
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Bold
+    #
+    #family: Hurmit Nerd Font Mono
+    #style: bold
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Bold
+    #
+    family: Monofurbold Nerd Font Mono
+    style: bold
+    #
+    #family: mononoki Nerd Font Mono
+    #style: Bold
+    #
+    #family: M+ 2m
+    #style: bold
+    #
+    #family: Operator Mono Bold
+    #style: Bold
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold
+
+  # Italic font face
+  italic:
+    # Font family
+    #
+    # If the italic family is not specified, it will fall back to the
+    # value specified for the normal font.
+    #family: monospace
+
+    # The `style` can be specified to pick a specific face.
+
+    #family: Cartograph CF
+    #style: Italic
+    #
+    #family: Ellograph CF
+    #style: Italic
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Italic
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Italic
+    #
+    family: Monofuritalic Nerd Font Mono
+    style: italic
+    #
+    #family: mononoki Nerd Font Mono
+    #style: Italic
+    #
+    #family: Operator Mono Book
+    #style: Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Medium Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Medium Oblique
+
+  # Bold italic font face
+  #bold_italic:
+    # Font family
+    #
+    # If the bold italic family is not specified, it will fall back to the
+    # value specified for the normal font.
+    #family: monospace
+
+    # The `style` can be specified to pick a specific face.
+
+    #family: Cartograph CF Extra Bold
+    #style: Italic
+    #
+    #family: Ellograph CF Extra Bold
+    #style: Italic
+    #
+    #family: FantasqueSansMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: JetBrainsMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    family: Monofur Nerd Font Mono
+    style: Bold Italic
+    #
+    #family: Monofurbold Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: Monofuritalic Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: mononoki Nerd Font Mono
+    #style: BoldItalic
+    #
+    #family: Operator Mono Bold
+    #style: Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold Italic
+    #
+    #family: VictorMono Nerd Font Mono
+    #style: Bold Oblique
 
   # Point size
-  size: 15.0
+  #size: 11.0
+  size: 9.0
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
@@ -132,7 +275,7 @@ font:
   offset:
   #  x: 0
   #  y: 0
-    x: 0
+    x: -1
     y: 0
 
   # Glyph offset determines the locations of the glyphs within their cells with

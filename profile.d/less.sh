@@ -3,7 +3,7 @@
 # see less(1)
 
 # Default options
-export LESS='-FgiMqRX-2'
+export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --silent'
 
 # Non-printable character representation
 export LESSBINFMT='*d<%02x>'
@@ -11,29 +11,24 @@ export LESSBINFMT='*d<%02x>'
 # Non-printable character representation (utf-8)
 export LESSUTFBINFMT='<U+%04lx>'
 
-## Enable text attributes
-if test -n "${TERM}"; then
-  if LESS_TERMCAP_mb="$(tput sitm)"; then
-    export LESS_TERMCAP_mb
-  fi
-  if LESS_TERMCAP_md="$(tput bold)"; then
-    export LESS_TERMCAP_md
-  fi
-  if LESS_TERMCAP_me="$(tput sgr0)"; then
-    export LESS_TERMCAP_me
-  fi
-  if LESS_TERMCAP_so="$(tput smso)"; then
-    export LESS_TERMCAP_so
-  fi
-  if LESS_TERMCAP_se="$(tput rmso)"; then
-    export LESS_TERMCAP_se
-  fi
-  if LESS_TERMCAP_us="$(tput smul)"; then
-    export LESS_TERMCAP_us
-  fi
-  if LESS_TERMCAP_ue="$(tput rmul)"; then
-    export LESS_TERMCAP_ue
-  fi
-fi 2> /dev/null
+# Use lesspipe.sh pre-processor
+if command -v lesspipe.sh > /dev/null; then
+  export LESSOPEN="||-lesspipe.sh %s"
+else
+  unset LESSOPEN
+fi
+
+# Enable colorization
+if command -v bat > /dev/null; then
+  export LESSCOLORIZER='bat --style=plain'
+elif command -v pygmentize > /dev/null; then
+  export LESSCOLORIZER='pygmentize -O' # -P allowed as well
+elif command -v source-highlight > /dev/null; then
+  export LESSCOLORIZER='source-highlight'
+elif command -v vimcolor > /dev/null; then
+  export LESSCOLORIZER='vimcolor'
+elif command -v nvimpager > /dev/null; then
+  export LESSCOLORIZER='nvimpager -c'
+fi
 
 # vim:ft=sh

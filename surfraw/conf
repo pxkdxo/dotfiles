@@ -22,23 +22,23 @@ SURFRAW_graphical="no"
 
 # name/path of text browser executable
 # e.g links, lynx, w3m
-#SURFRAW_text_browser="www-browser"
+SURFRAW_text_browser="www-browser"
 
 # name/path of browser executable
 # e.g mozilla, netscape etc. Default to $BROWSER if no listed ones found
-#SURFRAW_graphical_browser="x-www-browser"
+SURFRAW_graphical_browser="x-www-browser"
 
 # text browser arguments, or "none"
-#SURFRAW_text_browser_args="none"
+SURFRAW_text_browser_args="none"
 
 # graphical browser arguments, or "none"
-#SURFRAW_graphical_browser_args="none"
+SURFRAW_graphical_browser_args="none"
 
 # use -remote openURL for graphical browser
-#SURFRAW_graphical_remote="no"
+SURFRAW_graphical_remote="no"
 
 # when using the -remote, open a new window?
-#SURFRAW_new_window="no"
+SURFRAW_new_window="no"
 
 # name of screen command to run
 SURFRAW_screen="tmux"

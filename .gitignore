@@ -1,91 +1,115 @@
 # .gitignore: git repository whitelist
 # see gitignore(5)
 
-# ignore everything except directories
+# Ignore everything except directories
 *
 !*/
 
-# whitelist gitignore
+# Allow selectively
+
+!/install-dotfiles.sh
+
 !/.gitignore
 
-# whitelist README
 !/README.md
 
-# whitelist specified files
-!/autostart/devilspie2.desktop
-!/autostart/urxvtd.desktop
-!/alacritty/alacritty.yml
 !/asoundrc
-!/awesome/rc.lua
+
+!/autostart/*.desktop
+
+!/alacritty/*.yaml
+!/alacritty/*.toml
+
 !/bash_completion
-!/bash_completion.d/**
 !/bash_logout
 !/bash_profile
 !/bashrc
+!/bash_completion.d/**
 !/bashrc.d/**
-!/cabal/config
-!/colors/**
+
+!/bat/config
+
+!/cabal/
+
 !/compton.conf
+
 !/devilspie2/**
+
 !/dircolors
+
 !/elinks/elinks.conf
-!/environment.d/**
+
+!/environment.d/**.conf
+
 !/fzf/**
+
 !/git/config
 !/git/ignore
+
 !/gnupg/dirmngr.conf
-!/gnupg/gpg-agent.conf
 !/gnupg/gpg.conf
-!/htop/htoprc
-!/httpie/config.json
+!/gnupg/gpg-agent.conf
+
 !/inputrc
 !/inputrc.d/**
+
 !/mpd/mpd.conf
-!/nanorc
+
 !/ncmpcpp/config
-!/neofetch/**
+
+!/neofetch/*.conf
+
 !/nvim/autoload
-!/nvim/bundle
 !/nvim/colors
+!/nvim/lua/config/*.lua
+!/nvim/lua/plugins/*.lua
+!/nvim/init.lua
 !/nvim/init.vim
-!/nvim/plugin
-!/nvim/syntax
-!/ohmyzsh/custom/**
-!/pam_environment
+
+!/ohmyzsh/
+
 !/profile
 !/profile.d/**
+
 !/pythonrc.py
-!/ranger/commands.py
-!/ranger/rc.conf
-!/ranger/rifle.conf
-!/ranger/scope.sh
+
+!/ranger/*.conf
+!/ranger/*.py
+!/ranger/*.sh
+
 !/ripgreprc
-!/rofi/config
-!/rofi/themes/**
+
 !/surfraw/conf
-!/systemd/user/tmux.service
-!/systemd/user/urxvtd.service
+
+!/systemd/user/*.service
+
 !/tmux.conf
-!/tmuxline.conf
-!/user-dirs.dirscursorcolumn
+!/tmux/tmux.conf
+
+/tmux/plugins/*
+!/tmux/plugins/tpm
+
+!/user-dirs.dirs
 !/user-dirs.locale
+
 !/user-tmpfiles.d/**
+
+/vim/plug/*
 !/vim/autoload/**
-!/vim/bundle
 !/vim/colors/**
-!/vim/plugin/**
-!/vim/syntax/**
+!/vim/bundle
 !/vim/vimrc
+
 !/xinitrc
-!/xinitrc.d/**
+!/xinitrc.d/*.sh
+
 !/xprofile
+!/xserverrc
 !/xsession
+
 !/Xresources
 !/Xresources.d/**
-!/xserverrc
-!/zlogin
-!/zlogout
-!/zprofile
+
 !/zsh/.zlogin
 !/zsh/.zlogout
 !/zsh/.zprofile
@@ -96,29 +120,9 @@
 !/zsh/zprofile
 !/zsh/zshenv
 !/zsh/zshrc
+
+!/zlogin
+!/zlogout
+!/zprofile
 !/zshenv
 !/zshrc
-
-# ignore vim plugins
-/vim/plug/**
-
-# ignore temporary files
-*~
-*.sw[op]
-
-# ignore python bytecode
-*.py[cod]
-
-# ignore object files
-*.o
-*.so
-
-# ignore tag files
-.tags
-.TAGS
-tags
-TAGS
-
-# ignore index files
-.DS_Store
-.vscode

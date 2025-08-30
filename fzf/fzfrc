@@ -13,7 +13,9 @@
 --bind=ctrl-l:clear-screen
 --bind=ctrl-c:abort
 --bind=ctrl-s:bg-cancel
+--bind=ctrl-i:replace-query
 --bind=insert:replace-query
 --bind=ctrl-j:accept-or-print-query
 --bind=ctrl-/:toggle-preview
---bind=ctrl-]:select-all
+--bind=ctrl-]:select-all+accept
+--tmux=bottom,45%,border-native

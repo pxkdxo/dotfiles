@@ -1,17 +1,17 @@
-# Load homebrew
 if test -d "${HOMEBREW_HOME:-}"
 then
-  eval "$("${HOMEBREW_HOME:-}/bin/brew" shellenv)"
-elif test -d "${XDG_DATA_HOME:-"${HOME}/.local/share"}/homebrew"
+  eval "$("${HOMEBREW_HOME}/bin/brew" shellenv)"
+elif test -d "${XDG_DATA_HOME:-"${HOME}/.local/share"}/homebrew/bin"
 then
-  export HOMEBREW_HOME="${XDG_DATA_HOME:-"${HOME}/.local/share"}/homebrew"
+  export HOMEBREW_HOME="${}"
   eval "$("${XDG_DATA_HOME:-"${HOME}/.local/share"}/homebrew/bin/brew" shellenv)"
-elif test -d ~/.local/opt/homebrew
+elif test -d ~/.local/opt/homebrew/bin
 then
-  export HOMEBREW_HOME="${HOME}/.local/opt/homebrew"
   eval "$(~/.local/opt/homebrew/bin/brew shellenv)"
-elif test -d ~/.homebrew
+elif test -d ~/.homebrew/bin
 then
-  export HOMEBREW_HOME="${HOME}/.homebrew"
   eval "$(~/.homebrew/bin/brew shellenv)"
+elif test -d ~/homebrew/bin
+then
+  eval "$(~/homebrew/bin/brew shellenv)"
 fi

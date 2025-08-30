@@ -1,15 +1,32 @@
-# ripgreprc: ripgrep default config 
-
---color=auto
+# ripgreprc: ripgrep defaults 
+#
 --engine=auto
 --follow
 --hidden
 --smart-case
---ignore-dot
 --ignore-global
+--ignore-exclude
+--ignore-vcs
 --ignore-parent
---line-number
---no-column
---no-heading
+--ignore-dot
 
-# vim:ft=conf
+--glob
+!git/
+
+--colors
+line:fg:red
+
+--colors
+column:fg:blue
+
+--colors
+path:fg:green
+
+--colors
+path:style:underline
+
+--colors
+match:fg:magenta
+
+--colors
+match:style:bold

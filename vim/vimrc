@@ -1,16 +1,16 @@
-  " vimrc: vim initialization script
+" vimrc: vim initialization script
 
-  " Apply vim defaults
-  "
-  if (&compatible)
-    set nocompatible
-  endif
-
-  " Apply vim defaults even if +eval is missing
-  "
-  silent! while (0)
+" Apply vim defaults
+"
+if (&compatible)
   set nocompatible
-  silent! endwhile
+endif
+
+" Apply vim defaults even if +eval is missing
+"
+silent! while (0)
+set nocompatible
+silent! endwhile
 
 " Always use UTF-8 encoding
 "
@@ -28,11 +28,6 @@ if (has('autocmd'))
   augroup END
 endif
 
-" Skip the rest if this is actually VSCode
-"
-if (exists('g:vscode'))
-  finish
-endif
 
 " Use pipes for shell commands instead of temporary files
 "
@@ -41,12 +36,17 @@ if (has('job') && has('channel') && has("filterpipe"))
 else
 endif
 
+" Skip the rest if this is actually VSCode
+"
+if (exists('g:vscode'))
+  finish
+endif
 
 " Install Vim-Plug
 "
 if (empty(glob('~/.vim/autoload/plug.vim')))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   if (has('autocmd'))
     autocmd rc VimEnter * PlugInstall --sync | source $MYVIMRC
   endif
@@ -57,10 +57,10 @@ endif
 call plug#begin(join(split(&runtimepath, ',')[:0] + ['plug'], '/'))
 "
 " NOTE: use single quotes around plugin names
-"
+
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-"Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -72,19 +72,30 @@ Plug 'davidhalter/jedi-vim'
 Plug 'github/copilot.vim'
 Plug 'haishanh/night-owl.vim'
 Plug 'macguirerintoul/night_owl_light.vim'
+Plug 'mhinz/vim-janah'
 Plug 'zeis/vim-kolor'
 Plug 'connorholyday/vim-snazzy'
-Plug 'EdenEast/nightfox.nvim'
+Plug 'junegunn/seoul256.vim'
 Plug 'tpope/vim-surround'
-Plug 'hashivim/vim-terraform'
+Plug 'jlanzarotta/bufexplorer'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'edkolev/tmuxline.vim'
+Plug 'ryanoasis/vim-devicons'
 "Plug 'ycm-core/YouCompleteMe'
-"
+
 let g:jedi#auto_initialization = 1
 let g:jedi#completions_enabled = 0
 let g:jedi#show_call_signatures = 0
-"
-call plug#end()
 
+let g:tmuxline_preset = {
+      \'a'    : '#S',
+      \'win'  : ['#I', '#W'],
+      \'cwin' : ['#I', '#W', '#F'],
+      \'y'    : ['%R', '%a', '%Y'],
+      \'z'    : '#H'}
+
+call plug#end()
 
 " Spacing
 "
@@ -171,14 +182,7 @@ set sidescrolloff=3
 set virtualedit=block
 "
 " Move across lines with <Backspace>, <Space>, <Left> and <Right>
-set whichwrap=
-set whichwrap+=b
-set whichwrap+=s
-set whichwrap+=<
-set whichwrap+=>
-set whichwrap+=[
-set whichwrap+=]
-
+set whichwrap=b,s,[,],<,>
 
 " Patterns
 "
@@ -268,14 +272,17 @@ set updatetime=100
 
 " Key Timeout
 "
-" milliseconds to wait for completion of a mapping
-set timeoutlen=750
-"
 " Timeout on mappings
 set timeout
 "
-"" Timeout on keycodes
-"set ttimeout
+" milliseconds to wait for completion of a mapping
+set timeoutlen=1000
+"
+" Don't timeout on keycodes
+set nottimeout
+"
+" milliseconds to wait for completion of a key code
+set ttimeoutlen=50
 
 
 " Completion and Tags
@@ -284,9 +291,7 @@ set timeout
 set complete=.,w,b,u,t,i
 "
 " Configure insert-mode completion
-if (has('nvim'))
-  set completeopt=fuzzy,menuone,noselect,preview,popup
-elseif (exists("&completepopup"))
+if (exists("&completepopup"))
   " Enable completion popup window in vim
   set completeopt=menuone,noselect,preview,popup
   set completepopup=height:15,highlight:Pmenu,border:off
@@ -322,9 +327,9 @@ cnoremap <Right> <Space><BS><Right>
 " Set omnifunc fallback
 if (has("autocmd") && exists("+omnifunc"))
   autocmd rc Filetype *
-    \ if (&omnifunc == '') |
-    \ silent! setlocal omnifunc=syntaxcomplete#Complete |
-    \ endif
+        \ if (&omnifunc == '') |
+        \ silent! setlocal omnifunc=syntaxcomplete#Complete |
+        \ endif
 endif
 
 
@@ -420,7 +425,7 @@ set belloff=all
 " Enable the mouse
 if (has('mouse'))
   set mouse=a
-  if (has('mouse_sgr') && !has('nvim'))
+  if (has('mouse_sgr'))
     set ttymouse=sgr
   endif
   if (exists('+mousefocus'))
@@ -429,27 +434,7 @@ if (has('mouse'))
 endif
 
 
-" Setup cursor attributes
-"
-if (has('nvim') && exists('+guicursor'))
-  " Make it do stuff
-  set guicursor=
-  set guicursor+=n-c-v:block-nCursor
-  set guicursor+=i-ci-ve:ver35-iCursor
-  set guicursor+=r-cr-o:hor25-nCursor
-  set guicursor+=a:blinkwait1000-blinkoff300-blinkon500-Cursor/lCursor
-  set guicursor+=sm:block-blinkwait250-blinkoff150-blinkon250
-  set guicursor+=t:block-blinkon500-blinkoff500-TermCursor
-endif
-
-
 " ColorColumn
-"
-" Link colorcolumn highlighting to that of the current line number
-"if has('autocmd')
-"  autocmd rc ColorScheme *
-"    \ silent! highlight! link ColorColumn CursorLineNr
-"endif
 "
 " Define a function to apply 'colorcolumn' to all columns past 'textwidth'
 let &colorcolumn = join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
@@ -457,7 +442,7 @@ let &colorcolumn = join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
 " Update 'colorcolumn' upon resizing a window
 if (has('autocmd'))
   autocmd rc BufEnter,VimEnter,VimResized,WinEnter *
-    \ silent! let &colorcolumn = join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
+        \ silent! let &colorcolumn = join(map(range(1, winwidth(0)), '"+" . v:val'), ',')
 endif
 
 
@@ -465,20 +450,23 @@ endif
 "
 " Check COLORTERM
 if ($COLORTERM =~? '^\s*truecolor\s*$')
-  " Neovim will set this anyway
-  if (!has('nvim'))
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  endif
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 "
 " Check type of terminal
 if (exists('+termguicolors'))
   if ($TERM =~ '^\%(alacritty\|st\|tmux\|iterm2\?\|vte\)\%(-.*\)\?$')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     set termguicolors
   elseif ($TERM =~ '^\%(linux\|rxvt\|screen\|interix\|putty\)\%(-.*\)\?$')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     set notermguicolors
   elseif ($TERM =~ '^\%(xterm\)\%(-.*\)\?$')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     if ($XTERM_VERSION  != '' || $VTE_VERSION != '' || $KONSOLE_PROFILE_NAME != '')
       set termguicolors
     else
@@ -487,22 +475,13 @@ if (exists('+termguicolors'))
   endif
 endif
 "
-" For Neovim 0.1.3 and 0.1.4
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-"
 " Choose some colors
 let g:colorschemes = [
-      \ 'dawnfox',
-      \ 'dayfox',
-      \ 'duskfox',
-      \ 'nightfox',
+      \ 'kolor',
       \ 'snazzy',
       \ 'night-owl',
       \ 'night_owl_light',
       \ 'Tomorrow',
-      \ 'catppuccin-latte',
-      \ 'carbonfox',
-      \ 'kolor',
       \ 'colorsbox-steighties',
       \ 'janah',
       \ 'sorbet',
@@ -551,9 +530,9 @@ let g:c_space_errors = 1
 " Set local options for C and C++ files
 if (has('autocmd'))
   autocmd rc FileType c,cpp
-    \ silent! setlocal cin noet sts=0 sw=8 ts=8 tw=79
-    \|silent! let &l:shiftwidth = &tabstop
-    \|silent! let &l:cinoptions = ':0,(' . &tabstop
+        \ silent! setlocal cin noet sts=0 sw=8 ts=8 tw=79
+        \|silent! let &l:shiftwidth = &tabstop
+        \|silent! let &l:cinoptions = ':0,(' . &tabstop
 endif
 
 
@@ -562,7 +541,7 @@ endif
 " Set textwidth for commit messages
 if (has('autocmd'))
   autocmd rc FileType gitcommit
-    \ silent! setlocal tw=71
+        \ silent! setlocal tw=71
 endif
 
 
@@ -571,21 +550,19 @@ endif
 " Set local options when getting help
 if (has("autocmd"))
   autocmd rc FileType help
-    \ silent! setlocal cc= noswf noudf tw=0
+        \ silent! setlocal cc= noswf noudf tw=0
 endif
 "
 " Split help windows vertically
 nmap <leader>K
-  \ :let &keywordprg = substitute(&keywordprg, '^\s*:', ':vert ', '')<CR>K<Esc>
-  \ :let &keywordprg = substitute(&keywordprg, '^:vert \s*', ':', '')<CR>
+      \ :let &keywordprg = substitute(&keywordprg, '^\s*:', ':vert ', '')<CR>K<Esc>
+      \ :let &keywordprg = substitute(&keywordprg, '^:vert \s*', ':', '')<CR>
 
 
 " man page
 "
 " Load the Man plugin
-if (!has('nvim'))
-  runtime ftplugin/man.vim
-endif
+runtime ftplugin/man.vim
 "
 let g:man_hardwrap=0
 "
@@ -595,7 +572,7 @@ set keywordprg=:Man
 "Set local options for man pages
 if (has('autocmd'))
   autocmd rc FileType man
-    \ silent! setlocal cc= nohid noma nonu nornu noswf noudf tw=0
+        \ silent! setlocal cc= nohid noma nonu nornu noswf noudf tw=0
 endif
 
 
@@ -605,10 +582,10 @@ endif
 if (has('autocmd'))
   if (has('linebreak'))
     autocmd rc FileType markdown
-      \ silent! setlocal cc= nonu nornu wrap lbr bri
+          \ silent! setlocal cc= nonu nornu wrap lbr bri
   else
     autocmd rc FileType markdown
-      \ silent! setlocal cc= nonu nornu wrap
+          \ silent! setlocal cc= nonu nornu wrap
   endif
 endif
 
@@ -625,7 +602,7 @@ let g:syntastic_javascript_standard_exec = 'semistandard'
 " Set local options for python scripts
 if (has('autocmd'))
   autocmd rc FileType python
-    \ silent! setlocal et sts=4 sw=4 ts=8 tw=79
+        \ silent! setlocal et sts=4 sw=4 ts=8 tw=79
 endif
 
 " Enable all available highlighting
@@ -670,15 +647,15 @@ let g:sh_no_error = 1
 " Set local options when opening a shell script
 if (has("autocmd"))
   autocmd rc FileType bash,ksh,sh,zsh
-    \ silent! setlocal et sts=2 sw=2 ts=8
+        \ silent! setlocal et sts=2 sw=2 ts=8
 endif
 "
 " Set filetype to sh when editing a shell command line
 if (has("autocmd"))
   autocmd rc BufRead bash-fc.*
-    \ silent! setlocal et ft=sh noswf noudf
-    \|silent! let b:is_bash = 1
-    \|silent! syntax enable
+        \ silent! setlocal et ft=sh noswf noudf
+        \|silent! let b:is_bash = 1
+        \|silent! syntax enable
 endif
 
 
@@ -701,12 +678,12 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
 "
 " Set an airline theme
-let g:airline_theme = 'atomic'
+let g:airline_theme = 'kolor'
 "
 " Refresh airline when the colorscheme changes
 if (has('autocmd'))
   autocmd rc ColorScheme *
-    \ silent! AirlineRefresh
+        \ silent! AirlineRefresh
 endif
 
 
@@ -767,7 +744,7 @@ nnoremap <silent> <F7> :GitGutterBufferToggle<CR>
 highlight! link SignColumn LineNr
 if (has('autocmd'))
   autocmd rc ColorScheme *
-    \ highlight! link SignColumn LineNr
+        \ highlight! link SignColumn LineNr
 endif
 
 "" Disable GitGutter
@@ -798,20 +775,20 @@ let g:lt_quickfix_list_toggle_map = '<leader>q'
 "  \   'Unmerged'  : '',
 "  \   'Untracked' : '',
 "  \ }
-""
+"
 " Disable arrow icons at the left side of folder icons
-"let g:NERDTreeDirArrowExpandable  = ""
-"let g:NERDTreeDirArrowCollapsible = ""
+let g:NERDTreeDirArrowExpandable  = ""
+let g:NERDTreeDirArrowCollapsible = ""
 "
 " Separate filenames from icons
-"let NERDTreeNodeDelimiter="\u00a0"
+let NERDTreeNodeDelimiter="\u00a0"
 "
 " Disable the "Bookmarks" label
 let g:NERDTreeMinimalUI = 1
 "
 " Single click to open directories
 let g:NERDTreeMouseMode = 2
-
+"
 " F9: Toggle the file explorer
 nnoremap <silent> <F9> :NERDTreeToggle<CR>
 
@@ -822,91 +799,91 @@ let g:startify_fortune_use_unicode = 1
 let g:startify_update_oldfiles = 1
 
 
-"" Syntastic
-""
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 0
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-"let g:syntastic_check_on_w = 1
-"let g:syntastic_mode_map = {
-"  \   "mode": "active",
-"  \   "active_filetypes": [],
-"  \   "passive_filetypes": ["python"]
-"  \ }
-
-
-"" Tagbar
-""
-"" F10: Toggle the tagbar
-"nnoremap <silent> <F10> :TagbarToggle<CR>
-
-
-"" YouCompleteMe
-""
-"if (has("quickfix") && has("textprop") && exists("+completepopup"))
-"  let g:ycm_add_preview_to_completeopt = 'popup'
-"else
-"  let g:ycm_add_preview_to_completeopt = 1
-"endif
-"let g:ycm_auto_hover = ''
-"let g:ycm_auto_trigger = 1
-"let g:ycm_autoclose_preview_window_after_completion = 0
-"let g:ycm_autoclose_preview_window_after_insertion = 0
-"let g:ycm_collect_identifiers_from_tags_files = 1
-"let g:ycm_complete_in_comments = 1
-"let g:ycm_confirm_extra_conf = 0
-"let g:ycm_key_invoke_completion = '<C-Space>'
-"let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
-"let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
-"let g:ycm_key_list_stop_completion = ['<C-y>', '<Enter>']
-"let g:ycm_max_num_candidates = 60
-"let g:ycm_max_num_identifier_candidates = 12
-"let g:ycm_min_num_of_chars_for_completion = 3
-"let g:ycm_seed_identifiers_with_syntax = 0
-"let g:ycm_global_ycm_extra_conf =
-"  \ split(&runtimepath, ',')[0] . '/autoload/ycm_extra_conf.py'
+" Syntastic
 "
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_check_on_w = 1
+let g:syntastic_mode_map = {
+  \   "mode": "active",
+  \   "active_filetypes": [],
+  \   "passive_filetypes": ["python"]
+  \ }
+
+
+" Tagbar
+"
+" F10: Toggle the tagbar
+nnoremap <silent> <F10> :TagbarToggle<CR>
+
+
+" YouCompleteMe
+"
+if (has("quickfix") && has("textprop") && exists("+completepopup"))
+  let g:ycm_add_preview_to_completeopt = 'popup'
+else
+  let g:ycm_add_preview_to_completeopt = 1
+endif
+let g:ycm_auto_hover = ''
+let g:ycm_auto_trigger = 1
+let g:ycm_autoclose_preview_window_after_completion = 0
+let g:ycm_autoclose_preview_window_after_insertion = 0
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_complete_in_comments = 1
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_key_invoke_completion = '<C-Space>'
+let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
+let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
+let g:ycm_key_list_stop_completion = ['<C-y>', '<Enter>']
+let g:ycm_max_num_candidates = 60
+let g:ycm_max_num_identifier_candidates = 12
+let g:ycm_min_num_of_chars_for_completion = 3
+let g:ycm_seed_identifiers_with_syntax = 0
+let g:ycm_global_ycm_extra_conf =
+  \ split(&runtimepath, ',')[0] . '/autoload/ycm_extra_conf.py'
+
 " Toggle preview window
-"nmap <silent> <leader><leader> <plug>(YCMHover)
-"
-"if (has('autocmd'))
-"  autocmd rc FileType c,cpp
-"    \ let b:ycm_hover = {
-"    \   'command': 'GetDoc',
-"    \   'syntax': &filetype,
-"    \ }
-"endif
+nmap <silent> <leader><leader> <plug>(YCMHover)
+
+if (has('autocmd'))
+  autocmd rc FileType c,cpp
+    \ let b:ycm_hover = {
+    \   'command': 'GetDoc',
+    \   'syntax': &filetype,
+    \ }
+endif
 
 
 " fzf
 "
 " Bring colorscheme harmony
 let g:fzf_colors = {
-  \ 'fg':       ['fg', 'Normal'],
-  \ 'bg':       ['bg', 'Normal'],
-  \ 'hl':       ['fg', 'MatchParens'],
-  \ 'fg+':      ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':      ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':      ['fg', 'Statement'],
-  \ 'info':     ['fg', 'PreProc'],
-  \ 'border':   ['fg', 'Ignore'],
-  \ 'prompt':   ['fg', 'Conditional'],
-  \ 'pointer':  ['fg', 'Exception'],
-  \ 'marker':   ['fg', 'Keyword'],
-  \ 'spinner':  ['fg', 'Label'],
-  \ 'header':   ['fg', 'Comment'],
-  \ }
+      \ 'fg':       ['fg', 'Normal'],
+      \ 'bg':       ['bg', 'Normal'],
+      \ 'hl':       ['fg', 'MatchParens'],
+      \ 'fg+':      ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+      \ 'bg+':      ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+':      ['fg', 'Statement'],
+      \ 'info':     ['fg', 'PreProc'],
+      \ 'border':   ['fg', 'Ignore'],
+      \ 'prompt':   ['fg', 'Conditional'],
+      \ 'pointer':  ['fg', 'Exception'],
+      \ 'marker':   ['fg', 'Keyword'],
+      \ 'spinner':  ['fg', 'Label'],
+      \ 'header':   ['fg', 'Comment'],
+      \ }
 "
 " Set fzf window layout
 if (empty($TMUX) || empty($FZF_TMUX))
   let g:fzf_layout = {'window': join([
-  \ 'split', 'belowright', join([float2nr(winheight(0) * 0.42),  'new'], '')
-  \ ])}
+        \ 'split', 'belowright', join([float2nr(winheight(0) * 0.42),  'new'], '')
+        \ ])}
 else
   let g:fzf_layout = {'tmux': join([
-  \ '-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT
-  \ ])}
+        \ '-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT
+        \ ])}
 endif
 "
 let g:fzf_command_prefix = ''
@@ -917,19 +894,19 @@ let g:fzf_tags_command = 'ctags -f .tags -R'
 "
 " Select files
 command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(
-  \   <q-args>,
-  \   fzf#vim#with_preview(
-  \     fzf#wrap({
-  \       'options': [
-  \         '--bind=tab:down,shift-tab:up',
-  \         '--info=inline',
-  \         '--layout=reverse',
-  \         ]
-  \       })
-  \     ),
-  \   <bang>0
-  \ )
+      \ call fzf#vim#files(
+      \   <q-args>,
+      \   fzf#vim#with_preview(
+      \     fzf#wrap({
+      \       'options': [
+      \         '--bind=tab:down,shift-tab:up',
+      \         '--info=inline',
+      \         '--layout=reverse',
+      \         ]
+      \       })
+      \     ),
+      \   <bang>0
+      \ )
 "
 "
 " Select files with ripgrep
@@ -950,25 +927,25 @@ command! -nargs=* -bang Rz call Rz(<q-args>, <bang>0)
 " Select colorschemes
 function! Colors(query, fullscreen)
   let l:options = [
-    \ '--cycle',
-    \ '--bind=tab:down,shift-tab:up',
-    \ '--info=hidden',
-    \ '--layout=reverse',
-    \ '--query', a:query,
-    \ ]
+        \ '--cycle',
+        \ '--bind=tab:down,shift-tab:up',
+        \ '--info=hidden',
+        \ '--layout=reverse',
+        \ '--query', a:query,
+        \ ]
   let l:source = map(split(globpath(&rtp, "colors/*.vim")), "fnamemodify(v:val, ':t:r')")
   if (empty($TMUX) || empty($FZF_TMUX))
     let l:spec = {
-    \ 'options': l:options, 'source': l:source, 'sink': 'color',
-    \ 'window': join([
-    \   'vertical', 'aboveleft', join([float2nr(winwidth(0) * 0.28), 'new'], '')
-    \ ])
-    \ }
+          \ 'options': l:options, 'source': l:source, 'sink': 'color',
+          \ 'window': join([
+          \   'vertical', 'aboveleft', join([float2nr(winwidth(0) * 0.28), 'new'], '')
+          \ ])
+          \ }
   else
     let l:spec = {
-    \ 'options': l:options, 'source': l:source, 'sink': 'color',
-    \ 'tmux': join(['-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT])
-    \ }
+          \ 'options': l:options, 'source': l:source, 'sink': 'color',
+          \ 'tmux': join(['-d', empty($FZF_TMUX_HEIGHT) ? '42%' : $FZF_TMUX_HEIGHT])
+          \ }
   endif
   call fzf#run(fzf#wrap(l:spec, a:fullscreen))
 endfunction
@@ -998,11 +975,12 @@ nnoremap <silent> <Esc><F3> :Commands!<CR>
 inoremap <silent> <Esc><F3> <Esc>:Commands!<CR>
 
 " F4:
-" Find files
-nnoremap <silent> <F4> :Files<CR>
-inoremap <silent> <F4> <Esc>:Files<CR>
-nnoremap <silent> <Esc><F4> :Files!<CR>
-inoremap <silent> <Esc><F4> <Esc>:Files!<CR>
+" Find helptags
+nnoremap <silent> <F4> :Helptags<CR>
+inoremap <silent> <F4> <Esc>:Helptags<CR>
+nnoremap <silent> <Esc><F4> :Helptags!<CR>
+inoremap <silent> <Esc><F4> <Esc>:Helptags!<CR>
+
 
 
 " Tabs
@@ -1027,21 +1005,21 @@ nnoremap <silent> <C-PageDown> :tabprev<CR>
 " Insert:
 " Toggle paste mode
 nnoremap <silent> <Insert>
-  \ : set paste!<CR>
+      \ : set paste!<CR>
 
 
 " Misc
 "
 " F5: Toggle search highlighting
 nnoremap <silent> <F5>
-  \ : setlocal hlsearch!<CR>
+      \ : setlocal hlsearch!<CR>
 "
 " F6: Toggle line numbers
 "nnoremap <silent> <F6>
 "  \ : let &l:nu = !&l:nu<Bar>
 "  \   let &l:rnu = &l:nu<CR>
 nnoremap <silent> <F6>
-  \ : let &l:nu = !&l:nu<CR>
+      \ : let &l:nu = !&l:nu<CR>
 "
 " Insert a shebang above the first line
 "nnoremap <silent> <leader>#!
@@ -1058,19 +1036,19 @@ nnoremap <silent> + "+p
 " Search forward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> *
-  \ : <C-U>let old_reg=getreg('"')<Bar>
-  \   let old_regtype=getregtype('"')<CR>
-  \   gvy/<C-R><C-R>=substitute(
-  \   escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \   gV:call setreg('"',old_reg,old_regtype)<CR>
+      \ : <C-U>let old_reg=getreg('"')<Bar>
+      \   let old_regtype=getregtype('"')<CR>
+      \   gvy/<C-R><C-R>=substitute(
+      \   escape(@",'/\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+      \   gV:call setreg('"',old_reg,old_regtype)<CR>
 "
 " Search backward for the current visual selection
 " Note: Jumping to a tag does not set the current search pattern
 vnoremap <silent> #
-  \ : <C-U>let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \   gvy?<C-R><C-R>=substitute(
-  \   escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
-  \   gV:call setreg('"',old_reg,old_regtype)<CR>
+      \ : <C-U>let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+      \   gvy?<C-R><C-R>=substitute(
+      \   escape(@",'?\.*$^~['),'\_s\+','\\_s\\+','g')<CR><CR>
+      \   gV:call setreg('"',old_reg,old_regtype)<CR>
 
 
 " Epilogue
@@ -1082,4 +1060,4 @@ set modeline
 set secure
 
 
-" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=120
+" vi:et:ft=vim:sts=2:sw=2:ts=8:tw=119

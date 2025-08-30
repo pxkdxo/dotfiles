@@ -26,30 +26,130 @@ else
   umask 0022
 fi
 
+# Function to format messages to stderr
+# usage: log -u FD -p PREFIX [--] MESSAGE [DETAIL] ...
+log() {
+  local OPTIND=1
+  local OPTARG
+  local option
+  local fd=1
+  local prefix=""
+  local message=""
+  while getopts ':u:p:' option; do
+    case "${option}" in
+      u)
+        case "$((OPTARG))" in
+          (*[![:digit:]]*) return 1 ;;
+        esac
+        fd="$((OPTARG))"
+        ;;
+      p)
+        prefix="${OPTARG}" 
+        ;;
+      \?)
+        return 2
+        ;;
+      \:)
+        return 2
+        ;;
+    esac
+  done
+  shift "$((OPTIND - 1))"
+  while test "$#" -gt 0; do
+    message="${message:+${message}: }$1"
+    shift
+  done
+  printf '%s %s\n' "${prefix}" "${message}" >&"${fd}"
+}
+
+log_critical() {
+  log -u 2 -p '[#:CRITICAL:#]:/#> ' "$@"
+}
+
+log_error() {
+  log -u 2 -p '[!:ERROR:!]:/!> ' "$@"
+}
+
+log_warning() {
+  log -p '[*:WARNING:*]:/*> ' "$@"
+}
+
+log_info() {
+  log -p '[@:INFO:@]:/@> ' "$@"
+}
+
+log_debug() {
+  log -p '[%:DEBUG:%]:/%> ' "$@"
+}
+
+# Function to run a command on each arg
+# usage: map [--] COMMAND ARG ...
+map() {
+  local OPTIND=1
+  local OPTARG
+  while getopts ':' _; do :; done
+  shift "$((OPTIND - 1))"
+  local ARG0="$1"
+  shift
+  while test "$#" -gt 0; do
+    "${ARG0}" "$1"
+    shift
+  done
+}
+
+
+# Function to append an element to PATH
+# usage: path_append TO_ADD
+path_append() {
+  if test "$#" -eq 1; then
+    case ":${PATH}:" in
+      *":$1:"*) ;;
+      *) PATH="${PATH:+${PATH}:}$1" ;;
+    esac
+  else
+    >&2 printf '%s: usage: path_append TO_ADD\n' "${0##*/}"
+    return 2
+  fi
+}
+
+# Function to insert an element in PATH
+# usage: path_insert TO_ADD [0|%|^|-1|#|$]
+path_insert() {
+  if test "$#" -eq 1; then
+    case ":${PATH}:" in
+      *":$1:"*) ;;
+      *) PATH="$1${PATH:+:${PATH}}" ;;
+    esac
+  elif test "$#" -eq 2; then
+    case ":${PATH}:" in
+      *":$1:"*) : ;;
+      *)
+        case "$2" in
+          [#$])  PATH="${PATH:+${PATH}:}$1" ;;
+          [%^])  PATH="$1${PATH:+:${PATH}}" ;;
+          *)
+            case "$(($2))" in
+              -1) PATH="${PATH:+${PATH}:}$1" ;;
+              0) PATH="$1${PATH:+:${PATH}}" ;;
+              *) return 1 ;;
+            esac
+            ;;
+        esac
+        ;;
+    esac
+  else
+    >&2 printf '%s: usage: path_insert TO_ADD [0|%|^|-1|#|$]\n' "${0##*/}"
+      return 2
+  fi
+}
+
+
 # Prepend executable paths
-case ":${PATH}:" in
-    *:"${HOME}/.local/bin":*)
-        ;;
-    *)
-        PATH="${PATH:+${PATH}:}${HOME}/.local/bin"
-        ;;
-esac
-case ":${PATH}:" in
-    *:"${HOME}/.bin":*)
-        ;;
-    *)
-        PATH="${PATH:+${PATH}:}${HOME}/.bin"
-        ;;
-esac
+map path_insert ~/.bin ~/.local/bin
+
 
 # Load additional profile config
 if test -d "${HOME}/.profile.d/"; then
-  for name in "${HOME}/.profile.d"/*.sh; do
-    if test -f "${name}" && test -r "${name}"; then
-      . "${name}"
-    fi
-  done
-  unset -v name
+  map . "${HOME}/.profile.d"/*.sh 2>/dev/null
 fi
-
 # vi:ft=sh

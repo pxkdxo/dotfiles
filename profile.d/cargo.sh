@@ -1,26 +1,36 @@
 #!/usr/bin/env sh
 # cargo.sh: cargo environment config
 
-for directory in \
-    "${CARGO_HOME-}" \
-    "${XDG_DATA_HOME:+"${XDG_DATA_HOME}/cargo"}" \
-    "${HOME}/.local/share/cargo" \
-    "${HOME}/.local/opt/cargo" \
-    "${HOME}/.local/cargo" \
-    "${HOME}/.cargo" \
-    "${HOME}/cargo"
-do
-    if test -d "${directory}/bin"; then
-        case ":${PATH}:" in
-            *:"${directory}/bin":*)
-                ;;
-            *) export PATH="${PATH:+${PATH}:}${directory}/bin"
-                ;;
-        esac
-        if test -z "${CARGO_HOME+X}"; then
-            export CARGO_HOME="${directory}"
-        fi
-    fi
-done
+if test -d "${CARGO_HOME-}"
+then
+  case ":${PATH}:" in
+    *:"${CARGO_HOME}/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${CARGO_HOME}/bin" ;;
+  esac
+elif test -d "${HOME}/.local/share/cargo"
+then
+  case ":${PATH}:" in
+    *:"${HOME}/.local/share/cargo/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/share/cargo/bin" ;;
+  esac
+elif test -d "${HOME}/.local/cargo"
+then
+  case ":${PATH}:" in
+    *:"${HOME}/.local/cargo/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/cargo/bin" ;;
+  esac
+elif test -d "${HOME}/.cargo"
+then
+  case ":${PATH}:" in
+    *:"${HOME}/.cargo/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.cargo/bin" ;;
+  esac
+elif test -d "${HOME}/cargo"
+then
+  case ":${PATH}:" in
+    *:"${HOME}/cargo/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/cargo/bin" ;;
+  esac
+fi
 
 # vim:ft=sh

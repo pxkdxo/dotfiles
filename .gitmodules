@@ -1,4 +1,8 @@
 [submodule "ohmyzsh"]
 	path = ohmyzsh
-	url = git@github.com:patrickdeyoreo/ohmyzsh.git
-	branch = macos
+	url = https://github.com/patrickdeyoreo/ohmyzsh.git
+	branch = personal
+[submodule "tmux-plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
+	branch = master
