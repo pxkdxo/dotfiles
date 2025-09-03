@@ -127,7 +127,7 @@ plugins=(
   git-prompt
   golang
   gpg-agent
-  history-substring-search
+  zsh-history-substring-search
   iterm2
   kubectl
   kubernetes
