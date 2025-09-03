@@ -68,13 +68,13 @@ else
 fi
 
 # Number of entries that may be kept in memory
-HISTSIZE=65536
+HISTSIZE=9999
 # Number of entries that may be kept on disk
 HISTFILESIZE=-1
 # Keep duplicates out of the command history
 HISTCONTROL='ignoredups:erasedups'
 # Ignore blanks surrounding immediate duplicates
-HISTIGNORE='*([[:blank:]])@(&|fg|bg|[[:blank:]])*([[:blank:]])'
+HISTIGNORE='*([[:blank:]])@(&|@([[:blank:]]|fc|fg|bg)?([[:blank:]]*))*([[:blank:]])'
 
 # Append to the history file instead of overwriting it
 shopt -s histappend
@@ -97,50 +97,63 @@ case ${TERM} in
     ;;
 esac
 
-# Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
-if type -P dircolors >/dev/null ; then
-  if [[ -r ~/.dir_colors ]] ; then
-    eval $(dircolors -b ~/.dir_colors)
-  elif [[ -r /etc/DIR_COLORS ]] ; then
-    eval $(dircolors -b /etc/DIR_COLORS)
-  fi
+# Enable colors for ls, etc.  Prefer ~/.dircolors #64489
+if test -r "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dircolors; then
+  eval $(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dircolors)
+elif test -r "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dir_colors; then
+  eval $(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dir_colors)
+elif test -r ~/.dircolors; then
+  eval $(dircolors -b -- ~/.dircolors)
+elif test -r ~/.dir_colors; then
+  eval $(dircolors -b -- ~/.dir_colors)
+elif test -r /etc/DIRCOLORS; then
+  eval $(dircolors -b -- /etc/DIRCOLORS)
+elif test -r /etc/DIR_COLORS; then
+  eval $(dircolors -b -- /etc/DIR_COLORS)
 fi
 
+# Set prompt based on whether or not this is running as root
 if [[ ${EUID} == 0 ]] ; then
   PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
 else
   PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \W\[\033[01;32m\]]\$\[\033[00m\] '
 fi
 
-xhost +local:root > /dev/null 2>&1
-
 # Match and remove debug traps set by bash-preexec
 __disable_bp_debug_trap() {
   # shellcheck disable=SC2064
   trap "
-  $(: "$(trap -p RETURN)"
-  printf '%s\n' "${_:-trap RETURN}")
-  $(__bp_debug_trap_re="'"$'((.*)[;\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;\n](.*))?'"'"
-  __bp_debug_trap_context_re=$'^[ \t\n]*((.*[[:graph:]])?)[ \t\n]*\n[ \t\n]*((.*[[:graph:]])?)[ \t\n]*$'
-  [[ $(trap -p DEBUG) =~ ${__bp_debug_trap_re} && ${BASH_REMATCH[2]}$'\n'${BASH_REMATCH[4]} =~ ${__bp_debug_trap_context_re} ]]
-  # shellcheck disable=SC2064
-  printf 'trap %q DEBUG\n' "${BASH_REMATCH[1]:+${BASH_REMATCH[1]$'\n'}}${BASH_REMATCH[3]:+${BASH_REMATCH[3]$'\n'}}")
+$(
+    __trap_return="$(trap -p RETURN)"
+    printf '%s\n' "${__trap_return:-trap RETURN}"
+)
+$(
+    __bp_debug_trap_re=\'$'((.*)[;&\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;&\n](.*))?'\'
+    __bp_debug_trap_context_re=$'^[[:space:]]*((.*[[:graph:]])?)[[:space:]]*\n[[:space:]]*((.*[[:graph:]])?)[[:space:]]*$'
+    if [[ "$(trap -p DEBUG)" =~ ${__bp_debug_trap_re} ]]; then
+      __debug_trap_matched="${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}"
+      if [[ "${__debug_trap_matched}" =~ ${__bp_debug_trap_context_re} ]]; then
+        # shellcheck disable=SC2064
+        printf 'trap %q%q DEBUG\n' "${BASH_REMATCH[1]:+${BASH_REMATCH[1]}\n}" "${BASH_REMATCH[3]:+${BASH_REMATCH[3]}\n}"
+      fi
+    fi
+)
   " RETURN
 }
 declare -ft __disable_bp_debug_trap
 if [[ $- == *T* ]]
 then
-  __disable_debug_trap
+  __disable_bp_debug_trap
 else
   trap '' DEBUG
 fi
 
 # Remove bash-prexec from PROMPT_COMMAND
-PROMPT_COMMAND="${PROMPT_COMMAND//*([[:blank:]])__@(bp|pc)_*([[:alnum:]_])*([[:blank:]])*([;$'\n'])}"
-PROMPT_COMMAND="${PROMPT_COMMAND##*([[:space:];])}"
-PROMPT_COMMAND="${PROMPT_COMMAND%%*([[:space:];])}"
+PROMPT_COMMAND="${PROMPT_COMMAND//*([[:blank:]])__@(bp|pc)_*([[:alnum:]_])*(+([[:blank:]])+([^[:graph:]]))*([[:blank:]])?([;&])*([[:space:]])}"
+PROMPT_COMMAND="${PROMPT_COMMAND##*([[:space:];&])}"
+PROMPT_COMMAND="${PROMPT_COMMAND%%*([[:space:];&])}"
 
-PROMPT_COMMAND='__pc_precmd; '"${PROMPT_COMMAND:+${PROMPT_COMMAND};}"
+PROMPT_COMMAND="__pc_precmd${PROMPT_COMMAND:+"; ${PROMPT_COMMAND}"}"
 
 trap '__pc_preexec "${_}"' USR1
 
@@ -252,48 +265,65 @@ __PS0_update() {
 # Set the primary prompt
 __PS1_update() {
   PS1="\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'\u'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
-    "'@'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'\h'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
-    "':'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'\w'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\n'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'\$>'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "' '
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\u'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
+"'@'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\h'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
+"':'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\w'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\n'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'\$>'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"' '
   return "$(($1))"
 }
 
 # Set the secondary prompt
-__PS2_update() {
-  PS2="\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-    "'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'"\
-    "'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'"\
-    "'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-    "' '
-  return "$(($1))"
-}
+if [[ -v BASH_LINENO ]]; then
+  __PS2_update() {
+    PS2="\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'"\
+"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"' '
+    return "$(($1))"
+  }
+else
+  __PS2_update() {
+    PS2="\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'.>'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"' '
+    return "$(($1))"
+  }
+fi
 
 # Set the select prompt
 __PS3_update() {
-  PS3='*) '
+    PS3="\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
+"'*>'"\
+"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
+"' '
   return "$(($1))"
 }
 
@@ -369,7 +399,7 @@ fi
 # Make less more friendly for non-text input files
 if command -v lesspipe 1> /dev/null
 then
-  eval "$(SHELL="${SHELL:-$(type -P bash)}" lesspipe)"
+  eval "$(SHELL-"${SHELL:-$(command -pv bash)}" lesspipe)"
 fi
 
 
