@@ -174,7 +174,6 @@ cmp.setup.cmdline(':', {
     }, {
       { name = 'buffer' },
     }, {
-      { name = "copilot" },
       { name = 'nvim_lsp' },
     }
   ),
