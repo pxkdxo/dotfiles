@@ -1,10 +1,11 @@
 #!/usr/bin/env sh
 # install-dotfiles.sh
-# Create symbolic links in the invoking user's home directory for each
-# top-level file and directory tracked by this repository. The name of
-# the link will match the name of the target, prefixed by a period ('.').
-# Alternatively, if the name of a directory is given as an argument, then
-# it will be used instead of the invoking user's home directory.
+#
+# Create symbolic links in the invoking user's home directory for
+# each file and directory tracked at the top level of this repository.
+# The name of the link will match the name of the file it links to,
+# prefixed with a period ('.').
+
 
 set -o errexit
 
@@ -12,7 +13,8 @@ argzero_basename="${0##*/}"
 argzero_dirname="${0%"${argzero_basename}"}"
 argzero_dirname="${argzero_dirname:-.}"
 
-usage="${argzero_basename} [-n | -i | -f] [--] [TARGET_DIRECTORY]"
+usage="${argzero_basename} [-n|-i|-f] [--] [TARGET_DIRECTORY]"
+
 
 print_help() {
   cat << EOF
@@ -20,19 +22,24 @@ usage: ${usage}
 
 ${argzero_basename} - link dotfiles into a user's home directory
 
-Create symbolic links in the invoking user's home directory for each
-top-level file and directory tracked by this repository. The name of
-the link will match the name of the target, prefixed by a period ('.').
-Alternatively, if the name of a directory is given as an argument, then
-it will be used instead of the invoking user's home directory.
+Create symbolic links in the invoking user's home directory for
+each file and directory tracked at the top level of this repository.
+The name of the link will match the name of the file it links to,
+prefixed with a period ('.').
+
+The options "-n", "-i", and "-f", control whether or not existing files
+are replaced. With "-n", no files are replaced. With "-i", the user is
+prompted interactively for any file that would be replaced. With "-f",
+the user is not prompted and files are replaced.
 EOF
 }
 
 if test -t 0; then
-  opt_overwrite='i'
+  ln_replace='i'
 else
-  opt_overwrite=''
+  ln_replace=''
 fi
+ln_optchars="snrvT"
 
 OPTIND=1
 option=''
@@ -44,9 +51,9 @@ while getopts "${optstr}" option; do
       print_help
       exit 2
       ;;
-    'n') opt_overwrite='' ;;
-    'i') opt_overwrite='i' ;;
-    'f') opt_overwrite='f' ;;
+    'n') ln_replace='' ;;
+    'i') ln_replace='i' ;;
+    'f') ln_replace='f' ;;
     '?')
       printf '%s: -%c: unrecognized option\n' "${argzero_basename}" "${OPTARG}" >&2
       printf 'usage: %s' "${usage}" >&2
@@ -81,20 +88,16 @@ else
   home_path="${home_path%?@}"
 fi
 
-set --
-if test -n "${opt_overwrite}"; then
-  set -- "$@" "${opt_overwrite}"
-fi
-
 # shellcheck disable=SC2016
-git ls-tree --name-only -z HEAD | xargs -0 -n 1 -I '{}' -o -- sh -c '
-case "$1" in (.*|*.md) exit 0 ;;
+git ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
+optchars=$1
+treepath=$2
+destpath=$3
+filename=$4
+case "${filename}" in .*|*.md) exit 0 ;;
 esac
-file="$2/$1"
-link="$3/.$1"
-o=$4
 set -x
-ln "-${o}snrvT" -- "${file}" "${link}"
-' -- '{}' "${tree_path}" "${home_path}" "${opt_overwrite}" 2>&1 || :
+ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
+' -- "${ln_replace}${ln_optchars}" "${tree_path}" "${home_path}" || :
 
 exit 0
