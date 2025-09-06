@@ -30,7 +30,7 @@ if test -z "${EDITOR}"; then
   fi
 fi
 if test -z "${VISUAL}"; then
-  elif command -v visual > /dev/null; then
+  if command -v visual > /dev/null; then
     export VISUAL="visual"
   elif command -v nvim > /dev/null; then 
     export VISUAL="nvim"
