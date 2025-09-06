@@ -13,22 +13,22 @@ export LESSUTFBINFMT='<U+%04lx>'
 
 # Use lesspipe.sh pre-processor
 if command -v lesspipe.sh > /dev/null; then
-  export LESSOPEN="||-lesspipe.sh %s"
+  export LESSOPEN='lesspipe.sh %s'
 else
   unset LESSOPEN
 fi
 
 # Enable colorization
 if command -v bat > /dev/null; then
-  export LESSCOLORIZER='bat --style=plain'
+  export LESSCOLORIZER='bat --style=plain --color=always'
 elif command -v pygmentize > /dev/null; then
   export LESSCOLORIZER='pygmentize -O' # -P allowed as well
 elif command -v source-highlight > /dev/null; then
   export LESSCOLORIZER='source-highlight'
-elif command -v vimcolor > /dev/null; then
-  export LESSCOLORIZER='vimcolor'
 elif command -v nvimpager > /dev/null; then
   export LESSCOLORIZER='nvimpager -c'
+elif command -v vimcolor > /dev/null; then
+  export LESSCOLORIZER='vimcolor'
 fi
 
 # vim:ft=sh
