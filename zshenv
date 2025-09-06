@@ -3,6 +3,10 @@
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
+if test -f ~/.env; then
+. ~/.env
+fi
+
 if test -z "${PAGER}"; then
   if command -v pager > /dev/null; then
     export PAGER="pager"
@@ -26,8 +30,6 @@ if test -z "${EDITOR}"; then
   fi
 fi
 if test -z "${VISUAL}"; then
-  if command -v visual-editor > /dev/null; then
-    export VISUAL="visual-editor"
   elif command -v visual > /dev/null; then
     export VISUAL="visual"
   elif command -v nvim > /dev/null; then 
@@ -41,8 +43,12 @@ if test -z "${BROWSER}"; then
     export BROWSER=x-www-browser
   elif command -v "firefox" > /dev/null; then 
     export BROWSER="firefox"
+  elif command -v "brave" > /dev/null; then 
+    export BROWSER="brave"
   elif command -v "google-chrome" > /dev/null; then 
     export BROWSER="google-chrome"
+  elif command -v "google-chrome-stable" > /dev/null; then 
+    export BROWSER="google-chrome-stable"
   fi
 fi
 

@@ -1,11 +1,11 @@
-# .gitignore: git repository whitelist
+# .gitignore: repository allowlist
 # see gitignore(5)
 
-# Ignore everything except directories
+# Ignore everything except top-level directories
 *
-!*/
+!/*/
 
-# Allow selectively
+# Allow below
 
 !/install-dotfiles.sh
 
@@ -14,8 +14,6 @@
 !/README.md
 
 !/asoundrc
-
-!/autostart/*.desktop
 
 !/alacritty/*.yaml
 !/alacritty/*.toml
@@ -28,8 +26,6 @@
 !/bashrc.d/**
 
 !/bat/config
-
-!/cabal/
 
 !/compton.conf
 
@@ -61,8 +57,7 @@
 
 !/nvim/autoload
 !/nvim/colors
-!/nvim/lua/config/*.lua
-!/nvim/lua/plugins/*.lua
+!/nvim/lua/**
 !/nvim/init.lua
 !/nvim/init.vim
 
@@ -85,16 +80,13 @@
 
 !/tmux.conf
 !/tmux/tmux.conf
-
-/tmux/plugins/*
-!/tmux/plugins/tpm
+!/tmux/plugins/tpm/
 
 !/user-dirs.dirs
 !/user-dirs.locale
 
 !/user-tmpfiles.d/**
 
-/vim/*/
 !/vim/autoload/**
 !/vim/colors/**
 !/vim/bundle
@@ -127,7 +119,6 @@
 !/zshenv
 !/zshrc
 
-/yazi/*
 !/yazi/config.toml
 !/yazi/keymap.toml
 !/yazi/theme.toml
