@@ -12,7 +12,7 @@ argzero_basename="${0##*/}"
 argzero_dirname="${0%"${argzero_basename}"}"
 argzero_dirname="${argzero_dirname:-.}"
 
-usage="${argzero_basename} [-nifb] [-S suffix] [--] [TARGET_DIRECTORY]"
+usage="${argzero_basename} [-n | -i | -f] [--] [TARGET_DIRECTORY]"
 
 print_help() {
   cat << EOF
@@ -28,17 +28,15 @@ it will be used instead of the invoking user's home directory.
 EOF
 }
 
-opt_backup=''
-opt_suffix=''
 if test -t 0; then
-  opt_overwrite='--interactive'
+  opt_overwrite='i'
 else
   opt_overwrite=''
 fi
 
 OPTIND=1
 option=''
-optstr=':hnifbS:'
+optstr=':hnif'
 
 while getopts "${optstr}" option; do
   case "${option}" in
@@ -47,10 +45,8 @@ while getopts "${optstr}" option; do
       exit 2
       ;;
     'n') opt_overwrite='' ;;
-    'i') opt_overwrite='--interactive' ;;
-    'f') opt_overwrite='--force' ;;
-    'b') opt_backup='--backup' ;;
-    'S') opt_suffix="--suffix=${OPTARG}" ;;
+    'i') opt_overwrite='i' ;;
+    'f') opt_overwrite='f' ;;
     '?')
       printf '%s: -%c: unrecognized option\n' "${argzero_basename}" "${OPTARG}" >&2
       printf 'usage: %s' "${usage}" >&2
@@ -86,12 +82,6 @@ else
 fi
 
 set --
-if test -n "${opt_backup}"; then
-  set -- "$@" "${opt_backup}"
-fi
-if test -n "${opt_suffix}"; then
-  set -- "$@" "${opt_suffix}"
-fi
 if test -n "${opt_overwrite}"; then
   set -- "$@" "${opt_overwrite}"
 fi
@@ -100,11 +90,11 @@ fi
 git ls-tree --name-only -z HEAD | xargs -0 -n 1 -I '{}' -o -- sh -c '
 case "$1" in (.*|*.md) exit 0 ;;
 esac
-target="$1/$3"
-link="$2/.$3"
-shift 3
+file="$2/$1"
+link="$3/.$1"
+o=$4
 set -x
-ln "$@" --verbose --symbolic --relative --no-dereference -T -- "${target}" "${link}"
-' -- "${tree_path}" "${home_path}" '{}' "$@" 2>&1 || :
+ln "-${o}snrvT" -- "${file}" "${link}"
+' -- '{}' "${tree_path}" "${home_path}" "${opt_overwrite}" 2>&1 || :
 
 exit 0
