@@ -72,7 +72,16 @@ else
   HIST_STAMPS='%a %b %d %R %Y'
 fi
 
-# Find fzf and set FZF_BASE
+# Temporary fix for git prompts
+zstyle ':omz:alpha:lib:git' async-prompt no
+
+# Use iTerm2 shell integration
+zstyle ':omz:plugins:iterm2' shell-integration yes
+
+# Set fast-syntax-highlighting theme
+export FAST_THEME="default"
+
+# Find fzf installation
 if [[ -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf" ]]; then
   export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
 elif [[ -d "${HOME}/.local/opt/fzf" ]]; then
@@ -81,17 +90,13 @@ elif [[ -d '/usr/local/share/fzf' ]]; then
   export FZF_BASE='/usr/local/share/fzf'
 elif [[ -d '/usr/share/fzf' ]]; then
   export FZF_BASE='/usr/share/fzf'
+elif [[ -d '/opt/fzf' ]]; then
+  export FZF_BASE='/opt/fzf'
+elif [[ -d "${FZF_BASE}" ]]; then
+  export FZF_BASE
 else
-  unset -v FZF_BASE
+  unset FZF_BASE
 fi
-
-# Set fast syntax highlighting theme
-export FAST_THEME="default"
-
-# Temporary fix for git prompts
-zstyle ':omz:alpha:lib:git' async-prompt no
-# Use iTerm2 shell integration
-zstyle ':omz:plugins:iterm2' shell-integration yes
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -103,8 +108,8 @@ zstyle ':omz:plugins:iterm2' shell-integration yes
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   #kind
-  #macos
   #minikube
+  #macos
   #zsh-navigation-tools
   #zsh-syntax-highlighting
   #vi-mode
@@ -117,7 +122,7 @@ plugins=(
   docker
   extract
   fancy-ctrl-z
-  #firewalld
+  firewalld
   fzf
   fzf-ext
   gh
@@ -169,11 +174,34 @@ source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
+# command-not-found hook
+#
+function command_not_found_handler() {
+  if command -v cnf-lookup > /dev/null; then
+    if test -t 1; then
+      cnf-lookup --colors -- "${@::1}"
+    else
+      cnf-lookup -- "${@::1}"
+    fi
+  elif test -x ~/.local/lib/command-not-found; then
+    ~/.local/lib/command-not-found --no-failure-msg -- "${@::1}"
+  elif test -x /usr/local/lib/command-not-found; then
+    /usr/local/lib/command-not-found --no-failure-msg -- "${@::1}"
+  elif test -x /usr/lib/command-not-found; then
+    /usr/lib/command-not-found --no-failure-msg -- "${@::1}"
+  elif test -x /lib/command-not-found; then
+    /lib/command-not-found --no-failure-msg -- "${@::1}"
+  else
+    printf '%s: command not found\n' "${@::1}"
+  fi >&2
+  return 127
+}
+
 # Z
 #
 if command -v z > /dev/null; then
-  alias 'z.=z -c'
-  alias 'zwhich=z -e'
+  alias 'z-=z -c'
+  alias 'zecho=z -e'
   alias 'zrecent=z -t'
 fi
 
@@ -186,7 +214,6 @@ if command -v vim > /dev/null; then
   export MANPAGER="${MANPAGER:-vim -M +MANPAGER -}"
 fi
 
-
 # Mark 'run-help' for autoloading
 #
 if alias run-help > /dev/null; then
@@ -197,14 +224,13 @@ function run-help() {
 }
 alias help='run-help'
 
-
 # Load completions
 #
 autoload -U -z compinit
 compinit -i -d "${ZSH_COMPDUMP:-${ZDOTDIR:-${HOME}}/.zcompdump}"
 
-
 # Configure FZF
+#
 export FZF_COMPLETION_TRIGGER=''
 bindkey '^@' zic-completion
 bindkey '^I' "${fzf_default_completion:-expand-or-complete}"
@@ -223,11 +249,11 @@ fzf_default_opts=(
   '--color='\''dark'\'
   '--color='\''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'\'
   '--prompt='\''> '\'
-  '--border=sharp'
-  '--info=hidden'
-  '--layout=reverse'
+  '--border='\''sharp'\'
+  '--info='\''hidden'\'
+  '--layout='\''reverse'\'
   '--jump-labels='\''1234567890qwertyuiopasdfghjklzxcvbnm'\'
-  '--tmux=bottom,45%,border-native'
+  '--tmux='\''bottom,45%,border-native'\'
 )
 
 typeset -Tx FZF_ALT_C_OPTS fzf_alt_c_opts " "
@@ -240,7 +266,7 @@ fzf_alt_c_opts=(
   '--bind='\''alt-x:execute-silent%tmux new-window ranger --selectfile={}%+abort'\'
   '--filepath-word'
   '--no-sort'
-  '--layout=reverse-list'
+  '--layout='\''reverse-list'\'
 )
 
 typeset -Tx FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
@@ -254,7 +280,7 @@ fzf_ctrl_r_opts=(
   '--filepath-word'
   '--cycle'
   '--sort'
-  '--layout=reverse-list'
+  '--layout='\''reverse-list'\'
 )
 
 typeset -Tx FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
@@ -268,7 +294,7 @@ fzf_ctrl_t_opts=(
   '--filepath-word'
   '--no-cycle'
   '--no-sort'
-  '--layout=reverse-list'
+  '--layout='\''reverse-list'\'
 )
 
 typeset -Tx FZF_COMPLETION_OPTS fzf_completion_opts " "
@@ -276,7 +302,7 @@ fzf_completion_opts=(
   "${fzf_default_opts[@]}"
   '--bind='\''tab:down'\'
   '--bind='\''shift-tab:up'\'
-  '--layout=reverse-list'
+  '--layout='\''reverse-list'\'
   '--cycle'
   '-1'
 )
@@ -290,8 +316,8 @@ fzf_interactive_cd_opts=(
   '--filepath-word'
 )
 
-
 # Attach to a tmux session
+#
 #if [[ -z ${TMUX} ]] && command -v tmux > /dev/null; then
 #  if tmux has-session 2> /dev/null; then
 #    tmux_sessions=("${(@f)$(tmux list-sessions -F '#S')}")
