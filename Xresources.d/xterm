@@ -1,71 +1,75 @@
 ! Xresources.d/XTerm: XTerm resources
 
 ! Term
-!XTerm*termName: xterm-256color
-!XTerm*ttyModes: erase ^? start ^- stop ^-
+XTerm*termName: xterm-256color
+XTerm*ttyModes: erase ^? start ^- stop ^-
 
 ! Window
-!XTerm*allowWindowOps: true
-!XTerm*signalInhibit: true
-!XTerm*tekInhibit: true
+XTerm*allowWindowOps: true
+XTerm*signalInhibit: true
+XTerm*tekInhibit: true
 
 ! Locale
-!XTerm*utf8: true
-!XTerm*utf8Title: true
+XTerm*utf8: true
+XTerm*utf8Title: true
 
 ! Keyboard
-!XTerm*backarrowKey: false
-!XTerm*metaSendsEscape: true
-!XTerm*altIsNotMeta: true
-!XTerm*altSendsEscape: true
+XTerm*backarrowKey: false
+XTerm*metaSendsEscape: true
+XTerm*altIsNotMeta: true
+XTerm*altSendsEscape: true
 
 ! 8-Bit
-!XTerm*eightBitControl: false
-!XTerm*eightBitInput: true
-!XTerm*eightBitOutput: true
-!XTerm*eightBitMeta: false
+XTerm*eightBitControl: false
+XTerm*eightBitInput: true
+XTerm*eightBitOutput: true
+XTerm*eightBitMeta: false
 
 ! Selections
-!XTerm*charClass: 33:48,37-38:48,45-47:48,64:48,58:48,126:48,61:48,63:48,43:48,35:48
-!XTerm*on2Clicks: regex [[:alpha:]]+:\/\/([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
-!XTerm*on3Clicks: word
-!XTerm*on4Clicks: line
-!XTerm*on5Clicks: group
+XTerm*charClass: 33:48,37-38:48,45-47:48,64:48,58:48,126:48,61:48,63:48,43:48,35:48
+XTerm*on2Clicks: regex [[:alpha:]]+:\/\/([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+XTerm*on3Clicks: word
+XTerm*on4Clicks: line
+XTerm*on5Clicks: group
 
 ! Clipboard
-!XTerm*cutNewline: false
-!XTerm*selectToClipboard: false
-!XTerm*trimSelection: true
+XTerm*cutNewline: false
+XTerm*selectToClipboard: false
+XTerm*trimSelection: true
 
 ! Video
-!XTerm*VT100*colorMode: true
-!XTerm*VT100*colorAttrMode: true
-!XTerm*VT100*dynamicColors: true
-!XTerm*VT100*showBlinkAsBold: true
-!XTerm*VT100*veryBoldColors: 6
+XTerm*VT100*colorMode: true
+XTerm*VT100*colorAttrMode: true
+XTerm*VT100*dynamicColors: true
+XTerm*VT100*showBlinkAsBold: true
+XTerm*VT100*veryBoldColors: 6
 
 ! Cursor
-!XTerm*cursorBlink: true
-!XTerm*cursorOffTime: 610
-!XTerm*cursorOnTime: 987
+XTerm*cursorBlink: true
+XTerm*cursorOffTime: 650
+XTerm*cursorOnTime: 850
 
 ! Fonts (TrueType)
-!XTerm*VT100*faceName: \
-!xft:mononoki Nerd Font Mono:style=Regular, \
-!xft:JetBrainsMono Nerd Font Mono:style=Regular, \
-!xft:FantasqueSansMono Nerd Font Mono:style=Regular, \
-!xft:mononoki:style=Regular, \
-!xft:JetBrains Mono:style=Regular, \
-!xft:Fantasque Sans Mono:style=Regular, \
-!xft:Ubuntu Mono:style=Regular
+XTerm*VT100*faceName: \
+xft:ComicShannsMono Nerd Font:style=Regular, \
+xft:Agave Nerd Font:style=Regular, \
+xft:Monofur Nerd Font:style=Regular, \
+xft:Mononoki Nerd Font:style=Regular, \
+xft:JetBrainsMono Nerd Font:style=Regular, \
+xft:ComicShannsMono:style=Regular, \
+xft:Agave:style=Regular, \
+xft:Monofur:style=Regular, \
+xft:Mononoki:style=Regular, \
+xft:JetBrains Mono:style=Regular, \
+xft:Ubuntu Mono:style=Regular
 
-!XTerm*VT100*faceSize : 16
-!XTerm*VT100*faceSize1: 13
-!XTerm*VT100*faceSize2: 14
-!XTerm*VT100*faceSize3: 15
-!XTerm*VT100*faceSize4: 17
-!XTerm*VT100*faceSize5: 18
-!XTerm*VT100*faceSize6: 19
+XTerm*VT100*faceSize : 14
+XTerm*VT100*faceSize1: 12
+XTerm*VT100*faceSize2: 13
+XTerm*VT100*faceSize3: 15
+XTerm*VT100*faceSize4: 16
+XTerm*VT100*faceSize5: 17
+XTerm*VT100*faceSize6: 18
 
 ! Fonts (UTF-8)
 !XTerm*VT100*utf8Fonts.font:  -*-terminus-medium-*-*-*-15-*-*-*-*-*-iso10646-1
@@ -86,35 +90,34 @@
 !XTerm*VT100.font6: -misc-fixed-medium-r-normal--20-*-100-100-*-*-iso10646-1
 
 ! Fonts (general)
-!XTerm*forceBoxChars: false
-!XTerm*renderFont: true
-!XTerm*showMissingGlyphs: false
+XTerm*forceBoxChars: false
+XTerm*renderFont: true
+XTerm*showMissingGlyphs: false
 
 ! Scrolling 
-!XTerm*fastScroll: true
-!XTerm*jumpScroll: true
-!XTerm*multiScroll: true
-!XTerm*saveLines: 32768
-!XTerm*scrollBar: false
-!XTerm*scrollKey: true
-!XTerm*scrollTtyOutput: false
+XTerm*fastScroll: true
+XTerm*jumpScroll: true
+XTerm*multiScroll: true
+XTerm*saveLines: 50000
+XTerm*scrollBar: false
+XTerm*scrollKey: true
+XTerm*scrollTtyOutput: false
 
 ! Bell
-!XTerm*bellIsUrgent: true
-!XTerm*bellSuppressTime: 89
-!XTerm*visualBell: true
-!XTerm*visualBellDelay: 0
-!XTerm*visualBellLine: true
+XTerm*bellIsUrgent: true
+XTerm*bellSuppressTime: 100
+XTerm*visualBell: true
+XTerm*visualBellDelay: 0
+XTerm*visualBellLine: true
 
 ! Mappings
-!XTerm*translations: #override                                       \n\
-!Ctrl Shift <Key> C: copy-selection(CLIPBOARD)                       \n\
-!Ctrl Shift <Key> V: insert-selection(CLIPBOARD)                     \n\
-!Ctrl Shift <Key> P: dabbrev-expand()                                \n\
-!Ctrl Shift <Key> S: secure()                                        \n\
-!Ctrl Shift <Key> O: exec-formatted("xdg-open '%t'", PRIMARY)        \n\
-!Ctrl Shift <Btn1Up>:exec-formatted("x-www-browser '%t'", PRIMARY)   \n\
-!Ctrl <Key> +:       larger-vt-font()                                \n\
-!Ctrl <Key> -:       smaller-vt-font() 
+XTerm*translations: #override \n\
+!Ctrl Shift <Key> C: copy-selection(CLIPBOARD) \n\
+!Ctrl Shift <Key> V: insert-selection(CLIPBOARD) \n\
+!Ctrl Shift <Key> P: dabbrev-expand() \n\
+!Ctrl Shift <Key> O: exec-formatted("xdg-open '%t'", PRIMARY) \n\
+!Ctrl Shift <Btn1Up>:exec-formatted("x-www-browser '%t'", PRIMARY) \n\
+!Ctrl <Key> +:       larger-vt-font() \n\
+!Ctrl <Key> -:       smaller-vt-font()
 
 ! vim:ft=xdefaults
