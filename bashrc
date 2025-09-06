@@ -395,13 +395,27 @@ then
   eval "$(thefuck --alias)"
 fi
 
-
-# Make less more friendly for non-text input files
-if command -v lesspipe 1> /dev/null
-then
-  eval "$(SHELL-"${SHELL:-$(command -pv bash)}" lesspipe)"
-fi
-
+# command-not-found hook
+command_not_found_handle() {
+  if command -v cnf-lookup > /dev/null; then
+    if test -t 1; then
+      cnf-lookup --colors -- "${@::1}"
+    else
+      cnf-lookup -- "${@::1}"
+    fi
+  elif test -x ~/.local/lib/command-not-found; then
+    ~/.local/lib/command-not-found --no-failure-msg -- "${@::1}"
+  elif test -x /usr/local/lib/command-not-found; then
+    /usr/local/lib/command-not-found --no-failure-msg -- "${@::1}"
+  elif test -x /usr/lib/command-not-found; then
+    /usr/lib/command-not-found --no-failure-msg -- "${@::1}"
+  elif test -x /lib/command-not-found; then
+    /lib/command-not-found --no-failure-msg -- "${@::1}"
+  else
+    printf '%s: command not found\n' "${@::1}"
+  fi >&2
+  return 127
+}
 
 # Load bash-completion unless posix mode is set
 if ! shopt -oq posix
@@ -424,11 +438,11 @@ fi
 
 
 # sourcedir - recursively source a directory
-sourcedir()
-{
+sourcedir() {
+  local fname
   if [[ -d $1 ]]; then
-    for _ in "$1"/*; do
-      sourcedir "${_}" "${@:2}"
+    for fname in "$1"/*; do
+      sourcedir "${fname}" "${@:2}"
     done
   elif [[ -f $1 ]]; then
     source -- "$@"
@@ -436,8 +450,7 @@ sourcedir()
 }
 
 
-# Source additional init scripts
-if [[ -d ~/.bashrc.d ]]
-then
+# Source additional startup scripts
+if [[ -d ~/.bashrc.d ]]; then
   sourcedir ~/.bashrc.d
 fi
