@@ -90,13 +90,11 @@ export FAST_THEME="default"
 
 # Temporary fix for git prompts
 zstyle ':omz:alpha:lib:git' async-prompt no
+# Use iTerm2 shell integration
 zstyle ':omz:plugins:iterm2' shell-integration yes
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Temporary fix for git prompts
-zstyle ':omz:alpha:lib:git' async-prompt no
 
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
