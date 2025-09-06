@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# python-macos.sh: python path config
+# python-macos.sh: executable paths
 
 case "$(uname)" in
   [Dd]arwin*)
