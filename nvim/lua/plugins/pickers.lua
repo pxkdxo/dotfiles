@@ -1,11 +1,6 @@
 return {
   {
-    'nvim-telescope/telescope.nvim',
-    tag = '0.1.8',
-    dependencies = { 'nvim-lua/plenary.nvim' }
-  },
-  {
-    'echasnovski/mini.pick',
+    'nvim-mini/mini.pick',
     version = false,
   },
   {
@@ -72,7 +67,6 @@ return {
         ["--tmux"]   = "center,80%,60%",
         ["--ghost"]  = "start typing to search",
         ["--input-border"] = "line",
-        -- ["--info-command"] = "printf '\\e[0m%s%d\\e[0m%s Matches\\e[0m %s(\\e[0m%s%d\\e[0m%s Selected\\e[0m%s)\\e[0m %s/\\e[0m %s%d\\e[0m%s Total\\e[0m' \"$(tput setaf 9; tput bold)\" \"${FZF_MATCH_COUNT}\" \"$(tput setaf 9)\" \"$(tput setaf 15; tput sitm)\" \"$(tput setaf 7; tput dim; tput bold; tput sitm)\" \"${FZF_SELECT_COUNT}\" \"$(tput setaf 7; tput dim; tput sitm)\" \"$(tput setaf 15; tput sitm)\" \"$(tput setaf 15)\" \"$(tput setaf 14; tput bold)\" \"${FZF_TOTAL_COUNT}\" \"$(tput setaf 14)\""
       },
       -- fzf_colors = {},  -- Fzf `--color` specification
       -- hls = {},         -- Highlights

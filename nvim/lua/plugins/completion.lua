@@ -6,13 +6,13 @@ return {
   {'hrsh7th/cmp-cmdline'},
   {'hrsh7th/nvim-cmp'},
   {'saadparwaiz1/cmp_luasnip'},
-  {
-    "zbirenbaum/copilot-cmp",
-    dependencies = {
-      "zbirenbaum/copilot.lua",
-    },
-    config = function ()
-      require("copilot_cmp").setup()
-    end
-  }
+  -- {
+  --   "zbirenbaum/copilot-cmp",
+  --   dependencies = {
+  --     "zbirenbaum/copilot.lua",
+  --   },
+  --   config = function ()
+  --     require("copilot_cmp").setup()
+  --   end
+  -- }
 }
