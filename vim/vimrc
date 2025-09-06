@@ -116,6 +116,7 @@ set tabstop=8
 "
 " Length past which lines will be broken automatically
 "set textwidth=79
+set textwidth=0
 
 
 " Verbosity
@@ -279,10 +280,10 @@ set timeout
 set timeoutlen=1000
 "
 " Don't timeout on keycodes
-set nottimeout
+"set nottimeout
 "
-" milliseconds to wait for completion of a key code
-set ttimeoutlen=50
+" milliseconds to wait if timing out on completion of a key code
+"set ttimeoutlen=50
 
 
 " Completion and Tags
@@ -385,11 +386,6 @@ if (!empty(split(&runtimepath, ',')))
   endif
 endif
 "
-" Append fallback tmp directory
-set directory+=/tmp/
-set undodir+=/tmp/
-set backupdir+=/tmp/
-"
 " Create the primary swap directory
 if (!isdirectory(split(&directory, ',')[0]))
   silent! call mkdir(split(&directory, ',')[0], 'p', 0700)
@@ -406,18 +402,18 @@ if (!isdirectory(split(&backupdir, ',')[0]))
 endif
 
 
+" Terminal
+"
+" F**k terminal bells
+set belloff=all
+
+
 " Grep
 "
 " Use ripgrep instead
 if (executable('rg') == 1)
   let &grepprg = 'rg --vimgrep --smart-case --unrestricted -- $* -'
 endif
-
-
-" Terminal
-"
-" F**k terminal bells
-set belloff=all
 
 
 " Mouse
@@ -478,17 +474,21 @@ endif
 " Choose some colors
 let g:colorschemes = [
       \ 'kolor',
-      \ 'snazzy',
+      \ 'colorsbox-steighties',
       \ 'night-owl',
       \ 'night_owl_light',
-      \ 'Tomorrow',
-      \ 'colorsbox-steighties',
       \ 'janah',
-      \ 'sorbet',
+      \ 'snazzy',
+      \ 'Tomorrow',
       \ 'desert',
+      \ 'evening',
+      \ 'habamax',
+      \ 'lunaperche',
+      \ 'shine',
+      \ 'sorbet',
+      \ 'vim',
       \ 'wildcharm',
-      \ 'peachpuff',
-      \ 'default',
+      \ 'zaibatsu',
       \ ]
 
 " Set a colorscheme
@@ -511,9 +511,13 @@ function! RotateColorscheme(n)
   endif
 endfunction
 "
-" F11:
+" F10:
 " Rotate to next colorscheme
-nnoremap <silent> <F11> :call RotateColorscheme(1)<CR>
+nnoremap <silent> <F10> :call RotateColorscheme(1)<CR>
+" M-F10 (a.k.a. F58):
+" Rotate to previous colorscheme
+nnoremap <silent> <M-F10> :call RotateColorscheme(-1)<CR>
+nnoremap <silent> <F58> :call RotateColorscheme(-1)<CR>
 
 
 " C / C++
@@ -530,7 +534,7 @@ let g:c_space_errors = 1
 " Set local options for C and C++ files
 if (has('autocmd'))
   autocmd rc FileType c,cpp
-        \ silent! setlocal cin noet sts=0 sw=8 ts=8 tw=79
+        \ silent! setlocal cin noet sts=0 sw=8 ts=8 tw=119
         \|silent! let &l:shiftwidth = &tabstop
         \|silent! let &l:cinoptions = ':0,(' . &tabstop
 endif
@@ -541,7 +545,7 @@ endif
 " Set textwidth for commit messages
 if (has('autocmd'))
   autocmd rc FileType gitcommit
-        \ silent! setlocal tw=71
+        \ silent! setlocal tw=55
 endif
 
 
@@ -588,13 +592,6 @@ if (has('autocmd'))
           \ silent! setlocal cc= nonu nornu wrap
   endif
 endif
-
-
-" JavaScript
-"
-" Enable syntastic plugins
-let g:syntastic_javascript_checkers=['standard']
-let g:syntastic_javascript_standard_exec = 'semistandard'
 
 
 " Python
@@ -647,7 +644,7 @@ let g:sh_no_error = 1
 " Set local options when opening a shell script
 if (has("autocmd"))
   autocmd rc FileType bash,ksh,sh,zsh
-        \ silent! setlocal et sts=2 sw=2 ts=8
+        \ silent! setlocal et sts=2 sw=2 ts=8 tw=119
 endif
 "
 " Set filetype to sh when editing a shell command line
@@ -661,15 +658,15 @@ endif
 
 " Airline
 "
-let g:airline_powerline_fonts = 1
-let g:airline_left_sep = "\UE0C0"
-let g:airline_right_sep = "\UE0C2"
-let g:airline_left_alt_sep = "\UE0B1"
-let g:airline_right_alt_sep = "\UE0B3"
-
-if (!exists('g:airline_symbols'))
-  let g:airline_symbols = {}
-endif
+"let g:airline_powerline_fonts = 1
+"let g:airline_left_sep = "\UE0C0"
+"let g:airline_right_sep = "\UE0C2"
+"let g:airline_left_alt_sep = "\UE0B1"
+"let g:airline_right_alt_sep = "\UE0B3"
+"
+"if (!exists('g:airline_symbols'))
+"  let g:airline_symbols = {}
+"endif
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = "unique_tail_improved"
@@ -677,8 +674,42 @@ let g:airline#extensions#tabline#overflow_marker = '…'
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamecollapse = 1
 "
-" Set an airline theme
-let g:airline_theme = 'kolor'
+" Set some airline theme options
+let g:airline_themes = [
+      \ 'kolor',
+      \ 'atomic',
+      \ 'papercolor',
+      \ 'soda'
+      \ ]
+let g:airline_theme = g:airline_themes[1]
+execute 'AirlineTheme' g:airline_theme
+"
+"
+" Define a function to rotate the colorscheme
+function! RotateAirlineThemes(n)
+  if (exists('g:airline_themes'))
+    try
+      let l:size = len(g:airline_themes)
+    catch /^Vim(let)\=:E121/
+      let l:size
+    endtry
+    let l:shift = a:n % l:size
+    let g:airline_themes = slice(g:airline_themes, shift) + slice(g:airline_themes, 0, shift)
+    try
+      execute 'AirlineTheme' g:airline_themes[0]
+    catch /^Vim(.*):/
+    endtry
+  endif
+endfunction
+"
+" F11:
+" Rotate to next airline theme
+nnoremap <silent> <F11> :call RotateAirlineThemes(1)<CR>
+"
+" M-F11 (a.k.a. F59):
+" Rotate to previous colorscheme
+nnoremap <silent> <M-F11> :call RotateAirlineThemes(-1)<CR>
+nnoremap <silent> <F59> :call RotateAirlineThemes(-1)<CR>
 "
 " Refresh airline when the colorscheme changes
 if (has('autocmd'))
@@ -762,19 +793,6 @@ let g:lt_quickfix_list_toggle_map = '<leader>q'
 
 
 " NERDTree
-"
-"let g:NERDTreeGitStatusIndicatorMapCustom = {
-"  \   'Clean'     : '',
-"  \   'Deleted'   : '',
-"  \   'Dirty'     : '',
-"  \   'Ignored'   : '',
-"  \   'Modified'  : '',
-"  \   'Renamed'   : '',
-"  \   'Staged'    : '',
-"  \   'Unknown'   : '',
-"  \   'Unmerged'  : '',
-"  \   'Untracked' : '',
-"  \ }
 "
 " Disable arrow icons at the left side of folder icons
 let g:NERDTreeDirArrowExpandable  = ""
