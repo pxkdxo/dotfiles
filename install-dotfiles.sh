@@ -13,6 +13,7 @@ argzero_basename="${0##*/}"
 argzero_dirname="${0%"${argzero_basename}"}"
 argzero_dirname="${argzero_dirname:-.}"
 
+
 usage="${argzero_basename} [-n|-i|-f] [--] [TARGET_DIRECTORY]"
 
 
@@ -34,12 +35,14 @@ the user is not prompted and files are replaced.
 EOF
 }
 
+
+ln_optchars="snvT"
+
 if test -t 0; then
   ln_replace='i'
 else
   ln_replace=''
 fi
-ln_optchars="snrvT"
 
 OPTIND=1
 option=''
@@ -51,9 +54,6 @@ while getopts "${optstr}" option; do
       print_help
       exit 2
       ;;
-    'n') ln_replace='' ;;
-    'i') ln_replace='i' ;;
-    'f') ln_replace='f' ;;
     '?')
       printf '%s: -%c: unrecognized option\n' "${argzero_basename}" "${OPTARG}" >&2
       printf 'usage: %s' "${usage}" >&2
@@ -64,9 +64,13 @@ while getopts "${optstr}" option; do
       printf 'usage: %s' "${usage}" >&2
       exit 2
       ;;
+    'n') ln_replace='' ;;
+    'i') ln_replace='i' ;;
+    'f') ln_replace='f' ;;
   esac
 done
 shift "$((OPTIND - 1))"
+
 
 if test "$#" -gt 1; then
   printf '%s: received too many arguments\n' "${argzero_basename}" >&2
@@ -74,10 +78,6 @@ if test "$#" -gt 1; then
   exit 2
 fi
 
-cd -- "${argzero_dirname}"
-
-tree_path="$(pwd -P && printf -- '%c' '@')"
-tree_path="${tree_path%?@}"
 
 if test "$#" -eq 1; then
   home_path="$(cd -- "$1" && pwd -P && printf -- '%c' '@')"
@@ -88,16 +88,55 @@ else
   home_path="${home_path%?@}"
 fi
 
+
+cd -- "${argzero_dirname}"
+
+tree_path="$(pwd -P && printf -- '%c' '@')"
+tree_path="${tree_path%?@}"
+
+
+rel_to_ancestor=""
+next_parent_dir="${home_path%/}"
+while test "${next_parent_dir}" != ''; do
+  next_parent_dir="${next_parent_dir%/*}"
+  rel_to_ancestor="${rel_to_ancestor}../"
+done
+
+
+common_ancestor="/"
+next_descendant="${home_path%"/${home_path#/*/}"}"
+while test "${common_ancestor}" != "${home_path}"; do
+  case "${tree_path}/" in
+    "${next_descendant}"/*)
+      common_ancestor="${next_descendant}"
+      next_descendant="${home_path%"/${home_path#"${next_descendant}"/*/}"}"
+      rel_to_ancestor="${rel_to_ancestor%../}"
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+if test "${common_ancestor}" != '/'; then
+  tree_path="${tree_path#"${common_ancestor}"}"
+  tree_path="${rel_to_ancestor}${tree_path#/}"
+fi
+
+
+ln_optchars="${ln_optchars}${ln_replace}"
+
+
 # shellcheck disable=SC2016
 git ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
-optchars=$1
-treepath=$2
-destpath=$3
-filename=$4
-case "${filename}" in .*|*.md) exit 0 ;;
+installer=$1
+optchars=$2
+treepath=$3
+destpath=$4
+filename=$5
+case "${filename}" in ("${installer}"|.*|*.md) exit 0 ;;
 esac
 set -x
 ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
-' -- "${ln_replace}${ln_optchars}" "${tree_path}" "${home_path}" || :
+' -- "${argzero_basename}" "${ln_optchars}" "${tree_path}" "${home_path}" || :
 
 exit 0
