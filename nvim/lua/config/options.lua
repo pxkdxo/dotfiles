@@ -1,6 +1,14 @@
 -- This file is automatically loaded by plugins.core
 local opt = vim.opt
 
+local function likenull(x)
+  return not x or x == '' or x == 0 or (type(x) == "table" and #x == 0)
+end
+
+local function default(x, d)
+  return not likenull(x) and x or d
+end
+
 opt.encoding = "utf-8"
 opt.autoread = true
 opt.autowrite = true -- Enable auto write
@@ -25,7 +33,7 @@ opt.formatoptions = "jcroqlnt" -- tcqj
 opt.grepformat = "%f:%l:%c:%m"
 opt.grepprg = "rg --vimgrep"
 opt.hidden = true
-opt.history = 10000
+opt.history = 5000
 opt.hlsearch = false
 opt.ignorecase = true -- Ignore case
 opt.inccommand = "nosplit" -- preview incremental substitute
@@ -41,12 +49,12 @@ opt.mousefocus = true
 opt.nrformats = "bin,hex,unsigned"
 opt.number = true -- Print line number
 opt.numberwidth = 2
-opt.pumblend = 15 -- Popup blend
-opt.pumheight = 10 -- Maximum number of entries in a popup
+opt.pumblend = 10 -- Popup blend
+opt.pumheight = 20 -- Maximum number of entries in a popup
 -- opt.pyxversion = 3
 opt.relativenumber = false -- Give us absolute line numbers
 opt.ruler = true -- Enable the default ruler
-opt.scrolloff = 4 -- Lines of context
+opt.scrolloff = 3 -- Lines of context
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 opt.shiftround = true -- Round indent
 opt.shiftwidth = 2 -- Size of an indent
@@ -55,7 +63,7 @@ opt.showcmd = true
 opt.showmatch = true
 opt.showmode = false -- Dont show mode since we have a statusline
 opt.sidescroll = 1
-opt.sidescrolloff = 4 -- Columns of context
+opt.sidescrolloff = 3 -- Columns of context
 opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 opt.smartcase = true -- Don't ignore case with capitals
 opt.smartindent = true -- Insert indents automatically
@@ -65,7 +73,7 @@ opt.splitbelow = true -- Put new windows below current
 opt.splitkeep = "screen"
 opt.splitright = true -- Put new windows right of current
 opt.startofline = false
---opt.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]] -- requires 'snacks.statuscolumn'
+opt.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]] -- requires 'snacks.statuscolumn'
 opt.tabstop = 8 -- Number of spaces tabs count for
 opt.tags = ".tags,tags,.TAGS,TAGS"
 opt.termguicolors = true -- True color support
@@ -73,8 +81,8 @@ opt.timeout = true
 opt.timeoutlen = vim.g.vscode and 1000 or 500 -- Lower than default (1000) to quickly trigger which-key
 --opt.ttimeout = true
 --opt.title = false
-opt.undofile = true
-opt.undolevels = 5000
+opt.undofile = opt.swapfile and true or false
+opt.undolevels = 2500
 opt.undoreload = -1
 opt.updatecount = 48
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
@@ -83,7 +91,7 @@ opt.whichwrap = table.concat({"<", ">", "[", "]", "b", "s"}, ",")
 opt.wildignore = {".git/*", ".hg/*", ".svn/*"}
 opt.wildignorecase = true
 opt.wildmenu = true
-opt.wildmode = {"longest:full", "full"} -- Command-line completion mode
+opt.wildmode = {"list", "longest:full", "full"} -- Command-line completion mode
 opt.winblend = 15
 opt.winborder = "rounded"
 opt.winminwidth = 3 -- Minimum window width
@@ -102,31 +110,74 @@ else
   opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
 end
 
-opt.directory = {
-  string.format("%s/nvim/swap/", os.getenv("XDG_CACHE_HOME")),
-  string.format("%s/nvim/swap/", os.getenv("XDG_DATA_HOME")),
-  string.format("%s/", os.getenv("TMPDIR"))
-}
-opt.undodir = {
-  string.format("%s/nvim/undo/", os.getenv("XDG_CACHE_HOME")),
-  string.format("%s/nvim/undo/", os.getenv("XDG_DATA_HOME")),
-  string.format("%s/", os.getenv("TMPDIR"))
-}
-opt.backupdir = {
-  string.format("%s/nvim/backup/", os.getenv("XDG_CACHE_HOME")),
-  string.format("%s/nvim/backup/", os.getenv("XDG_DATA_HOME")),
-  string.format("%s/", os.getenv("TMPDIR"))
-}
+opt.directory:prepend({
+  string.format("%s/nvim/swap", default(
+    os.getenv("XDG_STATE_HOME"), string.format(
+      "%s/%s", os.getenv("HOME"), ".local/state"
+    )
+  ))
+})
+opt.directory:append({
+  string.format("%s/nvim/swap", default(
+    os.getenv("XDG_RUNTIME_DIR"), default(os.getenv("TMPDIR"), '/tmp')
+  ))
+})
+opt.undodir:prepend({
+  string.format("%s/nvim/undo", default(
+    os.getenv("XDG_STATE_HOME"), string.format(
+      "%s/%s", os.getenv("HOME"), ".local/state"
+    )
+  ))
+})
+opt.undodir:append({
+  string.format("%s/nvim/undo", default(
+    os.getenv("XDG_RUNTIME_DIR"), default(os.getenv("TMPDIR"), '/tmp')
+  ))
+})
+opt.backupdir:prepend({
+  string.format("%s/nvim/backup", default(
+    os.getenv("XDG_STATE_HOME"), string.format(
+      "%s/%s", os.getenv("HOME"), ".local/state"
+    )
+  ))
+})
+opt.backupdir:append({
+  string.format("%s/nvim/backup", default(
+    os.getenv("XDG_RUNTIME_DIR"), default(os.getenv("TMPDIR"), '/tmp')
+  ))
+})
+
 opt.guicursor = {
   "n-c-v:block",
-  "r-cr-o:hor40",
+  "r-cr-o:hor35",
   "i-ci-ve:ver65",
-  "t:block-TermCursor",
-  "sm:block-blinkwait250-blinkoff200-blinkon250",
-  "a:blinkwait650-blinkoff250-blinkon400-Cursor/lCursor",
+  "t:block",
+  "sm:block-blinkwait500-blinkoff225-blinkon275",
+  "a:blinkwait1000-blinkoff450-blinkon550",
 }
 
 -- Fix markdown indentation settings (?)
 -- vim.g.markdown_recommended_style = 0
+
+vim.cmd.autocmd({
+  args = {
+    "BufWritePre",
+    table.concat(
+      {
+        "/tmp/*",
+        "/run/*",
+        "/var/tmp/*",
+        "/var/run/*",
+        "/root/*",
+        "*/.../*",
+        string.format("%s/*", default(os.getenv("XDG_RUNTIME_DIR"), "/var/run")),
+        string.format("%s/*", default(os.getenv("TMPDIR"), "/tmp")),
+      },
+      ","
+    ),
+    "setlocal",
+    "noundofile",
+  },
+})
 
 return opt

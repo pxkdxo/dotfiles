@@ -10,7 +10,7 @@ return {
         themable = true, -- allows highlight groups to be overriden i.e. sets highlights as default
         color_icons = true, -- whether or not to add the filetype icon highlights
         show_buffer_icons = true, -- disable filetype icons for buffers
-        separator_style = "thick"
+        separator_style = "slant" -- "slant" | "slope" | "thick" | "thin" | { '|', '|' }
       }
     },
   },
@@ -32,7 +32,6 @@ return {
     ---@type ibl.config
     opts = {
       indent = {
-        -- char = "│",
         char = "▎",
       },
       scope = {

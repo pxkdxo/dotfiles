@@ -683,7 +683,7 @@ let g:airline_themes = [
       \ 'soda'
       \ ]
 let g:airline_theme = g:airline_themes[1]
-execute 'AirlineTheme' g:airline_theme
+eval('AirlineTheme' .. ' ' .. g:airline_theme)
 "
 "
 " Define a function to rotate the colorscheme

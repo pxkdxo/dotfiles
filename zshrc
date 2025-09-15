@@ -106,6 +106,7 @@ fi
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
 plugins=(
   #kind
   #minikube
@@ -189,10 +190,8 @@ function command_not_found_handler() {
     /usr/local/lib/command-not-found --no-failure-msg -- "${@::1}"
   elif test -x /usr/lib/command-not-found; then
     /usr/lib/command-not-found --no-failure-msg -- "${@::1}"
-  elif test -x /lib/command-not-found; then
-    /lib/command-not-found --no-failure-msg -- "${@::1}"
   else
-    printf '%s: command not found\n' "${@::1}"
+    printf '%s: command not found\n' "$1"
   fi >&2
   return 127
 }
@@ -201,17 +200,18 @@ function command_not_found_handler() {
 #
 if command -v z > /dev/null; then
   alias 'z-=z -c'
-  alias 'zecho=z -e'
+  alias 'zwhich=z -e'
   alias 'zrecent=z -t'
 fi
 
 # Configure environment
 #
-if command -v nvim > /dev/null; then
-  export MANPAGER="${MANPAGER:-nvim '+Man!'}"
-fi
-if command -v vim > /dev/null; then
-  export MANPAGER="${MANPAGER:-vim -M +MANPAGER -}"
+if test -n "${MANPAGER}"; then
+  export MANPAGER
+elif command -v nvim > /dev/null; then
+  export MANPAGER="${nvim '+Man!'}"
+elif command -v vim > /dev/null; then
+  export MANPAGER="${vim -M +MANPAGER -}"
 fi
 
 # Mark 'run-help' for autoloading
@@ -223,11 +223,6 @@ function run-help() {
   autoload -XUz
 }
 alias help='run-help'
-
-# Load completions
-#
-autoload -U -z compinit
-compinit -i -d "${ZSH_COMPDUMP:-${ZDOTDIR:-${HOME}}/.zcompdump}"
 
 # Configure FZF
 #
@@ -242,9 +237,9 @@ fzf_default_opts=(
   '--bind='\''ctrl-b:page-up'\'
   '--bind='\''ctrl-f:page-down'\'
   '--bind='\''ctrl-k:kill-line'\'
-  '--bind='\''ctrl-o:execute-silent(printf %s {} | clipcopy)'\'
+  '--bind='\''ctrl-o:execute-silent(printf -- %s {} | { pbcopy || wl-copy || xclip -sel clipboard; })'\'
   '--bind='\''ctrl-/:toggle-preview'\'
-  '--bind='\''ctrl-j:jump-accept'\'
+  '--bind='\''ctrl-]:jump-accept'\'
   '--bind='\''insert:replace-query'\'
   '--color='\''dark'\'
   '--color='\''header:1,info:3,pointer:5,prompt:5,border:5,fg:4,fg+:6,hl:6,hl+:5'\'
@@ -275,7 +270,7 @@ fzf_ctrl_r_opts=(
   '--bind='\''ctrl-m:accept'\'
   '--bind='\''ctrl-r:toggle-sort'\'
   '--bind='\''ctrl-x:become%zsh -sic '\''"$@"'\'' -- {}%+abort'\'
-  '--bind='\''ctrl-o:execute-silent(printf %s {2..} | clipcopy)'\'
+  '--bind='\''ctrl-o:execute-silent(printf %s {2..} | { pbcopy || wl-copy || xclip -sel clipboard; })'\'
   '--bind='\''alt-x:execute-silent%tmux new-window zsh -c '\''"$@"'\'' -- {}%+abort'\'
   '--filepath-word'
   '--cycle'
@@ -311,8 +306,6 @@ typeset -Tx FZF_INTERACTIVE_CD_OPTS fzf_interactive_cd_opts " "
 fzf_interactive_cd_opts=(
   "${fzf_default_opts[@]}"
   "${fzf_completion_opts[@]}"
-  '--bind='\''bspace:backward-delete-char/eof'\'
-  '--bind='\''ctrl-h:backward-delete-char/eof'\'
   '--filepath-word'
 )
 

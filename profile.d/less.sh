@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
-# less.sh : less environment config
+# less.sh: less environment config
 # see less(1)
 
 # Default options
-export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --silent'
+export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --SILENT --RAW-CONTROL-CHARS'
 
 # Non-printable character representation
 export LESSBINFMT='*d<%02x>'
@@ -12,11 +12,11 @@ export LESSBINFMT='*d<%02x>'
 export LESSUTFBINFMT='<U+%04lx>'
 
 # Use lesspipe.sh pre-processor
-if command -v lesspipe.sh > /dev/null; then
-  export LESSOPEN='lesspipe.sh %s'
-else
-  unset LESSOPEN
-fi
+# if command -v lesspipe.sh > /dev/null; then
+#   export LESSOPEN='lesspipe.sh %s'
+# else
+#   unset LESSOPEN
+# fi
 
 # Enable colorization
 if command -v bat > /dev/null; then

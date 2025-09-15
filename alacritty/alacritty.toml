@@ -1,6 +1,6 @@
 [general]
 import = [
-  "./colorschemes/GitHub-Dark-Dimmed.toml"
+  "./colorschemes/GitHub-Dark-Default.toml"
 ]
 
 [window]
@@ -49,7 +49,7 @@ blink_timeout = 0
 blink_interval = 650
 unfocused_hollow = true
 
-[cursor.vi_mode_style ]
+[cursor.vi_mode_style]
 shape = "Beam"
 blinking = "Off"
 

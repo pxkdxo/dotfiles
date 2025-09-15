@@ -4,7 +4,7 @@
 # see zsh(1)
 
 if test -f ~/.env; then
-. ~/.env
+  . ~/.env
 fi
 
 if test -z "${PAGER}"; then
@@ -30,11 +30,11 @@ if test -z "${EDITOR}"; then
   fi
 fi
 if test -z "${VISUAL}"; then
-  elif command -v visual > /dev/null; then
+  if command -v visual > /dev/null; then
     export VISUAL="visual"
-  elif command -v nvim > /dev/null; then 
+  elif command -v nvim > /dev/null; then
     export VISUAL="nvim"
-  elif command -v vim > /dev/null; then 
+  elif command -v vim > /dev/null; then
     export VISUAL="vim"
   fi
 fi
