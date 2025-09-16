@@ -1,12 +1,10 @@
 [general]
-import = [
-  "./colorschemes/GitHub-Dark-Default.toml"
-]
+import = ["./colorschemes/cyberdream.toml"]
 
 [window]
 dynamic_padding = true
 decorations = "Transparent"
-opacity = 0.79
+opacity = 0.82
 blur = true
 option_as_alt = "Both"
 
@@ -15,7 +13,7 @@ history = 50000
 multiplier = 3
 
 [font]
-size = 14.0
+size = 12.0
 
 [font.normal]
 #family = "Agave Nerd Font"
