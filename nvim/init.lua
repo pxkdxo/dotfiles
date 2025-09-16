@@ -143,7 +143,6 @@ local fzf_lua_config = require("fzf-lua.config")
 local trouble_fzf_lua_actions = require("trouble.sources.fzf").actions
 fzf_lua_config.defaults.actions.files["ctrl-t"] = trouble_fzf_lua_actions.open
 
-
 -- Set a color scheme
 if vim.o.background == "light" then
   vim.cmd("colorscheme dawnfox")

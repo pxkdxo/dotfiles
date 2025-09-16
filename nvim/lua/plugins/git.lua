@@ -12,67 +12,16 @@ return {
       --"folke/snacks.nvim",             -- optional
     },
     opts = {
-      -- Hides the hints at the top of the status buffer
-      disable_hint = false,
-      -- Disables changing the buffer highlights based on where the cursor is.
-      disable_context_highlighting = false,
-      -- Disables signs for sections/items/hunks
-      disable_signs = false,
-      -- Offer to force push when branches diverge
-      prompt_force_push = true,
-      -- Changes what mode the Commit Editor starts in. `true` will leave nvim in normal mode, `false` will change nvim to
-      -- insert mode, and `"auto"` will change nvim to insert mode IF the commit message is empty, otherwise leaving it in
-      -- normal mode.
-      disable_insert_on_commit = "auto",
-      -- When enabled, will watch the `.git/` directory for changes and refresh the status buffer in response to filesystem
-      -- events.
-      filewatcher = {
-        interval = 1000,
-        enabled = true,
-      },
-      -- "ascii"   is the graph the git CLI generates
-      -- "unicode" is the graph like https://github.com/rbong/vim-flog
-      -- "kitty"   is the graph like https://github.com/isakbm/gitgraph.nvim - use https://github.com/rbong/flog-symbols if you don't use Kitty
       graph_style = "unicode",
-      -- Show relative date by default. When set, use `strftime` to display dates
-      commit_date_format = nil,
-      log_date_format = nil,
-      -- Used to generate URL's for branch popup action "pull request".
-      git_services = {
-        ["github.com"] = "https://github.com/${owner}/${repository}/compare/${branch_name}?expand=1",
-        ["bitbucket.org"] = "https://bitbucket.org/${owner}/${repository}/pull-requests/new?source=${branch_name}&t=1",
-        ["gitlab.com"] = "https://gitlab.com/${owner}/${repository}/merge_requests/new?merge_request[source_branch]=${branch_name}",
-        ["azure.com"] = "https://dev.azure.com/${owner}/_git/${repository}/pullrequestcreate?sourceRef=${branch_name}&targetRef=${target}",
-      },
-      -- Allows a different telescope sorter. Defaults to 'fuzzy_with_index_bias'. The example below will use the native fzf
-      -- sorter instead. By default, this function returns `nil`.
-      -- telescope_sorter = function()
-      --   return require("telescope").extensions.fzf.native_fzf_sorter()
-      -- end,
-      -- Persist the values of switches/options within and across sessions
-      remember_settings = true,
-      -- Scope persisted settings on a per-project basis
-      use_per_project_settings = true,
-      -- Table of settings to never persist. Uses format "Filetype--cli-value"
-      ignored_settings = {},
-      -- Configure highlight group features
       highlight = {
         italic = true,
         bold = true,
         underline = true
       },
-      -- Set to false if you want to be responsible for creating _ALL_ keymappings
-      use_default_keymaps = true,
-      -- Neogit refreshes its internal state after specific events, which can be expensive depending on the repository size.
       -- Disabling `auto_refresh` will make it so you have to manually refresh the status after you open it.
       auto_refresh = true,
-      -- Value used for `--sort` option for `git branch` command
-      -- By default, branches will be sorted by commit date descending
-      -- Flag description: https://git-scm.com/docs/git-branch#Documentation/git-branch.txt---sortltkeygt
-      -- Sorting keys: https://git-scm.com/docs/git-for-each-ref#_options
-      sort_branches = "-committerdate",
-      -- Default for new branch name prompts
-      initial_branch_name = "",
+      -- Change the default way of opening neogit
+      kind = "tab",
       -- Floating window style 
       floating = {
         relative = "editor",
@@ -91,7 +40,6 @@ return {
       auto_show_console = true,
       -- Automatically close the console if the process exits with a 0 (success) status
       auto_close_console = true,
-      --
     },
   },
   {
