@@ -170,48 +170,20 @@ plugins=(
   zsh-autosuggestions
   zsh-completions
 )
-
 source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
-
-# command-not-found hook
-#
-function command_not_found_handler() {
-  if command -v cnf-lookup > /dev/null; then
-    if test -t 1; then
-      cnf-lookup --colors -- "${@::1}"
-    else
-      cnf-lookup -- "${@::1}"
-    fi
-  elif test -x ~/.local/lib/command-not-found; then
-    ~/.local/lib/command-not-found --no-failure-msg -- "${@::1}"
-  elif test -x /usr/local/lib/command-not-found; then
-    /usr/local/lib/command-not-found --no-failure-msg -- "${@::1}"
-  elif test -x /usr/lib/command-not-found; then
-    /usr/lib/command-not-found --no-failure-msg -- "${@::1}"
-  else
-    printf '%s: command not found\n' "$1"
-  fi >&2
-  return 127
-}
-
-# Z
-#
-if command -v z > /dev/null; then
-  alias 'z-=z -c'
-  alias 'zwhich=z -e'
-  alias 'zrecent=z -t'
-fi
 
 # Configure environment
 #
 if test -n "${MANPAGER}"; then
   export MANPAGER
 elif command -v nvim > /dev/null; then
-  export MANPAGER="${nvim '+Man!'}"
+  export MANPAGER="${MANPAGER:-nvim '+Man!'}"
 elif command -v vim > /dev/null; then
-  export MANPAGER="${vim -M +MANPAGER -}"
+  export MANPAGER="${MANPAGER:-vim -M +MANPAGER -}"
+elif command -v bat > /dev/null; then
+  export MANPAGER="${MANPAGER:-bat --language=Manpage --paging=always --color=always --style=grid,numbers --pager='less ${LESS:-"-XQFR --ignore-case --mouse"}' -- -}"
 fi
 
 # Mark 'run-help' for autoloading
@@ -223,6 +195,14 @@ function run-help() {
   autoload -XUz
 }
 alias help='run-help'
+
+# Zsh Z shortcuts
+#
+if command -v z > /dev/null; then
+  alias 'z-=z -c'
+  alias 'zwhich=z -e'
+  alias 'zrecent=z -t'
+fi
 
 # Configure FZF
 #
@@ -309,19 +289,6 @@ fzf_interactive_cd_opts=(
   '--filepath-word'
 )
 
-# Attach to a tmux session
-#
-#if [[ -z ${TMUX} ]] && command -v tmux > /dev/null; then
-#  if tmux has-session 2> /dev/null; then
-#    tmux_sessions=("${(@f)$(tmux list-sessions -F '#S')}")
-#    if test "${#tmux_sessions[@]}" -gt 0; then
-#      printf '*> Attaching to tmux session %q\n' "${tmux_session[1]}"
-#      sleep 0.5
-#      exec tmux new -d -t "${tmux_session[1]}" ";" "new-window" ";" "attach"
-#    fi
-#  fi
-#fi
-
 # GH CLI
 if command -v gh > /dev/null; then
   export GLAMOUR_STYLE='auto'
@@ -341,5 +308,18 @@ if command -v gh > /dev/null; then
   esac
   export GH_CONFIG_DIR="${XDG_CONFIG_HOME:-${HOME}/.config}/gh"
 fi
+
+# Attach to a tmux session
+#
+#if [[ -z ${TMUX} ]] && command -v tmux > /dev/null; then
+#  if tmux has-session 2> /dev/null; then
+#    tmux_sessions=("${(@f)$(tmux list-sessions -F '#S')}")
+#    if test "${#tmux_sessions[@]}" -gt 0; then
+#      printf '*> Attaching to tmux session %q\n' "${tmux_session[1]}"
+#      sleep 0.5
+#      exec tmux new -d -t "${tmux_session[1]}" ";" "new-window" ";" "attach"
+#    fi
+#  fi
+#fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0

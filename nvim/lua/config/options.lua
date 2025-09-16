@@ -19,7 +19,7 @@ opt.backspace = "indent,eol,start"
 opt.belloff = "all"
 opt.compatible = false
 opt.complete = ".,w,b,u,t,i"
-opt.completeopt = "fuzzy,menuone,noselect,preview,popup"
+opt.completeopt = "fuzzy,longest,menuone,noselect,popup"
 opt.conceallevel = 2 -- Hide * markup for bold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.cursorline = true -- Enable highlighting of the current line
@@ -47,11 +47,10 @@ opt.modeline = true
 opt.mouse = "a" -- Enable mouse mode
 opt.mousefocus = true
 opt.nrformats = "bin,hex,unsigned"
-opt.number = true -- Print line number
-opt.numberwidth = 2
+opt.number = true -- Show line numbers
+opt.numberwidth = 3 -- Min width of number column
 opt.pumblend = 10 -- Popup blend
-opt.pumheight = 20 -- Maximum number of entries in a popup
--- opt.pyxversion = 3
+opt.pumheight = 40 -- Maximum number of entries in a popup
 opt.relativenumber = false -- Give us absolute line numbers
 opt.ruler = true -- Enable the default ruler
 opt.scrolloff = 3 -- Lines of context
@@ -156,9 +155,6 @@ opt.guicursor = {
   "a:blinkwait1000-blinkoff450-blinkon550",
 }
 
--- Fix markdown indentation settings (?)
--- vim.g.markdown_recommended_style = 0
-
 vim.cmd.autocmd({
   args = {
     "BufWritePre",
@@ -179,5 +175,8 @@ vim.cmd.autocmd({
     "noundofile",
   },
 })
+
+-- Fix markdown indentation settings (?)
+-- vim.g.markdown_recommended_style = 0
 
 return opt

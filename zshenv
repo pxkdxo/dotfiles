@@ -4,7 +4,7 @@
 # see zsh(1)
 
 if test -f ~/.env; then
-  . ~/.env
+. ~/.env
 fi
 
 if test -z "${PAGER}"; then
@@ -16,6 +16,8 @@ if test -z "${PAGER}"; then
     export PAGER="less"
   elif command -v nvimpager > /dev/null; then
     export PAGER="nvimpager"
+  elif command -v nvimpager > /dev/null; then
+    export PAGER="vimpager"
   fi
 fi
 if test -z "${EDITOR}"; then
@@ -32,10 +34,12 @@ fi
 if test -z "${VISUAL}"; then
   if command -v visual > /dev/null; then
     export VISUAL="visual"
-  elif command -v nvim > /dev/null; then
+  elif command -v nvim > /dev/null; then 
     export VISUAL="nvim"
-  elif command -v vim > /dev/null; then
+  elif command -v vim > /dev/null; then 
     export VISUAL="vim"
+  elif command -v vi > /dev/null; then 
+    export EDITOR="vi"
   fi
 fi
 if test -z "${BROWSER}"; then
@@ -49,6 +53,8 @@ if test -z "${BROWSER}"; then
     export BROWSER="google-chrome"
   elif command -v "google-chrome-stable" > /dev/null; then 
     export BROWSER="google-chrome-stable"
+  elif command -v "opera" > /dev/null; then 
+    export BROWSER="opera"
   fi
 fi
 

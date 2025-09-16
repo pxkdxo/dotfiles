@@ -2,12 +2,14 @@
 # manpager.sh : manual pager configuration
 
 # Use vim or nvim if availabe
-if command -v nvim; then
-  export MANPAGER='nvim +Man!'
-elif command -v vim; then
-  export MANPAGER='vim -M +MANPAGER -'
-elif command -v bat; then
-  export MANPAGER='bat --language=man --paging=always --style=grid,rule,numbers,snip'
+if test -n "${MANPAGER}"; then
+  export MANPAGER
+elif command -v nvim > /dev/null; then
+  export MANPAGER="${MANPAGER:-"nvim '+Man!'"}"
+elif command -v vim > /dev/null; then
+  export MANPAGER="${MANPAGER:-"vim -M +MANPAGER -"}"
+elif command -v bat > /dev/null; then
+  export MANPAGER="${MANPAGER:-"bat --language=Manpage --paging=always --color=always --style=grid,numbers --pager='less ${LESS:--XQFRi --mouse}' -- -"}"
 fi > /dev/null
 
 # vim:ft=sh

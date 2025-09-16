@@ -27,13 +27,7 @@
 
 !/bat/config
 
-!/compton.conf
-
-!/devilspie2/**
-
 !/dircolors
-
-!/elinks/elinks.conf
 
 !/environment.d/**.conf
 
@@ -74,8 +68,6 @@
 
 !/ripgreprc
 
-!/surfraw/conf
-
 !/systemd/user/*.service
 
 !/tmux.conf
@@ -101,17 +93,6 @@
 
 !/Xresources
 !/Xresources.d/**
-
-!/zsh/.zlogin
-!/zsh/.zlogout
-!/zsh/.zprofile
-!/zsh/.zshenv
-!/zsh/.zshrc
-!/zsh/zlogin
-!/zsh/zlogout
-!/zsh/zprofile
-!/zsh/zshenv
-!/zsh/zshrc
 
 !/zlogin
 !/zlogout
