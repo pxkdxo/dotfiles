@@ -51,9 +51,9 @@
 
 !/nvim/autoload
 !/nvim/colors
-!/nvim/lua/**
 !/nvim/init.lua
 !/nvim/init.vim
+!/nvim/lua/**/*.lua
 
 !/ohmyzsh/
 

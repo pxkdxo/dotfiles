@@ -117,7 +117,7 @@ cmp.setup.cmdline(':', {
       { name = 'buffer' },
     }, {
       { name = "copilot" },
-      { name = 'nvim_lsp' },
+      { name = 'nvim_lsp'},
     }
   ),
   matching = { disallow_symbol_nonprefix_matching = false }
@@ -145,7 +145,9 @@ fzf_lua_config.defaults.actions.files["ctrl-t"] = trouble_fzf_lua_actions.open
 
 -- Set a color scheme
 if vim.o.background == "light" then
-  vim.cmd("colorscheme dawnfox")
+  -- vim.cmd("colorscheme dawnfox")
+  vim.cmd.colorscheme "dawnfox"
 else
-  vim.cmd("colorscheme cyberdream")
+  -- vim.cmd("colorscheme xcodedarkhc")
+  vim.cmd.colorscheme "github_dark_default"
 end
