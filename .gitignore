@@ -1,15 +1,20 @@
 # .gitignore: repository allowlist
 # see gitignore(5)
 
-# Ignore everything except top-level directories
+# Ignore everything by default
 *
-!/*/
 
-# Allow below
+# Automatically acknowledge directories, so we can recurse into them
+!*/
 
-!/install-dotfiles.sh
+# Now we can specify only the files we want to track
+
+# --- ALLOWLIST BELOW ---
 
 !/.gitignore
+!/.gitmodules
+
+!/install-dotfiles.sh
 
 !/README.md
 
