@@ -16,21 +16,23 @@ multiplier = 3
 size = 12.0
 
 [font.normal]
-#family = "Agave Nerd Font"
-family = "ComicShannsMono Nerd Font"
+family = 'RecMonoDuotone Nerd Font'
+#family = 'ComicShannsMono Nerd Font'
 style = "Regular"
 
 [font.bold]
-#family = "Agave Nerd Font"
-family = "ComicShannsMono Nerd Font"
+family = 'RecMonoDuotone Nerd Font'
+#family = 'ComicShannsMono Nerd Font'
 style = "Bold"
 
 [font.italic]
-family = "Mononoki Nerd Font"
+family='RecMonoDuotone Nerd Font'
+#family = "Mononoki Nerd Font"
 style = "Italic"
 
 [font.bold_italic]
-family = "Mononoki Nerd Font"
+family='RecMonoDuotone Nerd Font'
+#family = "Mononoki Nerd Font"
 style = "Bold Italic"
 
 [bell]

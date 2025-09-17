@@ -24,12 +24,12 @@ return {
           },
           float = {
             enable = false,
-            quit_on_focus_loss = false,
+            quit_on_focus_loss = true,
             open_win_config = {
               relative = "win",
               border = "rounded",
-              width = 56,
-              height = 72,
+              width = 30,
+              height = 75,
               row = 1,
               col = 1,
             },
