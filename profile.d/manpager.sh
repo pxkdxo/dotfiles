@@ -9,7 +9,7 @@ elif command -v nvim > /dev/null; then
 elif command -v vim > /dev/null; then
   export MANPAGER="${MANPAGER:-"vim -M +MANPAGER -"}"
 elif command -v bat > /dev/null; then
-  export MANPAGER="${MANPAGER:-"bat --language=Manpage --paging=always --color=always --style=grid,numbers --pager='less ${LESS:--XQFRi --mouse}' -- -"}"
+  export MANPAGER="${MANPAGER:-"bat --language=Manpage --paging=always --color=always --style=grid,numbers --pager='less ${LESS:--QFRi --mouse} -X' -- -"}"
 fi > /dev/null
 
 # vim:ft=sh

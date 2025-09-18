@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# ~/.profile.d/homebrew.sh: Homebrew environment setup
+
 if test -d "${HOMEBREW_HOME:-}"
 then
   eval "$("${HOMEBREW_HOME}/bin/brew" shellenv)"
