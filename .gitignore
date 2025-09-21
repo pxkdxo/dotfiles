@@ -20,8 +20,9 @@
 
 !/asoundrc
 
-!/alacritty/*.yaml
-!/alacritty/*.toml
+!/alacritty/**.toml
+!/alacritty/**.yaml
+!/alacritty/**.yml
 
 !/bash_completion
 !/bash_logout

@@ -149,5 +149,5 @@ if vim.o.background == "light" then
   vim.cmd.colorscheme "dawnfox"
 else
   -- vim.cmd("colorscheme xcodedarkhc")
-  vim.cmd.colorscheme "github_dark_default"
+  vim.cmd.colorscheme "carbonfox"
 end
