@@ -80,18 +80,16 @@ fi
 
 
 if test "$#" -eq 1; then
-  home_path="$(cd -- "$1" && pwd -P && printf -- '%c' '@')"
+  home_path="$(cd -- "$1" && pwd -P && printf '%c' '@')"
   home_path="${home_path%?@}"
   shift
 else
-  home_path="$(cd && pwd -P && printf -- '%c' '@')"
+  home_path="$(cd && pwd -P && printf '%c' '@')"
   home_path="${home_path%?@}"
 fi
 
 
-cd -- "${argzero_dirname}"
-
-tree_path="$(pwd -P && printf -- '%c' '@')"
+tree_path="$(cd -- "${argzero_dirname}" && pwd -P && printf '%c' '@')"
 tree_path="${tree_path%?@}"
 
 
@@ -101,7 +99,6 @@ while test "${next_parent_dir}" != ''; do
   next_parent_dir="${next_parent_dir%/*}"
   rel_to_ancestor="${rel_to_ancestor}../"
 done
-
 
 common_ancestor="/"
 next_descendant="${home_path%"/${home_path#/*/}"}"
@@ -117,6 +114,7 @@ while test "${common_ancestor}" != "${home_path}"; do
       ;;
   esac
 done
+
 if test "${common_ancestor}" != '/'; then
   tree_path="${tree_path#"${common_ancestor}"}"
   tree_path="${rel_to_ancestor}${tree_path#/}"
