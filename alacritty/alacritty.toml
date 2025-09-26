@@ -5,7 +5,7 @@ import = ["./colorscheme.default.toml"]
 blur = true
 decorations = "Transparent"
 dynamic_padding = true
-opacity = 0.90
+opacity = 0.86
 option_as_alt = "Both"
 padding = { x = 3, y = 2 }
 
