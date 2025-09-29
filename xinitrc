@@ -65,34 +65,27 @@ if test -d "${USERSESSIONDIR}" && test -r "${USERSESSIONDIR}"; then
   unset name
 fi
 
-print_dbus_launch() {
-  printf -- '%s %s %s %s\n' dbus-launch --sh-syntax --exit-with-session "$1"
-}
+case "$1" in
+  awesome) session=awesome ;;
+  bspwm) session=bspwm-session ;;
+  budgie) session=budgie-desktop ;;
+  cinnamon) session=cinnamon-session ;;
+  deepin) session=startdde ;;
+  enlightenment) session=enlightenment_start ;;
+  fluxbox) session=startfluxbox ;;
+  gnome) session=gnome-session ;;
+  i3|i3wm) session=i3 ;;
+  jwm) session=jwm ;;
+  kde) session=startplasma-x11 ;;
+  lxde) session=startlxde ;;
+  lxqt) session=lxqt-session ;;
+  mate) session=mate-session ;;
+  xfce) session=xfce4-session ;;
+  openbox) session=openbox-session ;;
+  *) session="${DEFAULT_SESSION}" ;;
+esac
 
-get_session(){
-  local session="${DEFAULT_SESSION}"
-  case "$1" in
-    awesome) session=awesome ;;
-    bspwm) session=bspwm-session ;;
-    budgie) session=budgie-desktop ;;
-    cinnamon) session=cinnamon-session ;;
-    deepin) session=startdde ;;
-    enlightenment) session=enlightenment_start ;;
-    fluxbox) session=startfluxbox ;;
-    gnome) session=gnome-session ;;
-    i3|i3wm) session=i3 ;;
-    jwm) session=jwm ;;
-    kde) session=startplasma-x11 ;;
-    lxde) session=startlxde ;;
-    lxqt) session=lxqt-session ;;
-    mate) session=mate-session ;;
-    xfce) session=xfce4-session ;;
-    openbox) session=openbox-session ;;
-  esac
-  print_dbus_launch "${session}"
-}
-
-exec $(get_session "$1")
+exec dbus-launch --sh-syntax --exit-with-session "${session}"
 
 exit 127
 
