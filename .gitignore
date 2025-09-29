@@ -4,7 +4,7 @@
 # Ignore everything by default
 *
 
-# Automatically acknowledge directories, so we can recurse into them
+# Allow directories, so we can recurse into them
 !*/
 
 # Now we can specify only the files we want to track
