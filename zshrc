@@ -114,7 +114,7 @@ plugins=(
   #zsh-navigation-tools
   #zsh-syntax-highlighting
   #vi-mode
-  1password
+  #1password
   aws
   cdls
   command-not-found
