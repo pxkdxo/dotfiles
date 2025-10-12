@@ -8,6 +8,11 @@ if [[ -f ~/.profile && -r ~/.profile ]]; then
   emulate sh -c '. ~/.profile'
 fi
 
+# Load ~/.env
+if [[ -f ~/.env && -r ~/.env ]]; then
+  emulate sh -c '. ~/.profile'
+fi
+
 if [[ -d ~/.local/share/zsh ]]; then
   FPATH="${FPATH:+${FPATH}:}${HOME}/.local/share/zsh/site-functions"
 fi
@@ -30,5 +35,5 @@ function command_not_found_handler() {
   fi >&2
   return 127
 }
-#
+
 # vi:ft=zsh

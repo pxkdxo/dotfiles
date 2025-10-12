@@ -4,9 +4,21 @@ return {
     branch = 'master',
     lazy = false,
     build = ":TSUpdate",
-    config = function ()
-      local nvim_treesitter = require('nvim-treesitter').setup({})
+    opts = {},
+    config = function (_, opts)
+      local nvim_treesitter = require('nvim-treesitter').setup(opts)
       local configs = require('nvim-treesitter.configs').setup({
+        auto_install = true,
+        sync_install = false,
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        select = {
+          enable = true,
+          lookahead = true,
+          include_surrounding_whitespace = true,
+        },
         ensure_installed = {
           "bash",
           "c",
@@ -71,66 +83,55 @@ return {
           "xresources",
           "yaml",
         },
-        auto_install = true,
-        sync_install = false,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        select = {
-          enable = true,
-          lookahead = true,
-          include_surrounding_whitespace = true,
-        },
       })
-      return nvim_treesitter
     end
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
+    cond = not vim.g.vscode,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
-    config = function()
+    opts = {
+      -- Enable this plugin (Can be enabled/disabled later via commands)
+      enable = true,
+      -- Enable multiwindow support.
+      multiwindow = true,
+      -- How many lines the window should span. Values <= 0 mean no limit.
+      -- Can be '<int>%' like '30%' - to specify percentage of win.height
+      max_lines = 0,
+      -- Minimum editor window height to enable context. Values <= 0 mean no
+      -- limit.
+      min_window_height = 0,
+      -- Whether to show line numbers
+      line_numbers = true,
+      -- Maximum number of lines to show for a single context
+      multiline_threshold = 20,
+      -- Which context lines to discard if `max_lines` is exceeded.
+      -- Choices: 'inner', 'outer'
+      trim_scope = 'outer',
+      -- Line used to calculate context.
+      -- Choices: 'cursor', 'topline'
+      mode = 'cursor',
+      -- Separator between context and content. Should be a single character
+      -- string, like '-'. When separator is set, the context will only show
+      -- up when there are at least 2 lines above cursorline.
+      separator = nil,
+      -- The Z-index of the context window
+      zindex = 20,
+      -- (fun(buf: integer): boolean) return false to disable attaching
+      on_attach = nil,
+    },
+    config = function (_, opts)
       vim.wo.foldmethod = 'expr'
       vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-
-      return require('treesitter-context').setup({
-        -- Enable this plugin (Can be enabled/disabled later via commands)
-        enable = true,
-        -- Enable multiwindow support.
-        multiwindow = true,
-        -- How many lines the window should span. Values <= 0 mean no limit.
-        -- Can be '<int>%' like '30%' - to specify percentage of win.height
-        max_lines = 0,
-        -- Minimum editor window height to enable context. Values <= 0 mean no
-        -- limit.
-        min_window_height = 0,
-        -- Whether to show line numbers
-        line_numbers = true,
-        -- Maximum number of lines to show for a single context
-        multiline_threshold = 20,
-        -- Which context lines to discard if `max_lines` is exceeded.
-        -- Choices: 'inner', 'outer'
-        trim_scope = 'outer',
-        -- Line used to calculate context.
-        -- Choices: 'cursor', 'topline'
-        mode = 'cursor',
-        -- Separator between context and content. Should be a single character
-        -- string, like '-'. When separator is set, the context will only show
-        -- up when there are at least 2 lines above cursorline.
-        separator = nil,
-        -- The Z-index of the context window
-        zindex = 20,
-        -- (fun(buf: integer): boolean) return false to disable attaching
-        on_attach = nil,
-      })
+      require('treesitter-context').setup(opts)
     end,
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
-    }
+    },
   }
 }

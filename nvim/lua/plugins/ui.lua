@@ -5,6 +5,7 @@ return {
     dependencies = {
       'nvim-tree/nvim-web-devicons'
     },
+    cond = not vim.g.vscode,
     opts = {
       options = {
         themable = true, -- allows highlight groups to be overriden i.e. sets highlights as default
@@ -19,6 +20,7 @@ return {
     dependencies = {
       'nvim-tree/nvim-web-devicons'
     },
+    cond = not vim.g.vscode,
     opts = {
       options = {
         theme = "auto", -- "auto" will set the theme dynamically based on the colorscheme
@@ -27,6 +29,7 @@ return {
   },
   {
     "lukas-reineke/indent-blankline.nvim",
+    cond = not vim.g.vscode,
     main = "ibl",
     ---@module "ibl"
     ---@type ibl.config

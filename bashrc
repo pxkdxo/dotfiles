@@ -11,7 +11,7 @@ then
   export BASH_CACHE_DIR
 else
   unset -v BASH_CACHE_DIR
-  fi 2> /dev/null
+fi 2> /dev/null
 
 # Synchronize LINES and COLUMNS with window after each command
 shopt -s checkwinsize
@@ -25,30 +25,33 @@ set -o notify
 # Do not resolve symbolic links during execution of builtins
 set -o physical
 
-# Pass directory names given as commands as arguments to cd
-shopt -s autocd
-# Expand directory names upon performing filename completion
-shopt -s direxpand
-# Correct mispelled directory names during word completion
-shopt -s dirspell
-# Enable programmable completion facilities
-shopt -s progcomp
+if [[ "${BASH_VERSINFO[0]:-0}" -ge 4 ]]
+then
+  # Pass directory names given as commands as arguments to cd
+  shopt -s autocd
+  # Expand directory names upon performing filename completion
+  shopt -s direxpand
+  # Correct mispelled directory names during word completion
+  shopt -s dirspell
+  # Ignore locale collating sequence when matching range expressions
+  shopt -s globasciiranges
+  # ``**'' matches all files and zero or more directories and subdirectories
+  shopt -s globstar
+  # Show active jobs before exiting and request confirmation to exit
+  shopt -s checkjobs
+  # Command substitutions inherit the value of the 'errexit' option
+  shopt -s inherit_errexit
+fi
 
 # Check that hashed commands actually exist before executing them
 shopt -s checkhash
-# Show active jobs before exiting and request confirmation to exit
-shopt -s checkjobs
 # Send SIGHUP to all jobs when interactive login shells exit
 shopt -s huponexit
-# Command substitutions inherit the value of the 'errexit' option
-shopt -s inherit_errexit
-
-# Ignore locale collating sequence when matching range expressions
-shopt -s globasciiranges
 # Enable extended pattern matching syntax
 shopt -s extglob
-# ``**'' matches all files and zero or more directories and subdirectories
-shopt -s globstar
+
+# Enable programmable completion facilities
+shopt -s progcomp
 
 # Ignore shared-object libraries found while searching for executables
 EXECIGNORE='?(/usr?(/local))/lib?(?(x)@(32|64))/**/*.so*(.+([[:digit:]]))'
@@ -97,23 +100,23 @@ case ${TERM} in
     ;;
 esac
 
-# Enable colors for ls, etc.  Prefer ~/.dircolors #64489
-if test -r "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dircolors; then
-  eval $(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dircolors)
-elif test -r "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dir_colors; then
-  eval $(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}"/.dir_colors)
-elif test -r ~/.dircolors; then
-  eval $(dircolors -b -- ~/.dircolors)
-elif test -r ~/.dir_colors; then
-  eval $(dircolors -b -- ~/.dir_colors)
-elif test -r /etc/DIRCOLORS; then
-  eval $(dircolors -b -- /etc/DIRCOLORS)
-elif test -r /etc/DIR_COLORS; then
-  eval $(dircolors -b -- /etc/DIR_COLORS)
+# Enable colors for ls, etc
+if command -v dircolors 1> /dev/null
+then
+  if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors"
+then
+    eval "$(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors")"
+  elif test -f ~/.dircolors
+then
+    eval "$(dircolors -b -- ~/.dircolors)"
+  else
+    eval "$(dircolors -b)"
+  fi
 fi
 
 # Set prompt based on whether or not this is running as root
-if [[ ${EUID} == 0 ]] ; then
+if [[ ${EUID} == 0 ]] 
+then
   PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
 else
   PS1='\[\033[01;32m\][\u@\h\[\033[01;37m\] \W\[\033[01;32m\]]\$\[\033[00m\] '
@@ -130,9 +133,11 @@ $(
 $(
     __bp_debug_trap_re=\'$'((.*)[;&\n])?[ \t]*__bp_[[:alnum:]_]*[ \t]*([;&\n](.*))?'\'
     __bp_debug_trap_context_re=$'^[[:space:]]*((.*[[:graph:]])?)[[:space:]]*\n[[:space:]]*((.*[[:graph:]])?)[[:space:]]*$'
-    if [[ "$(trap -p DEBUG)" =~ ${__bp_debug_trap_re} ]]; then
+    if [[ "$(trap -p DEBUG)" =~ ${__bp_debug_trap_re} ]]
+then
       __debug_trap_matched="${BASH_REMATCH[2]}"$'\n'"${BASH_REMATCH[4]}"
-      if [[ "${__debug_trap_matched}" =~ ${__bp_debug_trap_context_re} ]]; then
+      if [[ "${__debug_trap_matched}" =~ ${__bp_debug_trap_context_re} ]]
+then
         # shellcheck disable=SC2064
         printf 'trap %q%q DEBUG\n' "${BASH_REMATCH[1]:+${BASH_REMATCH[1]}\n}" "${BASH_REMATCH[3]:+${BASH_REMATCH[3]}\n}"
       fi
@@ -250,100 +255,102 @@ remove_preexec_functions() {
 
 
 # Initialize a dictionary to hold terminfo data
-declare -A ti=( )
+__ti_dim="$(tput dim)"
+__ti_bold="$(tput bold)"
+__ti_sitm="$(tput sitm)"
+__ti_ritm="$(tput ritm)"
+__ti_smso="$(tput smso)"
+__ti_rmso="$(tput rmso)"
+__ti_smul="$(tput smul)"
+__ti_rmul="$(tput rmul)"
+__ti_sgr0="$(tput sgr0)"
+__ti_colors="$(tput colors)"
+declare -a fg=()
+declare -a bg=()
+while (( ${#fg[@]} < ${__ti_colors:-8} ))
+do
+  fg[${#fg[@]}]="$(tput setaf "${#fg[@]}")"
+  bg[${#bg[@]}]="$(tput setag "${#bg[@]}")"
+done
+
+
 
 # Limit depth of paths produced by '\w' upon prompt expansion
 PROMPT_DIRTRIM=2
 
-# Set the pre-execution prompt to trigger SIGUSR1
-__PS0_update() {
+# Program the pre-execution prompt to send SIGUSR1
+ps0_update() {
   # shellcheck disable=SC2016,SC2034
   PS0='$(kill -s SIGUSR1 "$$")'
   return "$(($1))"
 }
 
 # Set the primary prompt
-__PS1_update() {
-  PS1="\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\u'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
-"'@'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\h'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\['"${1:+$(tput setaf "$(( ($1) % 8 ))")}"'\]'"\
-"':'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\w'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\n'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'\$>'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"' '
-  return "$(($1))"
+ps1_update() {
+PS1="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+\\u\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]\
+@\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+\\h\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]\
+:\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+\\w\
+\\[${__ti_sgr0:=$(tput sgr0)}\\]\
+\\n\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+\$>\
+\\[${__ti_sgr0:=$(tput sgr0)}\\] "
 }
 
 # Set the secondary prompt
-if [[ -v BASH_LINENO ]]; then
-  __PS2_update() {
-    PS2="\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') / 10 ))'"\
-"'$(( (LINENO - '"$(( BASH_LINENO[-1] ))"') % 10 ))'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"' '
-    return "$(($1))"
-  }
+if [[ "${BASH_VERSINFO[0]:-0}" -ge 4 ]]
+then
+ps2_update() {
+PS2="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+$(( (LINENO - $(( BASH_LINENO[-1] ))) / 10 ))\
+$(( (LINENO - $(( BASH_LINENO[-1] ))) % 10 ))\
+\\[${__ti_sgr0:=$(tput sgr0)}\] "
+}
+
 else
-  __PS2_update() {
-    PS2="\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'.>'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"' '
-    return "$(($1))"
-  }
+ps2_update() {
+PS2="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+.>\
+\\[${__ti_sgr0:=$(tput sgr0)}\] "
+}
 fi
 
 # Set the select prompt
-__PS3_update() {
-    PS3="\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"'\['"${ti[bold]:=$(tput bold)}"'\]'"\
-"'*>'"\
-"'\['"${ti[sgr0]:=$(tput sgr0)}"'\]'"\
-"' '
-  return "$(($1))"
+ps3_update() {
+PS3="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
+*>\
+\\[${__ti_sgr0:=$(tput sgr0)}\\] "
 }
 
 # Set the execution-trace prompt
-__PS4_update() {
-  PS4='+> '
-  return "$(($1))"
+ps4_update() {
+PS4='+> '
 }
 
 # Update the prompt strings
-__PS_update() {
-  __PS0_update "${?#0}"
-  __PS1_update "${?#0}"
-  __PS2_update "${?#0}"
-  __PS3_update "${?#0}"
-  __PS4_update "${?#0}"
+ps_update() {
+  local __entry_status="${?#0}"
+  ps0_update "${__entry_status}"
+  ps1_update "${__entry_status}"
+  ps2_update "${__entry_status}"
+  ps3_update "${__entry_status}"
+  ps4_update "${__entry_status}"
+  return "${__entry_status:-0}"
 }
 
 # Add to precmd functions
-add_precmd_functions __PS_update
+add_precmd_functions ps_update
 
 
 # Configure window title
@@ -379,37 +386,43 @@ then
 add_preexec_functions __window_title_preexec
 fi
 
-# Set GPG_TTY to device on stdin and add it to the environment
-if ! { [[ -t 0 ]] && GPG_TTY=$(tty); }
+if command -v gpg-agent > /dev/null 2>&1
 then
-  export GPG_TTY=''
-fi
-
-# Refresh gpg-agent in case we switched to an Xsession
-gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
-
-
-# Load thefuck
-if command -v thefuck 1> /dev/null
+  # Set GPG_TTY to device on stdin
+  if [[ -t 0 ]]
 then
-  eval "$(thefuck --alias)"
+    if GPG_TTY="$(tty 2> /dev/null)"
+then
+      export GPG_TTY
+    else
+      unset -v GPG_TTY
+    fi
+  fi
+  # Refresh gpg-agent in case we switched to an X-session
+  gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
 fi
 
 # command-not-found hook
 command_not_found_handle() {
-  if command -v cnf-lookup > /dev/null; then
-    if test -t 1; then
+  if command -v cnf-lookup > /dev/null
+then
+    if test -t 1
+then
       cnf-lookup --colors -- "${@::1}"
     else
       cnf-lookup -- "${@::1}"
     fi
-  elif test -x ~/.local/lib/command-not-found; then
+  elif test -x ~/.local/lib/command-not-found
+then
     ~/.local/lib/command-not-found --no-failure-msg -- "${@::1}"
-  elif test -x /usr/local/lib/command-not-found; then
+  elif test -x /usr/local/lib/command-not-found
+then
     /usr/local/lib/command-not-found --no-failure-msg -- "${@::1}"
-  elif test -x /usr/lib/command-not-found; then
+  elif test -x /usr/lib/command-not-found
+then
     /usr/lib/command-not-found --no-failure-msg -- "${@::1}"
-  elif test -x /lib/command-not-found; then
+  elif test -x /lib/command-not-found
+then
     /lib/command-not-found --no-failure-msg -- "${@::1}"
   else
     printf '%s: command not found\n' "${@::1}"
@@ -437,20 +450,25 @@ then
 fi
 
 
-# sourcedir - recursively source a directory
-sourcedir() {
-  local fname
-  if [[ -d $1 ]]; then
-    for fname in "$1"/*; do
-      sourcedir "${fname}" "${@:2}"
+# sourcer - source directories too
+sourcer() {
+  local subpath
+  local sourcepath="$1"
+  shift
+  if [[ -d ${sourcepath} ]]
+  then
+    for subpath in "${sourcepath}"/*
+    do
+      sourcer "${subpath}" "$@"
     done
-  elif [[ -f $1 ]]; then
+  elif [[ -f ${sourcepath} ]]
+  then
     source -- "$@"
   fi
 }
 
-
 # Source additional startup scripts
-if [[ -d ~/.bashrc.d ]]; then
-  sourcedir ~/.bashrc.d
-fi
+#if [[ -d ~/.bashrc.d ]]
+#then
+#  sourcer ~/.bashrc.d
+#fi

@@ -1,35 +1,6 @@
 #!/usr/bin/env sh
-# ~/.profile.d/fzf.sh: look for an fzf installation and append it to the PATH
-# This script also has functions that extend the functionality of fzf
-
-if test -d "${FZF_BASE:-}"
-then
-  export FZF_BASE="${FZF_BASE:-}"
-elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin"
-then
-  export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
-elif test -d "${HOME}/.local/opt/fzf/bin"
-then
-  export FZF_BASE="${HOME}/.local/opt/fzf"
-elif test -d '/usr/local/share/fzf/bin'
-then
-  export FZF_BASE='/usr/local/share/fzf'
-elif test -d '/usr/share/fzf/bin'
-then
-  export FZF_BASE='/usr/share/fzf'
-elif test -d '/opt/fzf/bin'
-then
-  export FZF_BASE='/opt/fzf'
-else
-  unset -v FZF_BASE
-fi
-if test -d "${FZF_BASE:-}"
-then
-  case ":${PATH}:" in
-    *:"${FZF_PATH}":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${FZF_BASE}/bin" ;;
-  esac
-fi
+# fzf-extensions.sh
+# This script has functions that extend the functionality of fzf
 
 
 # Kill processes
@@ -87,7 +58,7 @@ CTRL-X : Kill Selected PIDs   RETURN : Print Selected   ESC : Clear Selection + 
   eval "${ps_cmd}" | fzf \
     --multi \
     --accept-nth=2 \
-    --header-lines=1 \
+    --header-lines=2 \
     --bind="tab:toggle+down" \
     --bind="shift-tab:toggle+up" \
     --bind='enter:accept' \
@@ -95,7 +66,7 @@ CTRL-X : Kill Selected PIDs   RETURN : Print Selected   ESC : Clear Selection + 
     --bind="ctrl-x:execute(${kill_prefix} {+2})+clear-multi+print(* Sent ${kill_signal})+accept" \
     --bind='esc:abort' \
     --preview="${preview_cmd}" \
-    --preview-window='down,25%,nowrap,noinfo,follow' \
+    --preview-window='down,25%,follow,nowrap,noinfo' \
     --layout=reverse \
     --header="${header}" \
     --query "$1"
