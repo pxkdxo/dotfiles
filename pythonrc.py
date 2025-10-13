@@ -155,18 +155,18 @@ class Prompt:
         }
         return (
             f'''{type(self).__name__}({", ".join(
-                map("{}={}".format, kwargs.keys(), map(repr, kwargs.values()))
+                f"{key}={repr(value)}" for key, value in kwargs.items()
             )})'''
         )
 
     def __str__(self) -> str:
         for hook in self.__hooks:
             hook(self)
-        return self.__ps.format(**dict(zip(
-            self.__psvars.keys(), (
-                var(self) if callable(var) else var
-                for var in self.__psvars.values()
-        ))))
+        kwargs = {
+            key: value(self) if callable(value) else value
+            for key, value in self.__psvars.items()
+        }
+        return self.__ps.format(**kwargs)
 
 
 sys.ps1 = Prompt(

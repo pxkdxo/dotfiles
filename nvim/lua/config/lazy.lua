@@ -15,9 +15,5 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Setup lazy.nvim, unless we're in VS Code
-if vim.g.vscode == nil then
-  return require("lazy")
-else
-  return nil
-end
+-- Load lazy.nvim
+return require("lazy")

@@ -1,7 +1,15 @@
 return {
   {
+    "mfussenegger/nvim-dap",
+    cond = not vim.g.vscode,
+  },
+  {
     "folke/trouble.nvim",
-    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cond = not vim.g.vscode,
+    opts = {
+      auto_close = true,
+      auto_open = true,
+    },
     cmd = "Trouble",
     keys = {
       {

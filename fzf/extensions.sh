@@ -1,28 +1,7 @@
 #!/usr/bin/env sh
-# ~/.profile.d/fzf.sh: look for an fzf installation and append it to the PATH
-# This script also has functions that extend the functionality of fzf
+# fzf-extensions.sh
+# This script has functions that extend the functionality of fzf
 
-if test -n "${FZF_BASE+X}"
-then
-  export FZF_BASE
-elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
-then
-  export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
-elif test -d "${HOME}/.local/opt/fzf"
-then
-  export FZF_BASE="${HOME}/.local/opt/fzf"
-elif test -d '/usr/local/share/fzf'
-then
-  export FZF_BASE='/usr/local/share/fzf'
-elif test -d '/usr/share/fzf'
-then
-  export FZF_BASE='/usr/share/fzf'
-elif test -d '/opt/fzf'
-then
-  export FZF_BASE='/opt/fzf'
-else
-  unset FZF_BASE
-fi
 
 # Kill processes
 fzf_kill() (

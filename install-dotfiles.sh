@@ -36,7 +36,7 @@ EOF
 }
 
 
-ln_optchars="snvT"
+ln_optchars="snv"
 
 if test -t 0; then
   ln_replace='i'

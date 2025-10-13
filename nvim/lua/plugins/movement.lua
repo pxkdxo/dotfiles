@@ -1,37 +1,34 @@
 return {
-  -- {
-  --   "ggandor/leap.nvim",
-  --   version = false,
-  --   opts = {}
-  -- },
-  -- {
-  --   "tris203/precognition.nvim",
-  --   --event = "VeryLazy",
-  --   opts = {
-  --     -- startVisible = true,
-  --     -- showBlankVirtLine = true,
-  --     -- highlightColor = { link = "Comment" },
-  --     -- hints = {
-  --     --      Caret = { text = "^", prio = 2 },
-  --     --      Dollar = { text = "$", prio = 1 },
-  --     --      MatchingPair = { text = "%", prio = 5 },
-  --     --      Zero = { text = "0", prio = 1 },
-  --     --      w = { text = "w", prio = 10 },
-  --     --      b = { text = "b", prio = 9 },
-  --     --      e = { text = "e", prio = 8 },
-  --     --      W = { text = "W", prio = 7 },
-  --     --      B = { text = "B", prio = 6 },
-  --     --      E = { text = "E", prio = 5 },
-  --     -- },
-  --     -- gutterHints = {
-  --     --     G = { text = "G", prio = 10 },
-  --     --     gg = { text = "gg", prio = 9 },
-  --     --     PrevParagraph = { text = "{", prio = 8 },
-  --     --     NextParagraph = { text = "}", prio = 8 },
-  --     -- },
-  --     -- disabled_fts = {
-  --     --     "startify",
-  --     -- },
-  --   },
-  -- },
+  {
+    "kylechui/nvim-surround",
+    version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+  },
+  {
+    "ggandor/leap.nvim",
+    version = false,
+    opts = {
+      preview_filter = function (ch0, ch1, ch2)
+        return not (
+          ch1:match('%s') or
+          ch0:match('%a') and ch1:match('%a') and ch2:match('%a')
+        )
+      end,
+    },
+    config = function (_, opts)
+      require("leap").setup(opts)
+      require('leap.user').set_repeat_keys(
+        '<enter>', '<backspace>'
+      )
+      vim.keymap.set(
+        {'n', 'x', 'o'}, 's', '<Plug>(leap)'
+      )
+      vim.keymap.set(
+        {'n'}, 'S', '<Plug>(leap-from-window)'
+      )
+      vim.api.nvim_set_hl(
+        0, 'LeapBackdrop', { link = 'Comment' }
+      )
+    end,
+  },
 }

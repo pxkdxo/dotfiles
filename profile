@@ -7,9 +7,9 @@ if test -t 1; then
   if command -v tput 1> /dev/null; then
     tput init || true
   fi
-  # Disable start(C-q) and stop(C-s) 
   if command -v stty 1> /dev/null; then
-    stty start '^-' stop '^-' || true
+    # Make Ctrl-S/Ctrl-Q usable in terminals by disabling XON/XOFF flow control
+    stty -ixon -ixoff 2>/dev/null
   fi
 fi
 
@@ -44,7 +44,7 @@ log() {
         fd="$((OPTARG))"
         ;;
       p)
-        prefix="${OPTARG}" 
+        prefix="${OPTARG}"
         ;;
       \?)
         return 2

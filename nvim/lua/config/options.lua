@@ -1,19 +1,20 @@
 -- This file is automatically loaded by plugins.core
+
 local opt = vim.opt
 
-local function likenull(x)
-  return not x or x == '' or x == 0 or (type(x) == "table" and #x == 0)
-end
-
 local function default(x, d)
-  return not likenull(x) and x or d
+  if x ~= nil then 
+    return x
+  else
+    return d
+  end
 end
 
 opt.encoding = "utf-8"
 opt.autoread = true
-opt.autowrite = true -- Enable auto write
--- only set clipboard if not in ssh, to make sure the OSC 52
--- integration works automatically. Requires Neovim >= 0.10.0
+opt.autowrite = true
+-- Only set clipboard if not in ssh to make sure the OSC 52 integration works
+-- * requires Neovim >= 0.10.0
 opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
 opt.backspace = "indent,eol,start"
 opt.belloff = "all"
@@ -29,12 +30,12 @@ opt.encoding = "utf-8"
 opt.expandtab = true -- Use spaces instead of tabs
 opt.foldlevel = 99
 opt.formatexpr = "v:lua.require'lazyvim.util'.format.formatexpr()"
-opt.formatoptions = "jcroqlnt" -- tcqj
+opt.formatoptions = "jcroqlnt"
 opt.grepformat = "%f:%l:%c:%m"
 opt.grepprg = "rg --vimgrep"
 opt.hidden = true
 opt.history = 5000
-opt.hlsearch = false
+opt.hlsearch = true -- Highlight search results
 opt.ignorecase = true -- Ignore case
 opt.inccommand = "nosplit" -- preview incremental substitute
 opt.incsearch = true
@@ -77,14 +78,14 @@ opt.tabstop = 8 -- Number of spaces tabs count for
 opt.tags = ".tags,tags,.TAGS,TAGS"
 opt.termguicolors = true -- True color support
 opt.timeout = true
-opt.timeoutlen = vim.g.vscode and 1000 or 500 -- Lower than default (1000) to quickly trigger which-key
+opt.timeoutlen = vim.g.vscode and 1000 or 600 -- Lower than default (1000) to quickly trigger which-key
 --opt.ttimeout = true
 --opt.title = false
 opt.undofile = opt.swapfile and true or false
-opt.undolevels = 2500
+opt.undolevels = 2000
 opt.undoreload = -1
-opt.updatecount = 48
-opt.updatetime = 200 -- Save swap file and trigger CursorHold
+opt.updatecount = 100
+opt.updatetime = 2500 -- Save swap file and trigger CursorHold
 opt.virtualedit = "block" -- Allow cursor to move where there is no text in visual block mode
 opt.whichwrap = table.concat({"<", ">", "[", "]", "b", "s"}, ",")
 opt.wildignore = {".git/*", ".hg/*", ".svn/*"}
@@ -93,14 +94,13 @@ opt.wildmenu = true
 opt.wildmode = {"list:longest:full", "full"} -- Command-line completion mode
 opt.winblend = 15
 opt.winborder = "rounded"
-opt.winminwidth = 3 -- Minimum window width
-opt.wrap = true -- Enable line wrap
+opt.winminwidth = 8 -- Minimum window width
+
+-- -- Enable line wrap
+-- opt.wrap = true
 
 if vim.fn.has("nvim-0.10") == 1 then
   opt.smoothscroll = true
-end
-
-if vim.fn.has("nvim-0.10") == 1 then
   opt.foldmethod = "expr"
   opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
   opt.foldtext = ""
@@ -146,26 +146,15 @@ opt.backupdir:append({
   ))
 })
 
-opt.guicursor = {
-  "n-c-v:block",
-  "r-cr-o:hor35",
-  "i-ci-ve:ver65",
-  "t:block",
-  "sm:block-blinkwait500-blinkoff225-blinkon275",
-  "a:blinkwait1000-blinkoff450-blinkon550",
-}
-
 vim.cmd.autocmd({
   args = {
     "BufWritePre",
     table.concat(
       {
-        "/tmp/*",
         "/run/*",
-        "/var/tmp/*",
+        "/tmp/*",
         "/var/run/*",
-        "/root/*",
-        "*/.../*",
+        "/var/tmp/*",
         string.format("%s/*", default(os.getenv("XDG_RUNTIME_DIR"), "/var/run")),
         string.format("%s/*", default(os.getenv("TMPDIR"), "/tmp")),
       },
@@ -175,8 +164,5 @@ vim.cmd.autocmd({
     "noundofile",
   },
 })
-
--- Fix markdown indentation settings (?)
--- vim.g.markdown_recommended_style = 0
 
 return opt
