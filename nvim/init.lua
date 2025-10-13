@@ -6,18 +6,6 @@ require("config.options")
 -- Set map leader keys
 vim.g.mapleader = ","
 vim.g.maplocalleader = ";"
-vim.g.colorschemes_fav = {
-  'cyberdream',
-  'dawnfox',
-  'oxocarbon',
-  'dayfox',
-  'rose-pine',
-  'carbonfox',
-  'github_dark',
-  'github_dark_dimmed',
-  'github_dark_light',
-  'sorbet',
-}
 
 -- Load plugins
 require("config.lazy").setup({
@@ -32,27 +20,59 @@ require("config.lazy").setup({
   },
 })
 
+-- Keep a list of some good colorschemes
+vim.g.colorschemes = {
+  'oxocarbon',
+  'rose-pine',
+  'cyberdream',
+  'carbonfox',
+  'dawnfox',
+  'dayfox',
+  'github_light',
+  'github_dark_dimmed',
+  'xcodelight',
+  'xcodedarkhc',
+  'sorbet',
+}
+
+-- Set a colorscheme and define some key mappings if not running in VSCode
 if not vim.g.vscode then
-  vim.cmd.colorscheme("rose-pine")
+
+  vim.cmd.colorscheme(vim.g.colorschemes[1])
 
   vim.keymap.set('n', '<F12>', function ()
-    local current = vim.g.colors_name
     local choices = {}
-    for _, colors in ipairs(vim.g.colorschemes_fav) do
-      if colors ~= current then table.insert(choices, { colors }) end
+    if vim.g.colorschemes ~= nil then
+      for _, colors in ipairs(vim.g.colorschemes or {vim.g.colors_name}) do
+        if colors ~= vim.g.colors_name then
+          table.insert(choices, { colors })
+        end
+      end
     end
-    vim.cmd.colorscheme(choices[math.random(#choices)])
+    if #choices > 0 then
+      vim.cmd.colorscheme(choices[math.random(#choices)])
+    end
   end, { desc = "Change the colorscheme" })
 
   vim.keymap.set('n', '<F11>', function () vim.o.hlsearch = not vim.o.hlsearch end, { desc = "Toggle search highlighting" })
 
-  vim.keymap.set('n', '<F5>', function() vim.cmd.AvanteToggle() end, { desc = "Open/close Avante chat" })
+  if vim.fn.exists(':AvanteToggle') then
+    vim.keymap.set('n', '<F5>', function() vim.cmd.AvanteToggle() end, { desc = "Open/close Avante chat" })
+  end
 
-  vim.keymap.set('n', '<F4>', function() vim.cmd.FzfLua() end, { desc = "Open FzfLua" })
+  if vim.fn.exists(':FzfLua') then
+    vim.keymap.set('n', '<F4>', function() vim.cmd.FzfLua() end, { desc = "Open FzfLua" })
+  end
 
-  vim.keymap.set('n', '<F3>', function () vim.cmd.NvimTreeToggle() end, { desc = "Open/close file explorer" })
+  if vim.fn.exists(':NvimTreeToggle') then
+    vim.keymap.set('n', '<F3>', function () vim.cmd.NvimTreeToggle() end, { desc = "Open/close file explorer" })
+  end
 
-  vim.keymap.set('n', '<F2>', FzfLua.global, { desc = "Find bufs & stuff (FzfLua) " })
+  if vim.fn.exists(':FzfLua') then
+    vim.keymap.set('n', '<F2>', function() vim.cmd.FzfLua('global') end, { desc = "Find bufs & stuff (FzfLua) " })
+  end
 
-  vim.keymap.set('n', '<F1>', FzfLua.helptags, { desc = "Find helptags (FzfLua)" })
+  if vim.fn.exists(':FzfLua') then
+    vim.keymap.set('n', '<F1>', function() vim.cmd.FzfLua('helptags') end, { desc = "Find helptags (FzfLua)" })
+  end
 end

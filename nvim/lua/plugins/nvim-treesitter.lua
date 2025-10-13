@@ -3,11 +3,15 @@ return {
     "nvim-treesitter/nvim-treesitter",
     branch = 'master',
     lazy = false,
-    build = ":TSUpdate",
+    build = function (_)
+      if vim.fn.exists(":TSUpdate") then
+        vim.cmd.TSUpdate()
+      end
+    end,
     opts = {},
     config = function (_, opts)
-      local nvim_treesitter = require('nvim-treesitter').setup(opts)
-      local configs = require('nvim-treesitter.configs').setup({
+      require('nvim-treesitter').setup(opts)
+      require('nvim-treesitter.configs').setup({
         auto_install = true,
         sync_install = false,
         highlight = {

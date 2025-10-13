@@ -13,9 +13,7 @@ fzf_kill() (
   if command -v strace > /dev/null; then
     preview_cmd='strace -p {2}'
   elif command -v top > /dev/null; then
-    preview_cmd='top -pid {2}'
-  elif command -v htop > /dev/null; then
-    preview_cmd='htop -p {2}'
+    preview_cmd='top -p {2}'
   else
     preview_cmd='ps -E -o command -p {2}'
   fi
@@ -58,7 +56,7 @@ CTRL-X : Kill Selected PIDs   RETURN : Print Selected   ESC : Clear Selection + 
   eval "${ps_cmd}" | fzf \
     --multi \
     --accept-nth=2 \
-    --header-lines=2 \
+    --header-lines=1 \
     --bind="tab:toggle+down" \
     --bind="shift-tab:toggle+up" \
     --bind='enter:accept' \
@@ -66,7 +64,7 @@ CTRL-X : Kill Selected PIDs   RETURN : Print Selected   ESC : Clear Selection + 
     --bind="ctrl-x:execute(${kill_prefix} {+2})+clear-multi+print(* Sent ${kill_signal})+accept" \
     --bind='esc:abort' \
     --preview="${preview_cmd}" \
-    --preview-window='down,25%,follow,nowrap,noinfo' \
+    --preview-window='down,25%,nowrap,noinfo,follow' \
     --layout=reverse \
     --header="${header}" \
     --query "$1"
@@ -96,7 +94,7 @@ fzf_grep() (
 
   preview_cmd=""
   if command -v bat >/dev/null; then
-    preview_cmd="bat --color=always --paging=never --style=numbers --line-range :1000 -- {}"
+    preview_cmd="bat --color=always --paging=never --style=numbers --line-range :500 -- {}"
   else
     preview_cmd="cat -- {}"
   fi
@@ -114,4 +112,4 @@ fzf_grep() (
     --layout='reverse-list' \
     --preview="${preview_cmd} | ${rg_cmd} --colors 'match:bg:yellow' --passthru -- {q} || ${rg_cmd} -- {q} {}"
 )
-alias fzrg
+alias fzgrep='fzf_grep'

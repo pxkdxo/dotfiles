@@ -46,7 +46,6 @@ return {
       },
       copilot_node_command = 'node', -- Node.js version must be > 20
       workspace_folders = {},
-      copilot_model = "gemini-2.5-pro",
     },
   },
   {
@@ -66,39 +65,14 @@ return {
       "zbirenbaum/copilot.lua", -- for providers='copilot'
     },
     opts = {
-      -- provider = "gemini",
       provider = "copilot",
-      -- auto_suggestions_provider = "gemini",
-      auto_suggestions_provider = "copilot",
-      providers = {
-        -- gemini = {
-        --   -- endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
-        --   model = "gemini-2.5-pro",
-        -- },
-        morph = {
-          model = "auto",
-        },
-      },
-      acp_providers = {
-        -- ["gemini-cli"] = {
-        --   command = "gemini",
-        --   args = { "--experimental-acp" },
-        --   env = {
-        --     NODE_NO_WARNINGS = "1",
-        --     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY"),
-        --   },
-        --   auth_method = "gemini-api-key",
-        -- },
-      },
       behaviour = {
-        auto_suggestions = true, -- Experimental stage
-        enable_fastapply = true,  -- Enable Fast Apply feature
+        auto_suggestions = false, -- Experimental stage
+        enable_fastapply = false,  -- Enable Fast Apply feature
       },
       selector = {
-        -- "native" | "fzf_lua" | "mini_pick" | "snacks" | "telescope" | fun(selector: avante.ui.Selector): nil
         provider = "fzf_lua",
         provider_opts = {},
-        -- exclude_auto_select = { "NvimTree" },
       },
       input = {
         provider = "snacks",

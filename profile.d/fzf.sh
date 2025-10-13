@@ -2,35 +2,27 @@
 # ~/.profile.d/fzf.sh: look for an fzf installation and append it to the PATH
 # This script also has functions that extend the functionality of fzf
 
-if test -d "${FZF_BASE:-}"
+if test -n "${FZF_BASE+X}"
 then
-  export FZF_BASE="${FZF_BASE:-}"
-elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf/bin"
+  export FZF_BASE
+elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
 then
   export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
-elif test -d "${HOME}/.local/opt/fzf/bin"
+elif test -d "${HOME}/.local/opt/fzf"
 then
   export FZF_BASE="${HOME}/.local/opt/fzf"
-elif test -d '/usr/local/share/fzf/bin'
+elif test -d '/usr/local/share/fzf'
 then
   export FZF_BASE='/usr/local/share/fzf'
-elif test -d '/usr/share/fzf/bin'
+elif test -d '/usr/share/fzf'
 then
   export FZF_BASE='/usr/share/fzf'
-elif test -d '/opt/fzf/bin'
+elif test -d '/opt/fzf'
 then
   export FZF_BASE='/opt/fzf'
 else
-  unset -v FZF_BASE
+  unset FZF_BASE
 fi
-if test -d "${FZF_BASE:-}"
-then
-  case ":${PATH}:" in
-    *:"${FZF_PATH}":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${FZF_BASE}/bin" ;;
-  esac
-fi
-
 
 # Kill processes
 fzf_kill() (
@@ -42,9 +34,7 @@ fzf_kill() (
   if command -v strace > /dev/null; then
     preview_cmd='strace -p {2}'
   elif command -v top > /dev/null; then
-    preview_cmd='top -pid {2}'
-  elif command -v htop > /dev/null; then
-    preview_cmd='htop -p {2}'
+    preview_cmd='top -p {2}'
   else
     preview_cmd='ps -E -o command -p {2}'
   fi
@@ -125,7 +115,7 @@ fzf_grep() (
 
   preview_cmd=""
   if command -v bat >/dev/null; then
-    preview_cmd="bat --color=always --paging=never --style=numbers --line-range :1000 -- {}"
+    preview_cmd="bat --color=always --paging=never --style=numbers --line-range :500 -- {}"
   else
     preview_cmd="cat -- {}"
   fi
@@ -143,4 +133,4 @@ fzf_grep() (
     --layout='reverse-list' \
     --preview="${preview_cmd} | ${rg_cmd} --colors 'match:bg:yellow' --passthru -- {q} || ${rg_cmd} -- {q} {}"
 )
-alias fzrg
+alias fzgrep='fzf_grep'
