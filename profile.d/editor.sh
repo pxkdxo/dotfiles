@@ -2,7 +2,7 @@
 # editor.sh: configure the EDITOR environment variable
 # see environ(7) and select-editor(1)
 
-if command -v editor
+if command -v editor > /dev/null
 then
 	export EDITOR="editor"
 elif command -v update-alternatives > /dev/null

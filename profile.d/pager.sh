@@ -2,7 +2,7 @@
 # pager.sh: configure the PAGER environment variable
 # see environ(7) and select-editor(1)
 
-if command -v pager
+if command -v pager > /dev/null
 then
 	export PAGER="pager"
 elif command -v update-alternatives > /dev/null
