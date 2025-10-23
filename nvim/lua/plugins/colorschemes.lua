@@ -1,28 +1,14 @@
 return {
-  {
-    "arzg/vim-colors-xcode",
-    cond = not vim.g.vscode,
-  },
-  {
-    "EdenEast/nightfox.nvim",
-    cond = not vim.g.vscode,
-  },
-  {
-    "nyoom-engineering/oxocarbon.nvim",
-    cond = not vim.g.vscode,
-  },
-  {
-    "oxfist/night-owl.nvim",
-    cond = not vim.g.vscode,
-  },
+  {"arzg/vim-colors-xcode"},
+  {"EdenEast/nightfox.nvim"},
+  {"nyoom-engineering/oxocarbon.nvim"},
+  {"oxfist/night-owl.nvim"},
   {
     "projekt0n/github-nvim-theme",
     name = "github-theme",
-    cond = not vim.g.vscode,
   },
   {
     "scottmckendry/cyberdream.nvim",
-    cond = not vim.g.vscode,
     opts = {
       -- Set light or dark variant
       variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
@@ -43,13 +29,12 @@ return {
       -- Enable or disable specific extensions
       extensions = {
         telescope = false,
-        notify = false,
+        notify = true,
       },
     },
   },
   {
     "rose-pine/neovim",
-    cond = not vim.g.vscode,
     name = "rose-pine",
     opts = {
       variant = "auto", -- auto, main, moon, or dawn
@@ -105,5 +90,52 @@ return {
         Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
       },
     },
+  },
+  {
+    'sainnhe/everforest',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.g.everforest_enable_italic = true
+    end
+  },
+  {
+    "yorik1984/newpaper.nvim",
+    priority = 1000,
+    opts = {
+      style = "auto", -- dark", "light", or "auto"
+      preset = {},
+    },
+  },
+  {
+    "zenbones-theme/zenbones.nvim",
+    -- Optionally install Lush. Allows for more configuration or extending the colorscheme
+    -- If you don't want to install lush, make sure to set g:zenbones_compat = 1
+    -- In Vim, compat mode is turned on as Lush only works in Neovim.
+    dependencies = "rktjmp/lush.nvim",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "eldritch-theme/eldritch.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
+  {
+    "craftzdog/solarized-osaka.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
+  {
+    'sainnhe/sonokai',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.sonokai_enable_italic = true
+    end
   },
 }

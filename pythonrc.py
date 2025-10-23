@@ -7,6 +7,7 @@ import base64
 import bisect
 import builtins
 import collections
+import collections.abc
 import copy
 import datetime
 import fileinput
@@ -18,6 +19,7 @@ import importlib
 import inspect
 import io
 import itertools
+import locale
 import math
 import mimetypes
 import operator
@@ -74,18 +76,19 @@ class Prompt:
     __ps: str = '>>> '
     __color: bool
     __psvars: dict
+    __hooks: list
 
     def __init__(self, ps=None, color=None, hooks=None, **psvars):
         if ps is not None:
-            self.__ps = ps
-        if color is None:
-            self.__color = os.isatty(2)
-        else:
+            self.ps = ps
+        if color is not None:
             self.color = color
-        if hooks is None:
-            self.__hooks = []
         else:
-            self.__hooks = hooks
+            self.__color = os.isatty(2)
+        if hooks is not None:
+            self.hooks = hooks
+        else:
+            self.__hooks = []
         self.__psvars = psvars
 
     @property
@@ -118,16 +121,16 @@ class Prompt:
 
     @psvars.setter
     def psvars(self, value):
-        if not isinstance(value, dict):
+        if not isinstance(value, collections.abc.Mapping):
             raise ValueError(
-                f"``psvars'' must be of type ``{dict}''"
+                f"``psvars'' must be a mapping"
             )
-        if not all(isinstance(key, str) for key in value):
+        psvars = dict(value)
+        if not all(isinstance(key, str) for key in psvars):
             raise ValueError(
-                f"``psvars'' must be of type ``{dict}'' "
-                f"with keys of type ``{str}''"
+                f"``psvars'' must be a mapping with keys of type ``{str}''"
             )
-        self.__psvars = value.copy()
+        self.__psvars = psvars
 
     @property
     def hooks(self) -> list:
@@ -135,16 +138,16 @@ class Prompt:
 
     @hooks.setter
     def hooks(self, value):
-        if not isinstance(value, list):
+        if not isinstance(value, collections.abc.Iterable):
             raise ValueError(
-                f"``hooks'' must be of type ``{list}''"
+                f"``hooks'' must be an iterable"
             )
-        if not all(map(callable, value)):
+        hooks = list(value)
+        if not all(map(callable, hooks)):
             raise ValueError(
-                f"``hooks'' must be of type ``{list}'' "
-                f"with only callable elements"
+                f"``hooks'' must be an iterable of callable elements"
             )
-        self.__hooks = value.copy()
+        self.__hooks = hooks
 
     def __repr__(self) -> str:
         kwargs = {
@@ -162,11 +165,10 @@ class Prompt:
     def __str__(self) -> str:
         for hook in self.__hooks:
             hook(self)
-        kwargs = {
+        return self.__ps.format(**{
             key: value(self) if callable(value) else value
             for key, value in self.__psvars.items()
-        }
-        return self.__ps.format(**kwargs)
+        })
 
 
 sys.ps1 = Prompt(
@@ -205,3 +207,28 @@ sys.ps2 = Prompt(
     magenta='\033[35m',
     cyan='\033[36m',
 )
+
+
+try:
+    from pydantic.alias_generators import to_snake
+except ImportError:
+    # Implementation from pydantic~=2.11.0
+    def to_snake(camel: str) -> str:
+        """Convert a PascalCase, camelCase, or kebab-case string to snake_case"""
+        # Handle the sequence of uppercase letters followed by a lowercase letter
+        snake = re.sub(r'([A-Z]+)([A-Z][a-z])', lambda m: f'{m.group(1)}_{m.group(2)}', camel)
+        # Insert an underscore between a lowercase letter and an uppercase letter
+        snake = re.sub(r'([a-z])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
+        # Insert an underscore between a digit and an uppercase letter
+        snake = re.sub(r'([0-9])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
+        # Insert an underscore between a lowercase letter and a digit
+        snake = re.sub(r'([a-z])([0-9])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
+        # Replace hyphens with underscores to handle kebab-case
+        return snake.replace('-', '_').lower()
+
+
+def kwargs_to_annotated_attributes(**kwargs):
+    return dict(map(lambda k, v: (to_snake(k), type(v).__name__), *zip(*kwargs.items())))
+
+def attributes_fmt_annotations(**attrs):
+    return [f"{name}: {annotation}" for (name, annotation) in attrs.items()]

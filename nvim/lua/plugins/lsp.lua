@@ -2,22 +2,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = "BufReadPre", -- Load lspconfig when a buffer is read
-    -- config = function(_, opts)
-    --   Add configurations for other LSP servers as needed
-    --   Example: Configure a specific LSP server
-    --   require("lspconfig").lua_ls.setup {
-    --     settings = {
-    --       Lua = {
-    --         runtime = {
-    --           version = "LuaJIT",
-    --         },
-    --         diagnostics = {
-    --           globals = { "vim" },
-    --         },
-    --       },
-    --     },
-    --   }
-    -- end,
   },
   {
     "mason-org/mason.nvim",
@@ -30,8 +14,32 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = {
-      ---@type boolean | string[] | { exclude: string[] }
       automatic_enable = true,
     },
   },
+  {
+    'nvimdev/lspsaga.nvim',
+    event = 'LspAttach',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter', -- optional
+      'nvim-tree/nvim-web-devicons',     -- optional
+    },
+    opts = {
+      ui = {
+        border = 'rounded',
+        code_action = '',
+      }
+    },
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = { library = { "nvim-dap-ui" } },
+  },
+  {
+    "ray-x/lsp_signature.nvim",
+    cond = false,
+    event = "InsertEnter",
+    opts = {},
+  }
 }

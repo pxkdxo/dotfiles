@@ -1,33 +1,37 @@
+# alacritty/alacritty.toml: Alacritty terminal config
+
 [general]
-import = ["./colorscheme.default.toml"]
+import = ["./colorscheme.dark"]
 
 [window]
 blur = true
 decorations = "Transparent"
 dynamic_padding = true
-opacity = 0.86
+opacity = 0.87
 option_as_alt = "Both"
-padding = { x = 3, y = 2 }
+padding = { x = 5, y = 4 }
 
 [scrolling]
 history = 50000
 multiplier = 3
 
 [font]
-size         = 13.0
+size         = 12.5
 offset       = { x = 0, y = 0 }
 glyph_offset = { x = 0, y = 0 }
 normal       = { family = 'RecMonoDuotone Nerd Font', style = "Regular" }
 bold         = { family = 'RecMonoDuotone Nerd Font', style = "Bold" }
 italic       = { family = 'RecMonoDuotone Nerd Font', style = "Italic" }
 bold_italic  = { family = 'RecMonoDuotone Nerd Font', style = "Bold Italic" }
-#family = 'ComicShannsMono Nerd Font'
-#family = "Mononoki Nerd Font"
+builtin_box_drawing = false
+
+[terminal]
+shell = { program = "/bin/zsh", args = ["-l"] }
 
 [bell]
 animation = "EaseOutSine"
 color = "#0f0f0f"
-duration = 20
+duration = 25
 
 [colors]
 draw_bold_text_with_bright_colors = true
@@ -35,7 +39,7 @@ transparent_background_colors = true
 
 [cursor]
 blink_timeout = 0
-blink_interval = 650
+blink_interval = 625
 unfocused_hollow = true
 
 [cursor.vi_mode_style]
@@ -43,5 +47,5 @@ shape = "Beam"
 blinking = "Off"
 
 [cursor.style]
-shape = "Block"
+shape = "Beam"
 blinking = "On"

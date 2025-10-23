@@ -9,20 +9,20 @@ ncmpcpp_directory         = "~/.cache/ncmpcpp"
 lyrics_directory          = "~/.cache/ncmpcpp/lyrics"
 
 ##### mpd connection #####
-mpd_host                  = "~/.local/run/mpd/mpd.socket"
+mpd_host                  = "~/.local/var/run/mpd/mpd.socket"
 mpd_port                  = "6600"
-mpd_connection_timeout    = "6"
+mpd_connection_timeout    = "10"
 mpd_crossfade_time        = "0"
 
 ##### music visualizer ####
 #visualizer_fifo_path      = "~/.local/run/mpd/stereo.fifo"
-visualizer_data_source    = "~/.local/run/mpd/stereo.fifo"
+visualizer_data_source    = "~/.local/var/run/mpd/stereo.fifo"
 visualizer_output_name    = "FIFO (Stereo)"
 visualizer_in_stereo      = "yes"
 #visualizer_sync_interval  = "30"
 visualizer_type           = "wave_filled"
 visualizer_color          = "52,88,124,160,196,232,226,220,214,208,202,166,130,94,58,22"
-visualizer_look           = "┿※"
+visualizer_look           = "┿᯽"
 
 ##### delays #####
 ## Time of inactivity (in seconds) after playlist highlighting will be disabled
@@ -213,7 +213,7 @@ lines_scrolled             = 2
 
 ## Lyrics
 lyrics_fetchers = azlyrics, genius, sing365, metrolyrics, justsomelyrics, jahlyrics, plyrics, tekstowo, internet
-follow_now_playing_lyrics = no
+follow_now_playing_lyrics = yes
 fetch_lyrics_for_current_song_in_background = yes
 store_lyrics_in_song_dir = no
 generate_win32_compatible_filenames = yes

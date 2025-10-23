@@ -8,9 +8,6 @@ then
 elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
 then
   export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
-elif test -d "${HOME}/.local/opt/fzf"
-then
-  export FZF_BASE="${HOME}/.local/opt/fzf"
 elif test -d '/usr/local/share/fzf'
 then
   export FZF_BASE='/usr/local/share/fzf'
@@ -26,17 +23,16 @@ fi
 
 # Kill processes
 fzf_kill() (
-  usage='fzf_kill [-s SIG_NAME] SEARCH'
-  ps_cmd="ps -e -o user,pid,ppid,stat,stime,tt,time,command=CMD"
+  usage='fzf_kill [-s SIG_NAME] [INITIAL_SEARCH]'
+  ps_cmd="ps ax"
+  ps_format="user=UID,pid,ppid,c,stat,stime,tname,time,cmd"
   kill_prefix="kill"
   kill_signal="TERM"
 
-  if command -v strace > /dev/null; then
-    preview_cmd='strace -p {2}'
-  elif command -v top > /dev/null; then
-    preview_cmd='top -p {2}'
+  if command -v pstree > /dev/null; then
+    preview_cmd='pstree --ascii --arguments --show-pids --uid-changes --hide-threads --color=age --highlight-pid {2}'
   else
-    preview_cmd='ps -E -o command -p {2}'
+    preview_cmd='ps -p {+2}'
   fi
 
   while getopts ':hs:' opt; do
@@ -69,37 +65,31 @@ fzf_kill() (
   kill_prefix="${kill_prefix} -s ${kill_signal}"
 
   header="
-CTRL-R : Reload PID Listing   TAB : Select-Toggle + ↓   SHIFT-TAB: Select-Toggle + ↑
-CTRL-X : Kill Selected PIDs   RETURN : Print Selected   ESC : Clear Selection + Exit"
-  header="${header#?}"
+Ctrl-R : Reload List    Tab   : Select + ↓  Shift-Tab : Select + ↑
+Ctrl-X : Kill Selected  Enter : Print PIDs  Esc : Cancel"
 
   # shellcheck disable=SC2046
-  eval "${ps_cmd}" | fzf \
+  FZF_DEFAULT_COMMAND="${ps_cmd}" PS_FORMAT="${ps_format}" fzf \
     --multi \
     --accept-nth=2 \
     --header-lines=1 \
     --bind="tab:toggle+down" \
     --bind="shift-tab:toggle+up" \
-    --bind='enter:accept' \
-    --bind="ctrl-r:clear-query+clear-multi+reload(${ps_cmd})+transform-ghost:date '+%* updated %r'" \
-    --bind="ctrl-x:execute(${kill_prefix} {+2})+clear-multi+print(* Sent ${kill_signal})+accept" \
+    --bind="enter:accept" \
+    --bind="ctrl-r:clear-query+clear-multi+reload(${ps_cmd})+transform-ghost:date '+* updated %r'" \
+    --bind="ctrl-x:become(sh -x -c '\"\$@\"' -- ${kill_prefix} {+2} >&2)+clear-multi+abort" \
     --bind='esc:abort' \
+    --preview-window="down,28%,nowrap" \
     --preview="${preview_cmd}" \
-    --preview-window='down,25%,nowrap,noinfo,follow' \
     --layout=reverse \
-    --header="${header}" \
+    --header="${header#?}" \
     --query "$1"
 )
-alias fzkill='fzf_kill'
+alias fzf-kill='fzf_kill'
 
 
 # Find files by content
 fzf_grep() (
-  if ! command -v rg > /dev/null; then
-    echo "ripgrep is not installed" >&2
-    return 1
-  fi
-
   if test "$#" -gt 1; then
     echo "usage: fzf_grep [PATH]" >&2
     return 2
@@ -133,4 +123,4 @@ fzf_grep() (
     --layout='reverse-list' \
     --preview="${preview_cmd} | ${rg_cmd} --colors 'match:bg:yellow' --passthru -- {q} || ${rg_cmd} -- {q} {}"
 )
-alias fzgrep='fzf_grep'
+alias fzf-grep='fzf_grep'

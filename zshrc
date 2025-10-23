@@ -6,7 +6,7 @@
 # If this is not an interactive shell, abort.
 case $- in
   (*i*) ;;
-    (*) return ;;
+  (*) return ;;
 esac
 
 # Path to the ohmyzsh installation.
@@ -20,7 +20,7 @@ fi
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="p5kd5o"
+# ZSH_THEME="patrickd"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -166,7 +166,7 @@ alias help='run-help'
 # zsh Z shortcuts
 #
 if command -v z > /dev/null; then
-  alias 'z-=z -c'
+  alias z-'=z -c'
   alias 'zwhich=z -e'
   alias 'zrecent=z -t'
 fi
@@ -190,80 +190,98 @@ fi
 
 # Set fzf default options
 #
-typeset -Tx FZF_DEFAULT_OPTS fzf_default_opts=( ) " "
-if test -f "${FZF_DEFAULT_OPTS_FILE:-${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc}"; then
-  fzf_default_opts=("${(q)${(f)$(< "${FZF_DEFAULT_OPTS_FILE:-${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc}")}[@]}")
+if test -n "${FZF_DEFAULT_OPTS_FILE+X}"; then
+  export FZF_DEFAULT_OPTS_FILE
+  fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
+elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc"; then
+  export FZF_DEFAULT_OPTS_FILE="${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc"
+  fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
+elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzfrc"; then
+  export FZF_DEFAULT_OPTS_FILE="${XDG_CONFIG_HOME:-${HOME}/.config}/fzfrc"
+  fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
+elif test -f "${HOME}/.fzfrc"; then
+  export FZF_DEFAULT_OPTS_FILE="${HOME}/.fzfrc"
+  fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
 else
+  export -T FZF_DEFAULT_OPTS fzf_default_opts " "
   fzf_default_opts=(
   '--sort'
   '--cycle'
   '--smart-case'
-  '--style=default'
-  '--layout=reverse'
-  '--tmux=bottom,40%,border-native'
-  '--info=hidden'
-  '--border=sharp'
-  '--input-border=line'
-  '--header-border=line'
-  '--preview-border=sharp'
+  '--style='\''default'\'''
+  '--layout='\''reverse'\'''
+  '--tmux='\''bottom,40%,border-native'\'''
+  '--info='\''hidden'\'''
+  '--border='\''sharp'\'''
+  '--input-border='\''line'\'''
+  '--header-border='\''line'\'''
+  '--preview-border='\''sharp'\'''
   '--no-list-border'
-  '--color=dark,fg:5,fg+:1,hl:3:bold,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:4:bold,border:3,query:-1,prompt:4:bold,input-border:3,header:4,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold'
-  '--bind=shift-up:first'
-  '--bind=shift-down:last'
-  '--bind=alt-left:backward-word'
-  '--bind=alt-right:forward-word'
-  '--bind=ctrl-b:page-up'
-  '--bind=ctrl-f:page-down'
-  '--bind=ctrl-\\:bg-cancel'
-  '--bind=ctrl-j:accept-or-print-query'
-  '--bind=ctrl-s:replace-query'
-  '--bind=insert:replace-query'
-  '--bind=ctrl-/:toggle-preview'
-  '--bind=ctrl-\]:jump-accept'
-  '--jump-labels=1234567890qwertyuiopasdfghjklzxcvbnm'
+  '--color='\''dark,fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold'\'''
+  '--bind='\''shift-up:first'\'''
+  '--bind='\''shift-down:last'\'''
+  '--bind='\''alt-left:backward-word'\'''
+  '--bind='\''alt-right:forward-word'\'''
+  '--bind='\''ctrl-b:page-up'\'''
+  '--bind='\''ctrl-f:page-down'\'''
+  '--bind='\''ctrl-\\:bg-cancel'\'''
+  '--bind='\''ctrl-j:accept-or-print-query'\'''
+  '--bind='\''ctrl-s:replace-query'\'''
+  '--bind='\''insert:replace-query'\'''
+  '--bind='\''ctrl-/:toggle-preview'\'''
+  '--bind='\''ctrl-]:jump-accept'\'''
+  '--jump-labels='\''1234567890qwertyuiopasdfghjklzxcvbnm'\'''
   )
 fi
 
-typeset -Tx FZF_COMPLETION_OPTS fzf_completion_opts " "
+# Fzf completion opts
+export -T FZF_COMPLETION_OPTS fzf_completion_opts " "
 fzf_completion_opts=(
   "${fzf_default_opts[@]}"
-  '--layout='\''reverse-list'\'
-  '--bind='\''ctrl-o:execute-silent(printf '\''%s'\'' {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'
-  '-1'
+  '--select-1'
+  '--exit-0'
+  '--layout='\''reverse-list'\'''
+  '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
 
-typeset -Tx FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
+export -T FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
 fzf_ctrl_r_opts=(
   "${fzf_default_opts[@]}"
   '--filepath-word'
-  '--layout='\''reverse-list'\'
-  '--bind='\''ctrl-x:become%zsh -c '\''"$@"'\'' -- {2..}%'\'
-  '--bind='\''ctrl-o:execute-silent(printf '\''%s'\'' {2..} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'
+  '--layout='\''reverse-list'\'''
+  '--bind='\''ctrl-x:become%zsh -c $@ -- {2..}%'\'''
+  '--bind='\''ctrl-o:execute-silent(printf %s {2..} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
 
-typeset -Tx FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
+export -T FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
 fzf_ctrl_t_opts=(
   "${fzf_default_opts[@]}"
   '--filepath-word'
   '--no-sort'
-  '--bind='\''ctrl-m:become%open_command -- {}%'\'
-  '--bind='\''ctrl-x:become%"${EDITOR:-'"${EDITOR:-vi}"'}" -- {}%'\'
-  '--bind='\''ctrl-o:execute-silent(printf '\''%s'\'' {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'
+  '--bind='\''ctrl-m:become%open_command -- {}%'\'''
+  '--bind='\''ctrl-x:become%"${EDITOR:-vim}" -- {}%'\'''
+  '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
 
-typeset -Tx FZF_ALT_C_OPTS fzf_alt_c_opts " "
+export -T FZF_ALT_C_OPTS fzf_alt_c_opts " "
 fzf_alt_c_opts=(
   "${fzf_default_opts[@]}"
-  '--filepath-word'
   '--no-sort'
-  '--bind='\''ctrl-x:become%"${EDITOR:-'"${EDITOR:-vi}"'}" -- {}%'\'
-  '--bind='\''ctrl-o:execute-silent(printf '\''%s'\'' {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'
+  '--filepath-word'
+  '--bind='\''ctrl-x:become%"${EDITOR:-nvim}" -- {}%'\'''
+  '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
 
 # Setup cursor-agent shell integration
 #
 if command -v cursor-agent > /dev/null; then
   eval "$(cursor-agent shell-integration zsh)"
+fi
+
+# Use this prompt if we have it
+#
+if command -v starship > /dev/null; then
+  eval "$(starship init zsh)"
 fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0

@@ -10,14 +10,14 @@
 --header-border=line
 --preview-border=sharp
 --no-list-border
---color=dark,fg:5,fg+:1,hl:3:bold,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:4:bold,border:3,query:-1,prompt:4:bold,input-border:3,header:4,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold
+--color=dark,fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold
 --bind=shift-up:first
 --bind=shift-down:last
 --bind=alt-left:backward-word
 --bind=alt-right:forward-word
 --bind=ctrl-b:page-up
 --bind=ctrl-f:page-down
---bind=ctrl-\:bg-cancel
+--bind=ctrl-\\:bg-cancel
 --bind=ctrl-j:accept-or-print-query
 --bind=ctrl-s:replace-query
 --bind=insert:replace-query

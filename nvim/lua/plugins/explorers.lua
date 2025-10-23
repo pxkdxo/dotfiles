@@ -6,9 +6,18 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    cond = not vim.g.vscode,
+    init = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+    end,
     opts = {
+      hijack_cursor = true,
       reload_on_bufenter = true,
+      root_dirs = {
+        vim.fn.getcwd(),
+        os.getenv("HOME"),
+        os.getenv("HOME") .. "/.local",
+      },
       view = {
         width = {
           min = 12,
@@ -21,8 +30,8 @@ return {
           open_win_config = {
             relative = "win",
             border = "rounded",
-            width = 30,
-            height = 75,
+            width = 32,
+            height = "80%",
             row = 1,
             col = 1,
           },
@@ -34,29 +43,31 @@ return {
           enable = true,
         },
         icons = {
-          web_devicons = {
-            file = {
-              enable = true,
-            },
-            folder = {
-              enable = true,
-            },
-          },
+          web_devicons = { folder = { enable = true } },
         },
       },
+      diagnostics = { enable = true},
       filters = {
         enable = true,
-        git_ignored = true,
+        git_ignored = false,
         dotfiles = false,
 
       },
     },
     config = function(_, opts)
-      -- disable netrw
-      vim.g.loaded_netrw = 1
-      vim.g.loaded_netrwPlugin = 1
-
+      -- Setup nvim-tre
       require("nvim-tree").setup(opts)
+
+      -- Set key mappings to open/close/locate etc.
+      local api = require('nvim-tree.api')
+
+      vim.keymap.set('n', '<leader>e', function ()
+        api.tree.toggle({ focus = false })
+      end, { desc = "Toggle File Explorer" })
+
+      vim.keymap.set('n', '<leader>E', function ()
+        api.tree.open({ focus = true, find_file = true, update_root = true })
+      end, { desc = "Show Current File in File Explorer" })
     end,
   },
 }

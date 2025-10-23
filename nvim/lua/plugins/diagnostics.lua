@@ -1,15 +1,20 @@
 return {
   {
-    "mfussenegger/nvim-dap",
-    cond = not vim.g.vscode,
+    "rachartier/tiny-inline-diagnostic.nvim",
+    event = "VeryLazy",
+    priority = 1000,
+    opts = {
+      transparent_bg = true,
+      preset = "simple",
+    },
+    config = function(_, opts)
+      require('tiny-inline-diagnostic').setup(opts)
+      vim.diagnostic.config({ virtual_text = false }) -- Disable default virtual text
+    end
   },
   {
     "folke/trouble.nvim",
-    cond = not vim.g.vscode,
-    opts = {
-      auto_close = true,
-      auto_open = true,
-    },
+    opts = {},
     cmd = "Trouble",
     keys = {
       {

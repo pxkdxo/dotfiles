@@ -85,8 +85,8 @@
 
 !/user-tmpfiles.d/**
 
-!/vim/autoload/**
-!/vim/colors/**
+!/vim/autoload/*.vim
+!/vim/colors/*.vim
 !/vim/bundle
 !/vim/vimrc
 

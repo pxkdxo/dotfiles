@@ -8,7 +8,6 @@ return {
     dependencies = {
       'rafamadriz/friendly-snippets',
     },
-    cond = not vim.g.vscode,
     opts = {},
     config = function (_, opts)
       require('luasnip').setup(opts)

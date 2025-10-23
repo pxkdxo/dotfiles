@@ -1,14 +1,11 @@
-# ~/.config/git/config: git user global config
-# see git(1)  git-config(1)
+# ~/.config/git/config: user-global git config
+# see git(1) git-config(1)
 
 [advice]
   pushUpdateRejected
 
 [color]
-  branch = auto
-  diff = auto
-  status = auto
-  interactive = auto
+  ui = auto
 
 [color "decorate"]
   branch = green
@@ -16,21 +13,103 @@
   stash = blue
   tag = yellow
 
+[color "diff"]
+  meta = white bold
+  frag = cyan bold
+  old = red bold
+  new = green bold
+
 [core]
+  editor = nvim
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+  ignorecase = false
+  compression = 0
 
 [credential]
   helper = cache --timeout 3600
 
 [init]
-  defaultBranch = master
+  defaultBranch = main
   # templateDir = ~/.local/share/git/templates
 
 [user]
-  email = patrick.deyoreo@fox.com
+  email = pxkdxo@proton.me
   name = Patrick DeYoreo
 
 [push]
-  autoSetupRemote
+  default = current
+  autoSetupRemote = true
 
 [pull]
   rebase = false
+
+[protocol "file"]
+  allow = always
+
+[alias]
+  a = add
+  ua = reset HEAD
+  b = branch
+  c = commit
+  m = merge
+  mc = merge --continue
+  co = checkout    # Checkout
+  cb = checkout -b # Checkout branch
+  sw = switch      # Change branch
+  swc = switch -c  # Create new branch
+  ap = add -p      # Patch mode for specified files
+  ca = commit -a   # Add all files and commit
+  cm = commit -m   # Commit message
+  cam = commit -am # Add all files and commit with message
+  s = status -sb   # Short status with current branch
+
+  # Checkout to the latest master/main
+  master = !git checkout master && git pull --prune
+  main = !git checkout main && git pull --prune
+
+  # Checkout to the latest develop
+  develop = !git checkout develop && git pull --prune
+
+  # Merge latest master/main to current branch
+  remaster = !git fetch origin master:master && git merge master
+  remain = !git fetch origin main:main && git merge main
+
+  # When doing "git git log" or some such, do not complain about "git"
+  git = !git
+
+  # Commits log with pretty format
+  l = log --all --graph --decorate --oneline
+
+  # Fully commits log with statistic
+  ll = log --stat --abbrev-commit
+
+  # Ignore files: append file to .gitnignore
+  ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo `\n$2` >> .gitignore
+
+  # Initialize, add all files and commit
+  this = !git init && git add . && git commit -m 'Initial commit'
+
+  # Amend last commit
+  amend = commit --amend
+
+  # Ammend last commit with its original message
+  redo = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
+
+  # Reset index changes, but not the working tree
+  undo = reset --mixed HEAD^
+
+  # Checkout to HEAD revision
+  discard = checkout --
+
+  # List of contributors and how many commits each person has.
+  contrib = shortlog -sn
+
+  # See how many lines of code you have written today.
+  today = diff --shortstat --since="0 day ago"
+
+  # Pull data from remote and push local data
+  sync = !git pull && git push
+
+  # Lazygit
+  lazy = !lazygit

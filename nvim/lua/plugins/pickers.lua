@@ -1,21 +1,15 @@
 return {
   {
-    "folke/snacks.nvim",
-    priority = 1000,
-    lazy = false,
-    cond = not vim.g.vscode,
-    ---@type snacks.Config
-    opts = {
-      input = { enabled = true },
-    },
-  },
-  {
     "ibhagwan/fzf-lua",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    cond = not vim.g.vscode,
     cmd = "Fzf",
+    config = function (_, opts)
+      local fzf_lua = require("fzf-lua")
+      fzf_lua.setup(opts)
+      vim.cmd.FzfLua("setup_fzfvim_cmds")
+    end,
     opts = {
       -- Base Profile
       "border-fused",

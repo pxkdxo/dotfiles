@@ -1,5 +1,14 @@
 return {
   {
+    'akinsho/git-conflict.nvim',
+    version = "*",
+    config = true,
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = {},
+  },
+  {
     "NeogitOrg/neogit",
     dependencies = {
       "nvim-lua/plenary.nvim",         -- required
@@ -10,7 +19,6 @@ return {
       --"nvim-mini/mini.pick",         -- optional
       --"folke/snacks.nvim",           -- optional
     },
-    cond = not vim.g.vscode,
     opts = {
       graph_style = "unicode",
       highlight = {
@@ -40,24 +48,6 @@ return {
       auto_show_console = true,
       -- Automatically close the console if the process exits with a 0 (success) status
       auto_close_console = true,
-    },
-  },
-  {
-    "lewis6991/gitsigns.nvim",
-    cond = not vim.g.vscode,
-    opts = {},
-  },
-  {
-    'pwntester/octo.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'ibhagwan/fzf-lua',
-      -- OR 'folke/snacks.nvim',
-      'nvim-tree/nvim-web-devicons',
-    },
-    cond = not vim.g.vscode,
-    opts = {
-      picker = "fzf-lua", -- or "fzf-lua" or "snacks"
     },
   },
 }

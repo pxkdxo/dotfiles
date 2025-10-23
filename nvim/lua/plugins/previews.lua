@@ -1,13 +1,19 @@
 return {
-  -- install without yarn or npm
   {
     "iamcco/markdown-preview.nvim",
     build = "cd app && yarn install",
-    cond = not vim.g.vscode,
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
     end,
-    ft = { "markdown" },
+  },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {},
   },
 }
