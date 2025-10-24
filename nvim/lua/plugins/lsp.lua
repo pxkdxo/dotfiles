@@ -1,9 +1,5 @@
 return {
   {
-    "neovim/nvim-lspconfig",
-    event = "BufReadPre", -- Load lspconfig when a buffer is read
-  },
-  {
     "mason-org/mason.nvim",
     opts = {},
   },
@@ -18,28 +14,27 @@ return {
     },
   },
   {
-    'nvimdev/lspsaga.nvim',
-    event = 'LspAttach',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter', -- optional
-      'nvim-tree/nvim-web-devicons',     -- optional
-    },
-    opts = {
-      ui = {
-        border = 'rounded',
-        code_action = '',
-      }
-    },
-  },
-  {
     "folke/lazydev.nvim",
     ft = "lua",
     opts = { library = { "nvim-dap-ui" } },
   },
   {
     "ray-x/lsp_signature.nvim",
-    cond = false,
+    -- cond = false,
     event = "InsertEnter",
     opts = {},
-  }
+  },
+  {
+    "ray-x/navigator.lua",
+    dependencies = {
+      'ray-x/guihua.lua',
+      'neovim/nvim-lspconfig',
+    },
+  },
+  {
+    'ray-x/guihua.lua',
+    build = "'cd' 'lua/fzy' && 'make'",
+    opts = {},
+  },
+
 }

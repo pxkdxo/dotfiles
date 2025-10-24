@@ -6,7 +6,7 @@ return {
     ---@type snacks.Config
     opts = {
       input = { enabled = true },
-      bigfile = { enabled = true },
+      images = { enabled = true },
       statuscolumn = { enabled = true },
     },
   },

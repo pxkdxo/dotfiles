@@ -15,43 +15,33 @@ return {
       reload_on_bufenter = true,
       root_dirs = {
         vim.fn.getcwd(),
-        os.getenv("HOME"),
-        os.getenv("HOME") .. "/.local",
+        vim.fn.expand("~/"),
+        vim.fn.expand("~/.local"),
+        vim.fn.stdpath("data"),
+        vim.fn.stdpath("config"),
       },
       view = {
         width = {
-          min = 12,
+          min = 10,
           max = "28%",
-          padding = 1,
+          padding = 0,
         },
         float = {
           enable = false,
           quit_on_focus_loss = true,
-          open_win_config = {
-            relative = "win",
-            border = "rounded",
-            width = 32,
-            height = "80%",
-            row = 1,
-            col = 1,
-          },
+          open_win_config = {},
         },
       },
       renderer = {
         add_trailing = true,
-        indent_markers = {
-          enable = true,
-        },
-        icons = {
-          web_devicons = { folder = { enable = true } },
-        },
+        indent_markers = { enable = true },
+        icons = { web_devicons = { folder = { enable = true } } },
       },
-      diagnostics = { enable = true},
+      diagnostics = { enable = true },
       filters = {
         enable = true,
-        git_ignored = false,
         dotfiles = false,
-
+        git_ignored = false,
       },
     },
     config = function(_, opts)
@@ -59,14 +49,12 @@ return {
       require("nvim-tree").setup(opts)
 
       -- Set key mappings to open/close/locate etc.
-      local api = require('nvim-tree.api')
-
       vim.keymap.set('n', '<leader>e', function ()
-        api.tree.toggle({ focus = false })
+        require('nvim-tree.api').tree.toggle({ focus = false })
       end, { desc = "Toggle File Explorer" })
 
       vim.keymap.set('n', '<leader>E', function ()
-        api.tree.open({ focus = true, find_file = true, update_root = true })
+        require('nvim-tree.api').tree.open({ focus = true, find_file = true, update_root = true })
       end, { desc = "Show Current File in File Explorer" })
     end,
   },

@@ -9,8 +9,11 @@ if [[ -f ~/.profile && -r ~/.profile ]]; then
 fi
 
 # Load ~/.env
-if [[ -f ~/.env && -r ~/.env ]]; then
-  emulate sh -c '. ~/.profile'
+if [[ -f "${XDG_DATA_HOME:-${HOME}/.local/share}/env/env.sh" ]]; then
+  emulate sh -c '. "${XDG_DATA_HOME:-${HOME}/.local/share}/env/env.sh"'
+fi
+if [[ -f ~/.env ]]; then
+  emulate sh -c '. ~/.env'
 fi
 
 if [[ -d ~/.local/share/zsh ]]; then

@@ -1,8 +1,5 @@
 return {
   {
-    "mfussenegger/nvim-dap",
-  },
-  {
     "rcarriga/nvim-dap-ui",
     dependencies = {
       "mfussenegger/nvim-dap",
@@ -23,8 +20,7 @@ return {
       "mfussenegger/nvim-dap",
     },
     config = function()
-      local venv = os.getenv('VIRTUALENV')
-      require('dap-python').setup(venv ~= nil and venv .. '/bin/python' or 'python3')
+      require('dap-python').setup(vim.fn.exepath("python3"))
     end,
   },
 }

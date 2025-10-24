@@ -1,21 +1,19 @@
 # .gitignore: repository allowlist
 # see gitignore(5)
 
-# Ignore everything by default
+# Ignore everything
 *
-
-# Allow directories, so we can recurse into them
+# Now recognize directories, so we can recurse into them
 !*/
 
-# Now we can specify only the files we want to track
+# Now we specify only the files we want to track
 
-# --- ALLOWLIST BELOW ---
+# --- ALLOWLIST ---
 
 !/.gitignore
 !/.gitmodules
 
 !/install-dotfiles.sh
-
 !/README.md
 
 !/asoundrc
@@ -57,9 +55,10 @@
 
 !/nvim/autoload
 !/nvim/colors
-!/nvim/init.lua
 !/nvim/init.vim
-!/nvim/lua/**/*.lua
+!/nvim/init.lua
+!/nvim/lua
+!/nvim/lua/**.lua
 
 !/ohmyzsh/
 

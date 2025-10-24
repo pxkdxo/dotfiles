@@ -1,14 +1,17 @@
 # ripgreprc: ripgrep defaults 
 #
+--smart-case
 --engine=auto
+
 --follow
 --hidden
---smart-case
---ignore-global
---ignore-exclude
---ignore-vcs
---ignore-parent
+
+--no-ignore-parent
+
 --ignore-dot
+--ignore-exclude
+--ignore-global
+--ignore-vcs
 
 --glob
 !git/

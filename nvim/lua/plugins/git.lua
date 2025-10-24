@@ -33,8 +33,8 @@ return {
       -- Floating window style 
       floating = {
         relative = "editor",
-        width = 0.8,
-        height = 0.7,
+        width = 0.85,
+        height = 0.70,
         style = "minimal",
         border = "rounded",
       },
@@ -43,7 +43,7 @@ return {
       -- Disable relative line numbers
       disable_relative_line_numbers = true,
       -- The time after which an output console is shown for slow running commands
-      console_timeout = 2000,
+      console_timeout = 2500,
       -- Automatically show console if a command takes more than console_timeout milliseconds
       auto_show_console = true,
       -- Automatically close the console if the process exits with a 0 (success) status

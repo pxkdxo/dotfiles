@@ -2,7 +2,7 @@ return {
   {"arzg/vim-colors-xcode"},
   {"EdenEast/nightfox.nvim"},
   {"nyoom-engineering/oxocarbon.nvim"},
-  {"oxfist/night-owl.nvim"},
+  -- {"oxfist/night-owl.nvim"},
   {
     "projekt0n/github-nvim-theme",
     name = "github-theme",

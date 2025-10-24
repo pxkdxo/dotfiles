@@ -34,20 +34,6 @@ return {
     },
   },
   {
-    "goolord/alpha-nvim",
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-    },
-    config = function()
-      local alpha = require("alpha")
-      local theme = require("alpha.themes.startify")
-      theme.file_icons = theme.file_icons or {}
-      theme.file_icons.provider = "devicons"
-      alpha.setup(theme.config)
-    end,
-  },
-  {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     ---@module "ibl"
@@ -60,6 +46,39 @@ return {
         enabled = true
       }
     },
+  },
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf',
+    opts = {},
+  },
+  {
+    'RRethy/vim-illuminate',
+    event = "InsertEnter",
+    opts = {
+      bind = true,
+      handler_opts = {
+        border = "rounded",
+      },
+      hint_prefix = "✭ ",
+    },
+    config = function (_, opts)
+      require('illuminate').configure(opts)
+    end
+  },
+  {
+    "goolord/alpha-nvim",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      local alpha = require("alpha")
+      local theme = require("alpha.themes.startify")
+      theme.file_icons = theme.file_icons or {}
+      theme.file_icons.provider = "devicons"
+      alpha.setup(theme.config)
+    end,
   },
   {
     'kevinhwang91/nvim-ufo',
@@ -163,6 +182,7 @@ return {
   {
     "folke/noice.nvim",
     event = "VeryLazy",
+    cond = false,
     dependencies = {
       "MunifTanjim/nui.nvim",
       -- OPTIONAL:
@@ -263,24 +283,5 @@ return {
         end
       end, { silent = true, expr = true })
     end,
-  },
-  {
-    'RRethy/vim-illuminate',
-    event = "InsertEnter",
-    opts = {
-      bind = true,
-      handler_opts = {
-        border = "rounded",
-      },
-      hint_prefix = "✭ ",
-    },
-    config = function (_, opts)
-      require('illuminate').configure(opts)
-    end
-  },
-  {
-    'kevinhwang91/nvim-bqf',
-    ft = 'qf',
-    opts = {},
   },
 }

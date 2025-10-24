@@ -40,12 +40,15 @@ return {
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
     },
+  },
+  {
     {
       'windwp/nvim-autopairs',
       event = "InsertEnter",
       opts = {
         fast_wrap = {
           chars = { '{', '[', '(', '"', "'" },
+          disable_filetype = { "TelescopePrompt" , "guihua", "guihua_rust", "clap_input" },
           pattern = [=[[%'%"%>%]%)%}%,]]=],
           end_key = '$',
           before_key = 'h',

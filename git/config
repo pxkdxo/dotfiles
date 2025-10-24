@@ -48,6 +48,10 @@
   allow = always
 
 [alias]
+  # When doing "git git log" or some such, do not complain about "git"
+  git = !git
+
+  # Abbreviations
   a = add
   ua = reset HEAD
   b = branch
@@ -65,18 +69,17 @@
   s = status -sb   # Short status with current branch
 
   # Checkout to the latest master/main
-  master = !git checkout master && git pull --prune
+  master- = !git checkout master && git pull --prune
   main = !git checkout main && git pull --prune
 
   # Checkout to the latest develop
   develop = !git checkout develop && git pull --prune
 
   # Merge latest master/main to current branch
-  remaster = !git fetch origin master:master && git merge master
-  remain = !git fetch origin main:main && git merge main
+  synclocal-master = !git fetch origin master:master && git merge master
+  synclocal-main = !git fetch origin main:main && git merge main
+  synclocal-develop = !git fetch origin develop:develop && git merge develop
 
-  # When doing "git git log" or some such, do not complain about "git"
-  git = !git
 
   # Commits log with pretty format
   l = log --all --graph --decorate --oneline

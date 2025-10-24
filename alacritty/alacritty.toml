@@ -1,13 +1,13 @@
 # alacritty/alacritty.toml: Alacritty terminal config
 
 [general]
-import = ["./colorscheme.dark"]
+import = ["./theme.default.toml"]
 
 [window]
 blur = true
 decorations = "Transparent"
 dynamic_padding = true
-opacity = 0.87
+opacity = 0.82
 option_as_alt = "Both"
 padding = { x = 5, y = 4 }
 

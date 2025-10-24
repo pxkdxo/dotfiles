@@ -5,7 +5,7 @@ require("config.options")
 
 -- Set map leader keys
 vim.g.mapleader = ","
-vim.g.maplocalleader = ";"
+vim.g.maplocalleader = "\\"
 
 -- Esc to return to Normal mode (even from Terminal)
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
@@ -14,34 +14,36 @@ vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 require("config.lazy").setup({
   defaults = { cond = not vim.g.vscode },
   spec = { { import = "plugins" } },
-  ui = { wrap = true, border = "none", backdrop = 25, pills = true },
-  checker = { enabled = true },
+  checker = {
+    enabled = false, -- do not check for plugin updates automatically
+  },
+  
 })
 
 -- List of colorschemesto choose from
 vim.g.colorschemes = {
+  'rose-pine',
+  'cyberdream',
   'dayfox',
   'dawnfox',
   'oxocarbon',
-  'cyberdream',
-  'carbonfox',
-  'duskfox',
-  'eldritch',
-  'evergarden',
-  'github_dark_dimmed',
-  'github_light',
-  'kanagawabones',
-  'newpaper',
-  'night-owl',
-  'rose-pine',
-  'rose-pine-dawn',
+  'everforest',
   'rosebones',
+  'newpaper',
+  'rose-pine-dawn',
+  'github_light',
+  'github_dark_dimmed',
+  'eldritch',
+  'duskfox',
+  'night-owl',
+  'kanagawabones',
   'shine',
   'sorbet',
   'xcodedarkhc',
   'xcodelight',
   'zaibatsu',
   'zenwritten',
+  'carbonfox',
 }
 
 -- (If not running in VSCode) set a colorscheme and define some key mappings

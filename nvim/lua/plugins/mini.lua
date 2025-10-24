@@ -10,10 +10,4 @@ return {
       MiniIcons.mock_nvim_web_devicons()
     end
   },
-  -- {
-  --   'nvim-mini/mini.animate',
-  --   version = false,
-  --   lazy = true,
-  --   opts = {},
-  -- },
 }
