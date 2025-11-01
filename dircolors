@@ -28,6 +28,7 @@ TERM console
 TERM cygwin
 TERM dtterm
 TERM eterm-color
+TERM foot
 TERM gnome
 TERM gnome-256color
 TERM hurd
@@ -77,25 +78,25 @@ TERM xterm-debian
 # Background color codes:
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
 NORMAL 00 # no color code at all
-FILE 00;39;49 # regular file: use no color at all
+FILE 00 # regular file: use no color at all
 RESET 00 # reset to "normal" color
-DIR 00;36;49 # directory
+DIR 00;01;96 # directory
 LINK target # 00;94 # symbolic link (set to 'target' to use the color of the target file)
-MULTIHARDLINK 00;01;97;49  # regular file with more than one link
-FIFO 00;33;49 # pipe
-SOCK 00;95;49 # socket
-DOOR 00;95;49 # door
-BLK 00;94;49 # block device driver
-CHR 00;94;49 # character device driver
-ORPHAN 00;03;90;49 # symlink to nonexistent file, or non-stat'able file ...
-MISSING 00;03;90;49 # ... and the files they point to
-SETUID 07;91;40 #file that is setuid (u+s)
-SETGID 07;93;40 # file that is setgid (g+s)
-CAPABILITY 07;30;107 # file with capability
-STICKY_OTHER_WRITABLE 07;35;49 # dir that is sticky and other-writable
-OTHER_WRITABLE 07;36;49 # dir that is other-writable (o+w) and not sticky
-STICKY 00;35;49 # dir with the sticky bit set (+t) and not other-writable
-EXEC 00;92;49
+MULTIHARDLINK 00  # regular file with more than one link
+FIFO 00;33 # pipe
+SOCK 00;35 # socket
+DOOR 00;35 # door
+BLK 00;01;94 # block device driver
+CHR 00;01;93 # character device driver
+ORPHAN 00;03;90 # symlink to nonexistent file, or non-stat'able file ...
+MISSING 00;03;90 # ... and the files they point to
+SETUID 00;07;91;40 #file that is setuid (u+s)
+SETGID 00;07;93;40 # file that is setgid (g+s)
+CAPABILITY 00;01;07;97;40 # file with capability
+STICKY_OTHER_WRITABLE 00;01;03;95 # dir that is sticky and other-writable
+OTHER_WRITABLE 00;01;95 # dir that is other-writable (o+w) and not sticky
+STICKY 00;01;03;96 # dir with the sticky bit set (+t) and not other-writable
+EXEC 00;92
 # List any file extensions like '.gz' or '.tar' that you would like ls
 # to colorize below. Put the extension, a space, and the color init string.
 # (and any comments you want to add after a '#')
@@ -109,137 +110,143 @@ EXEC 00;92;49
 # executable bit actually set.
 #.sh 01;32
 #.csh 01;32
+
 # archives or compressed
-.tar 00;38;5;211;49
-.tgz 00;38;5;211;49
-.arc 00;38;5;211;49
-.arj 00;38;5;211;49
-.taz 00;38;5;211;49
-.lha 00;38;5;211;49
-.lz4 00;38;5;211;49
-.lzh 00;38;5;211;49
-.lzma 00;38;5;211;49
-.tlz 00;38;5;211;49
-.txz 00;38;5;211;49
-.tzo 00;38;5;211;49
-.t7z 00;38;5;211;49
-.zip 00;38;5;211;49
-.z 00;38;5;211;49
-.Z 00;38;5;211;49
-.dz 00;38;5;211;49
-.gz 00;38;5;211;49
-.lrz 00;38;5;211;49
-.lz 00;38;5;211;49
-.lzo 00;38;5;211;49
-.xz 00;38;5;211;49
-.zst 00;38;5;211;49
-.tzst 00;38;5;211;49
-.bz2 00;38;5;211;49
-.bz 00;38;5;211;49
-.tbz 00;38;5;211;49
-.tbz2 00;38;5;211;49
-.tz 00;38;5;211;49
-.deb 00;38;5;211;49
-.rpm 00;38;5;211;49
-.jar 00;38;5;211;49
-.war 00;38;5;211;49
-.ear 00;38;5;211;49
-.sar 00;38;5;211;49
-.rar 00;38;5;211;49
-.alz 00;38;5;211;49
-.ace 00;38;5;211;49
-.zoo 00;38;5;211;49
-.cpio 00;38;5;211;49
-.7z 00;38;5;211;49
-.rz 00;38;5;211;49
-.cab 00;38;5;211;49
-.wim 00;38;5;211;49
-.swm 00;38;5;211;49
-.dwm 00;38;5;211;49
-.esd 00;38;5;211;49
+.tar 00;03;91
+.tgz 00;03;91
+.arc 00;03;91
+.arj 00;03;91
+.taz 00;03;91
+.lha 00;03;91
+.lz4 00;03;91
+.lzh 00;03;91
+.lzma 00;03;91
+.tlz 00;03;91
+.txz 00;03;91
+.tzo 00;03;91
+.t7z 00;03;91
+.zip 00;03;91
+.z 00;03;91
+.Z 00;03;91
+.dz 00;03;91
+.gz 00;03;91
+.lrz 00;03;91
+.lz 00;03;91
+.lzo 00;03;91
+.xz 00;03;91
+.zst 00;03;91
+.tzst 00;03;91
+.bz2 00;03;91
+.bz 00;03;91
+.tbz 00;03;91
+.tbz2 00;03;91
+.tz 00;03;91
+.deb 00;03;91
+.rpm 00;03;91
+.jar 00;03;91
+.war 00;03;91
+.ear 00;03;91
+.sar 00;03;91
+.rar 00;03;91
+.alz 00;03;91
+.ace 00;03;91
+.zoo 00;03;91
+.cpio 00;03;91
+.7z 00;03;91
+.rz 00;03;91
+.cab 00;03;91
+.wim 00;03;91
+.swm 00;03;91
+.dwm 00;03;91
+.esd 00;03;91
 
 # image formats
-.jpg 00;38;5;214;49
-.jpeg 00;38;5;214;49
-.mjpg 00;38;5;214;49
-.mjpeg 00;38;5;214;49
-.gif 00;38;5;214;49
-.bmp 00;38;5;214;49
-.pbm 00;38;5;214;49
-.pgm 00;38;5;214;49
-.ppm 00;38;5;214;49
-.tga 00;38;5;214;49
-.xbm 00;38;5;214;49
-.xpm 00;38;5;214;49
-.tif 00;38;5;214;49
-.tiff 00;38;5;214;49
-.png 00;38;5;214;49
-.svg 00;38;5;214;49
-.svgz 00;38;5;214;49
-.mng 00;38;5;214;49
-.pcx 00;38;5;214;49
-.webp 00;38;5;214;49
+.jpg 00;03;32
+.jpeg 00;03;32
+.mjpg 00;03;32
+.mjpeg 00;03;32
+.gif 00;03;32
+.bmp 00;03;32
+.pbm 00;03;32
+.pgm 00;03;32
+.ppm 00;03;32
+.tga 00;03;32
+.xbm 00;03;32
+.xpm 00;03;32
+.tif 00;03;32
+.tiff 00;03;32
+.png 00;03;32
+.svg 00;03;32
+.svgz 00;03;32
+.mng 00;03;32
+.pcx 00;03;32
+.webp 00;03;32
 
 # video formats
-.mov 00;38;5;156;49
-.mpg 00;38;5;156;49
-.mpeg 00;38;5;156;49
-.m2v 00;38;5;156;49
-.mkv 00;38;5;156;49
-.webm 00;38;5;156;49
-.ogm 00;38;5;156;49
-.mp4 00;38;5;156;49
-.m4v 00;38;5;156;49
-.mp4v 00;38;5;156;49
-.vob 00;38;5;156;49
-.qt 00;38;5;156;49
-.nuv 00;38;5;156;49
-.wmv 00;38;5;156;49
-.asf 00;38;5;156;49
-.rm 00;38;5;156;49
-.rmvb 00;38;5;156;49
-.flc 00;38;5;156;49
-.avi 00;38;5;156;49
-.fli 00;38;5;156;49
-.flv 00;38;5;156;49
-.gl 00;38;5;156;49
-.dl 00;38;5;156;49
-.xcf 00;38;5;156;49
-.xwd 00;38;5;156;49
-.yuv 00;38;5;156;49
-.cgm 00;38;5;156;49
-.emf 00;38;5;156;49
-# https://wiki.xiph.org/MIME_Types_and_File_Extensions
-.ogv 00;38;5;156;49
-.ogx 00;38;5;156;49
+.mov 00;03;34
+.mpg 00;03;34
+.mpeg 00;03;34
+.m2v 00;03;34
+.mkv 00;03;34
+.webm 00;03;34
+.ogm 00;03;34
+.mp4 00;03;34
+.m4v 00;03;34
+.mp4v 00;03;34
+.vob 00;03;34
+.qt 00;03;34
+.nuv 00;03;34
+.wmv 00;03;34
+.asf 00;03;34
+.rm 00;03;34
+.rmvb 00;03;34
+.flc 00;03;34
+.avi 00;03;34
+.fli 00;03;34
+.flv 00;03;34
+.gl 00;03;34
+.dl 00;03;34
+.xcf 00;03;34
+.xwd 00;03;34
+.yuv 00;03;34
+.cgm 00;03;34
+.emf 00;03;34
 
+# https://wiki.xiph.org/MIME_Types_and_File_Extensions
+.axv 00;03;34
+.anx 00;03;34
+.ogv 00;03;34
+.ogx 00;03;34
+#
 # document files
-.pdf 00;38;5;43;49
-.ps 00;38;5;43;49
-.txt 00;38;5;43;49
-.patch 00;38;5;43;49
-.diff 00;38;5;43;49
-.log 00;38;5;43;49
-.tex 00;38;5;43;49
-.doc 00;38;5;43;49
+.pdf 00;03;37
+.ps 00;03;37
+.txt 00;03;37
+.patch 00;03;37
+.diff 00;03;37
+.log 00;03;37
+.tex 00;03;37
+.doc 00;03;37
 
 # audio formats
-.aac 00;38;5;111;49
-.au 00;38;5;111;49
-.flac 00;38;5;111;49
-.m4a 00;38;5;111;49
-.mid 00;38;5;111;49
-.midi 00;38;5;111;49
-.mka 00;38;5;111;49
-.mp3 00;38;5;111;49
-.mpc 00;38;5;111;49
-.ogg 00;38;5;111;49
-.ra 00;38;5;111;49
-.wav 00;38;5;111;49
+.aac 00;03;36
+.au 00;03;36
+.flac 00;03;36
+.m4a 00;03;36
+.mid 00;03;36
+.midi 00;03;36
+.mka 00;03;36
+.mp3 00;03;36
+.mpc 00;03;36
+.ogg 00;03;36
+.ra 00;03;36
+.wav 00;03;36
+
 # https://wiki.xiph.org/MIME_Types_and_File_Extensions
-.oga 00;38;5;111;49
-.opus 00;38;5;111;49
-.spx 00;38;5;111;49
-.xspf 00;38;5;111;49
+.axa 00;03;36
+.oga 00;03;36
+.opus 00;03;36
+.spx 00;03;36
+.xspf 00;03;36
 
 # vim: ft=dircolors

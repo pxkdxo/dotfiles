@@ -73,7 +73,7 @@ return {
           s = cmp.mapping.confirm({ select = true }),
           c = cmp.mapping.confirm({ select = false }),
         },
-        ['<Tab>'] = cmp.mapping(function(fallback)
+        ['<Tab>'] = cmp.mapping(function (fallback)
           if cmp.visible() then
             if #cmp.get_entries() == 1 then
               cmp.confirm({ select = true })
@@ -93,13 +93,9 @@ return {
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            if #cmp.get_entries() == 1 then
-              cmp.confirm({ select = true })
-            else
+            if #cmp.get_entries() > 0 then
               cmp.select_prev_item()
             end
-          elseif luasnip.locally_jumpable(-1) then
-            luasnip.jump(-1)
           else
             fallback()
           end
@@ -131,7 +127,7 @@ return {
               abbr = function() return math.max(math.floor(0.40 * vim.o.columns), 40) end, -- actual suggestion item
             },
             ellipsis_char = '',
-            symbol_map = { Copilot = "" }
+            symbol_map = { Copilot = "" },
           })(entry, vim_item)
           local strings = vim.split(kind.kind, "%s", { trimempty = true })
           kind.kind = " " .. (strings[1] or "") .. " "
@@ -144,9 +140,12 @@ return {
         { '/', '?' },
         {
           mapping = cmp.mapping.preset.cmdline({
-            ['<C-]>'] = vim.schedule_wrap(function(fallback)
-              if cmp.visible() then return cmp.complete_common_string() end
-              return fallback()
+            ['<C-]>'] = vim.schedule_wrap(function (fallback)
+              if cmp.visible() then
+                cmp.complete_common_string()
+              else
+                fallback()
+              end
             end),
           }),
           sources = cmp.config.sources({ { name = 'buffer' } })
@@ -157,41 +156,38 @@ return {
         {
           mapping = cmp.mapping.preset.cmdline({
             ['<CR>'] = cmp.mapping.confirm({ select = false }),
-            ['<Tab>'] = cmp.mapping(function(fallback)
+            ['<C-]>'] = vim.schedule_wrap(function (fallback)
               if cmp.visible() then
-                local n_entries = #cmp.get_entries()
-                if n_entries > 1 then
-                  return cmp.select_next_item()
-                elseif n_entries == 1 then
-                  return cmp.confirm({ select = true })
-                end
-                return fallback()
+                cmp.complete_common_string()
+              else
+                fallback()
               end
-              cmp.complete()
-              if #cmp.get_entries() > 1 then
-                return cmp.complete_common_string()
-              end
-              return cmp.confirm({ select = true })
             end),
-            ['<S-Tab>'] = function()
+            ['<Tab>'] = cmp.mapping(function (_)
+              local n_entries = nil
               if cmp.visible() then
-                local n_entries = #cmp.get_entries()
-                if n_entries > 1 then
-                  return cmp.select_prev_item()
-                elseif n_entries == 1 then
-                  return cmp.confirm({ select = true })
+                n_entries = #cmp.get_entries()
+                if n_entries == 1 then
+                  cmp.confirm({ select = true })
+                else
+                  cmp.select_next_item()
                 end
-                return fallback()
+              else
+                cmp.complete()
+                n_entries = #cmp.get_entries()
+                if n_entries == 1 then
+                  cmp.confirm({ select = true })
+                elseif n_entries > 1 then
+                  cmp.complete_common_string()
+                end
               end
-              cmp.complete()
-              if #cmp.get_entries() > 1 then
-                return cmp.complete_common_string()
+            end),
+            ['<S-Tab>'] = cmp.mapping(function (_)
+              if cmp.visible() then
+                if #cmp.get_entries() > 0 then
+                  cmp.select_prev_item()
+                end
               end
-              return cmp.confirm({ select = true })
-            end,
-            ['<C-]>'] = vim.schedule_wrap(function(fallback)
-              if cmp.visible() then return cmp.complete_common_string() end
-              return fallback()
             end),
           }),
           sources = cmp.config.sources(
