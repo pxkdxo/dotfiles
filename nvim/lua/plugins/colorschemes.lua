@@ -1,14 +1,29 @@
 return {
-  {"arzg/vim-colors-xcode"},
-  {"EdenEast/nightfox.nvim"},
-  {"nyoom-engineering/oxocarbon.nvim"},
-  -- {"oxfist/night-owl.nvim"},
+  {
+    "arzg/vim-colors-xcode",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "EdenEast/nightfox.nvim",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    lazy = false,
+    priority = 1000,
+  },
   {
     "projekt0n/github-nvim-theme",
     name = "github-theme",
+    lazy = false,
+    priority = 1000,
   },
   {
     "scottmckendry/cyberdream.nvim",
+    lazy = false,
+    priority = 1000,
     opts = {
       -- Set light or dark variant
       variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
@@ -36,6 +51,8 @@ return {
   {
     "rose-pine/neovim",
     name = "rose-pine",
+    lazy = false,
+    priority = 1000,
     opts = {
       variant = "auto", -- auto, main, moon, or dawn
       dark_variant = "main", -- main, moon, or dawn
@@ -43,7 +60,7 @@ return {
       extend_background_behind_borders = true,
       enable = {
         terminal = true,
-        legacy_highlights = true, -- Improve compatibility for previous versions of Neovim
+        -- legacy_highlights = true, -- Improve compatibility for previous versions of Neovim
         migrations = true, -- Handle deprecated options automatically
       },
       styles = {
@@ -71,23 +88,12 @@ return {
         git_stage = "iris",
         git_text = "rose",
         git_untracked = "subtle",
-
         h1 = "iris",
         h2 = "foam",
         h3 = "rose",
         h4 = "gold",
         h5 = "pine",
         h6 = "foam",
-      },
-      highlight_groups = {
-        TelescopeBorder = { fg = "highlight_high", bg = "none" },
-        TelescopeNormal = { bg = "none" },
-        TelescopePromptNormal = { bg = "base" },
-        TelescopeResultsNormal = { fg = "subtle", bg = "none" },
-        TelescopeSelection = { fg = "text", bg = "base" },
-        TelescopeSelectionCaret = { fg = "rose", bg = "rose" },
-        CurSearch = { fg = "base", bg = "leaf", inherit = false },
-        Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
       },
     },
   },
@@ -101,6 +107,7 @@ return {
   },
   {
     "yorik1984/newpaper.nvim",
+    lazy = false,
     priority = 1000,
     opts = {
       style = "auto", -- dark", "light", or "auto"
@@ -109,10 +116,7 @@ return {
   },
   {
     "zenbones-theme/zenbones.nvim",
-    -- Optionally install Lush. Allows for more configuration or extending the colorscheme
-    -- If you don't want to install lush, make sure to set g:zenbones_compat = 1
-    -- In Vim, compat mode is turned on as Lush only works in Neovim.
-    dependencies = "rktjmp/lush.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
     lazy = false,
     priority = 1000,
   },
@@ -133,8 +137,6 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      -- Optionally configure and load the colorscheme
-      -- directly inside the plugin declaration.
       vim.g.sonokai_enable_italic = true
     end
   },
