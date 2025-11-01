@@ -4,8 +4,9 @@ return {
     branch = 'master',
     lazy = false,
     build = function (_)
-      if vim.fn.exists(":TSUpdate") then
-        vim.cmd.TSUpdate()
+      local ts_update = vim.cmd.TSUpdate
+      if ts_update ~= nil then
+        ts_update()
       end
     end,
     opts = {

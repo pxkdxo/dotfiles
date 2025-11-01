@@ -5,8 +5,7 @@ return {
     lazy = true,
     opts = {},
     config = function (_, opts)
-      local mini_icons = require('mini.icons')
-      mini_icons.setup(opts)
+      require('mini.icons').setup(opts)
       MiniIcons.mock_nvim_web_devicons()
     end
   },
