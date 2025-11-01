@@ -20,7 +20,7 @@
   new = green bold
 
 [core]
-  editor = nvim
+  editor = vim
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
   ignorecase = false
@@ -34,7 +34,7 @@
   # templateDir = ~/.local/share/git/templates
 
 [user]
-  email = pxkdxo@proton.me
+  # email =
   name = Patrick DeYoreo
 
 [push]
@@ -48,38 +48,17 @@
   allow = always
 
 [alias]
-  # When doing "git git log" or some such, do not complain about "git"
-  git = !git
-
-  # Abbreviations
   a = add
-  ua = reset HEAD
   b = branch
   c = commit
+  co = checkout
+  cob = checkout -b
   m = merge
   mc = merge --continue
-  co = checkout    # Checkout
-  cb = checkout -b # Checkout branch
+  r = reset HEAD
+  s = status -sb   # Short status with current branch
   sw = switch      # Change branch
   swc = switch -c  # Create new branch
-  ap = add -p      # Patch mode for specified files
-  ca = commit -a   # Add all files and commit
-  cm = commit -m   # Commit message
-  cam = commit -am # Add all files and commit with message
-  s = status -sb   # Short status with current branch
-
-  # Checkout to the latest master/main
-  master- = !git checkout master && git pull --prune
-  main = !git checkout main && git pull --prune
-
-  # Checkout to the latest develop
-  develop = !git checkout develop && git pull --prune
-
-  # Merge latest master/main to current branch
-  synclocal-master = !git fetch origin master:master && git merge master
-  synclocal-main = !git fetch origin main:main && git merge main
-  synclocal-develop = !git fetch origin develop:develop && git merge develop
-
 
   # Commits log with pretty format
   l = log --all --graph --decorate --oneline
@@ -87,32 +66,31 @@
   # Fully commits log with statistic
   ll = log --stat --abbrev-commit
 
-  # Ignore files: append file to .gitnignore
-  ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo `\n$2` >> .gitignore
-
-  # Initialize, add all files and commit
-  this = !git init && git add . && git commit -m 'Initial commit'
-
-  # Amend last commit
-  amend = commit --amend
-
-  # Ammend last commit with its original message
-  redo = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
-
-  # Reset index changes, but not the working tree
-  undo = reset --mixed HEAD^
-
-  # Checkout to HEAD revision
-  discard = checkout --
-
-  # List of contributors and how many commits each person has.
+  # List of contributors and how many commits each person has
   contrib = shortlog -sn
 
-  # See how many lines of code you have written today.
-  today = diff --shortstat --since="0 day ago"
+  # When doing "git git log" or some such, do not complain about "git"
+  git = !git
+
+  # Checkout to the latest
+  main = "!sh -c 'git checkout main && git pull --prune' --"
+  master = "!sh -c 'git checkout master && git pull --prune' --"
+  develop = "!sh -c 'git checkout develop && git pull --prune' --"
+
+  # Merge latest master/main to current branch
+  synclocal = "!sh -c 'if test \"$#\" -gt 0; then git fetch origin \"$1:$1\" && git merge; else >&2 echo '\\''usage: git synclocal BRANCH'\\''; exit 1; fi' --"
+
+  # Initialize, add all files and commit
+  new = "!sh -c 'git init && git add . && git commit -m '\\''Initial commit'\\''' --"
+
+  # Ammend last commit with its original message
+  amend = "!sh -c 'git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend' --"
+
+  # Append file to .gitignore
+  ignore = "!sh -c 'test -e .gitignore && >> .gitignore echo || touch .gitignore && >> .gitignore printf '\\''%s\\n'\\'' \"$@\"' --"
 
   # Pull data from remote and push local data
-  sync = !git pull && git push
+  sync = "!sh -x -c 'git pull && git push' --"
 
   # Lazygit
-  lazy = !lazygit
+  lazy = "!lazygit"

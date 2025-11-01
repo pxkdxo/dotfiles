@@ -29,13 +29,6 @@ if (has('autocmd'))
 endif
 
 
-" Use pipes for shell commands instead of temporary files
-"
-if (has('job') && has('channel') && has("filterpipe"))
-  set noshelltemp
-else
-endif
-
 " Skip the rest if this is actually VSCode
 "
 if (exists('g:vscode'))
@@ -54,10 +47,13 @@ endif
 
 " Load plugins
 "
-call plug#begin(join(split(&runtimepath, ',')[:0] + ['plug'], '/'))
-"
-" NOTE: use single quotes around plugin names
+if !empty($XDG_DATA_HOME)
+  call plug#begin(expand("$XDG_DATA_HOME/") .. v:progname .. "/plug")
+else
+  call plug#begin(expand("~/.local/share/") .. v:progname .. "/plug")
+endif
 
+" NOTE: use single quotes around plugin names
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'majutsushi/tagbar'
@@ -85,17 +81,19 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'ryanoasis/vim-devicons'
 "Plug 'ycm-core/YouCompleteMe'
 
+" Set plugin options
 let g:jedi#auto_initialization = 1
 let g:jedi#completions_enabled = 0
 let g:jedi#show_call_signatures = 0
-
 let g:tmuxline_preset = {
-      \'a'    : '#S',
-      \'win'  : ['#I', '#W'],
-      \'cwin' : ['#I', '#W', '#F'],
-      \'y'    : ['%R', '%a', '%Y'],
-      \'z'    : '#H'}
+      \ 'a'    : '#S',
+      \ 'win'  : ['#I', '#W'],
+      \ 'cwin' : ['#I', '#W', '#F'],
+      \ 'y'    : ['%R', '%a', '%Y'],
+      \ 'z'    : '#H',
+      \ }
 
+" End plugins
 call plug#end()
 
 " Spacing
@@ -239,7 +237,7 @@ endif
 " Line Wrapping
 "
 " Do not wrap lines
-"set nowrap
+set nowrap
 "
 " Break lines before window edge
 "set linebreak

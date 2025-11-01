@@ -1,14 +1,11 @@
 # .gitignore: repository allowlist
 # see gitignore(5)
 
-# Ignore everything
+# Ignore everything except directories
 *
-# Now recognize directories, so we can recurse into them
 !*/
 
-# Now we specify only the files we want to track
-
-# --- ALLOWLIST ---
+# Now specify the files we want to track
 
 !/.gitignore
 !/.gitmodules
@@ -33,7 +30,7 @@
 
 !/dircolors
 
-!/environment.d/**.conf
+!/environment.d/**
 
 !/fzf/**
 
@@ -57,8 +54,7 @@
 !/nvim/colors
 !/nvim/init.vim
 !/nvim/init.lua
-!/nvim/lua
-!/nvim/lua/**.lua
+!/nvim/lua/**
 
 !/ohmyzsh/
 
@@ -105,6 +101,8 @@
 !/zshenv
 !/zshrc
 
-!/yazi/config.toml
-!/yazi/keymap.toml
+/yazi/packages/
+!/yazi/flavors/**
+!/yazi/plugins/**
+!/yazi/package.toml
 !/yazi/theme.toml

@@ -34,7 +34,7 @@ return {
   },
   {
     "yetone/avante.nvim",
-    cond = vim.fn.executable("make") == 1,
+    cond = vim.g.vscode == nil and vim.fn.executable("make") == 1,
     build = "make",
     event = "VeryLazy",
     version = false, -- Never set this value to "*"! Never!

@@ -20,9 +20,14 @@ return {
   },
   {
     "ray-x/lsp_signature.nvim",
-    -- cond = false,
     event = "InsertEnter",
-    opts = {},
+    opts = {
+      hint_prefix = {
+        above = "↙ ",  -- when the hint is on the line above the current line
+        current = "← ",  -- when the hint is on the same line
+        below = "↖ "  -- when the hint is on the line below the current line
+      },
+    },
   },
   {
     "ray-x/navigator.lua",
@@ -33,8 +38,8 @@ return {
   },
   {
     'ray-x/guihua.lua',
-    build = "'cd' 'lua/fzy' && 'make'",
+    cond = vim.g.vscode == nil and vim.fn.executable("make") == 1,
+    build = "make -C lua/fzy",
     opts = {},
   },
-
 }
