@@ -69,6 +69,10 @@
 
 !/ripgreprc
 
+!/starship.toml
+!/starship/*.toml
+!/starship/**/*.toml
+
 !/systemd/user/*.service
 
 !/tmux.conf

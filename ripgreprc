@@ -1,20 +1,21 @@
 # ripgreprc: ripgrep defaults 
 #
---smart-case
---engine=auto
+--pcre2
 
---follow
---hidden
+--smart-case
+
+--no-ignore-global
 
 --no-ignore-parent
 
 --ignore-dot
+
 --ignore-exclude
---ignore-global
+
 --ignore-vcs
 
 --glob
-!git/
+!.git/*
 
 --colors
 line:fg:red

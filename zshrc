@@ -142,7 +142,6 @@ plugins=(
   keybindings
   globalias-rev
   clipboard-keybindings
-  install-clipcopy
   fast-syntax-highlighting
   zsh-interactive-cd
   zsh-autosuggestions
@@ -274,9 +273,9 @@ fzf_alt_c_opts=(
 
 # Setup cursor-agent shell integration
 #
-if command -v cursor-agent > /dev/null; then
-  eval "$(cursor-agent shell-integration zsh)"
-fi
+# if command -v cursor-agent > /dev/null; then
+#   eval "$(cursor-agent shell-integration zsh)"
+# fi
 
 # Use this prompt if we have it
 #

@@ -75,13 +75,30 @@ return {
       },
     },
     opts = {
-      provider = (vim.env.GEMINI_API_KEY or vim.env.AVANTE_GEMINI_API_KEY) and "gemini" or "copilot",
-      providers = {
-        gemini = { model = "gemini-2.5-flash" },
-      },
-      auto_suggestions_provider = nil,
+      provider = "copilot",
+      auto_suggestions_provider = vim.env.GEMINI_API_KEY and "gemini" or nil,
       behaviour = {
         auto_suggestions = false, -- Experimental stage
+      },
+      providers = {
+        copilot = {
+          model = "gpt-5",
+        },
+        gemini = {
+          model = "gemini-2.5-flash",
+        },
+      },
+      acp_providers = {
+        ["gemini-cli"] = {
+          command = "gemini",
+          args = {
+            "--experimental-acp",
+          },
+          env = {
+            GEMINI_API_KEY = vim.env.GEMINI_API_KEY,
+            NODE_NO_WARNINGS = "1",
+          },
+        },
       },
       selector = {
         provider = "fzf_lua",
@@ -91,12 +108,15 @@ return {
       input = {
         provider = "snacks",
         provider_opts = {
-          title = "* Avante Input *",
+          title = "*Avante*",
           icon = "",
         },
       },
+      suggestion = {
+        debounce = 3000,
+      },
       windows = {
-        sk = {
+        ask = {
           floating = true, -- Open the 'AvanteAsk' prompt in a floating window
         },
       },
