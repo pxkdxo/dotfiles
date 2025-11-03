@@ -1,0 +1,80 @@
+# Don't print a new line at the start of the prompt
+add_newline = false
+# Pipes ╰─ ╭─
+# Powerline symbols                                   
+# Wedges 🭧🭒 🭣🭧🭓
+# Random noise 🬖🬥🬔🬗
+# Cool stuff 󰜥   
+
+# format = """
+# $cmd_duration$username$hostname $directory $git_branch
+# $character
+# """
+format = """[\
+╭[󰇘$username$hostname](normal)[󰇘$directory](normal)](normal)\
+[$line_break\
+├[󰇘$git_branch$git_status](normal)](normal)\
+[$line_break\
+╰[󰇘$character](normal)](normal)"""
+
+[line_break]
+disabled = false
+
+[character]
+success_symbol = "[ ](bold fg:blue)"
+error_symbol = "[ ](bold fg:red)"
+
+[username]
+show_always = true
+style_user = "bg:white fg:black"
+style_root = "bg:white fg:red bold"
+format = "[](bold fg:white)[$user]($style)[](bold fg:white bg:cyan)"
+
+[hostname]
+style = "bg:cyan fg:black"
+format =  "[[ 󰁥 ](italic $style)$hostname]($style)[](bold fg:cyan)"
+ssh_only = false
+trim_at = ".localdomain"
+
+[directory]
+style = "bg:green fg:black"
+truncation_length = 5
+truncation_symbol = "…/"
+format = '[](bold fg:green)[󰉋 $path]($style)[](bold fg:green)'
+
+[git_branch]
+style = "bg:red fg:black"
+symbol = ""
+truncation_length = 18
+truncation_symbol = "…"
+format = "[](bold fg:red)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](bold fg:red bg:white)"
+
+[git_status]
+style = "bg:white fg:black"
+format = '[ [$all_status](bold $style)[$ahead_behind](italic $style)]($style)[](bold fg:white)'
+
+[git_commit]
+commit_hash_length = 4
+tag_symbol = ""
+
+[cmd_duration]
+min_time = 0
+format = '[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)'
+
+[time]
+disabled = true
+format = '🕙[\[ $time \]]($style) '
+time_format = "%T"
+
+[memory_usage]
+disabled = true
+threshold = -1
+symbol = " "
+style = "bold dimmed green"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
