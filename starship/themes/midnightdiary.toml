@@ -11,9 +11,11 @@ add_newline = false
 # $character
 # """
 format = """[\
-╭[󰇘$username$hostname](normal)[󰇘$directory](normal)](normal)\
+╭[󰇘$username$hostname](normal)](normal)\
 [$line_break\
-├[󰇘$git_branch$git_status](normal)](normal)\
+├[󰇘$directory](normal)](normal)\
+[$line_break\
+├[󰇘$git_branch$git_status](normal)](normal)\
 [$line_break\
 ╰[󰇘$character](normal)](normal)"""
 
@@ -28,11 +30,11 @@ error_symbol = "[ ](bold fg:red)"
 show_always = true
 style_user = "bg:white fg:black"
 style_root = "bg:white fg:red bold"
-format = "[](bold fg:white)[$user]($style)[](bold fg:white bg:cyan)"
+format = "[](fg:white)[$user]($style)[](fg:white bg:cyan)"
 
 [hostname]
 style = "bg:cyan fg:black"
-format =  "[[ 󰁥 ](italic $style)$hostname]($style)[](bold fg:cyan)"
+format =  "[$hostname]($style)[](fg:cyan)"
 ssh_only = false
 trim_at = ".localdomain"
 
@@ -40,18 +42,18 @@ trim_at = ".localdomain"
 style = "bg:green fg:black"
 truncation_length = 5
 truncation_symbol = "…/"
-format = '[](bold fg:green)[󰉋 $path]($style)[](bold fg:green)'
+format = '[](fg:green)[󰉋 $path]($style)[](fg:green)'
 
 [git_branch]
 style = "bg:red fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "[](bold fg:red)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](bold fg:red bg:white)"
+format = "[](fg:red)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:red bg:white)"
 
 [git_status]
 style = "bg:white fg:black"
-format = '[ [$all_status](bold $style)[$ahead_behind](italic $style)]($style)[](bold fg:white)'
+format = '[$all_status[$ahead_behind](italic $style)]($style)[](fg:white)'
 
 [git_commit]
 commit_hash_length = 4
