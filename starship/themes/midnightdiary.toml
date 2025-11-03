@@ -10,27 +10,24 @@ add_newline = false
 # $cmd_duration$username$hostname $directory $git_branch
 # $character
 # """
-format = """[\
-╭[󰇘$username$hostname](normal)](normal)\
-[$line_break\
-├[󰇘$directory](normal)](normal)\
-[$line_break\
-├[󰇘$git_branch$git_status](normal)](normal)\
-[$line_break\
-╰[󰇘$character](normal)](normal)"""
+format = """\
+$username$hostname\
+$directory\
+$git_branch$git_status\
+$character"""
 
 [line_break]
 disabled = false
 
 [character]
-success_symbol = "[ ](bold fg:blue)"
-error_symbol = "[ ](bold fg:red)"
+success_symbol = "\n╰󰇘[ ](bold fg:blue)"
+error_symbol = "\n╰󰇘[ ](bold fg:red)"
 
 [username]
 show_always = true
 style_user = "bg:white fg:black"
 style_root = "bg:white fg:red bold"
-format = "[](fg:white)[$user]($style)[](fg:white bg:cyan)"
+format = "╭󰇘[](fg:white)[$user]($style)[](fg:white bg:cyan)"
 
 [hostname]
 style = "bg:cyan fg:black"
@@ -42,18 +39,18 @@ trim_at = ".localdomain"
 style = "bg:green fg:black"
 truncation_length = 5
 truncation_symbol = "…/"
-format = '[](fg:green)[󰉋 $path]($style)[](fg:green)'
+format = "\n├󰇘[](fg:green)[󰉋 $path]($style)[](fg:green)"
 
 [git_branch]
-style = "bg:red fg:black"
+style = "bg:purple fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "[](fg:red)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:red bg:white)"
+format = "\n├󰇘[](fg:purple)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:purple bg:yellow)"
 
 [git_status]
-style = "bg:white fg:black"
-format = '[$all_status[$ahead_behind](italic $style)]($style)[](fg:white)'
+style = "bg:yellow fg:black"
+format = "[$all_status[$ahead_behind](italic $style)]($style)[](fg:yellow)"
 
 [git_commit]
 commit_hash_length = 4
@@ -61,11 +58,11 @@ tag_symbol = ""
 
 [cmd_duration]
 min_time = 0
-format = '[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)'
+format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)"
 
 [time]
 disabled = true
-format = '🕙[\[ $time \]]($style) '
+format = "🕙[\\[ $time \\]]($style) "
 time_format = "%T"
 
 [memory_usage]
