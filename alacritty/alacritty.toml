@@ -4,12 +4,12 @@
 import = ["./theme.default.toml"]
 
 [window]
-blur = true
+blur = false
 decorations = "Transparent"
 dynamic_padding = true
 opacity = 0.82
 option_as_alt = "Both"
-padding = { x = 5, y = 4 }
+padding = { x = 6, y = 3 }
 
 [scrolling]
 history = 50000

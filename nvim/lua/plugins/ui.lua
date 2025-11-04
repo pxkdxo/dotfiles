@@ -137,7 +137,7 @@ return {
 
       -- Custom fold handler
       local function fold_handler(virt_text, lnum, end_lnum, width, truncate)
-        local suffix = (' 󰁂 +%d '):format(end_lnum - lnum)
+        local suffix = (' 󰁂 %d  '):format(end_lnum - lnum)
         local target_width = width - vim.fn.strdisplaywidth(suffix)
         local result_text, result_width = _fold_handler_rec(virt_text, {}, target_width, 0, truncate)
         local spaces = (' '):rep(target_width - result_width)
@@ -182,7 +182,7 @@ return {
   {
     "folke/noice.nvim",
     event = "VeryLazy",
-    cond = false,
+    -- cond = false,
     dependencies = {
       "MunifTanjim/nui.nvim",
       -- OPTIONAL:
@@ -215,7 +215,7 @@ return {
           opts = {},
         },
         signature = {
-          enabled = false,
+          enabled = true,
           auto_open = {
             -- enabled = true,
             -- trigger = true, -- Automatically show signature help when typing a trigger character from the LSP

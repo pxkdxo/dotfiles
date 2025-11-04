@@ -32,6 +32,10 @@
 
 !/environment.d/**
 
+!foot/*.ini
+
+!kitty/*.conf
+
 !/fzf/**
 
 !/git/config

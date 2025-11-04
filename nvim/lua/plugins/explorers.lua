@@ -23,8 +23,8 @@ return {
       view = {
         width = {
           min = 10,
-          max = "28%",
-          padding = 0,
+          max = "22%",
+          padding = 1,
         },
         float = {
           enable = false,
@@ -49,11 +49,11 @@ return {
       require("nvim-tree").setup(opts)
 
       -- Set key mappings to open/close/locate etc.
-      vim.keymap.set('n', '<leader>e', function ()
+      vim.keymap.set('n', '<leader>/', function ()
         require('nvim-tree.api').tree.toggle({ focus = false })
       end, { desc = "Toggle File Explorer" })
 
-      vim.keymap.set('n', '<leader>E', function ()
+      vim.keymap.set('n', '<leader>.', function ()
         require('nvim-tree.api').tree.open({ focus = true, find_file = true, update_root = true })
       end, { desc = "Show Current File in File Explorer" })
     end,

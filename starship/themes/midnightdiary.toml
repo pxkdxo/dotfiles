@@ -42,15 +42,15 @@ truncation_symbol = "…/"
 format = "\n├󰇘[](fg:green)[󰉋 $path]($style)[](fg:green)"
 
 [git_branch]
-style = "bg:purple fg:black"
+style = "bg:yellow fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "\n├󰇘[](fg:purple)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:purple bg:yellow)"
+format = "\n├󰇘[](fg:yellow)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:yellow bg:purple)"
 
 [git_status]
-style = "bg:yellow fg:black"
-format = "[$all_status[$ahead_behind](italic $style)]($style)[](fg:yellow)"
+style = "bg:purple fg:black"
+format = "[$all_status[$ahead_behind](italic $style)]($style)[](fg:purple)"
 
 [git_commit]
 commit_hash_length = 4

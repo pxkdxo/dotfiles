@@ -58,14 +58,14 @@ import uuid
 try:
     from jedi.utils import setup_readline # ty: ignore unresolved-import
 except ImportError:
-    print("> unable to import 'jedi' - falling back to 'readline'")
+    print("* unable to import 'jedi' - falling back to 'readline'")
     # Fallback to the stdlib readline completer if it is installed.
     # Taken from http://docs.python.org/2/library/rlcompleter.html
     try:
         import readline
         import rlcompleter
     except ImportError:
-        print("> unable to import 'readline' - completion is unavailable")
+        print("* unable to import 'readline' - completion is unavailable")
     else:
         readline.parse_and_bind("tab: complete")
 else:
@@ -78,7 +78,9 @@ class Prompt:
     __psvars: dict
     __hooks: list
 
-    def __init__(self, ps=None, color=None, hooks=None, **psvars):
+    def __init__(
+        self, ps=None, color=None, hooks=None, **psvars
+    ) -> None:
         if ps is not None:
             self.ps = ps
         if color is not None:
@@ -98,9 +100,7 @@ class Prompt:
     @ps.setter
     def ps(self, value):
         if not isinstance(value, str):
-            raise ValueError(
-                f"``ps'' must be of type ``{str}''"
-            )
+            raise ValueError(f"``ps'' must be of type ``{str}''")
         self.__ps = value
 
     @property
@@ -110,9 +110,7 @@ class Prompt:
     @color.setter
     def color(self, value):
         if not isinstance(value, bool):
-            raise ValueError(
-                f"``color'' must be of type ``{bool}''"
-            )
+            raise ValueError(f"``color'' must be of type ``{bool}''")
         self.__color = value
 
     @property
@@ -122,14 +120,10 @@ class Prompt:
     @psvars.setter
     def psvars(self, value):
         if not isinstance(value, collections.abc.Mapping):
-            raise ValueError(
-                f"``psvars'' must be a mapping"
-            )
+            raise ValueError(f"``psvars'' must be a mapping")
         psvars = dict(value)
         if not all(isinstance(key, str) for key in psvars):
-            raise ValueError(
-                f"``psvars'' must be a mapping with keys of type ``{str}''"
-            )
+            raise ValueError(f"``psvars'' must be a mapping with keys of type ``{str}''")
         self.__psvars = psvars
 
     @property
@@ -139,14 +133,10 @@ class Prompt:
     @hooks.setter
     def hooks(self, value):
         if not isinstance(value, collections.abc.Iterable):
-            raise ValueError(
-                f"``hooks'' must be an iterable"
-            )
+            raise ValueError(f"``hooks'' must be an iterable")
         hooks = list(value)
         if not all(map(callable, hooks)):
-            raise ValueError(
-                f"``hooks'' must be an iterable of callable elements"
-            )
+            raise ValueError(f"``hooks'' must be an iterable of callable elements")
         self.__hooks = hooks
 
     def __repr__(self) -> str:
@@ -156,11 +146,8 @@ class Prompt:
             'hooks': list(map(repr, self.__hooks)),
             **self.__psvars
         }
-        return (
-            f'''{type(self).__name__}({", ".join(
-                f"{key}={repr(value)}" for key, value in kwargs.items()
-            )})'''
-        )
+        arglist = ', '.join(f'{key}={repr(value)}' for key, value in kwargs.items())
+        return f'{type(self).__name__}({arglist})'
 
     def __str__(self) -> str:
         for hook in self.__hooks:
@@ -209,26 +196,15 @@ sys.ps2 = Prompt(
 )
 
 
-try:
-    from pydantic.alias_generators import to_snake
-except ImportError:
-    # Implementation from pydantic~=2.11.0
-    def to_snake(camel: str) -> str:
-        """Convert a PascalCase, camelCase, or kebab-case string to snake_case"""
-        # Handle the sequence of uppercase letters followed by a lowercase letter
-        snake = re.sub(r'([A-Z]+)([A-Z][a-z])', lambda m: f'{m.group(1)}_{m.group(2)}', camel)
-        # Insert an underscore between a lowercase letter and an uppercase letter
-        snake = re.sub(r'([a-z])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
-        # Insert an underscore between a digit and an uppercase letter
-        snake = re.sub(r'([0-9])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
-        # Insert an underscore between a lowercase letter and a digit
-        snake = re.sub(r'([a-z])([0-9])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
-        # Replace hyphens with underscores to handle kebab-case
-        return snake.replace('-', '_').lower()
-
-
-def kwargs_to_annotated_attributes(**kwargs):
-    return dict(map(lambda k, v: (to_snake(k), type(v).__name__), *zip(*kwargs.items())))
-
-def attributes_fmt_annotations(**attrs):
-    return [f"{name}: {annotation}" for (name, annotation) in attrs.items()]
+def to_snake(camel: str) -> str:
+    """Convert a PascalCase, camelCase, or kebab-case string to snake_case"""
+    # Handle the sequence of uppercase letters followed by a lowercase letter
+    snake = re.sub(r'([A-Z]+)([A-Z][a-z])', lambda m: f'{m.group(1)}_{m.group(2)}', camel)
+    # Insert an underscore between a lowercase letter and an uppercase letter
+    snake = re.sub(r'([a-z])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
+    # Insert an underscore between a digit and an uppercase letter
+    snake = re.sub(r'([0-9])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
+    # Insert an underscore between a lowercase letter and a digit
+    snake = re.sub(r'([a-z])([0-9])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
+    # Replace hyphens with underscores to handle kebab-case
+    return snake.replace('-', '_').lower()

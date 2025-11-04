@@ -1,5 +1,18 @@
 return {
   {
+    'zbirenbaum/copilot-cmp',
+    dependencies = {
+      'zbirenbaum/copilot.lua'
+    },
+    opts = {},
+  },
+  {
+    'saadparwaiz1/cmp_luasnip',
+    dependencies = {
+      'L3MON4D3/LuaSnip',
+    },
+  },
+  {
     'hrsh7th/nvim-cmp',
     dependencies = {
       'hrsh7th/cmp-buffer', -- Buffer completions
@@ -11,8 +24,8 @@ return {
       'L3MON4D3/LuaSnip', -- Snippet engine
       'saadparwaiz1/cmp_luasnip', -- Snippet completions
       'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
-      'onsails/lspkind.nvim', -- LSP completion icons
       'windwp/nvim-autopairs', -- Autopairs trigger
+      'nvim-mini/mini.icons', -- Completion entry icons
     },
     opts = {
       experimental = { ghost_text = false },
@@ -20,7 +33,6 @@ return {
     config = function (_, opts)
       local cmp = require('cmp')
       local luasnip = require('luasnip')
-      local lspkind = require('lspkind')
       local unpack = unpack or table.unpack
       local cursor_prefix_is_whitespace = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -41,6 +53,33 @@ return {
           { name = "buffer"   },
         }
       )
+      opts.window = opts.window or {}
+      opts.window.completion = cmp.config.window.bordered({
+        border = "rounded",
+        col_offset = -3,
+        scrollbar = false,
+        scrolloff = 1,
+        side_padding = 0,
+        winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+
+      })
+      opts.window.documentation = cmp.config.window.bordered({
+        border = "rounded",
+        scrollbar = false,
+        scrolloff = 1,
+        side_padding = 1,
+      })
+      opts.formatting = {
+        fields = { "kind", "abbr", "menu" },
+        format = function(_, vim_item)
+          local name = vim_item.kind
+          local icon, hl = MiniIcons.get("lsp", name)
+          vim_item.kind = " " .. (icon or "") .. " "
+          vim_item.kind_hl_group = hl
+          vim_item.menu = name and ("    (" .. name .. ")") or "<?>"
+          return vim_item
+        end,
+      }
       opts.mapping = cmp.mapping.preset.insert({
         ['<C-q'] = cmp.mapping.abort(),
         ['<C-@>'] = cmp.mapping.complete(),
@@ -92,48 +131,13 @@ return {
           end
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            if #cmp.get_entries() > 0 then
-              cmp.select_prev_item()
-            end
-          else
+          if not cmp.visible() then
             fallback()
+          elseif #cmp.get_entries() > 0 then
+            cmp.select_prev_item()
           end
         end, { "i", "s" }),
       })
-      opts.window = opts.window or {}
-      opts.window.completion = cmp.config.window.bordered({
-        border = "rounded",
-        col_offset = -3,
-        scrollbar = false,
-        scrolloff = 1,
-        side_padding = 0,
-        winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-
-      })
-      opts.window.documentation = cmp.config.window.bordered({
-        border = "rounded",
-        scrollbar = false,
-        scrolloff = 1,
-        side_padding = 1,
-      })
-      opts.formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = function(entry, vim_item)
-          local kind = lspkind.cmp_format({
-            mode = "symbol_text",
-            maxwidth = {
-              menu = function() return math.max(math.floor(0.40 * vim.o.columns), 40) end, -- leading text (labelDetails)
-              abbr = function() return math.max(math.floor(0.40 * vim.o.columns), 40) end, -- actual suggestion item
-            },
-            ellipsis_char = '',
-            symbol_map = { Copilot = "" },
-          })(entry, vim_item)
-          local strings = vim.split(kind.kind, "%s", { trimempty = true })
-          kind.kind = " " .. (strings[1] or "") .. " "
-          kind.menu = "    (" .. (strings[2] or "") .. ")"
-          return kind end,
-      }
       -- Set up cmp
       cmp.setup(opts)
       cmp.setup.cmdline(
@@ -164,9 +168,8 @@ return {
               end
             end),
             ['<Tab>'] = cmp.mapping(function (_)
-              local n_entries = nil
               if cmp.visible() then
-                n_entries = #cmp.get_entries()
+                local n_entries = #cmp.get_entries()
                 if n_entries == 1 then
                   cmp.confirm({ select = true })
                 else
@@ -174,7 +177,7 @@ return {
                 end
               else
                 cmp.complete()
-                n_entries = #cmp.get_entries()
+                local n_entries = #cmp.get_entries()
                 if n_entries == 1 then
                   cmp.confirm({ select = true })
                 elseif n_entries > 1 then
@@ -182,11 +185,11 @@ return {
                 end
               end
             end),
-            ['<S-Tab>'] = cmp.mapping(function (_)
-              if cmp.visible() then
-                if #cmp.get_entries() > 0 then
-                  cmp.select_prev_item()
-                end
+            ['<S-Tab>'] = cmp.mapping(function (fallback)
+              if not cmp.visible() then
+                fallback()
+              elseif #cmp.get_entries() > 0 then
+                cmp.select_prev_item()
               end
             end),
           }),
@@ -205,20 +208,5 @@ return {
       -- Extra LSP config
       -- vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
     end
-  },
-  {
-    'saadparwaiz1/cmp_luasnip',
-    dependencies = {
-      'L3MON4D3/LuaSnip',
-    },
-  },
-  {
-    'zbirenbaum/copilot-cmp',
-    dependencies = { 'zbirenbaum/copilot.lua' },
-    opts = {},
-  },
-  {
-    'onsails/lspkind.nvim',
-    opts = {}
   },
 }
