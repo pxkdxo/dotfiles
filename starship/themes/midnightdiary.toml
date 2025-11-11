@@ -40,14 +40,14 @@ trim_at = ".localdomain"
 [time]
 disabled = false
 style = "bg:bright-red fg:black"
-format = "[ $time]($style)[](fg:red)"
+format = "[ $time]($style)[](fg:bright-red)"
 time_format = "%a %I:%M %p"
 
 [directory]
 style = "bg:bright-blue fg:black"
 truncation_length = 5
 truncation_symbol = "…/"
-format = "\n├󰇘[](fg:blue)[󰉋 $path]($style)[](fg:blue)"
+format = "\n├󰇘[](fg:bright-blue)[󰉋 $path]($style)[](fg:bright-blue)"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
@@ -61,11 +61,11 @@ style = "bg:bright-green fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "\n├󰇘[](fg:green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:bright-green bg:bright-cyan)"
+format = "\n├󰇘[](fg:bright-green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:bright-green bg:bright-cyan)"
 
 [git_status]
 style = "bg:bright-cyan fg:black"
-format = "[ $all_status[$ahead_behind](italic $style)]($style)[](fg:cyan)"
+format = "[ $all_status[$ahead_behind](italic $style)]($style)[](fg:bright-cyan)"
 
 [git_commit]
 commit_hash_length = 4
@@ -74,7 +74,7 @@ tag_symbol = "  "
 [cmd_duration]
 disabled = true
 min_time = 0
-format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)"
+format = "[](bold fg:bright-yellow)[󰪢 $duration](bold bg:bright-yellow fg:black)[](bold fg:bright-yellow)"
 
 [memory_usage]
 disabled = true
@@ -157,7 +157,7 @@ format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
 [python]
 symbol = ""
 style = "bg:bright-purple fg:black"
-format = "\n├󰇘[](fg:purple)[$symbol $version]($style)[](fg:purple)"
+format = "\n├󰇘[](fg:bright-purple)[$symbol $version]($style)[](fg:bright-purple)"
 
 [docker_context]
 symbol = ""
