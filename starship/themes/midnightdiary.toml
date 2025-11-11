@@ -27,24 +27,24 @@ error_symbol = "\n╰󰇘[ ](bold fg:red)"
 
 [username]
 show_always = true
-style_user = "bg:bright-black fg:white"
+style_user = "bg:bright-black fg:black"
 style_root = "bg:bright-black fg:red bold"
-format = "╭󰇘[](fg:black)[$user]($style)[](fg:bright-black bg:bright-yellow)"
+format = "╭󰇘[](fg:bright-black)[$user]($style)[](fg:bright-black bg:bright-yellow)"
 
 [hostname]
-style = "bg:bright-yellow fg:white"
+style = "bg:bright-yellow fg:black"
 format =  "[ $hostname]($style)[](fg:bright-yellow  bg:bright-red)"
 ssh_only = false
 trim_at = ".localdomain"
 
 [time]
 disabled = false
-style = "bg:bright-red fg:white"
+style = "bg:bright-red fg:black"
 format = "[ $time]($style)[](fg:red)"
 time_format = "%a %I:%M %p"
 
 [directory]
-style = "bg:bright-blue fg:white"
+style = "bg:bright-blue fg:black"
 truncation_length = 5
 truncation_symbol = "…/"
 format = "\n├󰇘[](fg:blue)[󰉋 $path]($style)[](fg:blue)"
@@ -57,14 +57,14 @@ format = "\n├󰇘[](fg:blue)[󰉋 $path]($style)[](fg:blue)"
 "Develop" = "󰲋 "
 
 [git_branch]
-style = "bg:bright-green fg:white"
+style = "bg:bright-green fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
 format = "\n├󰇘[](fg:green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:bright-green bg:bright-cyan)"
 
 [git_status]
-style = "bg:bright-cyan fg:white"
+style = "bg:bright-cyan fg:black"
 format = "[ $all_status[$ahead_behind](italic $style)]($style)[](fg:cyan)"
 
 [git_commit]
@@ -74,7 +74,7 @@ tag_symbol = "  "
 [cmd_duration]
 disabled = true
 min_time = 0
-format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:white)[](bold fg:yellow)"
+format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)"
 
 [memory_usage]
 disabled = true
@@ -156,7 +156,7 @@ format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
 
 [python]
 symbol = ""
-style = "bg:bright-purple fg:white"
+style = "bg:bright-purple fg:black"
 format = "\n├󰇘[](fg:purple)[$symbol $version]($style)[](fg:purple)"
 
 [docker_context]
