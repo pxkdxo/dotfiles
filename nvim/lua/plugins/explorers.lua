@@ -22,9 +22,9 @@ return {
       },
       view = {
         width = {
-          min = 10,
+          min = 5,
           max = "22%",
-          padding = 1,
+          padding = 0,
         },
         float = {
           enable = false,

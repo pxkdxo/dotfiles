@@ -25,15 +25,14 @@ if not vim.g.vscode then
 
   require('config.colorschemes').setup({
     colorschemes = {
-      'carbonfox',
+      'rose-pine',
       'oxocarbon',
       'dayfox',
       'rose-pine-dawn',
-      'cyberdream',
       'everforest',
-      'rose-pine',
       'github_dark_dimmed',
       'newpaper',
+      'carbonfox',
       'github_light',
       'dawnfox',
       'rosebones',
@@ -46,6 +45,7 @@ if not vim.g.vscode then
       'shine',
       'sorbet',
       'zaibatsu',
+      'cyberdream',
     },
   }).next()
 

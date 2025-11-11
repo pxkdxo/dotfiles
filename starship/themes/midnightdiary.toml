@@ -11,59 +11,70 @@ add_newline = false
 # $character
 # """
 format = """\
-$username$hostname\
+$username$hostname$time\
 $directory\
 $git_branch$git_status\
+$python\
 $character"""
 
 [line_break]
 disabled = false
 
 [character]
+disabled = false
 success_symbol = "\n╰󰇘[ ](bold fg:blue)"
 error_symbol = "\n╰󰇘[ ](bold fg:red)"
 
 [username]
 show_always = true
-style_user = "bg:white fg:black"
-style_root = "bg:white fg:red bold"
-format = "╭󰇘[](fg:white)[$user]($style)[](fg:white bg:cyan)"
+style_user = "bg:bright-white fg:black"
+style_root = "bg:bright-white fg:red bold"
+format = "╭󰇘[](fg:white)[$user]($style)[](fg:white bg:yellow)"
 
 [hostname]
-style = "bg:cyan fg:black"
-format =  "[$hostname]($style)[](fg:cyan)"
+style = "bg:bright-yellow fg:black"
+format =  "[$hostname]($style)[](fg:yellow)"
 ssh_only = false
 trim_at = ".localdomain"
 
 [directory]
-style = "bg:green fg:black"
+style = "bg:bright-blue fg:black"
 truncation_length = 5
 truncation_symbol = "…/"
-format = "\n├󰇘[](fg:green)[󰉋 $path]($style)[](fg:green)"
+format = "\n├󰇘[](fg:blue)[󰉋 $path]($style)[](fg:blue)"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Develop" = "󰲋 "
 
 [git_branch]
-style = "bg:yellow fg:black"
+style = "bg:bright-green fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "\n├󰇘[](fg:yellow)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:yellow bg:purple)"
+format = "\n├󰇘[](fg:green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:green bg:cyan)"
 
 [git_status]
-style = "bg:purple fg:black"
-format = "[$all_status[$ahead_behind](italic $style)]($style)[](fg:purple)"
+style = "bg:bright-cyan fg:black"
+format = "[$all_status[$ahead_behind](italic $style)]($style)[](fg:cyan)"
 
 [git_commit]
 commit_hash_length = 4
-tag_symbol = ""
-
-[cmd_duration]
-min_time = 0
-format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)"
+tag_symbol = "  "
 
 [time]
+disabled = false
+style = "bright-white"
+format = "[ $time]($style)"
+time_format = "%a %I:%M %p"
+
+[cmd_duration]
 disabled = true
-format = "🕙[\\[ $time \\]]($style) "
-time_format = "%T"
+min_time = 0
+format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)"
 
 [memory_usage]
 disabled = true
@@ -71,9 +82,92 @@ threshold = -1
 symbol = " "
 style = "bold dimmed green"
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
+[os]
+disabled = false
+style = "bg:color_orange fg:color_fg0"
 
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""
+
+[nodejs]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[c]
+symbol = " "
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[cpp]
+symbol = " "
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[php]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[java]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
+
+[python]
+symbol = ""
+style = "bg:bright-purple fg:black"
+format = "\n├󰇘[](fg:purple)[$symbol $version]($style)[](fg:purple)"
+
+[docker_context]
+symbol = ""
+style = "bg:color_bg3"
+format = '[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)'
+
+[conda]
+style = "bg:color_bg3"
+format = '[[ $symbol( $environment) ](fg:#83a598 bg:color_bg3)]($style)'
+
+[pixi]
+style = "bg:color_bg3"
+format = '[[ $symbol( $version)( $environment) ](fg:color_fg0 bg:color_bg3)]($style)'
