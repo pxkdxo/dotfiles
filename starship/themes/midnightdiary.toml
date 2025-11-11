@@ -27,18 +27,24 @@ error_symbol = "\n╰󰇘[ ](bold fg:red)"
 
 [username]
 show_always = true
-style_user = "bg:bright-white fg:black"
-style_root = "bg:bright-white fg:red bold"
-format = "╭󰇘[](fg:white)[$user]($style)[](fg:white bg:yellow)"
+style_user = "bg:bright-black fg:white"
+style_root = "bg:bright-black fg:red bold"
+format = "╭󰇘[](fg:black)[$user]($style)[](fg:bright-black bg:bright-yellow)"
 
 [hostname]
-style = "bg:bright-yellow fg:black"
-format =  "[$hostname]($style)[](fg:yellow)"
+style = "bg:bright-yellow fg:white"
+format =  "[ $hostname]($style)[](fg:bright-yellow  bg:bright-red)"
 ssh_only = false
 trim_at = ".localdomain"
 
+[time]
+disabled = false
+style = "bg:bright-red fg:white"
+format = "[ $time]($style)[](fg:red)"
+time_format = "%a %I:%M %p"
+
 [directory]
-style = "bg:bright-blue fg:black"
+style = "bg:bright-blue fg:white"
 truncation_length = 5
 truncation_symbol = "…/"
 format = "\n├󰇘[](fg:blue)[󰉋 $path]($style)[](fg:blue)"
@@ -51,30 +57,24 @@ format = "\n├󰇘[](fg:blue)[󰉋 $path]($style)[](fg:blue)"
 "Develop" = "󰲋 "
 
 [git_branch]
-style = "bg:bright-green fg:black"
+style = "bg:bright-green fg:white"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "\n├󰇘[](fg:green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:green bg:cyan)"
+format = "\n├󰇘[](fg:green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:bright-green bg:bright-cyan)"
 
 [git_status]
-style = "bg:bright-cyan fg:black"
-format = "[$all_status[$ahead_behind](italic $style)]($style)[](fg:cyan)"
+style = "bg:bright-cyan fg:white"
+format = "[ $all_status[$ahead_behind](italic $style)]($style)[](fg:cyan)"
 
 [git_commit]
 commit_hash_length = 4
 tag_symbol = "  "
 
-[time]
-disabled = false
-style = "bright-white"
-format = "[ $time]($style)"
-time_format = "%a %I:%M %p"
-
 [cmd_duration]
 disabled = true
 min_time = 0
-format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)"
+format = "[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:white)[](bold fg:yellow)"
 
 [memory_usage]
 disabled = true
@@ -156,7 +156,7 @@ format = '[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)'
 
 [python]
 symbol = ""
-style = "bg:bright-purple fg:black"
+style = "bg:bright-purple fg:white"
 format = "\n├󰇘[](fg:purple)[$symbol $version]($style)[](fg:purple)"
 
 [docker_context]
