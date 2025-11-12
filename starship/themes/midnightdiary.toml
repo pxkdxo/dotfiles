@@ -29,11 +29,11 @@ error_symbol = "\n╰󰇘[ ](bold fg:red)"
 show_always = true
 style_user = "bg:bright-black fg:black"
 style_root = "bg:bright-black fg:red bold"
-format = "╭󰇘[](fg:bright-black)[$user]($style)[](fg:bright-black bg:bright-yellow)"
+format = "╭󰇘[](fg:bright-black)[$user]($style)[](fg:bright-black bg:bright-yellow)"
 
 [hostname]
 style = "bg:bright-yellow fg:black"
-format =  "[ $hostname]($style)[](fg:bright-yellow  bg:bright-red)"
+format =  "[ $hostname]($style)[](fg:bright-yellow  bg:bright-red)"
 ssh_only = false
 trim_at = ".localdomain"
 
@@ -61,7 +61,7 @@ style = "bg:bright-green fg:black"
 symbol = ""
 truncation_length = 18
 truncation_symbol = "…"
-format = "\n├󰇘[](fg:bright-green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:bright-green bg:bright-cyan)"
+format = "\n├󰇘[](fg:bright-green)[$symbol $branch:[($remote_branch)](italic $style)]($style)[](fg:bright-green bg:bright-cyan)"
 
 [git_status]
 style = "bg:bright-cyan fg:black"
