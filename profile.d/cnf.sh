@@ -4,7 +4,7 @@
 # bash definition
 # shellcheck disable=SC2112
 if test -n "${BASH}"; then
-  function command_not_found_handle() {
+  command_not_found_handle() {
     if command -v cnf-lookup > /dev/null; then
       if test -t 1; then
         cnf-lookup --colors -- ${1+"$1"}
@@ -29,7 +29,7 @@ fi
 # zsh definition
 # shellcheck disable=SC2112
 if test -n "${ZSH_NAME}"; then
-  function command_not_found_handler() {
+  command_not_found_handler() {
     if command -v cnf-lookup > /dev/null; then
       if test -t 1; then
         cnf-lookup --colors -- ${1+"$1"}

@@ -31,11 +31,11 @@
 
 [init]
   defaultBranch = main
-  # templateDir = ~/.local/share/git/templates
+  templateDir = ~/.local/share/git/templates
 
 [user]
   # email =
-  name = Patrick DeYoreo
+	name = Patrick DeYoreo
 
 [push]
   default = current
@@ -72,14 +72,6 @@
   # When doing "git git log" or some such, do not complain about "git"
   git = !git
 
-  # Checkout to the latest
-  main = "!sh -c 'git checkout main && git pull --prune' --"
-  master = "!sh -c 'git checkout master && git pull --prune' --"
-  develop = "!sh -c 'git checkout develop && git pull --prune' --"
-
-  # Merge latest master/main to current branch
-  synclocal = "!sh -c 'if test \"$#\" -gt 0; then git fetch origin \"$1:$1\" && git merge; else >&2 echo '\\''usage: git synclocal BRANCH'\\''; exit 1; fi' --"
-
   # Initialize, add all files and commit
   new = "!sh -c 'git init && git add . && git commit -m '\\''Initial commit'\\''' --"
 
@@ -91,6 +83,17 @@
 
   # Pull data from remote and push local data
   sync = "!sh -x -c 'git pull && git push' --"
+
+  # Merge latest master/main to current branch
+  sync-local = "!sh -c 'if test \"$#\" -gt 0; then git fetch origin \"$1:$1\" && git merge; else >&2 echo '\\''usage: git syncfrom BRANCH'\\''; exit 1; fi' --"
+
+  # Checkout to the latest
+  main = "!sh -c 'git checkout main && git pull --prune' --"
+  prod = "!sh -c 'git checkout prod && git pull --prune' --"
+  master = "!sh -c 'git checkout master && git pull --prune' --"
+  dev = "!sh -c 'git checkout dev && git pull --prune' --"
+  devel = "!sh -c 'git checkout devel && git pull --prune' --"
+  develop = "!sh -c 'git checkout develop && git pull --prune' --"
 
   # Lazygit
   lazy = "!lazygit"

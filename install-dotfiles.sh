@@ -7,6 +7,7 @@
 # a period ('.').
 
 set -o errexit
+set -x
 
 argzero_name="${0##*/}"
 argzero_dirname="${0%"${__name}"}"
@@ -76,15 +77,15 @@ if test "$#" -gt 1; then
 fi
 
 if test "$#" -eq 0; then
-  home_path="$(> /dev/null cd && pwd -P && echo '/')"
-  home_path="${home_path%?/}"
+  home_path="$(> /dev/null cd && pwd -P && echo '@')"
+  home_path="${home_path%?@}"
 else
-  home_path="$(> /dev/null cd -- "$1" && pwd -P && echo '/')"
-  home_path="${home_path%?/}"
+  home_path="$(> /dev/null cd -- "$1" && pwd -P && echo '@')"
+  home_path="${home_path%?@}"
   shift
 fi
 
-tree_path="$(> /dev/null cd -- "${argzero_dirname}" && pwd -P && echo '/' '@')"
+tree_path="$(> /dev/null cd -- "${argzero_dirname}" && pwd -P && echo '@')"
 tree_path="${tree_path%?@}"
 
 rel_to_ancestor="./"
@@ -115,7 +116,7 @@ if test "${common_ancestor}" != '/'; then
 fi
 
 # shellcheck disable=SC2016
-git -C "${tree_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
+git -C "${home_path}/${tree_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
 caller=$1
 optchars=$2
 treepath=$3

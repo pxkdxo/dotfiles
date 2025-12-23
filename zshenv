@@ -1,61 +1,15 @@
 # zshenv: zsh user global initialization script
-# Initalization script evaluation order:
+# Initialization script evaluation order:
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
-if test -f ~/.env; then
-. ~/.env
+# Load ~/.env if it exists (before profile.d scripts)
+if [[ -f ~/.env && -r ~/.env ]]; then
+  emulate sh -c '. ~/.env'
 fi
 
-if test -z "${PAGER}"; then
-  if command -v pager > /dev/null; then
-    export PAGER="pager"
-  elif command -v bat > /dev/null; then
-    export PAGER="bat"
-  elif command -v less > /dev/null; then
-    export PAGER="less"
-  elif command -v nvimpager > /dev/null; then
-    export PAGER="nvimpager"
-  elif command -v nvimpager > /dev/null; then
-    export PAGER="vimpager"
-  fi
-fi
-if test -z "${EDITOR}"; then
-  if command -v editor > /dev/null; then
-    export EDITOR="editor"
-  elif command -v nvim > /dev/null; then 
-    export EDITOR="nvim"
-  elif command -v vim > /dev/null; then 
-    export EDITOR="vim"
-  elif command -v vi > /dev/null; then 
-    export EDITOR="vi"
-  fi
-fi
-if test -z "${VISUAL}"; then
-  if command -v visual > /dev/null; then
-    export VISUAL="visual"
-  elif command -v nvim > /dev/null; then 
-    export VISUAL="nvim"
-  elif command -v vim > /dev/null; then 
-    export VISUAL="vim"
-  elif command -v vi > /dev/null; then 
-    export EDITOR="vi"
-  fi
-fi
-if test -z "${BROWSER}"; then
-  if command -v x-www-browser > /dev/null; then 
-    export BROWSER=x-www-browser
-  elif command -v "firefox" > /dev/null; then 
-    export BROWSER="firefox"
-  elif command -v "brave" > /dev/null; then 
-    export BROWSER="brave"
-  elif command -v "google-chrome" > /dev/null; then 
-    export BROWSER="google-chrome"
-  elif command -v "google-chrome-stable" > /dev/null; then 
-    export BROWSER="google-chrome-stable"
-  elif command -v "opera" > /dev/null; then 
-    export BROWSER="opera"
-  fi
-fi
+# Note: PAGER, EDITOR, VISUAL, and BROWSER are configured in profile.d/
+# (pager.sh, editor.sh) to avoid duplication and ensure consistency.
+# These are loaded via ~/.profile which is sourced in zprofile.
 
 # vi:ft=zsh

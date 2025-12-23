@@ -144,12 +144,34 @@ path_insert() {
 }
 
 
-# Prepend executable paths
-map path_insert ~/.bin ~/.local/bin
+# Function to check if a command exists
+command_exists() {
+  command -v "$1" > /dev/null 2>&1
+}
 
+# Function to source a file if it exists and is readable
+source_if() {
+  if test -r "$1"; then
+    . "$1"
+    return 0
+  fi
+  return 1
+}
+
+# Prepend executable paths
+for dir in ~/.bin ~/.local/bin; do
+  if test -d "${dir}"; then
+    path_insert "${dir}"
+  fi
+done
+unset dir
 
 # Load additional profile config
 if test -d "${HOME}/.profile.d/"; then
-  map . "${HOME}/.profile.d"/*.sh 2>/dev/null
+  for file in "${HOME}/.profile.d"/*.sh; do
+    if test -r "${file}"; then
+      . "${file}"
+    fi
+  done 2>/dev/null
 fi
 # vi:ft=sh

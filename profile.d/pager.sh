@@ -2,40 +2,32 @@
 # pager.sh: configure the PAGER environment variable
 # see environ(7) and select-editor(1)
 
-if command -v pager > /dev/null
-then
-	export PAGER="pager"
-elif command -v update-alternatives > /dev/null
-then
-	unset OLD_IFS
-	if test -n "${IFS+X}"
-	then
-		OLD_IFS="${IFS}"
-	fi
-	unset IFS
-	while read -r REPLY; do
-		REPLY="${REPLY#"${REPLY%%[![:blank:]]*}"}"
-		REPLY="${REPLY%"${REPLY##*[![:blank:]]}"}"
-		if test "${REPLY%%[[:blank:]]*}" = 'Value:'
-		then
-			if test -x "${REPLY#"${REPLY%%/*}"}"
-			then
-				export PAGER="${REPLY##*[[:blank:]]}"
-				break
-			fi
-		fi
-	done <<-EOF
-	$(update-alternatives --query pager 2> /dev/null)
-	EOF
-	unset REPLY
-	if test -n "${OLD_IFS+X}"
-	then
-		export IFS="${OLD_IFS}"
-	fi
-	unset OLD_IFS
-elif command -v less > /dev/null
-then
-	export PAGER="less"
+# Skip if PAGER is already set
+if test -n "${PAGER:-}"; then
+  return 0
 fi
 
-# vi:ts=8:noet:sw=8:sts=8:ft=sh
+# Try update-alternatives first (Debian/Ubuntu)
+if command -v update-alternatives > /dev/null; then
+  pager_path="$(update-alternatives --query pager 2>/dev/null | \
+    grep -E '^Value:' | \
+    sed 's/^Value:[[:space:]]*//' | \
+    head -1)"
+  
+  if test -n "${pager_path}" && test -x "${pager_path}"; then
+    export PAGER="${pager_path}"
+    unset pager_path
+    return 0
+  fi
+  unset pager_path
+fi
+
+# Fallback to common pagers in order of preference
+for pager in pager less more; do
+  if command -v "${pager}" > /dev/null; then
+    export PAGER="${pager}"
+    return 0
+  fi
+done
+
+# vim:ft=sh

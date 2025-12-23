@@ -24,7 +24,7 @@ case "${COLORTERM}" in
       *) 
         if test "$(tput colors || echo 0)" -ge 256 2>/dev/null; then
           export SYSTEMD_COLORS=256
-        elif setest "$(tput colors || echo 0)" -ge 16 2>/dev/null; then
+        elif test "$(tput colors || echo 0)" -ge 16 2>/dev/null; then
           export SYSTEMD_COLORS=16
         fi
         ;;
@@ -33,3 +33,4 @@ case "${COLORTERM}" in
 esac
 export SYSTEMD_LESS="${LESS:--RFiq --mouse} -X"
 
+# vim:ft=sh
