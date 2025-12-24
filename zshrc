@@ -1,5 +1,5 @@
 # zshrc: zsh initialization script for interactive shells
-# Initalization script evaluation order:
+# Initialization script evaluation order:
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
@@ -20,7 +20,7 @@ fi
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="patrickd"
+ZSH_THEME="patrickd"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -271,16 +271,16 @@ fzf_alt_c_opts=(
   '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
 
-# Setup cursor-agent shell integration
+# Load fzf extensions
 #
-# if command -v cursor-agent > /dev/null; then
-#   eval "$(cursor-agent shell-integration zsh)"
-# fi
-
-# Use this prompt if we have it
-#
-if command -v starship > /dev/null; then
-  eval "$(starship init zsh)"
+if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh" ]]; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh"
 fi
+
+# Starship prompt (if its installed)
+#
+# if command -v starship > /dev/null; then
+#   eval "$(starship init zsh)"
+# fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0
