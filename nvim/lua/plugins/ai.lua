@@ -1,14 +1,52 @@
 return {
   {
+    "ravitemer/mcphub.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    cond = vim.fn.executable("npm") == 1,
+    build = "npm install -g mcp-hub@latest",  -- Installs `mcp-hub` node binary globally
+    config = function()
+      require("mcphub").setup({})
+    end
+  },
+  {
     "olimorris/codecompanion.nvim",
-    cond = false,
+    -- cond = vim.g.vscode == nil,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
+      "ravitemer/mcphub.nvim",
+    },
+    opts = {
+      interactions = {
+        --NOTE: Change the adapter as required
+        chat = {
+          adapter = "copilot",
+          model   = "claude-sonnet-4.5",
+        },
+        inline = {
+          adapter = "copilot",
+          model   = "claude-sonnet-4.5"
+        },
+      },
+      extensions = {
+        mcphub = {
+          callback = "mcphub.extensions.codecompanion",
+          opts = {
+            make_tools = true,
+            show_server_tools_in_chat = true,
+            show_result_in_chat = true,
+            make_vars = true,
+            make_slash_commands = true,
+          }
+        }
+      }
     },
   },
   {
     "zbirenbaum/copilot.lua",
+    -- cond = vim.g.vscode == nil,
     event = "InsertEnter",
     cmd = "Copilot",
     opts = {
@@ -17,7 +55,7 @@ return {
         enabled = true,
         auto_refresh = true,
         hide_during_completion = false,
-        debounce = 100,
+        debounce = 80,
         trigger_on_accept = true,
         keymap = {
           accept = "<M-l>",
@@ -34,7 +72,7 @@ return {
   },
   {
     "yetone/avante.nvim",
-    cond = vim.g.vscode == nil and vim.fn.executable("make") == 1,
+    cond = false and vim.g.vscode == nil and vim.fn.executable("make") == 1,
     build = "make",
     event = "VeryLazy",
     version = false, -- Never set this value to "*"! Never!
