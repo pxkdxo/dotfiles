@@ -14,6 +14,7 @@ return {
   },
   {
     'nvim-lualine/lualine.nvim',
+    cond = vim.g.vscode == nil,
     dependencies = {
       'nvim-tree/nvim-web-devicons'
     },
@@ -23,8 +24,25 @@ return {
       },
     }
   },
+  -- {
+  --   'romgrk/barbar.nvim',
+  --   cond = vim.g.vscode == nil,
+  --   dependencies = {
+  --     'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+  --     'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
+  --   },
+  --   init = function() vim.g.barbar_auto_setup = false end,
+  --   opts = {
+  --     -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
+  --     -- animation = true,
+  --     -- insert_at_start = true,
+  --     -- …etc.
+  --   },
+  --   version = '^1.0.0', -- optional: only update when a new 1.x version is released
+  -- },
   {
     'akinsho/bufferline.nvim',
+    cond = vim.g.vscode == nil,
     version = false,
     dependencies = {
       'nvim-tree/nvim-web-devicons'
@@ -48,6 +66,7 @@ return {
   },
   {
     "lukas-reineke/indent-blankline.nvim",
+    cond = vim.g.vscode == nil,
     main = "ibl",
     ---@module "ibl"
     ---@type ibl.config
@@ -62,11 +81,13 @@ return {
   },
   {
     'kevinhwang91/nvim-bqf',
+    cond = vim.g.vscode == nil,
     ft = 'qf',
     opts = {},
   },
   {
     'RRethy/vim-illuminate',
+    cond = vim.g.vscode == nil,
     event = "InsertEnter",
     opts = {
       bind = true,
@@ -81,6 +102,7 @@ return {
   },
   {
     "goolord/alpha-nvim",
+    cond = vim.g.vscode == nil,
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons',
@@ -95,6 +117,7 @@ return {
   },
   {
     'kevinhwang91/nvim-ufo',
+    cond = vim.g.vscode == nil,
     dependencies = {
       'kevinhwang91/promise-async'
     },
@@ -176,6 +199,7 @@ return {
   },
   {
     "rcarriga/nvim-notify",
+    cond = vim.g.vscode == nil,
     opts = {
       -- background_colour = "NotifyBackground",
       background_colour = "CursorColumn",
@@ -192,109 +216,109 @@ return {
       },
     },
   },
-  -- {
-  --   "folke/noice.nvim",
-  --   event = "VeryLazy",
-  --   -- cond = false,
-  --   dependencies = {
-  --     "MunifTanjim/nui.nvim",
-  --     -- OPTIONAL:
-  --     --   `nvim-notify` is only needed, if you want to use the notification view.
-  --     --   If not available, we use `mini` as the fallback
-  --     "rcarriga/nvim-notify",
-  --   },
-  --   opts = {
-  --     presets = {
-  --       bottom_search = true, -- use a classic bottom cmdline for search
-  --       command_palette = true, -- position the cmdline and popupmenu together
-  --       long_message_to_split = true, -- long messages will be sent to a split
-  --       inc_rename = false, -- enables an input dialog for inc-rename.nvim
-  --       lsp_doc_border = true, -- add a border to hover docs and signature help
-  --     },
-  --     lsp = {
-  --       -- disable lsp loading progress view
-  --       progress = {
-  --         enabled = false,
-  --       },
-  --       -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-  --       override = {
-  --         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-  --         ["vim.lsp.util.stylize_markdown"] = true,
-  --         ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
-  --       },
-  --       hover = {
-  --         enabled = true,
-  --         ---@type NoiceViewOptions
-  --         opts = {},
-  --       },
-  --       signature = {
-  --         enabled = true,
-  --         auto_open = {
-  --           -- enabled = true,
-  --           -- trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
-  --           -- luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
-  --           -- throttle = 50, -- Debounce lsp signature help request by 50ms
-  --         },
-  --         ---@type NoiceViewOptions
-  --         opts = {},
-  --       },
-  --       documentation = {
-  --         view = "hover",
-  --         ---@type NoiceViewOptions
-  --         opts = {
-  --           scrollbar = false,
-  --           border = { style = "rounded" },
-  --           win_options = { concealcursor = "n", conceallevel = 3 },
-  --         },
-  --       },
-  --     },
-  --     cmdline = {
-  --       enabled = true, -- enables the Noice cmdline UI
-  --       view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
-  --       format = {
-  --         -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
-  --         -- view: (default is cmdline view)
-  --         -- opts: any options passed to the view
-  --         -- icon_hl_group: optional hl_group for the icon
-  --         -- title: set to anything or empty string to hide
-  --         cmdline = { pattern = "^:", icon = "", lang = "vim" },
-  --         search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
-  --         search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
-  --         filter = { pattern = "^:%s*!", icon = "", lang = "bash" },
-  --         lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
-  --         help = { pattern = "^:%s*he?l?p?%s+", icon = "󰋖" },
-  --         input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
-  --       },
-  --     },
-  --   },
-  --   config = function (_, opts)
-  --     local noice = require('noice')
-  --     local noice_lsp = require('noice.lsp')
-  --
-  --     -- Set up noice
-  --     noice.setup(opts)
-  --
-  --     -- Scroll inside LSP hover docs
-  --     vim.keymap.set({ "n", "i", "s" }, "<C-b>", function()
-  --       if not noice_lsp.scroll(-4) then
-  --         return "<C-b>"
-  --       end
-  --     end, { silent = true, expr = true })
-  --     vim.keymap.set({ "n", "i", "s" }, "<C-f>", function()
-  --       if not noice_lsp.scroll(4) then
-  --         return "<C-f>"
-  --       end
-  --     end, { silent = true, expr = true })
-  --     vim.keymap.set({ "n", "i", "s" }, "<C-u>", function()
-  --       if not noice_lsp.scroll(-4) then
-  --         return "<C-u>"
-  --       end
-  --     end, { silent = true, expr = true })
-  --     vim.keymap.set({ "n", "i", "s" }, "<C-d>", function()
-  --       if not noice_lsp.scroll(4) then
-  --         return "<C-d>"
-  --       end
-  --     end, { silent = true, expr = true })
-  --   end,
-  -- },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    cond = false,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    },
+    opts = {
+      presets = {
+        bottom_search = true, -- use a classic bottom cmdline for search
+        command_palette = true, -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = false, -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = true, -- add a border to hover docs and signature help
+      },
+      lsp = {
+        -- disable lsp loading progress view
+        progress = {
+          enabled = false,
+        },
+        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+        },
+        hover = {
+          enabled = true,
+          ---@type NoiceViewOptions
+          opts = {},
+        },
+        signature = {
+          enabled = true,
+          auto_open = {
+            -- enabled = true,
+            -- trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
+            -- luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
+            -- throttle = 50, -- Debounce lsp signature help request by 50ms
+          },
+          ---@type NoiceViewOptions
+          opts = {},
+        },
+        documentation = {
+          view = "hover",
+          ---@type NoiceViewOptions
+          opts = {
+            scrollbar = false,
+            border = { style = "rounded" },
+            win_options = { concealcursor = "n", conceallevel = 3 },
+          },
+        },
+      },
+      cmdline = {
+        enabled = true, -- enables the Noice cmdline UI
+        view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
+        format = {
+          -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
+          -- view: (default is cmdline view)
+          -- opts: any options passed to the view
+          -- icon_hl_group: optional hl_group for the icon
+          -- title: set to anything or empty string to hide
+          cmdline = { pattern = "^:", icon = "", lang = "vim" },
+          search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
+          search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
+          filter = { pattern = "^:%s*!", icon = "", lang = "bash" },
+          lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+          help = { pattern = "^:%s*he?l?p?%s+", icon = "󰋖" },
+          input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
+        },
+      },
+    },
+    config = function (_, opts)
+      local noice = require('noice')
+      local noice_lsp = require('noice.lsp')
+
+      -- Set up noice
+      noice.setup(opts)
+
+      -- Scroll inside LSP hover docs
+      vim.keymap.set({ "n", "i", "s" }, "<C-b>", function()
+        if not noice_lsp.scroll(-4) then
+          return "<C-b>"
+        end
+      end, { silent = true, expr = true })
+      vim.keymap.set({ "n", "i", "s" }, "<C-f>", function()
+        if not noice_lsp.scroll(4) then
+          return "<C-f>"
+        end
+      end, { silent = true, expr = true })
+      vim.keymap.set({ "n", "i", "s" }, "<C-u>", function()
+        if not noice_lsp.scroll(-4) then
+          return "<C-u>"
+        end
+      end, { silent = true, expr = true })
+      vim.keymap.set({ "n", "i", "s" }, "<C-d>", function()
+        if not noice_lsp.scroll(4) then
+          return "<C-d>"
+        end
+      end, { silent = true, expr = true })
+    end,
+  },
 }

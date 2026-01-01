@@ -1,5 +1,32 @@
 return {
   {
+    'nvim-telescope/telescope.nvim',
+    cond = vim.g.vscode == nil,
+    tag = 'v0.2.0',
+    dependencies = {
+      'nvim-lua/plenary.nvim'
+    },
+    opts = {
+      extensions = {
+        fzf = {
+          fuzzy = true,                    -- false will only do exact matching
+          override_generic_sorter = true,  -- override the generic sorter
+          override_file_sorter = true,     -- override the file sorter
+        }
+      }
+    },
+    config = function (_, opts)
+      local telescope = require('telescope')
+      telescope.setup(opts)
+      telescope.load_extension('fzf')
+    end,
+  },
+  {
+    'nvim-telescope/telescope-fzf-native.nvim',
+    cond = vim.g.vscode == nil and vim.fn.executable("make") == 1,
+    build = 'make'
+  },
+  {
     "ibhagwan/fzf-lua",
     dependencies = {
       "nvim-tree/nvim-web-devicons",

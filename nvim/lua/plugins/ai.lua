@@ -4,7 +4,7 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
-    cond = vim.fn.executable("npm") == 1,
+    cond = vim.g.vscode == nil and vim.fn.executable("npm") == 1,
     build = "npm install -g mcp-hub@latest",  -- Installs `mcp-hub` node binary globally
     config = function()
       require("mcphub").setup({})
@@ -12,7 +12,7 @@ return {
   },
   {
     "olimorris/codecompanion.nvim",
-    -- cond = vim.g.vscode == nil,
+    cond = vim.g.vscode == nil,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
@@ -46,7 +46,7 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    -- cond = vim.g.vscode == nil,
+    cond = vim.g.vscode == nil,
     event = "InsertEnter",
     cmd = "Copilot",
     opts = {
@@ -71,8 +71,14 @@ return {
     },
   },
   {
+    'Exafunction/windsurf.vim',
+    cond = false,
+    event = 'BufEnter'
+  },
+  {
     "yetone/avante.nvim",
-    cond = false and vim.g.vscode == nil and vim.fn.executable("make") == 1,
+    -- cond = vim.g.vscode == nil and vim.fn.executable("make") == 1,
+    cond = false,
     build = "make",
     event = "VeryLazy",
     version = false, -- Never set this value to "*"! Never!

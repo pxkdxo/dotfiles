@@ -19,6 +19,13 @@ if command -v podman > /dev/null; then
       unset podman_socket
       ;;
   esac
+  case "$(podman machine inspect --format '{{ .State }}' 2>| /dev/null)" in
+    running)
+      ;;
+    *)
+      podman machine start 2> /dev/null
+      ;;
+  esac
 fi
 
 # vim:ft=sh

@@ -1,14 +1,19 @@
 return {
   {
     "kylechui/nvim-surround",
+    cond = true,
     version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
-    cond = true,
+    config = function()
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end
   },
   {
     "ggandor/leap.nvim",
-    version = false,
     cond = true,
+    version = false,
     opts = {
       preview_filter = function (ch0, ch1, ch2)
         return not (
@@ -35,6 +40,7 @@ return {
   },
   {
     "gbprod/yanky.nvim",
+    cond = true,
     opts = {
       -- your configuration comes here
       -- or leave it empty to use the default settings
@@ -42,28 +48,28 @@ return {
     },
   },
   {
-    {
-      'windwp/nvim-autopairs',
-      event = "InsertEnter",
-      opts = {
-        fast_wrap = {
-          chars = { '{', '[', '(', '"', "'" },
-          disable_filetype = { "TelescopePrompt" , "guihua", "guihua_rust", "clap_input" },
-          pattern = [=[[%'%"%>%]%)%}%,]]=],
-          end_key = '$',
-          before_key = 'h',
-          after_key = 'l',
-          cursor_pos_before = true,
-          keys = 'qwertyuiopzxcvbnmasdfghjkl',
-          manual_position = true,
-          highlight = 'Search',
-          highlight_grey='Comment',
-        },
+    'windwp/nvim-autopairs',
+    cond = true,
+    event = "InsertEnter",
+    opts = {
+      fast_wrap = {
+        chars = { '{', '[', '(', '"', "'" },
+        disable_filetype = { "TelescopePrompt" , "guihua", "guihua_rust", "clap_input" },
+        pattern = [=[[%'%"%>%]%)%}%,]]=],
+        end_key = '$',
+        before_key = 'h',
+        after_key = 'l',
+        cursor_pos_before = true,
+        keys = 'qwertyuiopzxcvbnmasdfghjkl',
+        manual_position = true,
+        highlight = 'Search',
+        highlight_grey='Comment',
       },
     },
   },
   {
     'stevearc/conform.nvim',
+    cond = true,
     opts = {},
   },
 }
