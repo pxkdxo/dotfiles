@@ -34,10 +34,12 @@ then
 fi
 
 # Ensure fzf is available
-if ! command -v fzf > /dev/null; then
-  echo "fzf is not installed" >&2
-  return 1 2>/dev/null || exit 1
-fi
+_fzf_check_installed() {
+  if ! command -v fzf > /dev/null; then
+    echo "'fzf' is not installed" >&2
+    return 1
+  fi
+}
 
 # Helper: Get default editor
 _fzf_get_editor() {
@@ -182,7 +184,6 @@ fzf_kill() {
 
   unset _usage _kill_prefix _kill_signal _search_query _opt _preview_cmd _header _clipboard_cmd _ps_cmd
 }
-alias fzkill='fzf_kill'
 
 # ============================================================================
 # File Search & Content
@@ -235,7 +236,6 @@ fzf_grep() {
 
   unset _search_path _rg_cmd _open_cmd _editor_cmd _clipboard_cmd _preview_cmd _header
 }
-alias fzgrep='fzf_grep'
 
 # Find files (with preview)
 fzf_files() {
@@ -274,7 +274,6 @@ fzf_files() {
 
   unset _search_path _editor_cmd _open_cmd _clipboard_cmd _preview_cmd _dir_preview_cmd _header _find_cmd _selected
 }
-alias fzfiles='fzf_files'
 
 # Find directories
 fzf_dirs() {
@@ -309,7 +308,6 @@ fzf_dirs() {
 
   unset _search_path _editor_cmd _clipboard_cmd _preview_cmd _header _find_cmd _selected
 }
-alias fzdirs='fzf_dirs'
 
 # ============================================================================
 # Git Integration
@@ -357,7 +355,6 @@ fzf_git_branch() {
 
   unset _editor_cmd _clipboard_cmd _header _branches _selected
 }
-alias fzgb='fzf_git_branch'
 
 # Select git commits
 fzf_git_commit() {
@@ -394,7 +391,6 @@ fzf_git_commit() {
 
   unset _editor_cmd _clipboard_cmd _header _commits _selected
 }
-alias fzgc='fzf_git_commit'
 
 # Select git files
 fzf_git_files() {
@@ -431,7 +427,6 @@ fzf_git_files() {
 
   unset _editor_cmd _open_cmd _clipboard_cmd _preview_cmd _header _files _selected
 }
-alias fzgf='fzf_git_files'
 
 # Select git stashes
 fzf_git_stash() {
@@ -472,7 +467,6 @@ fzf_git_stash() {
 
   unset _clipboard_cmd _header _stashes _selected
 }
-alias fzgs='fzf_git_stash'
 
 # ============================================================================
 # Docker/Podman Integration
@@ -518,7 +512,6 @@ fzf_docker_containers() {
 
   unset _docker_cmd _clipboard_cmd _header _containers _selected
 }
-alias fzdocker='fzf_docker_containers'
 
 # Select docker/podman images
 fzf_docker_images() {
@@ -558,7 +551,6 @@ fzf_docker_images() {
 
   unset _docker_cmd _clipboard_cmd _header _images _selected
 }
-alias fzdimg='fzf_docker_images'
 
 # ============================================================================
 # Kubernetes Integration
@@ -621,7 +613,6 @@ fzf_kube_pods() {
 
   unset _clipboard_cmd _editor_cmd _header _namespace _ns_flag _ns_flag_space _pods _reload_cmd _selected
 }
-alias fzkp='fzf_kube_pods'
 
 # Select kubernetes contexts
 fzf_kube_context() {
@@ -650,7 +641,6 @@ fzf_kube_context() {
 
   unset _clipboard_cmd _header _contexts _selected
 }
-alias fzkc='fzf_kube_context'
 
 # ============================================================================
 # History & Commands
@@ -707,7 +697,6 @@ fzf_history() {
 
   unset _clipboard_cmd _header _preview_cmd _hist_cmd _selected
 }
-alias fzh='fzf_history'
 
 # ============================================================================
 # SSH & Network
@@ -746,7 +735,6 @@ fzf_ssh() {
 
   unset _clipboard_cmd _header _hosts _selected
 }
-alias fzssh='fzf_ssh'
 
 # ============================================================================
 # Environment Variables
@@ -787,7 +775,6 @@ fzf_env() {
 
   unset _clipboard_cmd _editor_cmd _header _env_vars _selected
 }
-alias fzenv='fzf_env'
 
 # ============================================================================
 # File Operations
@@ -833,7 +820,6 @@ else
 
   unset _search_path _dst _find_cmd _selected
 }
-alias fzcp='fzf_cp'
 
 # Move files with fzf
 fzf_mv() {
@@ -875,7 +861,6 @@ else
 
   unset _search_path _dst _find_cmd _selected
 }
-alias fzmv='fzf_mv'
 
 # Delete files with fzf (with confirmation)
 fzf_rm() {
@@ -910,7 +895,6 @@ fzf_rm() {
 
   unset _search_path _find_cmd _selected
 }
-alias fzrm='fzf_rm'
 
 # ============================================================================
 # Z Directory Integration
@@ -945,7 +929,6 @@ fzf_z() {
 
   unset _clipboard_cmd _preview_cmd _header _dirs _selected
 }
-alias fzz='fzf_z'
 
 # ============================================================================
 # Man Pages
@@ -1004,7 +987,6 @@ fzf_man() {
 
   unset _clipboard_cmd _editor_cmd _header _man_pages _selected
 }
-alias fzman='fzf_man'
 
 # ============================================================================
 # System Services (systemd)
@@ -1050,7 +1032,6 @@ fzf_systemd() {
 
   unset _clipboard_cmd _header _services _selected
 }
-alias fzsd='fzf_systemd'
 
 
 # ============================================================================
@@ -1070,12 +1051,35 @@ fzf_dlp() {
     --bind=ctrl-m:'execute-silent(firefox --new-tab --private-window {+} &)' \
     --bind=ctrl-x:'execute-silent(alacritty -e tmux new-session -A -s "fzf-dlp-$$" -- yt-dlp --quiet --progress -f "bv*+ba/b" -N 128 -- {+} &)'
 }
-alias fzdlp='fzf_dlp'
-
 
 # ============================================================================
 # Export all aliases
 # ============================================================================
+
+if _fzf_check_installed; then
+  alias fzkill='fzf_kill'
+  alias fzgrep='fzf_grep'
+  alias fzfiles='fzf_files'
+  alias fzdirs='fzf_dirs'
+  alias fzgb='fzf_git_branch'
+  alias fzgc='fzf_git_commit'
+  alias fzgf='fzf_git_files'
+  alias fzgs='fzf_git_stash'
+  alias fzdocker='fzf_docker_containers'
+  alias fzdimg='fzf_docker_images'
+  alias fzkp='fzf_kube_pods'
+  alias fzkc='fzf_kube_context'
+  alias fzh='fzf_history'
+  alias fzssh='fzf_ssh'
+  alias fzenv='fzf_env'
+  alias fzcp='fzf_cp'
+  alias fzmv='fzf_mv'
+  alias fzrm='fzf_rm'
+  alias fzz='fzf_z'
+  alias fzman='fzf_man'
+  alias fzsd='fzf_systemd'
+  alias fzdlp='fzf_dlp'
+fi
 
 # List all available fzf extensions
 fzf_extensions_help() {
@@ -1118,6 +1122,9 @@ fzf_extensions_help() {
 
   Directory Navigation:
   fzz, fzf_z                - Jump to directories using z
+
+  Web Download:
+  fzdlp                     - Download media using yt-dlp
 
   System:
   fzman, fzf_man            - Browse man pages

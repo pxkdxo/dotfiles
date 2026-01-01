@@ -23,11 +23,11 @@ return {
         --NOTE: Change the adapter as required
         chat = {
           adapter = "copilot",
-          model   = "claude-sonnet-4.5",
+          model   = "gpt-5",
         },
         inline = {
           adapter = "copilot",
-          model   = "claude-sonnet-4.5"
+          model   = "gpt-5",
         },
       },
       extensions = {

@@ -43,6 +43,7 @@ return {
       opts.snippet = { expand = function(args) luasnip.lsp_expand(args.body) end }
       opts.sources = cmp.config.sources(
         {
+          { name = "codecompanion" },
           { name = "copilot"  },
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
