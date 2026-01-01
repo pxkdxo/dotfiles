@@ -70,11 +70,11 @@ DISABLE_AUTO_UPDATE="true"
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
-if (( ${+TIME_STYLE} )); then
-  HIST_STAMPS="${TIME_STYLE#"${TIME_STYLE%%[^+]*}"}"
-else
-  HIST_STAMPS='%a %b %d %R %Y'
-fi
+# if (( ${+TIME_STYLE} )); then
+#   HIST_STAMPS="${TIME_STYLE#"${TIME_STYLE%%[^+]*}"}"
+# else
+#   HIST_STAMPS='%a %b %d %R %Y'
+# fi
 
 # Temporary fix for git prompts
 zstyle ':omz:alpha:lib:git' async-prompt no
@@ -152,6 +152,15 @@ plugins=(
 #
 source "$ZSH/oh-my-zsh.sh"
 
+# fzf
+#
+# if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
+# then
+#   source "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
+# else
+#   eval "$(fzf --zsh 2> /dev/null)"
+# fi
+
 # Mark 'run-help' for autoloading
 #
 if alias run-help > /dev/null; then
@@ -189,7 +198,7 @@ fi
 
 # Set fzf default options
 #
-if test -n "${FZF_DEFAULT_OPTS_FILE+X}"; then
+if test -r "${FZF_DEFAULT_OPTS_FILE-}"; then
   export FZF_DEFAULT_OPTS_FILE
   fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
 elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc"; then
@@ -273,9 +282,9 @@ fzf_alt_c_opts=(
 
 # Load fzf extensions
 #
-if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh" ]]; then
-  source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh"
-fi
+# if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh" ]]; then
+#   source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh"
+# fi
 
 # Starship prompt (if its installed)
 #
