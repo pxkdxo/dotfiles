@@ -5,7 +5,7 @@
 
 # Load login shell config
 if [[ -f ~/.profile && -r ~/.profile ]]; then
-  emulate sh -c '. ~/.profile'
+  . ~/.profile
 fi
 
 # Load environment files

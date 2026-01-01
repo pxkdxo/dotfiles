@@ -23,7 +23,7 @@ if command -v podman > /dev/null; then
     running)
       ;;
     *)
-      podman machine start 2> /dev/null
+      podman machine start --no-info --quiet > /dev/null
       ;;
   esac
 fi
