@@ -949,7 +949,7 @@ fzf_man() {
   elif command -v less > /dev/null; then
     _manpager_cmd="less --RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --SILENT -X"
   else
-    _manpager_cmd="cat"
+    _manpager_cmd="${MANPAGER:-cat}"
   fi
 
   # Parse man pages: extract name and section
@@ -1033,7 +1033,6 @@ fzf_systemd() {
   unset _clipboard_cmd _header _services _selected
 }
 
-
 # ============================================================================
 # Web Resources
 # ============================================================================
@@ -1056,30 +1055,28 @@ fzf_dlp() {
 # Export all aliases
 # ============================================================================
 
-if _fzf_check_installed; then
-  alias fzkill='fzf_kill'
-  alias fzgrep='fzf_grep'
-  alias fzfiles='fzf_files'
-  alias fzdirs='fzf_dirs'
-  alias fzgb='fzf_git_branch'
-  alias fzgc='fzf_git_commit'
-  alias fzgf='fzf_git_files'
-  alias fzgs='fzf_git_stash'
-  alias fzdocker='fzf_docker_containers'
-  alias fzdimg='fzf_docker_images'
-  alias fzkp='fzf_kube_pods'
-  alias fzkc='fzf_kube_context'
-  alias fzh='fzf_history'
-  alias fzssh='fzf_ssh'
-  alias fzenv='fzf_env'
-  alias fzcp='fzf_cp'
-  alias fzmv='fzf_mv'
-  alias fzrm='fzf_rm'
-  alias fzz='fzf_z'
-  alias fzman='fzf_man'
-  alias fzsd='fzf_systemd'
-  alias fzdlp='fzf_dlp'
-fi
+alias fzkill='fzf_kill'
+alias fzgrep='fzf_grep'
+alias fzfiles='fzf_files'
+alias fzdirs='fzf_dirs'
+alias fzgb='fzf_git_branch'
+alias fzgc='fzf_git_commit'
+alias fzgf='fzf_git_files'
+alias fzgs='fzf_git_stash'
+alias fzdocker='fzf_docker_containers'
+alias fzdimg='fzf_docker_images'
+alias fzkp='fzf_kube_pods'
+alias fzkc='fzf_kube_context'
+alias fzh='fzf_history'
+alias fzssh='fzf_ssh'
+alias fzenv='fzf_env'
+alias fzcp='fzf_cp'
+alias fzmv='fzf_mv'
+alias fzrm='fzf_rm'
+alias fzz='fzf_z'
+alias fzman='fzf_man'
+alias fzsd='fzf_systemd'
+alias fzdlp='fzf_dlp'
 
 # List all available fzf extensions
 fzf_extensions_help() {
@@ -1134,6 +1131,8 @@ fzf_extensions_help() {
   fzf_extensions_help       - Show this help message
 EOF
 }
+
+alias fzf-extensions-help="fzf_extensions_help"
 
 
 # vi:et:ft=sh:sts=2:sw=2:ts=2:tw=0

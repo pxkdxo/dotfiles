@@ -26,62 +26,6 @@ else
   umask 0022
 fi
 
-# Function to format messages to stderr
-# usage: log -u FD -p PREFIX [--] MESSAGE [DETAIL] ...
-log() {
-  local OPTIND=1
-  local OPTARG
-  local option
-  local fd=1
-  local prefix=""
-  local message=""
-  while getopts ':u:p:' option; do
-    case "${option}" in
-      u)
-        case "$((OPTARG))" in
-          (*[![:digit:]]*) return 1 ;;
-        esac
-        fd="$((OPTARG))"
-        ;;
-      p)
-        prefix="${OPTARG}"
-        ;;
-      \?)
-        return 2
-        ;;
-      \:)
-        return 2
-        ;;
-    esac
-  done
-  shift "$((OPTIND - 1))"
-  while test "$#" -gt 0; do
-    message="${message:+${message}: }$1"
-    shift
-  done
-  printf '%s %s\n' "${prefix}" "${message}" >&"${fd}"
-}
-
-log_critical() {
-  log -u 2 -p '[#:CRITICAL:#]:/#> ' "$@"
-}
-
-log_error() {
-  log -u 2 -p '[!:ERROR:!]:/!> ' "$@"
-}
-
-log_warning() {
-  log -p '[*:WARNING:*]:/*> ' "$@"
-}
-
-log_info() {
-  log -p '[@:INFO:@]:/@> ' "$@"
-}
-
-log_debug() {
-  log -p '[%:DEBUG:%]:/%> ' "$@"
-}
-
 
 # Function to append an element to PATH
 # usage: path_append TO_ADD
@@ -114,12 +58,19 @@ path_prepend() {
 
 
 # Prepend executable paths
-for dir in ~/.local/homebrew/bin ~/.local/bin; do
+for dir in ~/.local/share/homebrew/bin ~/.local/opt/homebrew/bin  ~/.local/bin; do
   if test -d "${dir}"; then
     path_prepend "${dir}"
   fi
 done
 unset dir
+
+
+# Quick detour for homebrew initialization
+if command -v brew > /dev/null
+then
+  eval "$(brew shellenv)"
+fi
 
 
 # Load additional profile config
@@ -132,7 +83,7 @@ for file in "${dir}"/*.sh; do
   if test -r "${file}"; then
     . "${file}"
   fi
-done 2>/dev/null
+done
 unset dir
 unset file
 
