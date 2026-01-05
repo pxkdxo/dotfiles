@@ -11,8 +11,6 @@ fi
 # Load environment files
 if [[ -f "${XDG_DATA_HOME:-${HOME}/.local/share}/env/env.sh" ]]; then
   emulate sh -c '. "${XDG_DATA_HOME:-${HOME}/.local/share}/env/env.sh"'
-elif [[ -f ~/.env ]]; then
-  emulate sh -c '. ~/.env'
 fi
 
 # Add zsh site-functions to FPATH

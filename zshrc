@@ -292,4 +292,6 @@ fzf_alt_c_opts=(
 #   eval "$(starship init zsh)"
 # fi
 
+# theme
+
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0
