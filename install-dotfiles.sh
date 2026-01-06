@@ -7,7 +7,6 @@
 # a period ('.').
 
 set -o errexit
-set -x
 
 argzero_name="${0##*/}"
 argzero_dirname="${0%"${__name}"}"
