@@ -219,6 +219,7 @@ return {
   {
     "folke/noice.nvim",
     event = "VeryLazy",
+    -- cond = vim.g.vscode == nil,
     cond = false,
     dependencies = {
       "MunifTanjim/nui.nvim",

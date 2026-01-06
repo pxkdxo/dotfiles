@@ -98,6 +98,7 @@ export FZF_COMPLETION_TRIGGER=''
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   aws
+  codex
   command-not-found
   ctags
   dircolors

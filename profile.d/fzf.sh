@@ -1041,13 +1041,13 @@ fzf_systemd() {
 fzf_dlp() {
   if test "$#" -eq 0
   then
-    printf "Usage: fzweb URL_SOURCE ...\n" >&2
+    printf "Usage: fzdlp URL_SOURCE ...\n" >&2
     return 2
   fi
   fzf \
     --multi \
     --bind=start,change:"reload(cat -- $*)" \
-    --bind=ctrl-m:'execute-silent(firefox --new-tab --private-window {+} &)' \
+    --bind=ctrl-m:'execute-silent(printf %s\\0 {+} | xargs -0 -n 1 firefox --private-window &)' \
     --bind=ctrl-x:'execute-silent(alacritty -e tmux new-session -A -s "fzf-dlp-$$" -- yt-dlp --quiet --progress -f "bv*+ba/b" -N 128 -- {+} &)'
 }
 
