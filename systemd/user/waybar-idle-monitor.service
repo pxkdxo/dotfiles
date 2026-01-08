@@ -1,0 +1,14 @@
+[Unit]
+Description=Waybar Idle Inhibitor Monitor
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+Type=simple
+# Make sure this path matches where you put your script:
+ExecStart=%h/.config/hyprcandy/hooks/waybar_idle_monitor.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

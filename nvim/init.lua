@@ -5,7 +5,7 @@ require("config.options")
 
 -- Set map leader keys
 vim.g.mapleader = ","
-vim.g.maplocalleader = "\\"
+vim.g.maplocalleader = ";"
 
 -- Esc to return to Normal mode (even from Terminal)
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
@@ -25,20 +25,20 @@ if not vim.g.vscode then
 
   require('config.colorschemes').setup({
     colorschemes = {
-      'oxocarbon',
+      'rose-pine',
       'cyberdream',
       'dayfox',
       'dawnfox',
+      'oxocarbon',
       'carbonfox',
+      'xcodedarkhc',
       'github_light',
       'github_drk_dimmed',
-      'rose-pine',
       'rose-pine-dawn',
       'newpaper',
       'night-owl',
       'everforest',
       'xcodelight',
-      'xcodedarkhc',
       'shine',
       'sorbet',
       'zaibatsu',

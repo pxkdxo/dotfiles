@@ -16,11 +16,17 @@ else
   ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
 fi
 
+# atuin for useful history
+#
+if command -v zoxide > /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="patrickd"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -105,6 +111,7 @@ plugins=(
   docker
   extract
   fancy-ctrl-z
+  fancy-ctrl-q
   firewalld
   fzf
   gh
@@ -114,34 +121,30 @@ plugins=(
   gpg-agent
   zsh-history-substring-search
   iterm2
-  kubectl
   kubernetes
   mkcd
   nmap
   npm
   pass
   pip
-  pylint
   python
   rsync
-  rust
   shrink-path
+  starship
   sudo
   systemd
   terraform
   themes
   tmux
-  urltools
   uv
   venv
   virtualenv
-  yarn
-  z
+  zoxide
   zshaliases
   zshoptions
   zshparam
   keybindings
-  globalias-rev
+  globalias-alt
   clipboard-keybindings
   fast-syntax-highlighting
   zsh-interactive-cd
@@ -280,19 +283,5 @@ fzf_alt_c_opts=(
   '--bind='\''ctrl-x:become%"${EDITOR:-nvim}" -- {}%'\'''
   '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
-
-# Load fzf extensions
-#
-# if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh" ]]; then
-#   source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/extensions.sh"
-# fi
-
-# Starship prompt (if its installed)
-#
-# if command -v starship > /dev/null; then
-#   eval "$(starship init zsh)"
-# fi
-
-# theme
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0

@@ -1,0 +1,15 @@
+[Unit]
+Description=Monitor Waypaper config changes and trigger color generation
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.config/hyprcandy/hooks/waypaper_watcher.sh
+Restart=always
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+[Install]
+WantedBy=default.target
