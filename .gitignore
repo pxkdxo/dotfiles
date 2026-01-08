@@ -28,6 +28,8 @@
 
 !/bat/config
 
+!/colorschemes
+
 !/dircolors
 
 !/environment.d/**
@@ -53,6 +55,8 @@
 !/ncmpcpp/config
 
 !/neofetch/*.conf
+
+!/npmrc
 
 !/nvim/autoload
 !/nvim/colors
