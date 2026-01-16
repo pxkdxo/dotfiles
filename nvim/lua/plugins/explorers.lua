@@ -18,8 +18,8 @@ return {
       },
       view = {
         width = {
-          min = 5,
-          max = "22%",
+          min = 10,
+          max = "20%",
           padding = 0,
         },
         float = {
@@ -40,11 +40,13 @@ return {
         git_ignored = false,
       },
     },
-    config = function(_, opts)
+    init = function ()
       -- Disable netrw
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
 
+    end,
+    config = function(_, opts)
       -- Setup nvim-tre
       require("nvim-tree").setup(opts)
 
