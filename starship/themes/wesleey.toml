@@ -74,9 +74,10 @@ Windows = ''
 
 [directory]
 format = '[─](fg:current_line)[](fg:pink)[󰷏 ](fg:primary bg:pink)[](fg:pink bg:box)[ $read_only$truncation_symbol$path](fg:foreground bg:box)[](fg:box)'
-home_symbol = " ~/"
+home_symbol = " ~"
 truncation_symbol = ' '
-truncation_length = 2
+truncation_length = 28
+fish_style_pwd_dir_length = 1
 read_only = '󱧵 '
 read_only_style = ''
 
@@ -139,5 +140,5 @@ show_always = true
 format = """
 [│](fg:current_line)
 [╰─$symbol](fg:current_line) """
-success_symbol = '[](fg:bold green)'
-error_symbol = '[](fg:bold red)'
+success_symbol = '[  ](fg:bold green)'
+error_symbol = '[  ](fg:bold red)'

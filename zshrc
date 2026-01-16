@@ -202,7 +202,7 @@ fi
 
 # Set fzf default options
 #
-if test -r "${FZF_DEFAULT_OPTS_FILE-}"; then
+if test -r "${FZF_DEFAULT_OPTS_FILE}"; then
   export FZF_DEFAULT_OPTS_FILE
   fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
 elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc"; then

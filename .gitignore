@@ -15,9 +15,10 @@
 
 !/asoundrc
 
-!/alacritty/**.toml
-!/alacritty/**.yaml
-!/alacritty/**.yml
+!/alacritty/*.toml
+!/alacritty/*.yml
+!/alacritty/*.yaml
+!/alacritty/colorschemes
 
 !/bash_completion
 !/bash_logout
@@ -35,10 +36,16 @@
 !/environment.d/**
 
 !foot/*.ini
+!foot/colorschemes
 
 !kitty/*.conf
+!kitty/colorschemes
 
-!/fzf/**
+!/fzf/fzfrc
+!/fzf/*.sh
+!/fzf/*.bash
+!/fzf/*.fish
+!/fzf/*.zsh
 
 !/git/config
 !/git/ignore
@@ -53,8 +60,6 @@
 !/mpd/mpd.conf
 
 !/ncmpcpp/config
-
-!/neofetch/*.conf
 
 !/npmrc
 
@@ -72,14 +77,12 @@
 !/pythonrc.py
 
 !/ranger/*.conf
-!/ranger/*.py
-!/ranger/*.sh
 
 !/ripgreprc
 
 !/starship.toml
 !/starship/*.toml
-!/starship/**/*.toml
+!/starship/themes/*.toml
 
 !/systemd/user/*.service
 
@@ -113,8 +116,8 @@
 !/zshenv
 !/zshrc
 
-/yazi/packages/
-!/yazi/flavors/**
-!/yazi/plugins/**
+# /yazi/packages/
+!/yazi/flavors/*/**
+!/yazi/plugins/*/**
 !/yazi/package.toml
 !/yazi/theme.toml

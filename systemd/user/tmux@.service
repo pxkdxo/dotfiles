@@ -4,6 +4,7 @@ Documentation=man:tmux(1)
 Requires=tmux@%i.socket
 
 [Service]
+Type=exec
 ExecStart=tmux -D $TMUX_SERVER_ARGS
 ExecStartPost=tmux -L%i start
 Slice=tmux-%i.slice

@@ -17,7 +17,6 @@ require("config.lazy").setup({
   checker = {
     enabled = false, -- do not check for plugin updates automatically
   },
-  
 })
 
 -- (If not running in VSCode) set a colorscheme and define some key mappings
@@ -25,8 +24,8 @@ if not vim.g.vscode then
 
   require('config.colorschemes').setup({
     colorschemes = {
-      'rose-pine',
       'cyberdream',
+      'rose-pine',
       'dayfox',
       'dawnfox',
       'oxocarbon',

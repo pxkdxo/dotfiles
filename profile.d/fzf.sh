@@ -43,22 +43,34 @@ _fzf_check_installed() {
 
 # Helper: Get default editor
 _fzf_get_editor() {
-  echo "${EDITOR:-${VISUAL:-vim}}"
+  printf '%s\n' "${EDITOR:-${VISUAL:-$(command -v editor || comamnd -v nvim || command -v vim || command -v vi)}}"
 }
 
 # Helper: Get clipboard command
 _fzf_get_clipboard() {
   if command -v clipcopy > /dev/null; then
-    echo "clipcopy"
-  elif command -v wl-copy > /dev/null; then
-    echo "wl-copy"
-  elif command -v xclip > /dev/null; then
-    echo "xclip -sel clipboard"
-  elif command -v pbcopy > /dev/null; then
-    echo "pbcopy"
-  else
-    echo "cat"
+    echo clipcopy
+    return 0
   fi
+  if command -v pbcopy > /dev/null; then
+    echo pbcopy
+    return 0
+  fi
+  case "${XDG_SESSION_TYPE}" in
+    wayland)
+      if command -v wl-copy > /dev/null; then
+        echo 'wl-copy -n'
+        return 0
+      fi
+      ;;
+    x11)
+      if command -v xclip > /dev/null; then
+        echo 'xclip -sel clipboard'
+        return 0
+      fi
+      ;;
+    esac
+    return 1
 }
 
 # Helper: Get open command

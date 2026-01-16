@@ -6,10 +6,6 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    init = function()
-      vim.g.loaded_netrw = 1
-      vim.g.loaded_netrwPlugin = 1
-    end,
     opts = {
       hijack_cursor = true,
       reload_on_bufenter = true,
@@ -45,6 +41,10 @@ return {
       },
     },
     config = function(_, opts)
+      -- Disable netrw
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+
       -- Setup nvim-tre
       require("nvim-tree").setup(opts)
 
