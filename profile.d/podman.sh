@@ -21,7 +21,7 @@ if command -v podman > /dev/null; then
         export DOCKER_HOST="unix://${podman_socket}"
       fi
       unset podman_socket
-      if "$(podman machine inspect --format '{{ .State }}' 2>| /dev/null)" != "running"; then
+      if test "$(podman machine inspect --format '{{ .State }}' 2>| /dev/null)" != "running"; then
         podman machine start --no-info --quiet > /dev/null
       fi
       ;;
