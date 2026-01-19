@@ -1,5 +1,5 @@
 local modules = {
-  colors = require("config.colors"),
+  colors = require("utils.colors"),
 }
 
 return {

@@ -20,6 +20,9 @@ return {
     name = 'flexoki'
   },
   {
+    "savq/melange-nvim",
+  },
+  {
     "scottmckendry/cyberdream.nvim",
     lazy = false,
     priority = 1000,
@@ -29,7 +32,7 @@ return {
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look
-      saturation = 0.96, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
+      saturation = 0.95, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
       -- Enable italics comments
       italic_comments = true,
       -- Replace all fillchars with ' ' for the ultimate clean look
@@ -42,8 +45,11 @@ return {
       cache = true,
       -- Enable or disable specific extensions
       extensions = {
-        telescope = true,
+        cmp = true,
+        gitsigns = true,
+        mini = true,
         notify = true,
+        telescope = true,
       },
     },
   },

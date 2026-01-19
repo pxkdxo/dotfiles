@@ -8,7 +8,7 @@ vim.g.mapleader = ","
 vim.g.maplocalleader = ";"
 
 -- Choose some builtin fallback colorschemes
-vim.g.colorschemes = { 'shine', 'sorbet', 'habamax', 'zaibatsu' }
+vim.g.colorschemes = { 'zaibatsu', 'shine', 'sorbet', 'habamax' }
 
 -- <Esc> to return to Normal mode (even from Terminal)
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
@@ -19,67 +19,56 @@ vim.cmd.colorscheme(vim.g.colorschemes[1])
 require("config.lazy").setup({
   defaults = { cond = not vim.g.vscode },
   spec = { { import = "plugins" } },
-  install = { colorscheme = vim.g.colorscheme },
-  checker = {
-    enabled = false, -- do not check for plugin updates automatically
-  },
+  install = { colorscheme = vim.g.colorschemes },
+  checker = { enabled = false },
 })
 
 -- (If not running in VSCode) set a colorscheme and define some key mappings
 if not vim.g.vscode then
 
   local colors = require("utils.colors")
+  vim.g.colorschemes = {
+    'cyberdream',
+    'dawnfox',
+    'carbonfox',
+    'dayfox',
+    'flexoki',
+    'github_dark_dimmed',
+    'github_light',
+    'night-owl',
+    'oxocarbon',
+    'rose-pine',
+    'rose-pine-dawn',
+    'xcodedarkhc',
+    'xcodelight',
+    'shine',
+    'sorbet',
+    'habamax',
+    'zaibatsu',
+  }
+  colors.setup({ colorschemes = vim.g.colorschemes })
+  colors.next()
 
   if vim.fn.exists(':FzfLua') then
     vim.keymap.set('n', '<F1>', function() vim.cmd.FzfLua('helptags') end, { desc = "Find Helptags" })
   end
 
-  if vim.fn.exists(':NvimTreeToggle') then
-    vim.keymap.set('n', '<F2>', function () vim.cmd.NvimTreeToggle() end, { desc = "Open/Close File Explorer" })
+  if vim.fn.exists(':FzfLua') then
+    vim.keymap.set('n', '<F2>', function() vim.cmd.FzfLua('global') end, { desc = "Find Files & Buffers & Stuff" })
   end
 
-  if vim.fn.exists(':FzfLua') then
-    vim.keymap.set('n', '<F3>', function() vim.cmd.FzfLua('global') end, { desc = "Find Files & Buffers & Stuff" })
+  if vim.fn.exists(':NvimTreeToggle') then
+    vim.keymap.set('n', '<F3>', function () vim.cmd.NvimTreeToggle() end, { desc = "Open/Close File Explorer" })
   end
 
   if vim.fn.exists(':FzfLua') then
     vim.keymap.set('n', '<F4>', function() vim.cmd.FzfLua('live_grep') end, { desc = "Search Files by Content" })
   end
 
-  if vim.fn.exists(':AvanteToggle') then
-    vim.keymap.set('n', '<F5>', function() vim.cmd.AvanteToggle() end, { desc = "Open/Close Avante Chat" })
-  end
-
   vim.keymap.set('n', '<F11>', function () vim.o.hlsearch = not vim.o.hlsearch end, { desc = "Toggle Search Highlighting" })
 
-  vim.keymap.set('n', '<F12>', function () colors.next() end, { desc = 'Next favorite colorscheme' })
+  vim.keymap.set('n', '<F12>', colors.next, { desc = 'Next favorite colorscheme' })
 
-  vim.keymap.set('n', '<F24>', function () colors.shuffle() end, { desc = 'Random favorite colorschemes' })
-
-  colors.setup({
-    colorschemes = {
-      'cyberdream',
-      'rose-pine',
-      'dayfox',
-      'dawnfox',
-      'oxocarbon',
-      'xcodedarkhc',
-      'flexoki',
-      'rose-pine-dawn',
-      'github_light',
-      'github_dark_dimmed',
-      'carbonfox',
-      'night-owl',
-      'xcodelight',
-      'shine',
-      'sorbet',
-      'habamax',
-      'zaibatsu',
-      'shine',
-      'sorbet',
-      'habamax',
-      'zaibatsu'
-    }
-  }).next()
+  vim.keymap.set('n', '<F24>', colors.shuffle, { desc = 'Random favorite colorschemes' })
 
 end

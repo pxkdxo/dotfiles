@@ -270,7 +270,7 @@ declare -a bg=()
 while (( ${#fg[@]} < ${__ti_colors:-8} ))
 do
   fg[${#fg[@]}]="$(tput setaf "${#fg[@]}")"
-  bg[${#bg[@]}]="$(tput setag "${#bg[@]}")"
+  bg[${#bg[@]}]="$(tput setab "${#bg[@]}")"
 done
 
 
