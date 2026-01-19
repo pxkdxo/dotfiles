@@ -1,8 +1,6 @@
--- colorschemes.lua: return an interface to cycle through vim.g.colorschemes
+-- colors.lua: return an interface to cycle through vim.g.colorschemes
+local M = {}
 
-Colorschemes = Colorschemes or {
-  setup = function (_) end
-}
 local Playlist = {
   all = nil,
   queue = nil,
@@ -210,65 +208,65 @@ function Playlist:next(shuffle)
   return nil
 end
 
-function Colorschemes.setup(opts)
+M.setup = function (opts)
   opts = opts or {}
   vim.g.colorschemes = opts.colorschemes or vim.g.colorschemes or {}
 
-  Colorschemes.playlist = Playlist:new(
+  M.playlist = Playlist:new(
     vim.g.colorschemes, function (name)
       return pcall(vim.cmd.colorscheme, name)
     end
   )
 
-  function Colorschemes.add(name)
-    if Colorschemes.playlist:add(name) then
+  function M.add(name)
+    if M.playlist:add(name) then
       print("Added " .. name)
     else
       print("Failed to add " .. name)
     end
   end
 
-  function Colorschemes.skip(options)
+  function M.skip(options)
     options = options or {}
     local shuffle = options.shuffle or false
-    if #Colorschemes.playlist.all == 0 then
+    if #M.playlist.all == 0 then
       print("Add colorschemes to vim.g.colorschemes")
-    elseif Colorschemes.playlist:next(shuffle) or Colorschemes.playlist:restart():next(shuffle) then
+    elseif M.playlist:next(shuffle) or M.playlist:restart():next(shuffle) then
       print(vim.g.colors_name)
     else
       print("None of vim.g.colorschemes found on the system")
     end
   end
 
-  function Colorschemes.next(options)
+  function M.next(options)
     options = options or {}
     local shuffle = options.shuffle or false
-    if #Colorschemes.playlist.all == 0 then
+    if #M.playlist.all == 0 then
       print("Add colorschemes to vim.g.colorschemes")
-    elseif Colorschemes.playlist:next(shuffle) or Colorschemes.playlist:restart():next(shuffle) then
+    elseif M.playlist:next(shuffle) or M.playlist:restart():next(shuffle) then
       print(vim.g.colors_name)
     else
       print("None of vim.g.colorschemes found on the system")
     end
   end
 
-  function Colorschemes.prev(options)
+  function M.prev(options)
     options = options or {}
     local shuffle = options.shuffle or false
-    if #Colorschemes.playlist.all == 0 then
+    if #M.playlist.all == 0 then
       print("Add colorschemes to vim.g.colorschemes")
-    elseif Colorschemes.playlist:next(shuffle) or Colorschemes.playlist:restart():next(shuffle) then
+    elseif M.playlist:next(shuffle) or M.playlist:restart():next(shuffle) then
       print(vim.g.colors_name)
     else
       print("None of vim.g.colorschemes found on the system")
     end
   end
 
-  function Colorschemes.shuffle()
-    Colorschemes.next({ shuffle = true })
+  function M.shuffle()
+    M.next({ shuffle = true })
   end
 
-  return Colorschemes
+  return M
 end
 
-return Colorschemes
+return M

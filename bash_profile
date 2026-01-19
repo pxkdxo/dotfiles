@@ -19,3 +19,5 @@ then
 fi
 
 # vi:ft=sh
+
+. "$HOME/.local/share/../bin/env"

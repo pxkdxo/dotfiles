@@ -7,13 +7,19 @@ require("config.options")
 vim.g.mapleader = ","
 vim.g.maplocalleader = ";"
 
--- Esc to return to Normal mode (even from Terminal)
+-- Choose some builtin fallback colorschemes
+vim.g.colorschemes = { 'shine', 'sorbet', 'habamax', 'zaibatsu' }
+
+-- <Esc> to return to Normal mode (even from Terminal)
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+
+vim.cmd.colorscheme(vim.g.colorschemes[1])
 
 -- Load plugins
 require("config.lazy").setup({
   defaults = { cond = not vim.g.vscode },
   spec = { { import = "plugins" } },
+  install = { colorscheme = vim.g.colorscheme },
   checker = {
     enabled = false, -- do not check for plugin updates automatically
   },
@@ -22,27 +28,7 @@ require("config.lazy").setup({
 -- (If not running in VSCode) set a colorscheme and define some key mappings
 if not vim.g.vscode then
 
-  require('config.colorschemes').setup({
-    colorschemes = {
-      'cyberdream',
-      'rose-pine',
-      'dayfox',
-      'dawnfox',
-      'oxocarbon',
-      'carbonfox',
-      'xcodedarkhc',
-      'github_light',
-      'github_drk_dimmed',
-      'rose-pine-dawn',
-      'newpaper',
-      'night-owl',
-      'everforest',
-      'xcodelight',
-      'shine',
-      'sorbet',
-      'zaibatsu',
-    },
-  }).next()
+  local colors = require("utils.colors")
 
   if vim.fn.exists(':FzfLua') then
     vim.keymap.set('n', '<F1>', function() vim.cmd.FzfLua('helptags') end, { desc = "Find Helptags" })
@@ -66,8 +52,34 @@ if not vim.g.vscode then
 
   vim.keymap.set('n', '<F11>', function () vim.o.hlsearch = not vim.o.hlsearch end, { desc = "Toggle Search Highlighting" })
 
-  vim.keymap.set('n', '<F12>', function () require('config.colorschemes').next() end, { desc = 'Next favorite colorscheme' })
+  vim.keymap.set('n', '<F12>', function () colors.next() end, { desc = 'Next favorite colorscheme' })
 
-  vim.keymap.set('n', '<F24>', function () require('config.colorschemes').shuffle() end, { desc = 'Random favorite colorschemes' })
+  vim.keymap.set('n', '<F24>', function () colors.shuffle() end, { desc = 'Random favorite colorschemes' })
+
+  colors.setup({
+    colorschemes = {
+      'cyberdream',
+      'rose-pine',
+      'dayfox',
+      'dawnfox',
+      'oxocarbon',
+      'xcodedarkhc',
+      'flexoki',
+      'rose-pine-dawn',
+      'github_light',
+      'github_dark_dimmed',
+      'carbonfox',
+      'night-owl',
+      'xcodelight',
+      'shine',
+      'sorbet',
+      'habamax',
+      'zaibatsu',
+      'shine',
+      'sorbet',
+      'habamax',
+      'zaibatsu'
+    }
+  }).next()
 
 end

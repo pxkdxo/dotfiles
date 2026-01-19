@@ -114,4 +114,4 @@ vim.cmd.autocmd({
   },
 })
 
-return vim.opt
+return { setup = function (_) return opt end }
