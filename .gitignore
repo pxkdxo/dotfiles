@@ -85,6 +85,7 @@
 !/starship/themes/*.toml
 
 !/systemd/user/*.service
+!/systemd/user/*.socket
 
 !/tmux.conf
 !/tmux/tmux.conf

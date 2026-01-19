@@ -1,0 +1,9 @@
+[Socket]
+ListenStream=%T/tmux-%U/%i
+
+[Unit]
+PartOf=default.target
+After=default.target
+
+[Install]
+WantedBy=default.target
