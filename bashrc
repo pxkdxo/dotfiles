@@ -472,3 +472,5 @@ sourcer() {
 #then
 #  sourcer ~/.bashrc.d
 #fi
+
+. "$HOME/.local/share/../bin/env"

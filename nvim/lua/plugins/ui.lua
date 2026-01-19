@@ -1,18 +1,5 @@
 return {
   {
-    "sphamba/smear-cursor.nvim",
-    cond = vim.g.vscode == nil,
-    opts = {
-      stiffness = 0.8,                      -- 0.6      [0, 1]
-      trailing_stiffness = 0.6,             -- 0.45     [0, 1]
-      stiffness_insert_mode = 0.7,          -- 0.5      [0, 1]
-      trailing_stiffness_insert_mode = 0.7, -- 0.5      [0, 1]
-      damping = 0.95,                       -- 0.85     [0, 1]
-      damping_insert_mode = 0.95,           -- 0.9      [0, 1]
-      distance_stop_animating = 0.5,        -- 0.1      > 0
-    },
-  },
-  {
     'nvim-lualine/lualine.nvim',
     cond = vim.g.vscode == nil,
     dependencies = {
@@ -24,22 +11,6 @@ return {
       },
     }
   },
-  -- {
-  --   'romgrk/barbar.nvim',
-  --   cond = vim.g.vscode == nil,
-  --   dependencies = {
-  --     'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
-  --     'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
-  --   },
-  --   init = function() vim.g.barbar_auto_setup = false end,
-  --   opts = {
-  --     -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
-  --     -- animation = true,
-  --     -- insert_at_start = true,
-  --     -- …etc.
-  --   },
-  --   version = '^1.0.0', -- optional: only update when a new 1.x version is released
-  -- },
   {
     'akinsho/bufferline.nvim',
     cond = vim.g.vscode == nil,
@@ -217,10 +188,20 @@ return {
     },
   },
   {
+    "nvim-neorg/neorg",
+    cond = vim.g.vscode == nil,
+    version = "*", -- Pin Neorg to the latest stable release
+    ft = "norg", -- lazy-load on filetype
+    opts = {
+      load = {
+        ["core.defaults"] = {},
+      },
+    },
+  },
+  {
     "folke/noice.nvim",
     event = "VeryLazy",
-    -- cond = vim.g.vscode == nil,
-    cond = false,
+    cond = vim.g.vscode == nil,
     dependencies = {
       "MunifTanjim/nui.nvim",
       -- OPTIONAL:
