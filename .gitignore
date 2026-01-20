@@ -30,6 +30,9 @@
 !/bat/config
 
 !/colorschemes
+!/colorschemes/*.toml
+!/colorschemes/*.yaml
+!/colorschemes/*/**
 
 !/dircolors
 

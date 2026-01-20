@@ -32,11 +32,11 @@ return {
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look
-      saturation = 0.95, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
+      saturation = 0.92, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
       -- Enable italics comments
       italic_comments = true,
       -- Replace all fillchars with ' ' for the ultimate clean look
-      hide_fillchars = true,
+      hide_fillchars = false,
       -- Apply a modern borderless look to pickers like Telescope, Snacks Picker & Fzf-Lua
       borderless_pickers = true,
       -- Set terminal colors used in `:terminal`
