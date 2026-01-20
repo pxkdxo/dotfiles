@@ -89,5 +89,3 @@ unset file
 
 
 # vi:ft=sh
-
-. "$HOME/.local/share/../bin/env"
