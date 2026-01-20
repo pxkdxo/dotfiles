@@ -49,6 +49,9 @@ if not vim.g.vscode then
   colors.setup({ colorschemes = vim.g.colorschemes })
   colors.next()
 
+  -- Add a custom keybinding to toggle the colorscheme
+  vim.api.nvim_set_keymap("n", "<leader>t0", ":CyberdreamToggleMode<CR>", { noremap = true, silent = true })
+
   if vim.fn.exists(':FzfLua') then
     vim.keymap.set('n', '<F1>', function() vim.cmd.FzfLua('helptags') end, { desc = "Find Helptags" })
   end

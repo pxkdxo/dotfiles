@@ -11,10 +11,10 @@
 	url = https://github.com/end-4/dots-hyprland
 	branch = master
 [submodule "iTerm2-Color-Schemes"]
-	path = colorschemes/Src/iTerm2-Color-Schemes
+	path = colorschemes/Sources/iTerm2-Color-Schemes
 	url = https://github.com/mbadolato/iTerm2-Color-Schemes.git
 	branch = master
 [submodule "cyberdream.nvim"]
-	path = colorschemes/Src/cyberdream.nvim
+	path = colorschemes/Sources/cyberdream.nvim
 	url = https://github.com/scottmckendry/cyberdream.nvim.git
 	branch = main
