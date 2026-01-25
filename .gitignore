@@ -98,7 +98,10 @@
 
 !/tmux.conf
 !/tmux/tmux.conf
-!/tmux/plugins/tpm/
+!/tmux/colorschemes
+!/tmux/themes
+!/tmux/theme.default.conf
+/tmux/plugins/
 
 !/user-dirs.dirs
 !/user-dirs.locale
@@ -108,6 +111,7 @@
 !/vim/autoload/**
 !/vim/colorschemes
 !/vim/vimrc
+/vim/plug/
 
 !/vivid/themes/*
 
@@ -131,3 +135,4 @@
 !/yazi/plugins/*/**
 !/yazi/package.toml
 !/yazi/theme.toml
+/yazi/packages/
