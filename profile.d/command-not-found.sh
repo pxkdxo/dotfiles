@@ -32,8 +32,7 @@ unset file
 
 # Debian and derivatives: https://launchpad.net/ubuntu/+source/command-not-found
 if test -x /usr/lib/command-not-found || test -x /usr/share/command-not-found/command-not-found; then
-  eval "${__command_not_found_func}()"'
-  {
+  eval "${__command_not_found_func}()"' {
     if test -x /usr/lib/command-not-found; then
       /usr/lib/command-not-found -- "$1"
       return "$?"
@@ -49,7 +48,7 @@ fi
 
 # Fedora: https://fedoraproject.org/wiki/Features/PackageKitCommandNotFound
 if test -x /usr/libexec/pk-command-not-found; then
-  eval "${__command_not_found_func}()"'
+  eval "${__command_not_found_func}()"' {
     if test -S /var/run/dbus/system_bus_socket && test -x /usr/libexec/packagekitd; then
       /usr/libexec/pk-command-not-found "$@"
       return "$?"
@@ -62,21 +61,21 @@ fi
 
 # NixOS: https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/programs/command-not-found
 if test -x /run/current-system/sw/bin/command-not-found; then
-  eval "${__command_not_found_func}()"'
+  eval "${__command_not_found_func}()"' {
     /run/current-system/sw/bin/command-not-found "$@"
   }'
 fi
 
 # Termux: https://github.com/termux/command-not-found
 if test -x /data/data/com.termux/files/usr/libexec/termux/command-not-found; then
-  eval "${__command_not_found_func}()"'
+  eval "${__command_not_found_func}()"' {
     /data/data/com.termux/files/usr/libexec/termux/command-not-found "$1"
   }'
 fi
 
 # SUSE and derivates: https://www.unix.com/man-page/suse/1/command-not-found/
 if test -x /usr/bin/command-not-found; then
-  eval "${__command_not_found_func}()"'
+  eval "${__command_not_found_func}()"' {
     /usr/bin/command-not-found "$1"
   }'
 fi
