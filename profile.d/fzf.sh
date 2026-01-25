@@ -3,12 +3,9 @@
 # This script also includes comprehensive fzf extensions for enhanced productivity
 # Requires: fzf, ripgrep, fd, bat (optional but recommended)
 
-if test -d "${FZF_BASE-}"
+if test -d "${FZF_BASE:-}"
 then
   export FZF_BASE
-elif test -d "${HOME}/.fzf"
-then
-  export FZF_BASE="${HOME}/.fzf"
 elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
 then
   export FZF_BASE="${XDG_DATA_HOME:-${HOME}/.local/share}/fzf"
@@ -21,25 +18,21 @@ then
 elif test -d '/usr/local/share/fzf'
 then
   export FZF_BASE='/usr/local/share/fzf'
-elif test -d '/opt/fzf'
+elif test -d "${HOME}/.fzf"
 then
-  export FZF_BASE='/opt/fzf'
+  export FZF_BASE="${HOME}/.fzf"
+elif test -d '/usr/local/share/fzf'
+then
+  export FZF_BASE='/usr/local/share/fzf'
 elif test -d '/usr/share/fzf'
 then
   export FZF_BASE='/usr/share/fzf'
-fi
-if test -z "${FZF_BASE+X}"
+elif test -d '/opt/fzf'
 then
+  export FZF_BASE='/opt/fzf'
+else
   unset FZF_BASE
 fi
-
-# Ensure fzf is available
-_fzf_check_installed() {
-  if ! command -v fzf > /dev/null; then
-    echo "'fzf' is not installed" >&2
-    return 1
-  fi
-}
 
 # Helper: Get default editor
 _fzf_get_editor() {
@@ -48,29 +41,43 @@ _fzf_get_editor() {
 
 # Helper: Get clipboard command
 _fzf_get_clipboard() {
-  if command -v clipcopy > /dev/null; then
-    echo clipcopy
-    return 0
-  fi
-  if command -v pbcopy > /dev/null; then
-    echo pbcopy
-    return 0
-  fi
-  case "${XDG_SESSION_TYPE}" in
-    wayland)
-      if command -v wl-copy > /dev/null; then
-        echo 'wl-copy -n'
-        return 0
-      fi
-      ;;
-    x11)
-      if command -v xclip > /dev/null; then
-        echo 'xclip -sel clipboard'
-        return 0
-      fi
-      ;;
-    esac
+  if case "$(uname -s)" in
+    Darwin*|darwin*)
+      command -v pbcopy ;;
+    Linux*Android*|Linux*android*|linux*android*)
+      command -v termux-clipboard-set ;;
+    Cygwin*|cygwin*|Msys*|msys*)
+      echo 'cat > /dev/clipboard' ;;
+    *)
+      false ;;
+  esac
+  then
+    :
+  elif test "${XDG_SESSION_TYPE:-}" = "wayland" \
+    && test -n "${WAYLAND_DISPLAY:-}" \
+    && command -v wl-copy; then
+    echo 'wl-copy -n > /dev/null 2>&1'
+  elif test "${XDG_SESSION_TYPE:-}" = "x11" \
+    && test -n "${DISPLAY:-}" \
+    && command -v xsel > /dev/null; then
+    echo 'xsel --clipboard --input'
+    return
+  elif test "${XDG_SESSION_TYPE:-}" = "x11" \
+    && test -n "${DISPLAY:-}" \
+    && command -v xclip > /dev/null; then
+    echo 'xclip -selection clipboard -in > /dev/null 2>&1'
+  elif command -v lemonade > /dev/null; then
+    echo 'lemonade copy'
+  elif command -v doitclient > /dev/null; then
+    echo 'doitclient wclip'
+  elif command -v win32yank > /dev/null; then
+    echo 'win32yank -i'
+  elif test -n "${TMUX:-}" \
+    && command -v tmux > /dev/null; then
+    echo 'tmux load-buffer -w'
+  else
     return 1
+  fi
 }
 
 # Helper: Get open command

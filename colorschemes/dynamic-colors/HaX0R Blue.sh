@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/dynamic-colors/HaX0R Blue.sh

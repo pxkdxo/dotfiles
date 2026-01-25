@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/iterm-dynamic-colors/Monokai Soda.sh

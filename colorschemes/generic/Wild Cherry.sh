@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/generic/Wild Cherry.sh

@@ -10,15 +10,17 @@
 !/.gitignore
 !/.gitmodules
 
-!/install-dotfiles.sh
 !/README.md
+
+!/install-dotfiles.sh
 
 !/asoundrc
 
 !/alacritty/*.toml
-!/alacritty/*.yml
 !/alacritty/*.yaml
+!/alacritty/*.yml
 !/alacritty/colorschemes
+!/alacritty/themes
 
 !/bash_completion
 !/bash_logout
@@ -28,10 +30,10 @@
 !/bashrc.d/**
 
 !/bat/config
+!/bat/themes
+!/bat/themes/**
 
-!/colorschemes
-!/colorschemes/*.toml
-!/colorschemes/*.yaml
+!/colorschemes/*
 !/colorschemes/*/**
 
 !/dircolors
@@ -41,28 +43,33 @@
 !foot/*.ini
 !foot/colorschemes
 
-!kitty/*.conf
-!kitty/colorschemes
-
 !/fzf/fzfrc
-!/fzf/*.sh
 !/fzf/*.bash
 !/fzf/*.fish
+!/fzf/*.sh
 !/fzf/*.zsh
 
 !/git/config
 !/git/ignore
 
 !/gnupg/dirmngr.conf
-!/gnupg/gpg.conf
 !/gnupg/gpg-agent.conf
+!/gnupg/gpg.conf
 
 !/inputrc
 !/inputrc.d/**
 
+!kitty/*.conf
+!kitty/colorschemes
+!kitty/themes
+
+!/mcphub/servers.json
+
 !/mpd/mpd.conf
 
 !/ncmpcpp/config
+
+!/noctalia/*.json
 
 !/npmrc
 
@@ -84,8 +91,7 @@
 !/ripgreprc
 
 !/starship.toml
-!/starship/*.toml
-!/starship/themes/*.toml
+!/starship/**
 
 !/systemd/user/*.service
 !/systemd/user/*.socket
@@ -99,10 +105,11 @@
 
 !/user-tmpfiles.d/**
 
-!/vim/autoload/*.vim
-!/vim/colors/*.vim
-!/vim/bundle
+!/vim/autoload/**
+!/vim/colorschemes
 !/vim/vimrc
+
+!/vivid/themes/*
 
 !/xinitrc
 !/xinitrc.d/*.sh
@@ -120,7 +127,6 @@
 !/zshenv
 !/zshrc
 
-# /yazi/packages/
 !/yazi/flavors/*/**
 !/yazi/plugins/*/**
 !/yazi/package.toml

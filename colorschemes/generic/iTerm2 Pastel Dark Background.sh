@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/generic/iTerm2 Pastel Dark Background.sh

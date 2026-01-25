@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/generic/The Hulk.sh

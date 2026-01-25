@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Initialize an interactive Python interpreter."""
 # pylint: disable=unused-import,unresolved-import
+# ruff: noqa: F401
 
 import ast
 import base64
@@ -56,16 +57,16 @@ except ImportError:
 import uuid
 
 try:
-    from jedi.utils import setup_readline # ty: ignore unresolved-import
+    from jedi.utils import setup_readline
 except ImportError:
-    print("* unable to import 'jedi' - falling back to 'readline'")
+    print("* Failed to import 'jedi' - falling back to 'readline' *)")
     # Fallback to the stdlib readline completer if it is installed.
     # Taken from http://docs.python.org/2/library/rlcompleter.html
     try:
         import readline
         import rlcompleter
     except ImportError:
-        print("* unable to import 'readline' - completion is unavailable")
+        print("* Failed to import 'readline' - completion is unavailable *")
     else:
         readline.parse_and_bind("tab: complete")
 else:
@@ -79,7 +80,13 @@ class Prompt:
     __hooks: list
 
     def __init__(
-        self, ps=None, color=None, hooks=None, **psvars
+        self,
+        ps=None, *,
+        color: bool | None = None,
+        hooks: collections.abc.Iterable[
+            typing.Callable[[typing.Self], typing.Any]
+        ] | None=None,
+        **psvars
     ) -> None:
         if ps is not None:
             self.ps = ps
@@ -98,7 +105,7 @@ class Prompt:
         return self.__ps
 
     @ps.setter
-    def ps(self, value):
+    def ps(self, value: str):
         if not isinstance(value, str):
             raise ValueError(f"``ps'' must be of type ``{str}''")
         self.__ps = value
@@ -108,7 +115,7 @@ class Prompt:
         return self.__color
 
     @color.setter
-    def color(self, value):
+    def color(self, value: bool):
         if not isinstance(value, bool):
             raise ValueError(f"``color'' must be of type ``{bool}''")
         self.__color = value
@@ -118,9 +125,9 @@ class Prompt:
         return self.__psvars.copy()
 
     @psvars.setter
-    def psvars(self, value):
+    def psvars(self, value: collections.abc.Mapping):
         if not isinstance(value, collections.abc.Mapping):
-            raise ValueError(f"``psvars'' must be a mapping")
+            raise ValueError("``psvars'' must be a mapping")
         psvars = dict(value)
         if not all(isinstance(key, str) for key in psvars):
             raise ValueError(f"``psvars'' must be a mapping with keys of type ``{str}''")
@@ -131,27 +138,27 @@ class Prompt:
         return self.__hooks.copy()
 
     @hooks.setter
-    def hooks(self, value):
+    def hooks(self, value: collections.abc.Iterable):
         if not isinstance(value, collections.abc.Iterable):
-            raise ValueError(f"``hooks'' must be an iterable")
+            raise ValueError("``hooks'' must be an iterable")
         hooks = list(value)
         if not all(map(callable, hooks)):
-            raise ValueError(f"``hooks'' must be an iterable of callable elements")
+            raise ValueError("``hooks'' must be an iterable of callable elements")
         self.__hooks = hooks
 
     def __repr__(self) -> str:
-        kwargs = {
+        params = {
             'ps': self.__ps,
             'color': self.__color,
             'hooks': list(map(repr, self.__hooks)),
             **self.__psvars
         }
-        arglist = ', '.join(f'{key}={repr(value)}' for key, value in kwargs.items())
-        return f'{type(self).__name__}({arglist})'
+        strings = list(f'{key}={value!r}' for key, value in params.items())
+        return f'{type(self).__name__}({', '.join(strings)})'
 
     def __str__(self) -> str:
         for hook in self.__hooks:
-            hook(self)
+            _ = hook(self)
         return self.__ps.format(**{
             key: value(self) if callable(value) else value
             for key, value in self.__psvars.items()
@@ -179,7 +186,6 @@ sys.ps1 = Prompt(
 sys.ps2 = Prompt(
     ps='{reset}{dim}.{fill}.{reset} {bold}{red}>{reset} ',
     hooks=[],
-    ts=lambda p: datetime.datetime.now().astimezone().strftime('%a %H:%M'),
     fill=lambda p: '.' * len(p.psvars['ts'](p)),
     reset='\033[0m',
     bold='\033[1m',
@@ -194,17 +200,3 @@ sys.ps2 = Prompt(
     magenta='\033[35m',
     cyan='\033[36m',
 )
-
-
-def to_snake(camel: str) -> str:
-    """Convert a PascalCase, camelCase, or kebab-case string to snake_case"""
-    # Handle the sequence of uppercase letters followed by a lowercase letter
-    snake = re.sub(r'([A-Z]+)([A-Z][a-z])', lambda m: f'{m.group(1)}_{m.group(2)}', camel)
-    # Insert an underscore between a lowercase letter and an uppercase letter
-    snake = re.sub(r'([a-z])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
-    # Insert an underscore between a digit and an uppercase letter
-    snake = re.sub(r'([0-9])([A-Z])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
-    # Insert an underscore between a lowercase letter and a digit
-    snake = re.sub(r'([a-z])([0-9])', lambda m: f'{m.group(1)}_{m.group(2)}', snake)
-    # Replace hyphens with underscores to handle kebab-case
-    return snake.replace('-', '_').lower()

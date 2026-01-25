@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/pantheonterminal/Midnight In Mojave.sh

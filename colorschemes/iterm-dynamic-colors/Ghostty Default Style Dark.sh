@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/iterm-dynamic-colors/Ghostty Default Style Dark.sh

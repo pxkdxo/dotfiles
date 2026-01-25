@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/dynamic-colors/iTerm2 Smoooooth.sh

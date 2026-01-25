@@ -32,7 +32,7 @@ elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/python"; then
   elif test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc"; then
     export PYTHONSTARTUP="${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc"
   fi
-elif test -d ~/; then
+else
   if test -f ~/.pythonrc.py; then
     export PYTHONSTARTUP=~/.pythonrc.py
   elif test -f ~/.rc.py; then

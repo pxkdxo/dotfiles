@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/pantheonterminal/iTerm2 Solarized Light.sh

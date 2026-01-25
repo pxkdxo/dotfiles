@@ -94,6 +94,10 @@ export FAST_THEME="q-jmnemonic"
 # Disable fzf completion trigger
 export FZF_COMPLETION_TRIGGER=''
 
+# Set vivid (lscolors) theme
+#export VIVID_THEME='modus-vivendi'
+export VIVID_THEME='cyberdream-light'
+
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
@@ -107,13 +111,13 @@ plugins=(
   codex
   command-not-found
   ctags
-  dircolors
   docker
   extract
   fancy-ctrl-z
   fancy-ctrl-q
   firewalld
   fzf
+  lscolors
   gh
   git
   git-prompt
@@ -283,5 +287,10 @@ fzf_alt_c_opts=(
   '--bind='\''ctrl-x:become%"${EDITOR:-nvim}" -- {}%'\'''
   '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
+
+# Load ~/.env if it exists (before profile.d scripts)
+if [[ -f ~/.env && -r ~/.env ]]; then
+  emulate sh -c '. ~/.env'
+fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0

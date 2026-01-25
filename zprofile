@@ -8,11 +8,6 @@ if [[ -f ~/.profile && -r ~/.profile ]]; then
   . ~/.profile
 fi
 
-# Load environment files
-if [[ -f "${XDG_DATA_HOME:-${HOME}/.local/share}/env/env.sh" ]]; then
-  emulate sh -c '. "${XDG_DATA_HOME:-${HOME}/.local/share}/env/env.sh"'
-fi
-
 # Add zsh site-functions to FPATH
 if [[ -d ~/.local/share/zsh/site-functions ]]; then
   FPATH="${FPATH:+${FPATH}:}${HOME}/.local/share/zsh/site-functions"

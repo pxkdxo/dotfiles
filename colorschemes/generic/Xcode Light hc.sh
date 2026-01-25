@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/generic/Xcode Light hc.sh

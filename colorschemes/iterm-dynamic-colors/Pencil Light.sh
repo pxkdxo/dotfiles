@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/iterm-dynamic-colors/Pencil Light.sh

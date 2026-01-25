@@ -21,7 +21,7 @@ for file in \
   /home/linuxbrew/.linuxbrew/Homebrew/Library/Taps/homebrew/homebrew-command-not-found/handler.sh
 do
   if test -r "${file}"; then
-    . -- "${file}"
+    . "${file}"
     unset file
     return 0
   fi

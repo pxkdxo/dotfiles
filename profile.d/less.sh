@@ -3,7 +3,7 @@
 # see less(1)
 
 # Default options
-export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --SILENT'
+export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --SILENT --no-init'
 
 # Non-printable character representation
 export LESSBINFMT='*d<%02x>'

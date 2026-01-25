@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/vim/Tinacious-Design-Light.vim

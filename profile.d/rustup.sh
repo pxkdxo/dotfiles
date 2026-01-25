@@ -1,35 +1,31 @@
 #!/usr/bin/env sh
 # rustup.sh: rustup environment config
 
-if test -d "${RUSTUP_HOME-}"
+if test -n "${RUSTUP_HOME:-}"
 then
   case ":${PATH}:" in
     *:"${RUSTUP_HOME}/bin":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${RUSTUP_HOME}/bin" ;;
+    *) export PATH="${RUSTUP_HOME}/bin${PATH:+:${PATH}}" ;;
   esac
 elif test -d "${HOME}/.local/share/rustup"
 then
+  export RUSTUP_HOME="${HOME}/.local/share/rustup"
   case ":${PATH}:" in
     *:"${HOME}/.local/share/rustup/bin":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/share/rustup/bin" ;;
+    *) export PATH="${HOME}/.local/share/rustup/bin${PATH:+:${PATH}}" ;;
   esac
-elif test -d "${HOME}/.local/rustup"
+elif test -d "${HOME}/.local/opt/rustup"
 then
+  export RUSTUP_HOME="${HOME}/.local/opt/rustup"
   case ":${PATH}:" in
-    *:"${HOME}/.local/rustup/bin":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/rustup/bin" ;;
+    *:"${HOME}/.local/opt/rustup/bin":*) ;;
+    *) export PATH="${HOME}/.local/opt/rustup/bin${PATH:+:${PATH}}" ;;
   esac
 elif test -d "${HOME}/.rustup"
 then
   case ":${PATH}:" in
     *:"${HOME}/.rustup/bin":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${HOME}/.rustup/bin" ;;
-  esac
-elif test -d "${HOME}/rustup"
-then
-  case ":${PATH}:" in
-    *:"${HOME}/rustup/bin":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${HOME}/rustup/bin" ;;
+    *) export PATH="${HOME}/.rustup/bin${PATH:+:${PATH}}" ;;
   esac
 fi
 

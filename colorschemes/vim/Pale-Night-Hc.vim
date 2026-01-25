@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/vim/Pale-Night-Hc.vim

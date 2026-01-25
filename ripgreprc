@@ -18,19 +18,25 @@
 !.git/*
 
 --colors
-line:fg:red
+line:fg:yellow
 
 --colors
-column:fg:blue
+line:style:bold
 
 --colors
-path:fg:green
+column:fg:green
+
+--colors
+column:style:bold
+
+--colors
+path:fg:magenta
 
 --colors
 path:style:underline
 
 --colors
-match:fg:magenta
+match:fg:red
 
 --colors
 match:style:bold

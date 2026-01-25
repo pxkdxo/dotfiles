@@ -4,7 +4,7 @@
 if command -v podman > /dev/null; then
   # Set DOCKER_HOST to use Podman socket
   case "$(uname -s)" in
-    Linux)
+    Linux*|linux*)
       if DOCKER_HOST="$(podman info --format '{{ .Host.RemoteSocket.Path }}')" && test -n "${DOCKER_HOST}"; then
         export DOCKER_HOST="unix://${DOCKER_HOST}"
       elif test -S "${XDG_RUNTIME_DIR:-${HOME}/.local/share}/podman/podman.sock"; then
@@ -15,7 +15,7 @@ if command -v podman > /dev/null; then
         unset DOCKER_HOST
       fi
       ;;
-    Darwin)
+    Darwin*|darwin*)
       podman_socket="$(podman machine inspect --format '{{ .ConnectionInfo.PodmanSocket.Path }}' 2> /dev/null)"
       if test -n "${podman_socket}" && test -S "${podman_socket}"; then
         export DOCKER_HOST="unix://${podman_socket}"

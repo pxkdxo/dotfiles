@@ -15,7 +15,7 @@ if test -t 1; then
   fi
   # Initialize terminal
   if command -v tput 1> /dev/null; then
-    tput init || true
+    tput init
   fi
 fi
 
@@ -25,7 +25,6 @@ if test "${UID:-$(id -u)}" -eq 0; then
 else
   umask 0022
 fi
-
 
 # Function to append an element to PATH
 # usage: path_append TO_ADD
@@ -41,7 +40,6 @@ path_append() {
   fi
 }
 
-
 # Function to prepend an element to PATH
 # usage: path_prepend TO_ADD
 path_prepend() {
@@ -56,36 +54,33 @@ path_prepend() {
   fi
 }
 
-
 # Prepend executable paths
-for dir in ~/.local/share/homebrew/bin ~/.local/opt/homebrew/bin  ~/.local/bin; do
-  if test -d "${dir}"; then
-    path_prepend "${dir}"
-  fi
-done
-unset dir
+if test -d ~/.local/share/homebrew/bin
+then
+    path_prepend ~/.local/share/homebrew/bin
+fi
+if test -d ~/.local/opt/homebrew/bin
+then
+    path_prepend ~/.local/opt/homebrew/bin
+fi
+if test -d ~/.local
+then
+  path_prepend ~/.local/bin
+fi
 
-
-# Quick detour for homebrew initialization
+# Quick detour for early homebrew initialization
 if command -v brew > /dev/null
 then
   eval "$(brew shellenv)"
 fi
 
-
 # Load additional profile config
-if test -d "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"; then
-  dir="${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"
-else
-  dir="${HOME}/.profile.d"
-fi
-for file in "${dir}"/*.sh; do
-  if test -r "${file}"; then
-    . "${file}"
+for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
+  if test -f "${profile}" && test -r "${profile}"; then
+    . "${profile}"
   fi
 done
-unset dir
-unset file
+unset profile
 
 
 # vi:ft=sh

@@ -1,7 +1,7 @@
 # alacritty/alacritty.toml: Alacritty terminal config
 
 [general]
-import = ["./theme.default.toml"]
+import = ["./default.theme.toml"]
 
 [window]
 blur = true

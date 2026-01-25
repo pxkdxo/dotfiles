@@ -23,12 +23,15 @@ return {
     "savq/melange-nvim",
   },
   {
+    'srcery-colors/srcery-vim',
+  },
+  {
     "scottmckendry/cyberdream.nvim",
     lazy = false,
     priority = 1000,
     opts = {
       -- Set light or dark variant
-      variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+      variant = "light", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look
@@ -46,10 +49,7 @@ return {
       -- Enable or disable specific extensions
       extensions = {
         cmp = true,
-        gitsigns = true,
-        mini = true,
         notify = true,
-        telescope = true,
       },
     },
   },

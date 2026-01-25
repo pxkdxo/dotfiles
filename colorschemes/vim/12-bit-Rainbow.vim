@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/vim/12-bit-Rainbow.vim

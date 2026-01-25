@@ -22,6 +22,9 @@ then
 elif test -d "/usr/bin" && test -x "/usr/bin/brew"
 then
   eval "$(/usr/bin/brew shellenv)"
+elif command -v brew > /dev/null
+then
+  eval "$(brew shellenv)"
 fi
 
 # vim:ft=sh

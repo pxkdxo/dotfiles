@@ -17,7 +17,6 @@ return {
       }
       local filetype_map = {
         lazy = { name = "lazy.nvim", icon = "💤" },
-        minifiles = { name = "minifiles", icon = "🗂️ " },
         snacks_terminal = { name = "terminal", icon = "🐚" },
         mason = { name = "mason", icon = "🔨" },
         snacks_picker_input = { name = "picker", icon = "🔍" },
@@ -129,23 +128,23 @@ return {
             },
           },
           lualine_x = {
-            {
-              ---@diagnostic disable: undefined-field
-              require("noice").api.status.mode.get,
-              cond = function()
-                local ignore = {
-                  "󰄽 INSERT 󰄾",
-                  "󰄽 VISUAL 󰄾",
-                  "󰄽 VISUAL LINE 󰄾",
-                  "󰄽 VISUAL BLOCK 󰄾",
-                  "󰄽 TERMINAL 󰄾",
-                }
-                local mode = require("noice").api.status.mode.get()
-                return require("noice").api.status.mode.has() and not vim.tbl_contains(ignore, mode)
-              end,
-              color = utils.get_hlgroup("Comment"),
-              ---@diagnostic enable: undefined-field
-            },
+            -- {
+            --   ---@diagnostic disable: undefined-field
+            --   require("noice").api.status.mode.get,
+            --   cond = function()
+            --     local ignore = {
+            --       "󰄽 INSERT 󰄾",
+            --       "󰄽 VISUAL 󰄾",
+            --       "󰄽 VISUAL LINE 󰄾",
+            --       "󰄽 VISUAL BLOCK 󰄾",
+            --       "󰄽 TERMINAL 󰄾",
+            --     }
+            --     local mode = require("noice").api.status.mode.get()
+            --     return require("noice").api.status.mode.has() and not vim.tbl_contains(ignore, mode)
+            --   end,
+            --   color = utils.get_hlgroup("Comment"),
+            --   ---@diagnostic enable: undefined-field
+            -- },
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
@@ -351,7 +350,8 @@ return {
   },
   {
     "rcarriga/nvim-notify",
-    cond = vim.g.vscode == nil,
+    cond = false,
+    -- cond = vim.g.vscode == nil,
     opts = {
       -- background_colour = "NotifyBackground",
       background_colour = "CursorColumn",
@@ -388,7 +388,7 @@ return {
       -- OPTIONAL:
       --   `nvim-notify` is only needed, if you want to use the notification view.
       --   If not available, we use `mini` as the fallback
-      "rcarriga/nvim-notify",
+      -- "rcarriga/nvim-notify",
     },
     opts = {
       presets = {
@@ -397,6 +397,14 @@ return {
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
+      },
+      notify = {
+        -- Noice can be used as `vim.notify` so you can route any notification like other messages
+        -- Notification messages have their level and other properties set.
+        -- event is always "notify" and kind can be any log level as a string
+        -- The default routes will forward notifications to nvim-notify
+        -- Benefit of using Noice for this is the routing and consistent history view
+        enabled = false,
       },
       lsp = {
         -- disable lsp loading progress view

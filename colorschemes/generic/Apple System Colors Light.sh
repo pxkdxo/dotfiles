@@ -1,0 +1,1 @@
+../Collections/iTerm2-Color-Schemes/generic/Apple System Colors Light.sh

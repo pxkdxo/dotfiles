@@ -3,29 +3,31 @@
 # see environ(7) and select-editor(1)
 
 # Try update-alternatives first (Debian/Ubuntu)
-if command -v update-alternatives > /dev/null; then
-  EDITOR="$(command -v -- "$(update-alternatives --query editor | sed -n '
-    s/^[[:blank:]]*[Vv]alue:[[:blank:]]*\(.*[^[:blank:]]\)[[:blank:]]*$/\1/
-    tn
-    d
-    :n
-    /[^[:blank:]]/bq
-    d
-    :q
-    p
-    q'
-  )" 2> /dev/null)"
-fi
-if test -n "${EDITOR}" && test -x "${EDITOR}"; then
+if command -v update-alternatives > /dev/null && EDITOR="$(
+    command -v -- "$(
+      update-alternatives --query editor | sed -E -n '
+      # Find the line starting with "Value:" and extract the value it contains
+      s/^[[:blank:]]*Value:[[:blank:]]*(.*[^[:blank:]])[[:blank:]]*$/\1/
+      t z # Skip to z if matched
+      d # Otherwise delete the line and start again
+      : z # Print the line and quit
+      p
+      q
+      '
+    )"
+  )"
+then
   export EDITOR
 else
-  # Fallback to common editors in order of preference
-  for EDITOR in nvim vim vi editor; do
+  for EDITOR in nvim vim vi; do
     if EDITOR="$(command -v -- "${EDITOR}")"; then
       export EDITOR
       break
     fi
   done
+fi
+if test -z "${EDITOR}"; then
+  unset EDITOR
 fi
 
 
