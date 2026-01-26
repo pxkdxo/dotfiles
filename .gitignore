@@ -33,8 +33,7 @@
 !/bat/themes
 !/bat/themes/**
 
-!/colorschemes/*
-!/colorschemes/*/**
+!/colorschemes/**
 
 !/dircolors
 
@@ -95,6 +94,11 @@
 
 !/systemd/user/*.service
 !/systemd/user/*.socket
+
+!/termux/colorschemes
+!/termux/themes
+!/termux/colors.properties
+!/termux/termux.properties
 
 !/tmux.conf
 !/tmux/tmux.conf

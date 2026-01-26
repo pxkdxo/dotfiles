@@ -1,99 +1,104 @@
 # ~/.config/git/config: user-global git config
 # see git(1) git-config(1)
 
-[advice]
-  pushUpdateRejected
-
-[color]
-  ui = auto
-
-[color "decorate"]
-  branch = green
-  remoteBranch = red
-  stash = blue
-  tag = yellow
-
-[color "diff"]
-  meta = white bold
-  frag = cyan bold
-  old = red bold
-  new = green bold
-
 [core]
-  editor = vim
-  excludesfile = ~/.gitignore
-  attributesfile = ~/.gitattributes
-  ignorecase = false
-  compression = 0
-
-[credential]
-  helper = cache --timeout 3600
+	editor = nvim
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
+	ignorecase = false
+	compression = 0
 
 [init]
-  defaultBranch = main
-  templateDir = ~/.local/share/git/templates
+	defaultBranch = main
+	templateDir = ~/.local/share/git/templates
+
+[credential]
+	helper = cache --timeout 3600
 
 [user]
-  # email =
 	name = Patrick DeYoreo
 
 [push]
-  default = current
-  autoSetupRemote = true
+	default = current
+	autoSetupRemote = true
 
 [pull]
-  rebase = false
+	rebase = false
+
+[advice]
+	pushUpdateRejected
+
+[color]
+	ui = auto
+
+[color "decorate"]
+	branch = green
+	remoteBranch = red
+	stash = blue
+	tag = yellow
+
+[color "diff"]
+	meta = white bold
+	frag = cyan bold
+	old = red bold
+	new = green bold
 
 [protocol "file"]
-  allow = always
+	allow = always
 
 [alias]
-  a = add
-  b = branch
-  c = commit
-  co = checkout
-  cob = checkout -b
-  m = merge
-  mc = merge --continue
-  r = reset HEAD
-  s = status -sb   # Short status with current branch
-  sw = switch      # Change branch
-  swc = switch -c  # Create new branch
+	# Fix lines like "git git COMMAND"
+	git = !git
 
-  # Commits log with pretty format
-  l = log --all --graph --decorate --oneline
+	a = add
+	aa = add -A
 
-  # Fully commits log with statistic
-  ll = log --stat --abbrev-commit
+	c = commit
+	cm = commit -m
 
-  # List of contributors and how many commits each person has
-  contrib = shortlog -sn
+	b = branch
+	ba = branch -a
 
-  # When doing "git git log" or some such, do not complain about "git"
-  git = !git
+	co = checkout
+	cb = checkout -b
 
-  # Initialize, add all files and commit
-  new = "!sh -c 'git init && git add . && git commit -m '\\''Initial commit'\\''' --"
+	m = merge
+	ma = merge --abort
+	mc = merge --continue
 
-  # Ammend last commit with its original message
-  amend = "!sh -c 'git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend' --"
+	st = status
+	ss = status --short --branch
 
-  # Append file to .gitignore
-  ignore = "!sh -c 'test -e .gitignore && >> .gitignore echo || touch .gitignore && >> .gitignore printf '\\''%s\\n'\\'' \"$@\"' --"
+	sw = switch
+	swc = switch --create
 
-  # Pull data from remote and push local data
-  sync = "!sh -x -c 'git pull && git push' --"
+	sm = submodule
 
-  # Merge latest master/main to current branch
-  sync-local = "!sh -c 'if test \"$#\" -gt 0; then git fetch origin \"$1:$1\" && git merge; else >&2 echo '\\''usage: git syncfrom BRANCH'\\''; exit 1; fi' --"
+	# Commit history
+	l = log --all --graph --decorate --oneline
+	ll = log --stat --abbrev-commit
 
-  # Checkout to the latest
-  main = "!sh -c 'git checkout main && git pull --prune' --"
-  prod = "!sh -c 'git checkout prod && git pull --prune' --"
-  master = "!sh -c 'git checkout master && git pull --prune' --"
-  dev = "!sh -c 'git checkout dev && git pull --prune' --"
-  devel = "!sh -c 'git checkout devel && git pull --prune' --"
-  develop = "!sh -c 'git checkout develop && git pull --prune' --"
+	# List of contributors with commit totals
+	contrib = shortlog -sn
 
-  # Lazygit
-  lazy = "!lazygit"
+	# Ammend last commit with its original message
+	amend = "!__git_amend() { git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend; }; __git_amend"
+
+	# Initialize, add all files and commit
+	new = "!__git_new() { git init && touch README.md && git add -A && git commit -m \"Initial commit\"; }; __git_new"
+
+	# Pull from remote and push from local
+	sync = "!__git_sync() { git pull && git push; }; __git_sync"
+
+	# Retrieve a gitignore template from gitignore.io
+	ignore = "!__git_ignore() { set -x; if test \"$#\" -gt 0; then curl -fsSL \"https://www.toptal.com/developers/gitignore/api/$*\"; else >&2 echo \"git ignore: error: expected a list of project types for which to retrieve a template - got none\"; >&2 echo \"usage: git ignore TYPE [TYPE ...]\"; exit 2; fi; }; IFS=, __git_ignore"
+
+	# Checkout and pull
+	dev = "!__git_dev() { git checkout dev && git pull --prune; }; __git_dev"
+	develop = "!__git_develop() { git checkout develop && git pull --prune; }; __git_develop"
+
+	main = "!__git_main() { git checkout main && git pull --prune; }; __git_main"
+	master = "!__git_master() { git checkout master && git pull --prune; }; __git_master"
+	prod = "!__git_prod() { git checkout prod && git pull --prune; }; __git_prod"
+
+# vi:ft=gitconfig:ts=8:sw=8:noet
