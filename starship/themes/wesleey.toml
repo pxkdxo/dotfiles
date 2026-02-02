@@ -1,23 +1,9 @@
 format = """
-[╭](fg:current_line)\
-$hostname\
-$directory\
-$git_branch\
-$git_status\
-$fill\
-$python\
-$line_break\
-[│](fg:current_line)
-[│](fg:current_line)\
-$username\
-$aws\
-$fill\
-$cmd_duration\
-$time\
-$shell\
-$os\
-$line_break\
-$character\
+[╭](fg:current_line)$username$hostname$fill$cmd_duration$python$aws$line_break\
+[│](fg:current_line)$line_break\
+[│](fg:current_line)$directory$git_branch$git_status$fill$time$line_break\
+[│](fg:current_line)$line_break\
+[╰](fg:current_line)$character\
 """
 
 palette = 'dracula'
@@ -76,8 +62,39 @@ Ubuntu = ''
 Unknown = ''
 Windows = ''
 
+[username]
+format = '[•](fg:current_line)[](fg:pink)[ ](fg:bold fg:primary bg:pink)[](fg:pink bg:box)[ $user](fg:foreground bg:box)[](fg:box)'
+show_always = true
+
+[hostname]
+format =  "[•](fg:current_line)[](fg:cyan)[ ](fg:bold fg:primary bg:cyan)[](fg:cyan bg:box)[ $hostname](fg:foreground bg:box)[](fg:bold fg:box)"
+ssh_only = false
+# trim_at = ".*"
+disabled = false
+
+[nodejs]
+format = '[•](fg:current_line)[](fg:cyan)[$symbol](fg:bold fg:primary bg:cyan)[](fg:cyan bg:box)[ node.js:$version](fg:foreground bg:box)[](fg:box)'
+symbol = '󰎙 '
+
+[python]
+format = '[•](fg:current_line)[](fg:yellow)[$symbol](fg:bold fg:primary bg:yellow)[](fg:yellow bg:box)[ python:$version](fg:foreground bg:box)[](fg:box)'
+symbol = ' '
+
+[c]
+format = '[•](fg:current_line)[](fg:blue)[$symbol](fg:bold fg:primary bg:red)[](fg:red bg:box)[ C:$version](fg:foreground bg:box)[](fg:box)'
+symbol = ' '
+
+[aws]
+format = '[•](fg:current_line)[](fg:purple)[$symbol](fg:bold fg:primary bg:purple)[](fg:purple bg:box)[ aws $profile](fg:foreground bg:box)[](fg:box)'
+symbol = '󰖐 '
+
+[fill]
+# symbol = '─'
+symbol = '•'
+style = 'fg:current_line'
+
 [directory]
-format = '[•](fg:current_line)[](fg:green)[󰷏 ](fg:primary bg:green)[](fg:green bg:box)[ $read_only$truncation_symbol$path](fg:foreground bg:box)[](fg:box)'
+format = '[•](fg:current_line)[](fg:green)[󰷏 ](fg:bold fg:primary bg:green)[](fg:green bg:box)[ $read_only$truncation_symbol$path](fg:foreground bg:box)[](fg:box)'
 home_symbol = " ~"
 truncation_symbol = ' '
 truncation_length = 28
@@ -86,59 +103,26 @@ read_only = '󱧵 '
 read_only_style = ''
 
 [git_branch]
-format = '[•](fg:current_line)[](fg:yellow)[$symbol](fg:primary bg:yellow)[](fg:yellow bg:box)[ $branch](fg:foreground bg:box)'
+format = '[•](fg:current_line)[](fg:red)[$symbol](fg:bold fg:primary bg:red)[](fg:red bg:box)[ $branch](fg:foreground bg:box)'
 symbol = ' '
 
 [git_status]
 format = '[( $all_status)](fg:foreground bg:box)[](fg:box)'
 
-[nodejs]
-format = '[•](fg:current_line)[](fg:cyan)[$symbol](fg:primary bg:cyan)[](fg:cyan bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = '󰎙 node.js'
-
-[python]
-format = '[•](fg:current_line)[](fg:red)[$symbol](fg:primary bg:red)[](fg:red bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = ' python'
-
-[c]
-format = '[•](fg:current_line)[](fg:red)[$symbol](fg:primary bg:red)[](fg:red bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = ' C'
-
-[aws]
-format = '[•](fg:current_line)[](fg:purple)[$symbol](fg:primary bg:purple)[](fg:purple bg:box)[ $profile](fg:foreground bg:box)[](fg:box)'
-symbol = '󰖐 aws'
-
-[fill]
-# symbol = '─'
-symbol = '•'
-style = 'fg:primary'
-
-[hostname]
-format =  "[•](fg:current_line)[](fg:pink)[ ](fg:primary bg:pink)[](fg:pink bg:box)[ $hostname](fg:foreground bg:box)[](fg:box)"
-ssh_only = false
-# trim_at = ".*"
-disabled = false
-
 [cmd_duration]
 min_time = 500
-format = '[•](fg:current_line)[](fg:yellow)[ ](fg:primary bg:yellow)[](fg:yellow bg:box)[ $duration](fg:foreground bg:box)[](fg:box)'
+format = '[•](fg:current_line)[](fg:green)[ ](fg:bold fg:primary bg:green)[](fg:green bg:box)[ $duration](fg:foreground bg:box)[](fg:box)'
 
 [shell]
-format = '[•](fg:current_line)[](fg:pink)[ ](fg:primary bg:pink)[](fg:pink bg:box)[ $indicator](fg:foreground bg:box)[](fg:box)'
+format = '[•](fg:current_line)[](fg:cyan)[ ](fg:bold fg:primary bg:cyan)[](fg:cyan bg:box)[ $indicator](fg:foreground bg:box)[](fg:box)'
 disabled = false
 
 [time]
-format = '[•](fg:current_line)[](fg:cyan)[ ](fg:primary bg:cyan)[](fg:cyan bg:box)[ $time](fg:foreground bg:box)[](fg:box)'
+format = '[•](fg:current_line)[](fg:orange)[ ](fg:bold fg:primary bg:orange)[](fg:orange bg:box)[ $time](fg:foreground bg:box)[](fg:box)'
 time_format = '%H:%M'
 disabled = false
 
-[username]
-format = '[•](fg:current_line)[](fg:orange)[ ](fg:primary bg:orange)[](fg:orange bg:box)[ $user](fg:foreground bg:box)[](fg:box)'
-show_always = true
-
 [character]
-format = """\
-[│](fg:current_line)
-[╰•$symbol](fg:current_line) """
-success_symbol = '[  ](fg:bold green)'
-error_symbol = '[  ](fg:bold red)'
+format = "[•$symbol](fg:current_line) "
+success_symbol = '[  ](fg:green)'
+error_symbol = '[  ](fg:red)'
