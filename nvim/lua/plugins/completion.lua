@@ -13,6 +13,19 @@ return {
     },
   },
   {
+    "PaterJason/cmp-conjure",
+    dependencies = { 'hrsh7th/nvim-cmp' },
+    lazy = true,
+  },
+  {
+    "petertriho/cmp-git",
+    dependencies = { 'hrsh7th/nvim-cmp' },
+    opts = {},
+    -- init = function()
+    --   table.insert(require("cmp").get_config().sources, { name = "git" })
+    -- end
+  },
+  {
     'hrsh7th/nvim-cmp',
     dependencies = {
       'hrsh7th/cmp-buffer', -- Buffer completions
@@ -20,8 +33,10 @@ return {
       'hrsh7th/cmp-path', -- Path completions
       'hrsh7th/cmp-nvim-lsp', -- LSP completions
       'hrsh7th/cmp-nvim-lua', -- Neovim Lua API completions
+      'hrsh7th/cmp-nvim-lsp-document-symbol',
       'folke/lazydev.nvim', -- LazyVim types and completions
       'L3MON4D3/LuaSnip', -- Snippet engine
+      "PaterJason/cmp-conjure", -- Conjure
       'saadparwaiz1/cmp_luasnip', -- Snippet completions
       'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
       'windwp/nvim-autopairs', -- Autopairs trigger
@@ -41,19 +56,19 @@ return {
       end
       opts = opts or {}
       opts.snippet = { expand = function(args) luasnip.lsp_expand(args.body) end }
-      opts.sources = cmp.config.sources(
-        {
-          { name = "codecompanion" },
-          { name = "copilot"  },
-          { name = "nvim_lsp" },
-          { name = "nvim_lua" },
-          { name = "lazydev"  },
-        },
-        {
-          { name = "luasnip"  },
-          { name = "buffer"   },
-        }
-      )
+      opts.sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "nvim_lua" },
+        { name = "lazydev"  },
+        { name = "conjure"  },
+      },
+      {
+        { name = "copilot"       },
+        { name = "codecompanion" },
+        { name = "git" },
+        { name = "luasnip" },
+        { name = "buffer"  },
+      })
       opts.window = opts.window or {}
       opts.window.completion = cmp.config.window.bordered({
         border = "rounded",
@@ -153,7 +168,10 @@ return {
               end
             end),
           }),
-          sources = cmp.config.sources({ { name = 'buffer' } })
+          sources = cmp.config.sources({
+            { name = 'nvim_lsp_document_symbol' },
+            { name = 'buffer' },
+          }),
         }
       )
       cmp.setup.cmdline(
@@ -194,10 +212,12 @@ return {
               end
             end),
           }),
-          sources = cmp.config.sources(
-            { { name = 'cmdline' }, { name = 'path' } },
-            { { name = 'buffer'  } }
-          ),
+          sources = cmp.config.sources({
+            { name = 'cmdline' }, { name = 'path', option = { trailing_slash = true } }
+          },
+          {
+            { name = 'buffer'  }
+          }),
           -- matching = { disallow_symbol_nonprefix_matching = false },
         }
       )
@@ -207,7 +227,7 @@ return {
         require('nvim-autopairs.completion.cmp').on_confirm_done()
       )
       -- Extra LSP config
-      -- vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
+      vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
     end
   },
 }

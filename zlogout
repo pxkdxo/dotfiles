@@ -3,15 +3,8 @@
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
-# Clear the terminal
-clear
+# Reset and clean the terminal
+{ tput reset || reset || { test "${SHLVL}" -le 1 && tput clear || clear; } || 2> /dev/null; } || true
 
-# Reset the terminal
-#reset
-
-# If leaving console, clear the screen
-# if (( SHLVL == 1 )) && command -v clear_console > /dev/null; then
-#   clear_console -q
-# fi
 
 # vi:ft=zsh

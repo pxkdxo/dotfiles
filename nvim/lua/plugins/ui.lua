@@ -16,11 +16,10 @@ return {
         ["Error"] = utils.get_hlgroup("DiagnosticHint"),
       }
       local filetype_map = {
-        lazy = { name = "lazy.nvim", icon = "💤" },
-        snacks_terminal = { name = "terminal", icon = "🐚" },
-        mason = { name = "mason", icon = "🔨" },
-        snacks_picker_input = { name = "picker", icon = "🔍" },
-        ["copilot-chat"] = { name = "copilot", icon = "🤖" },
+        lazy = { name = "lazy.nvim", icon = "󰒲 " },
+        mason = { name = "mason", icon = "󱌣 " },
+        snacks_picker_input = { name = "picker", icon = " " },
+        ["copilot-chat"] = { name = "copilot", icon = " " },
       }
       return {
         options = {
@@ -152,7 +151,7 @@ return {
             },
             {
               function()
-                local icon = " "
+                local icon = " "
                 local status = require("copilot.status").data
                 return icon .. (status.message or "")
               end,
@@ -324,7 +323,7 @@ return {
 
       -- Custom fold handler
       local function fold_handler(virt_text, lnum, end_lnum, width, truncate)
-        local suffix = (' 󰁂 %d 󰍻 '):format(end_lnum - lnum)
+        local suffix = (' 󰁂 %d  '):format(end_lnum - lnum)
         local target_width = width - vim.fn.strdisplaywidth(suffix)
         local result_text, result_width = _fold_handler_rec(virt_text, {}, target_width, 0, truncate)
         local spaces = (' '):rep(target_width - result_width)
@@ -350,50 +349,38 @@ return {
   },
   {
     "rcarriga/nvim-notify",
-    cond = false,
     -- cond = vim.g.vscode == nil,
+    cond = false,
     opts = {
-      -- background_colour = "NotifyBackground",
-      background_colour = "CursorColumn",
+      background_colour = "Conceal",
+      --background_colour = "NotifyBackground",
       level = 2,
-      minimum_width = 24,
-      -- fps = 60,
-      render = "default",
+      minimum_width = 25,
+      render = "minimal",
+      -- fps = 40,
       -- stages = "fade",
-      timeout = 3500,
+      timeout = 4000,
       top_down = false,
       time_formats = {
-        notification = "%A, %X",
+        notification = "%a, %I:%M %p",
         notification_history = "%F %T%z"
-      },
-    },
-  },
-  {
-    "nvim-neorg/neorg",
-    cond = vim.g.vscode == nil,
-    version = "*", -- Pin Neorg to the latest stable release
-    ft = "norg", -- lazy-load on filetype
-    opts = {
-      load = {
-        ["core.defaults"] = {},
       },
     },
   },
   {
     "folke/noice.nvim",
     event = "VeryLazy",
-    cond = vim.g.vscode == nil,
     dependencies = {
       "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
+      -- -- OPTIONAL:
+      -- -- `nvim-notify` is only needed, if you want to use the notification view.
+      -- -- If not available, we use `mini` as the fallback
       -- "rcarriga/nvim-notify",
     },
     opts = {
       presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
-        command_palette = true, -- position the cmdline and popupmenu together
+        command_palette = false, -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true, -- add a border to hover docs and signature help
@@ -445,19 +432,19 @@ return {
       },
       cmdline = {
         enabled = true, -- enables the Noice cmdline UI
-        view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
+        view = "cmdline", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
         format = {
           -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
           -- view: (default is cmdline view)
           -- opts: any options passed to the view
           -- icon_hl_group: optional hl_group for the icon
           -- title: set to anything or empty string to hide
-          cmdline = { pattern = "^:", icon = "", lang = "vim" },
+          cmdline = { pattern = "^:", icon = ">", lang = "vim" },
           search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
           search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
           filter = { pattern = "^:%s*!", icon = "", lang = "bash" },
           lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
-          help = { pattern = "^:%s*he?l?p?%s+", icon = "󰋖" },
+          help = { pattern = "^:%s*he?l?p?%s+", icon = "?" },
           input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
         },
       },

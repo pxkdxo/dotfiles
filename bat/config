@@ -18,7 +18,7 @@
 # Uncomment the following line if you are using less version >= 551 and want to
 # enable mouse scrolling support in `bat` when running inside tmux. This might
 # disable text selection, unless you press shift.
---pager="less --quit-if-one-screen --no-init --mouse --ignore-case --RAW-CONTROL-CHARS --SILENT"
+--pager="less -FiQRSX --mouse"
 
 # Syntax mappings: map a certain filename pattern to a language.
 #   Example 1: use the C++ syntax for Arduino .ino files
@@ -30,7 +30,7 @@
 --set-terminal-title
 
 # Set a default output style.
---style=changes,grid,numbers,snip
+--style=header,grid,numbers,snip
 
 # Add styling unless the output is piped.
 --decorations=auto

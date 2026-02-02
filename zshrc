@@ -83,20 +83,21 @@ DISABLE_AUTO_UPDATE="true"
 # fi
 
 # Temporary fix for git prompts
-zstyle ':omz:alpha:lib:git' async-prompt no
+# zstyle ':omz:alpha:lib:git' async-prompt no
 
 # Use iTerm2 shell integration
 zstyle ':omz:plugins:iterm2' shell-integration yes
 
 # Set fast-syntax-highlighting theme
-export FAST_THEME="q-jmnemonic"
+# export FAST_THEME="q-jmnemonic"
+export FAST_THEME="sv-plant"
 
 # Disable fzf completion trigger
 export FZF_COMPLETION_TRIGGER=''
 
 # Set vivid (lscolors) theme
-#export VIVID_THEME='modus-vivendi'
-export VIVID_THEME='cyberdream'
+export VIVID_THEME='modus-vivendi'
+# export VIVID_THEME='cyberdream-light'
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -108,6 +109,7 @@ export VIVID_THEME='cyberdream'
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   aws
+  brew
   codex
   command-not-found
   ctags
@@ -194,14 +196,17 @@ bindkey '^@' zic-completion
 
 # Configure man pager
 #
+#
+typeset -xT LESS="${LESS:-"-FiQRSX --mouse"}" less ' '
+
 if test -n "${MANPAGER}"; then
   export MANPAGER
 elif command -v nvim > /dev/null; then
-  export MANPAGER="${MANPAGER:-nvim '+Man!'}"
+  export MANPAGER='nvim +Man!'
 elif command -v vim > /dev/null; then
-  export MANPAGER="${MANPAGER:-vim -M +MANPAGER -}"
+  export MANPAGER='vim -M +MANPAGER -'
 elif command -v bat > /dev/null; then
-  export MANPAGER="${MANPAGER:-bat --language=Manpage --paging=always --color=always --style=grid,numbers --pager='less ${LESS:-"-XQFR --ignore-case --mouse"}' -- -}"
+  export MANPAGER='bat --language=Manpage --paging=auto --decorations=auto --color=auto --style=grid,snip -- -'
 fi
 
 # Set fzf default options
@@ -288,7 +293,9 @@ fzf_alt_c_opts=(
   '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
 )
 
-# Load ~/.env if it exists (before profile.d scripts)
+# Load ~/.env
+# NOTE: Do this here to reduce exposure to child processes
+#
 if [[ -f ~/.env && -r ~/.env ]]; then
   emulate sh -c '. ~/.env'
 fi

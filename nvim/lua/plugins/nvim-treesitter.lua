@@ -1,6 +1,7 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    cond = true,
     branch = 'master',
     lazy = false,
     build = function (_)
@@ -114,6 +115,7 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
+    cond = true,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
@@ -153,10 +155,11 @@ return {
       require('treesitter-context').setup(opts)
     end,
   },
-  -- {
-  --   "nvim-treesitter/nvim-treesitter-textobjects",
-  --   dependencies = {
-  --     "nvim-treesitter/nvim-treesitter",
-  --   },
-  -- }
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    cond = true,
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+  }
 }

@@ -12,7 +12,7 @@ then
 elif test -d "${HOME}/.local/opt/fzf"
 then
   export FZF_BASE="${HOME}/.local/opt/fzf"
-elif test -d "${HOME}/.local/homebrew/opt/fzf"
+elif test -d "${HOME}/.local/opt/fzf"
 then
   export FZF_BASE="${HOME}/.local/homebrew/opt/fzf"
 elif test -d '/usr/local/share/fzf'
@@ -21,15 +21,6 @@ then
 elif test -d "${HOME}/.fzf"
 then
   export FZF_BASE="${HOME}/.fzf"
-elif test -d '/usr/local/share/fzf'
-then
-  export FZF_BASE='/usr/local/share/fzf'
-elif test -d '/usr/share/fzf'
-then
-  export FZF_BASE='/usr/share/fzf'
-elif test -d '/opt/fzf'
-then
-  export FZF_BASE='/opt/fzf'
 else
   unset FZF_BASE
 fi

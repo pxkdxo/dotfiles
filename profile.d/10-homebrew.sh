@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 # ~/.profile.d/homebrew.sh: Homebrew environment setup
 
-if test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
+if command -v brew > /dev/null
+then
+  eval "$(brew shellenv)"
+elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
 then
   eval "$("${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin/brew" shellenv)"
 elif test -d "${HOME}/.local/opt/homebrew/bin"
@@ -13,18 +16,6 @@ then
 elif test -d "${HOME}/.homebrew/bin"
 then
   eval "$("${HOME}/.homebrew/bin/brew" shellenv)"
-elif test -d "/opt/homebrew/bin"
-then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif test -d "/usr/local/bin" && test -x "/usr/local/bin/brew"
-then
-  eval "$(/usr/local/bin/brew shellenv)"
-elif test -d "/usr/bin" && test -x "/usr/bin/brew"
-then
-  eval "$(/usr/bin/brew shellenv)"
-elif command -v brew > /dev/null
-then
-  eval "$(brew shellenv)"
 fi
 
 # vim:ft=sh

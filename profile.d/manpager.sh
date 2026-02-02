@@ -6,7 +6,7 @@ if command -v nvim > /dev/null; then
 elif command -v vim > /dev/null; then
   export MANPAGER="vim -M +MANPAGER -"
 elif command -v bat > /dev/null; then
-  export MANPAGER="bat --language=Manpage --paging=always --color=always --style=header,grid,snip --pager='less ${LESS:--iFQR --mouse} -X' -- -"
+  export MANPAGER="bat --language=Manpage --paging=always --decorations=auto --color=auto --style=grid,snip --pager='less ${LESS:--FiQRSX --mouse}' -- -"
 fi
 
 # vim:ft=sh

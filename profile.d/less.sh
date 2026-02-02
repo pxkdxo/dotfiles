@@ -3,20 +3,13 @@
 # see less(1)
 
 # Default options
-export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen --mouse --ignore-case --SILENT --no-init'
+export LESS='-FiQRSX --mouse'
 
 # Non-printable character representation
 export LESSBINFMT='*d<%02x>'
 
 # Non-printable character representation (utf-8)
 export LESSUTFBINFMT='<U+%04lx>'
-
-# Use lesspipe.sh pre-processor
-# if command -v lesspipe.sh > /dev/null; then
-#   export LESSOPEN='lesspipe.sh %s'
-# else
-#   unset LESSOPEN
-# fi
 
 # Enable colorization
 if command -v bat > /dev/null; then
@@ -30,5 +23,12 @@ elif command -v nvimpager > /dev/null; then
 elif command -v vimcolor > /dev/null; then
   export LESSCOLORIZER='vimcolor'
 fi
+
+# Use lesspipe.sh pre-processor
+# if command -v lesspipe.sh > /dev/null; then
+#   export LESSOPEN='lesspipe.sh %s'
+# else
+#   unset LESSOPEN
+# fi
 
 # vim:ft=sh

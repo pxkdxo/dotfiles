@@ -44,9 +44,9 @@ return {
         -- split = "belowright new" -- open a split window below
         -- split = "belowright vsplit" -- open a split window to the right
         -- or, when using a floating window
-        height           = 0.85,            -- window height
-        width            = 0.70,            -- window width
-        row              = 0.40,            -- window row position (0=top, 1=bottom)
+        height           = 0.89,            -- window height
+        width            = 0.82,            -- window width
+        row              = 0.50,            -- window row position (0=top, 1=bottom)
         col              = 0.50,            -- window col position (0=left, 1=right)
         backdrop         = 65,
         fullscreen       = false,
@@ -77,10 +77,29 @@ return {
       fzf_opts = {
         ["--ansi"] = true,
         ["--layout"] = "reverse",
-        ["--tmux"] = "center,80%,65%",
-        ["--border"] = "sharp",
-        ["--color"] = "dark,fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold",
+        ["--tmux"] = "center,89%,82%",
         ["--prompt"] = "> ",
+        ["--border"] = "sharp",
+        ["--color"] = table.concat({
+          "dark",
+          "fg:5",
+          "fg+:1:bold",
+          "hl:3",
+          "hl+:3:bold",
+          "bg:-1",
+          "bg+:-1:bold",
+          "pointer:2:bold",
+          "border:3",
+          "query:-1:regular",
+          "prompt:2:bold",
+          "input-border:3",
+          "header:2",
+          "header-border:3",
+          "footer:6",
+          "footer-border:3",
+          "info:-1:dim",
+          "gutter:-1:bold",
+        }, ","),
       },
     },
   },

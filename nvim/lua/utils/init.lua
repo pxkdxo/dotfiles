@@ -1,10 +1,8 @@
-local modules = {
-  colors = require("utils.colors"),
-}
+local M = {}
 
-return {
-  colors = modules.colors,
-  setup = function (opts)
-    modules.colors.setup(opts.colors)
-  end,
-}
+M.colors = require("utils.colors")
+M.setup = function (opts)
+  M.colors.setup(opts.colors)
+end
+
+return M

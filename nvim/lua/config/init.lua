@@ -1,13 +1,10 @@
-local modules = {
-  options = require("config.options"),
-  lazy = require("config.lazy")
-}
+local M = {}
 
-return {
-  options = modules.options,
-  lazy = modules.lazy,
-  setup = function (opts)
-    modules.options.setup(opts.options)
-    modules.lazy.setup(opts.lazy)
-  end,
-}
+M.options = require("config.options")
+M.lazy = require("config.lazy")
+M.setup = function (opts)
+  M.options(opts.options)
+  M.lazy.setup(opts.lazy)
+end
+
+return M

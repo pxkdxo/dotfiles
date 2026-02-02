@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # cargo.sh: cargo environment config
 
-if test -d "${CARGO_HOME-}"
+if test -n "${CARGO_HOME-}"
 then
   case ":${PATH}:" in
     *:"${CARGO_HOME}/bin":*) ;;
@@ -12,6 +12,12 @@ then
   case ":${PATH}:" in
     *:"${HOME}/.local/share/cargo/bin":*) ;;
     *) export PATH="${PATH:+${PATH}:}${HOME}/.local/share/cargo/bin" ;;
+  esac
+elif test -d "${HOME}/.local/opt/cargo"
+then
+  case ":${PATH}:" in
+    *:"${HOME}/.local/share/opt/bin":*) ;;
+    *) export PATH="${PATH:+${PATH}:}${HOME}/.local/opt/cargo/bin" ;;
   esac
 elif test -d "${HOME}/.local/cargo"
 then
@@ -24,12 +30,6 @@ then
   case ":${PATH}:" in
     *:"${HOME}/.cargo/bin":*) ;;
     *) export PATH="${PATH:+${PATH}:}${HOME}/.cargo/bin" ;;
-  esac
-elif test -d "${HOME}/cargo"
-then
-  case ":${PATH}:" in
-    *:"${HOME}/cargo/bin":*) ;;
-    *) export PATH="${PATH:+${PATH}:}${HOME}/cargo/bin" ;;
   esac
 fi
 

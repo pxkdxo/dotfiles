@@ -16,8 +16,14 @@ elif test -d "${HOME}/.local/share/cabal"; then
 elif test -d "${HOME}/.local/opt/cabal"; then
   export CABAL_HOME="${HOME}/.local/opt/cabal"
   case ":${PATH}:" in
-    *:"${HOME}/.local/cabal/bin":*) ;;
+    *:"${HOME}/.local/opt/cabal/bin":*) ;;
     *) export PATH="${HOME}/.local/opt/cabal/bin${PATH:+:${PATH}}" ;;
+  esac
+elif test -d "${HOME}/.local/cabal"; then
+  export CABAL_HOME="${HOME}/.local/cabal"
+  case ":${PATH}:" in
+    *:"${HOME}/.local/cabal/bin":*) ;;
+    *) export PATH="${HOME}/.local/cabal/bin${PATH:+:${PATH}}" ;;
   esac
 elif test -d "${HOME}/.cabal"; then
   export CABAL_HOME="${HOME}/.cabal"
