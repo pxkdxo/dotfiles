@@ -128,7 +128,7 @@ style = 'fg:current_line'
 [directory]
 format = '[  ](bold fg:blue)[󰷏 ](bold fg:foreground)[$read_only$truncation_symbol$path](fg:foreground)[󰘩 ](bold fg:blue)'
 home_symbol = '~'
-truncation_siymbol = '*'
+truncation_symbol = '*'
 truncation_length = 28
 fish_style_pwd_dir_length = 1
 read_only = '󱧵 '
