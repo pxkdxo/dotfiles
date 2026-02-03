@@ -51,7 +51,7 @@ path_print() {
 
 
 # path_contains - Check if an element is in PATH
-# Description: Returns 0 if DIRECTORY is in PATH, 1 otherwise.
+# Description: Returns 0 if DIRECTORY is in PATH and 1 otherwise.
 # Usage: path_contains DIRECTORY
 # Positional Parameters:
 #   DIRECTORY: element to check for
@@ -122,80 +122,18 @@ path_append() {
 
 
 # path_push - Push an element to the front of PATH
-# Description: Push DIRECTORY to front of PATH and remove all other occurrences.
+# Description: Push DIRECTORY to the front of PATH and remove any other occurrences.
 # Usage: path_push DIRECTORY
 # Positional Parameters:
 #   DIRECTORY: element to add to PATH
 path_push() {
-  if test "$#" -ne 1; then
-    >&2 printf 'usage: path_push DIRECTORY\n'
+  if test "$#" -lt 1; then
+    >&2 printf 'usage: path_push DIRECTORY ...\n'
     return 2
   fi
   path_discard "$1"
   export PATH="${PATH:+$1:${PATH}}"
 }
-
-
-# path_getitem - Retrieve an element from PATH by index
-# Description: Find the element of PATH at INDEX and store it in REPLY.
-# Usage: path_getitem INDEX
-# Positional Parameters:
-#   INDEX: index of the element to retrieve - can be positive (from front), or negative (from rear),
-#       or the special character '#' to instead  get the number of elements in PATH (* default: 0 *)
-# Shell Variables:
-#   REPLY: Assigned the found element, if any, or the count of elements when INDEX is '#'
-path_getitem() {
-  if test "$#" -eq 1; then
-    if test "$1" = '#'; then
-      REPLY="${PATH:+${PATH}:}"
-      set -- 0
-      while test -n "${REPLY}"; do
-        REPLY="${REPLY#*:}"
-        set -- "$(($1 + 1))"
-      done
-      REPLY="$1"
-      printf '%d\n' "${REPLY}"
-      return
-    fi
-    if { set -- "$(($1))"; } 2> /dev/null; then
-      if test -n "${PATH-}"; then
-        case "$1" in
-          -*)
-            REPLY="${PATH:+:${PATH}}"
-            while test -n "${REPLY}"; do
-              set -- "$(($1 + 1))"
-              if test "$1" -eq 0; then
-                REPLY="${REPLY##*:}"
-                printf '%s\n' "${REPLY}"
-                return
-              fi
-              REPLY="${REPLY%:*}"
-            done
-            ;;
-          *)
-            REPLY="${PATH:+${PATH}:}"
-            while test -n "${REPLY}"; do
-              if test "$1" -eq 0; then
-                REPLY="${REPLY%%:*}"
-                printf '%s\n' "${REPLY}"
-                return
-              fi
-              REPLY="${REPLY#*:}"
-              set -- "$(($1 - 1))"
-            done
-            ;;
-        esac
-      fi
-      >&2 printf 'path_getitem: %d: index is out of bounds\n' "$1"
-      return 1
-    fi
-    >&2 printf 'path_getitem: expected an index, but got '\'%s\''\n' "$1"
-    return 1
-  fi
-  >&2 printf 'usage: path_getitem {INDEX|'\''#'\''}\n'
-  return 2
-}
-
 
 
 # path_insert - Insert an element into PATH at a given position
@@ -250,11 +188,6 @@ path_insert() {
 
 path_push ~/.bin
 path_push ~/.local/bin
-path_push ~/.local/sbin
-path_push ~/.local/opt/homebrew/bin
-path_push ~/.local/opt/homebrew/sbin
-path_push ~/.local/share/homebrew/bin
-path_push ~/.local/share/homebrew/sbin
 
 
 # Load additional profile config
@@ -264,17 +197,10 @@ for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
   fi
 done
 
+path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
+path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
 
-path_push ~/.bin
-path_push ~/.local/sbin
-path_push ~/.local/bin
-path_push ~/.local/opt/homebrew/bin
-path_push ~/.local/opt/homebrew/sbin
-path_push ~/.local/share/homebrew/sbin
-path_push ~/.local/share/homebrew/bin
-
-
-# Quick detour for homebrew initialization
+# One final detour for homebrew initialization
 if command -v brew > /dev/null; then
   eval "$(brew shellenv)"
 fi

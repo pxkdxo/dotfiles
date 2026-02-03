@@ -13,11 +13,6 @@ return {
     },
   },
   {
-    "PaterJason/cmp-conjure",
-    dependencies = { 'hrsh7th/nvim-cmp' },
-    lazy = true,
-  },
-  {
     "petertriho/cmp-git",
     dependencies = { 'hrsh7th/nvim-cmp' },
     opts = {},
@@ -25,6 +20,11 @@ return {
     --   table.insert(require("cmp").get_config().sources, { name = "git" })
     -- end
   },
+  -- {
+  --   "PaterJason/cmp-conjure",
+  --   dependencies = { 'hrsh7th/nvim-cmp' },
+  --   lazy = true,
+  -- },
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -36,7 +36,7 @@ return {
       'hrsh7th/cmp-nvim-lsp-document-symbol',
       'folke/lazydev.nvim', -- LazyVim types and completions
       'L3MON4D3/LuaSnip', -- Snippet engine
-      "PaterJason/cmp-conjure", -- Conjure
+      -- "PaterJason/cmp-conjure", -- Conjure
       'saadparwaiz1/cmp_luasnip', -- Snippet completions
       'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
       'windwp/nvim-autopairs', -- Autopairs trigger
@@ -213,7 +213,7 @@ return {
             end),
           }),
           sources = cmp.config.sources({
-            { name = 'cmdline' }, { name = 'path', option = { trailing_slash = true } }
+            { name = 'cmdline' }, { name = 'path' }
           },
           {
             { name = 'buffer'  }

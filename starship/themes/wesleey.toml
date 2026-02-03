@@ -1,10 +1,19 @@
-format = """
-[╭](fg:current_line)$username$hostname$cmd_duration$fill$python$aws$line_break\
-[│](fg:current_line)$directory$git_branch$git_status$fill$time$line_break\
-[╰](fg:current_line)$character\
+##############################
+# ╭─╮ ⋆ ✶ ✧ ✦ 󰫢 󰫣     󰘩
+# │┼│      󱑽 ↵ ↪ ↝ ↜ ↩ ↳
+# ╰─╯  󱝁  󱝂      󰖔 󰼱 
+# ┏━┓ 󰆽           󰋇
+# ┃╋┃  󰝨    󱃋   󰂖 󰉁 󱦟 
+# ┗━┛          󰈸  󰞇
+#      󰲼   󰳟     󰾞 󰦍 
+##############################
+format = """\
+[╭](fg:current_line bold)[](fg:yellow)$username$hostname$time$fill$cmd_duration$c$python$aws$line_break\
+[│](fg:current_line bold)[](fg:purple)$directory$fill$git_branch$git_status$line_break\
+[╰](fg:current_line bold)[](fg:green)$character\
 """
 
-palette = 'dracula'
+palette = 'starlight'
 add_newline = true
 
 [palettes.dracula]
@@ -22,9 +31,25 @@ purple = '#BD93F9'
 red = '#FF5555'
 yellow = '#F1FA8C'
 
+[palettes.starlight]
+foreground = '#E9ECF5'
+background = '#0B0E1A'
+current_line = '#44475A'
+primary = '#101421'
+box = '#1C2236'
+blue = '#7AA2F7'
+cyan = '#8BE9FD'
+green = '#7CE5A3'
+orange = '#FFB86C'
+pink = '#FF79C6'
+purple = '#B4A1FF'
+red = '#FF6B6B'
+yellow = '#F6D97A'
+
+
 [os]
-format = '[•](fg:current_line)[󱝂 ](fg:blue)[$symbol ](fg:primary)[ ](fg:blue)'
-disabled = false
+format = '[✦](bold fg:blue)[ $symbol ](fg:foreground)[ ](bold fg:blue)'
+disabled = true
 
 [os.symbols]
 Alpine = ''
@@ -61,66 +86,68 @@ Unknown = ''
 Windows = ''
 
 [username]
-format = '[•](fg:current_line)[󱝂 ](fg:pink)[ ](fg:bold fg:primary)[ ](fg:pink)[$user](fg:bold fg:foreground)[ ](fg:pink)'
+format = '[ 󰫢 ](bold fg:pink)[ ](bold fg:foreground)[$user](fg:foreground)[󱝁 ](bold fg:pink)'
 show_always = true
 
 [hostname]
-format =  "[•](fg:current_line)[󱝂 ](fg:cyan)[ ](fg:bold fg:primary)[ ](fg:cyan)[$hostname](fg:bold fg:foreground)[ ](fg:cyan)"
+format = '[󰖔 ](bold fg:cyan)[ ](bold fg:foreground)[$hostname](fg:foreground)[ ](bold fg:cyan)'
 ssh_only = false
-# trim_at = ".*"
+# trim_at = '.*'
+disabled = false
+
+[shell]
+format = '[󰘩 ](bold fg:cyan)[ ](bold fg:foreground)[$indicator](fg:foreground)[ ](bold fg:cyan)'
+disabled = true
+
+[time]
+format = '[ ](bold fg:yellow)[ ](bold fg:foreground)[$time](fg:foreground)[ ](bold fg:yellow)'
+time_format = '%I:%M %p'
 disabled = false
 
 [nodejs]
-format = '[•](fg:current_line)[󱝂 ](fg:cyan)[$symbol](fg:bold fg:primary)[ ](fg:cyan)[node.js:$version](fg:bold fg:foreground)[ ](fg:cyan)'
+format = '[✧ ](bold fg:orange)[$symbol](bold fg:foreground)[node.js:$version](fg:foreground)[ ](bold fg:orange)'
 symbol = '󰎙 '
 
 [python]
-format = '[•](fg:current_line)[󱝂 ](fg:orange)[$symbol](fg:bold fg:primary)[ ](fg:orange)[python:$version](fg:bold fg:foreground)[ ](fg:orange)'
+format = '[ ](bold fg:orange)[$symbol](bold fg:foreground)[python\($version\)](fg:foreground)[ ](bold fg:orange)'
 symbol = ' '
 
 [c]
-format = '[•](fg:current_line)[󱝂 ](fg:blue)[$symbol](fg:bold fg:primary)[ ](fg:blue)[C:$version](fg:bold fg:foreground)[ ](fg:blue)'
+format = '[✶ ](bold fg:blue)[$symbol](bold fg:foreground)[C:$version](fg:foreground)[ ](bold fg:blue)'
 symbol = ' '
 
 [aws]
-format = '[•](fg:current_line)[󱝂 ](fg:purple)[$symbol](fg:bold fg:primary)[ ](fg:purple)[aws $profile](fg:bold fg:foreground)[ ](fg:purple)'
-symbol = '󰖐 '
+format = '[󰫣 ](bold fg:purple)[$symbol](bold fg:foreground)[aws\($region\)$profile](fg:foreground)[ ](bold fg:purple)'
+symbol = ' '
 
 [fill]
 # symbol = '─'
-symbol = '•'
+symbol = ''
 style = 'fg:current_line'
 
 [directory]
-format = '[•](fg:current_line)[󱝂 ](fg:green)[󰷏 ](fg:bold fg:primary)[ ](fg:green)[$read_only$truncation_symbol$path](fg:bold fg:foreground)[ ](fg:cyan)'
-home_symbol = " ~"
-truncation_symbol = ' '
+format = '[  ](bold fg:blue)[󰷏 ](bold fg:foreground)[$read_only$truncation_symbol$path](fg:foreground)[󰘩 ](bold fg:blue)'
+home_symbol = '~'
+truncation_siymbol = '*'
 truncation_length = 28
 fish_style_pwd_dir_length = 1
 read_only = '󱧵 '
 read_only_style = ''
 
 [git_branch]
-format = '[•](fg:current_line)[󱝂 ](fg:red)[$symbol](fg:bold fg:primary)[ ](fg:red)[$branch](fg:bold fg:foreground)'
-symbol = ' '
+format = '[ ](bold fg:red)[$symbol](bold fg:foreground)[$branch](fg:foreground)'
+truncation_length = 24
+truncation_symbol = '/'
+symbol = '󰘬 '
 
 [git_status]
-format = '[( $all_status)](fg:bold fg:foreground)[ ](fg:red)'
+format = '[(\($all_status\))](fg:foreground)[ ](bold fg:red)'
 
 [cmd_duration]
 min_time = 500
-format = '[•](fg:current_line)[󱝂 ](fg:green)[ ](fg:bold fg:primary)[ ](fg:green)[$duration](fg:bold fg:foreground)[ ](fg:green)'
-
-[shell]
-format = '[•](fg:current_line)[󱝂 ](fg:cyan)[ ](fg:bold fg:primary)[ ](fg:cyan)[$indicator](fg:bold fg:foreground)[ ](fg:cyan)'
-disabled = false
-
-[time]
-format = '[•](fg:current_line)[󱝂 ](fg:yellow)[ ](fg:bold fg:primary)[ ](fg:yellow)[$time](fg:bold fg:foreground)[ ](fg:yellow)'
-time_format = '%H:%M'
-disabled = false
+format = '[󰉁 ](bold fg:green)[󱦟](bold fg:foreground)[$duration](fg:foreground)[✶ ](bold fg:green)'
 
 [character]
-format = "[•$symbol](fg:current_line) "
-success_symbol = '[󱝂 ](fg:green)'
-error_symbol = '[ 󰦍](fg:red)'
+format = '[$symbol](fg:current_line) '
+success_symbol = '[ ](fg:green)'
+error_symbol = '[ 󰆽](fg:red)'
