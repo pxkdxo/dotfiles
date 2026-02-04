@@ -31,7 +31,9 @@ return {
     priority = 1000,
     opts = {
       -- Set light or dark variant
-      variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+      variant = (
+        function (t, s, d) return t[s] or d end
+      )({ light = "light", dark = "dark" }, os.getenv("THEME_VARIANT"), "auto"), -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look

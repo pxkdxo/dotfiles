@@ -16,11 +16,43 @@ else
   ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
 fi
 
-# atuin for useful history
-#
-if command -v zoxide > /dev/null; then
-  eval "$(zoxide init zsh)"
-fi
+# Try to capture current theme details  
+case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
+  :plasma:*:|:*:KDE:)
+    case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
+      light|\'light\'|*-light|\'*-light\')
+        export DEFAULT_COLORSCHEME="dawnfox"
+        export CYBERDREAM_THEME_VARIANT='light'
+        ;;
+      dark|\'dark\'|*-dark|\'*-dark\')
+        export DEFAULT_COLORSCHEME="sakura"
+        export CYBERDREAM_THEME_VARIANT='dark'
+        ;;
+    esac
+    ;;
+  *)
+    if ( hour="$(date +%H)" && test "$((hour))" -gt 6 && test "$((hour))" -lt 18; )
+    then
+      export DEFAULT_COLORSCHEME="Dawnfox"
+      export CYBERDREAM_THEME_VARIANT='light'
+    else
+      export DEFAULT_COLORSCHEME="sakura"
+      export CYBERDREAM_THEME_VARIANT='dark'
+    fi
+    ;;
+esac
+
+# Set vivid (lscolors) theme
+case "${${CYBERDREAM_VARIANT#cyberdream}#-}" in
+  auto|dark|"")
+    export VIVID_THEME="cyberdream"
+    ;;
+  light)
+    export VIVID_THEME="cyberdream-${${CYBERDREAM_VARIANT#cyberdream}#-}"
+    ;;
+esac
+
+# export VIVID_THEME='modus-vivendi'
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -95,9 +127,10 @@ export FAST_THEME="sv-plant"
 # Disable fzf completion trigger
 export FZF_COMPLETION_TRIGGER=''
 
-# Set vivid (lscolors) theme
-export VIVID_THEME='modus-vivendi'
-# export VIVID_THEME='cyberdream-light'
+# zoxide for navigation
+if command -v zoxide > /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -162,15 +195,6 @@ plugins=(
 #
 source "$ZSH/oh-my-zsh.sh"
 
-# fzf
-#
-# if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
-# then
-#   source "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
-# else
-#   eval "$(fzf --zsh 2> /dev/null)"
-# fi
-
 # Mark 'run-help' for autoloading
 #
 if alias run-help > /dev/null; then
@@ -195,7 +219,6 @@ bindkey '^I' expand-or-complete
 bindkey '^@' zic-completion
 
 # Configure man pager
-#
 #
 typeset -xT LESS="${LESS:-"-FiQRSX --mouse"}" less ' '
 

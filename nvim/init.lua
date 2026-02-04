@@ -10,8 +10,8 @@ config.options.setup()
 vim.g.mapleader = ","
 vim.g.maplocalleader = ";"
 
--- Set builtin fallback colorschemes
-vim.g.colorschemes = { 'zaibatsu', 'shine', 'sorbet', 'habamax' }
+-- Set some builtin fallback colorschemes
+vim.g.colorschemes = { 'habamax', 'shine', 'zaibatsu', 'sorbet'  }
 
 vim.cmd.colorscheme(vim.g.colorschemes[1])
 
@@ -35,6 +35,7 @@ if not vim.g.vscode then
     'dawnfox',
     'carbonfox',
     'flexoki',
+    'flexoki-light',
     'github_dark_dimmed',
     'github_light',
     'night-owl',

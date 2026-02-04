@@ -7,7 +7,7 @@ from glob import iglob
 from fnmatch import fnmatch
 import os
 from pathlib import Path
-import tomlib
+import tomllib
 import subprocess
 import sys
 from typing import Iterator, Literal
@@ -168,8 +168,8 @@ class Config:
 
 
 def main():
-    with open(COLORSCHEMES_CONFIG, "r") as istream:
-        _ = Config(**tomlib.load(istream))
+    with open(COLORSCHEMES_CONFIG, "rb") as istream:
+        _ = Config(**tomllib.load(istream))
 
 
 if __name__ == "__main__":
