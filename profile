@@ -185,10 +185,13 @@ path_insert() {
   fi
 }
 
-
-path_push ~/.bin
+# Push this to the front of PATH
 path_push ~/.local/bin
 
+# Quick detour for Homebrew initialization
+if command -v brew > /dev/null; then
+  eval "$(brew shellenv)"
+fi
 
 # Load additional profile config
 for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
@@ -197,13 +200,10 @@ for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
   fi
 done
 
+# Push this stuff back to the front if it wasn't already there
+path_push ~/.local/bin
+
 path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
 path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
-
-# One final detour for homebrew initialization
-if command -v brew > /dev/null; then
-  eval "$(brew shellenv)"
-fi
-
 
 # vi:ft=sh
