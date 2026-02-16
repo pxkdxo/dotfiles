@@ -50,7 +50,7 @@ path_print() {
 }
 
 
-# path_contains - Check if an element is in PATH
+# path_contains - Check if an element exists in PATH
 # Description: Returns 0 if DIRECTORY is in PATH and 1 otherwise.
 # Usage: path_contains DIRECTORY
 # Positional Parameters:
@@ -61,69 +61,76 @@ path_contains() {
     return 2
   fi
   case ":${PATH-}:" in
-    *":$1:"*) return 0
-      ;;
+    *":$1:"*) ;;
+    *) return 1 ;;
   esac
-  return 1
 }
 
 
 # path_add - Add an element to PATH
-# Description: Add DIRECTORY to PATH if it is not already there.
-# Usage: path_add DIRECTORY
+# Description: Add each DIRECTORY to PATH if it is not already there.
+# Usage: path_add DIRECTORY ...
 # Positional Parameters:
 #   DIRECTORY: element to check for
 path_add() {
-  if test "$#" -ne 1; then
-    >&2 printf 'usage: path_add DIRECTORY\n'
+  if test "$#" -lt 1; then
+    >&2 printf 'usage: path_add DIRECTORY ...\n'
     return 2
   fi
-  case ":${PATH-}:" in
-    *":$1:"*) return 0
-      ;;
-    *) export PATH="${PATH:+${PATH}:}$1"
-      ;;
-  esac
+  while test "$#" -gt 0; do
+    case ":${PATH-}:" in
+      *":$1:"*) return 0 ;;
+      *) export PATH="${PATH:+${PATH}:}$1" ;;
+    esac
+    shift
+  done
 }
 
 
-# path_discard - Remove an element from PATH
-# Description: Remove all occurrences of DIRECTORY from PATH.
-# Usage: path_discard DIRECTORY
+# path_discard - Remove elements from PATH
+# Description: Remove all occurrences of each DIRECTORY from PATH.
+# Usage: path_discard DIRECTORY ...
 # Positional Parameters:
 #   DIRECTORY: element to remove from PATH
 path_discard() {
-  if test "$#" -ne 1; then
-    >&2 printf 'usage: path_discard DIRECTORY\n'
+  if test "$#" -lt 1; then
+    >&2 printf 'usage: path_discard DIRECTORY ...\n'
     return 2
   fi
-  while path_contains "$1"; do
-    set -- "$1" ":${PATH}:"
-    set -- "$1" "${2%%:"${1}":*}" "${2#*:"${1}":}"
-    set -- "$1" "${2#:}" "${3%:}"
-    export PATH="${2}${3:+${2:+:}$3}"
+  while test "$#" -gt 0; do
+    while path_contains "$1"; do
+      set -- ":${PATH}:" "$@"
+      set -- "${1%%:"${2}":*}" "${1#*:"${2}":}" "$@"
+      set -- "${1#:}" "${2%:}" "$@"
+      export PATH="${1}${2:+${1:+:}$2}"
+      shift 5
+    done
+    shift 1
   done
 }
 
 
 # path_append - Append an element to the end of PATH
 # Description: Append DIRECTORY to the end of PATH and remove all other occurrences.
-# Usage: path_append DIRECTORY
+# Usage: path_append DIRECTORY ...
 # Positional Parameters:
 #   DIRECTORY: element to add to PATH
 path_append() {
-  if test "$#" -ne 1; then
-    >&2 printf 'usage: path_append DIRECTORY\n'
+  if test "$#" -lt 1; then
+    >&2 printf 'usage: path_append DIRECTORY ...\n'
     return 2
   fi
-  path_discard "$1"
-  export PATH="${PATH:+${PATH}:$1}"
+  while test "$#" -gt 0; do
+    path_discard "$1"
+    export PATH="${PATH:+${PATH}:$1}"
+    shift
+  done
 }
 
 
-# path_push - Push an element to the front of PATH
-# Description: Push DIRECTORY to the front of PATH and remove any other occurrences.
-# Usage: path_push DIRECTORY
+# path_push - Push each element to the front of PATH
+# Description: Push each DIRECTORY to the front of PATH and remove all other occurrences.
+# Usage: path_push DIRECTORY ...
 # Positional Parameters:
 #   DIRECTORY: element to add to PATH
 path_push() {
@@ -131,8 +138,11 @@ path_push() {
     >&2 printf 'usage: path_push DIRECTORY ...\n'
     return 2
   fi
-  path_discard "$1"
-  export PATH="${PATH:+$1:${PATH}}"
+  while test "$#" -gt 0; do
+    path_discard "$1"
+    export PATH="${PATH:+$1:${PATH}}"
+    shift
+  done
 }
 
 
@@ -207,3 +217,5 @@ path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
 path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
 
 # vi:ft=sh
+
+. "$HOME/.local/share/../bin/env"

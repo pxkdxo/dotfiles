@@ -1,25 +1,35 @@
 [collections]
-directory = 'Collections'
+directory = '~/.config/colorschemes/Collections'
 
-[collections.spec.0]
+[[collections.spec]]
 name = 'cyberdream.nvim:extras'
 source = 'cyberdream.nvim'
-filter = { depth = 1, search-path = 'extras'}
+filter = { paths = ['extras'] }
 
-[collections.spec.1]
+[[collections.spec]]
 name = 'iTerm2-Color-Schemes'
 source = 'iTerm2-Color-Schemes'
-filter = { depth = 1, exclude = ['gh-pages', 'screenshots', 'tools'] }
+filter = { exclude = ['gh-pages', 'screenshots', 'tools'] }
+
+[[collections.spec]]
+name = 'tokyonight.nvim:extras'
+source = 'tokyonight.nvim'
+filter = { paths = ['extras'] }
 
 [sources]
-directory = 'Sources'
+directory = '~/.config/colorschemes/Sources'
 
-[sources.spec.0]
+[[sources.spec]]
 name = 'cyberdream.nvim'
 type = 'git'
 source = { url = 'https://github.com/scottmckendry/cyberdream.nvim.git', ref = 'main' }
 
-[sources.spec.1]
+[[sources.spec]]
 name = 'iTerm2-Color-Schemes'
 type = 'git'
 source = { url = 'https://github.com/mbadolato/iTerm2-Color-Schemes.git', ref = 'master' }
+
+[[sources.spec]]
+name = 'tokyonight.nvim'
+type = 'git'
+source = { url = "https://github.com/folke/tokyonight.nvim.git", ref = 'main' }

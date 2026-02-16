@@ -9,7 +9,7 @@ local defaults = {
     autowrite      = true,
     backspace      = "indent,eol,start",
     belloff        = "all",
-    clipboard      = vim.fn.has("nvim-0.10") == 0 and vim.env.SSH_TTY ~= nil and "" or "unnamedplus", -- Copy over SSH or sync with system
+    clipboard      = vim.fn.has("nvim-0.10") == 1 and vim.env.SSH_TTY ~= nil and "" or "unnamedplus", -- Copy over SSH or sync with system
     cmdheight      = vim.g.vscode and 2 or 1,
     complete       = ".,w,b,u,t,i",
     completeopt    = "fuzzy,noselect,menuone,popup",
@@ -45,7 +45,7 @@ local defaults = {
     relativenumber = false, -- Give us absolute line numbers
     ruler          = true, -- Enable the default ruler
     scrolloff      = 3, -- Lines of context
-    sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
+    sessionoptions = "buffers,curdir,tabpages,winsize,help,globals,skiprtp,folds",
     shiftround     = true, -- Round indent
     showcmd        = true,
     showcmdloc    =  "tabline",
@@ -58,13 +58,13 @@ local defaults = {
     smartindent    = true, -- Insert indents automatically
     smoothscroll   = vim.fn.has("nvim-0.10") == 1 or nil,
     softtabstop    = 2,
-    spelllang      = { "en" },
+    spelllang      = "en",
     splitbelow     = true, -- Put new windows below current
     splitkeep      = "screen",
     splitright     = true, -- Put new windows right of current
     startofline    = false,
     tabstop        = 8, -- Number of spaces per tab
-    tags           = table.concat({".tags", ".TAGS", "tags", "TAGS"}, ","),
+    tags           = ".tags,.TAGS,tags,TAGS",
     termguicolors  = true, -- True color support
     timeout        = true,
     timeoutlen     = vim.g.vscode and 1000 or 500, -- Lower than default (1000) to quickly trigger which-key
@@ -72,11 +72,11 @@ local defaults = {
     undoreload     = -1,
     updatecount    = 25, -- Save swap file and trigger CursorHold
     virtualedit    = "block", -- Allow cursor to move where there is no text in visual block mode
-    whichwrap      = table.concat({"<", ">", "[", "]", "b", "s"}, ","),
-    wildignore     = {".git/*", ".hg/*", ".svn/*"},
+    whichwrap      = "<,>,[,],b,s",
+    wildignore     = table.concat({".git/*", ".hg/*", ".svn/*"}, ","),
     wildignorecase = true,
     wildmenu       = true,
-    wildmode       = {"longest:noselect", "full"}, -- Command-line completion mode
+    wildmode       = "longest:noselect,full", -- Command-line completion mode
     winblend       = 20,
     winborder      = "rounded",
     winminwidth    = 10, -- Minimum window width
@@ -86,9 +86,6 @@ local defaults = {
     after = {
       shiftwidth = function ()
         return vim.o.expandtab and vim.o.softtabstop or 0
-      end,
-      undofile = function ()
-        return vim.o.swapfile and true or false
       end,
       _shortmess = function()
         vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })
@@ -113,6 +110,7 @@ local defaults = {
         vim.cmd.autocmd({
           args = { "BufWritePre", table.concat(noundolist, ","), "setlocal", "noundofile" },
         })
+        vim.o.undofile = vim.o.swapfile
       end,
     },
   },
@@ -151,10 +149,9 @@ end
 
 local _run_hook_funcs = function (hook_funcs)
   for key, func in pairs(hook_funcs) do
-    if string.sub(key, 1, 1) == "_" then
-      _ = func()
-    else
-      vim.opt[key] = func()
+    local value = func()
+    if string.sub(key, 1, 1) ~= "_" then
+      vim.o[key] = value
     end
   end
 end
@@ -164,7 +161,7 @@ M.setup = function (opts)
   local hooks = _add_default_hooks(opts and opts["hooks"] or {})
   _run_hook_funcs(hooks.before)
   for key, value in pairs(values) do
-    vim.opt[key] = value
+    vim.o[key] = value
   end
   _run_hook_funcs(hooks.after)
 end

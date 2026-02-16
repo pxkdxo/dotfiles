@@ -9,6 +9,17 @@ return {
     opts = {
       hijack_cursor = true,
       reload_on_bufenter = true,
+      auto_reload_on_write = true,
+      update_focused_file = {
+      --   enable = true,
+      --   update_root = {
+      --     enable = true,
+      --     ignore_list = {
+      --       "Man",
+      --       "NvimTree"
+      --     }
+      --   }
+      },
       root_dirs = {
         vim.fn.getcwd(),
         vim.fn.expand("~/"),
@@ -18,22 +29,40 @@ return {
       },
       view = {
         width = {
-          min = 10,
-          max = "20%",
-          padding = 0,
+          min = 20,
+          max = "40%",
+          padding = 1,
         },
         float = {
           enable = false,
           quit_on_focus_loss = true,
-          open_win_config = {},
+          open_win_config = {
+            border = "rounded",
+          },
         },
       },
       renderer = {
         add_trailing = true,
+        group_empty = true,
         indent_markers = { enable = true },
-        icons = { web_devicons = { folder = { enable = true } } },
+        icons = {
+          web_devicons = {
+            folder = {
+              enable = true
+            }
+          }
+        },
+        hidden_display = "all"
       },
-      diagnostics = { enable = true },
+      diagnostics = {
+        enable = true,
+        icons = {
+          hint = "󰠠 ",
+          info = "󰋽 ",
+          warning = "󰀪 ",
+          error = "󰳤 ",
+        },
+      },
       filters = {
         enable = true,
         dotfiles = false,
@@ -51,11 +80,11 @@ return {
       require("nvim-tree").setup(opts)
 
       -- Set key mappings to open/close/locate etc.
-      vim.keymap.set('n', '<leader>/', function ()
+      vim.keymap.set('n', '<leader>mm', function ()
         require('nvim-tree.api').tree.toggle({ focus = false })
-      end, { desc = "Toggle File Explorer" })
+      end, { desc = "Toggle File Explorer", })
 
-      vim.keymap.set('n', '<leader>.', function ()
+      vim.keymap.set('n', '<leader>ml', function ()
         require('nvim-tree.api').tree.open({ focus = true, find_file = true, update_root = true })
       end, { desc = "Show Current File in File Explorer" })
     end,

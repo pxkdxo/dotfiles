@@ -11,30 +11,51 @@ return {
     end
   },
   {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    vscode = true,
-    ---@type Flash.Config
-    opts = {},
-    -- stylua: ignore
-    keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-      -- Simulate nvim-treesitter incremental selection
-      { "<c-space>", mode = { "n", "o", "x" },
-      function()
-        require("flash").treesitter({
-          actions = {
-            ["<c-space>"] = "next",
-            ["<BS>"] = "prev"
-          }
-        })
-      end, desc = "Treesitter Incremental Selection" },
+    'Wansmer/treesj',
+    cond = true,
+    dependencies = {
+      -- if you install parsers with `nvim-treesitter`
+      'nvim-treesitter/nvim-treesitter',
     },
+    opts = {
+      vuse_default_keymaps = false,
+    },
+    config = function (_, opts)
+      local treesj = require('treesj')
+      treesj.setup(opts)
+      vim.keymap.set('n', '<leader>tt', treesj.toggle) -- default preset
+      vim.keymap.set('n', '<leader>tr', function() -- default preset with 'recursive = true'
+        treesj.toggle({ split = { recursive = true } })
+      end)
+      vim.keymap.set('n', '<leader>ts', treesj.split) -- default preset
+      vim.keymap.set('n', '<leader>tj', treesj.join) -- default preset
+    end
   },
+  -- {
+  --   "folke/flash.nvim",
+  --   event = "VeryLazy",
+  --   vscode = true,
+  --   ---@type Flash.Config
+  --   opts = {},
+  --   -- stylua: ignore
+  --   keys = {
+  --     { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+  --     { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+  --     { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+  --     { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+  --     { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+  --     -- Simulate nvim-treesitter incremental selection
+  --     { "<c-space>", mode = { "n", "o", "x" },
+  --     function()
+  --       require("flash").treesitter({
+  --         actions = {
+  --           ["<c-space>"] = "next",
+  --           ["<BS>"] = "prev"
+  --         }
+  --       })
+  --     end, desc = "Treesitter Incremental Selection" },
+  --   },
+  -- },
   {
     "MagicDuck/grug-far.nvim",
     cond = vim.g.vscode == nil,
@@ -60,8 +81,7 @@ return {
   },
   {
     "https://codeberg.org/andyg/leap.nvim",
-    -- cond = true,
-    cond = false,
+    -- cond = false,
     version = false,
     opts = {
       preview_filter = function (ch0, ch1, ch2)
@@ -74,7 +94,7 @@ return {
     config = function (_, opts)
       require("leap").setup(opts)
       require('leap.user').set_repeat_keys(
-        '<enter>', '<backspace>'
+   '<enter>', '<backspace>'
       )
       vim.keymap.set(
         {'n', 'x', 'o'}, 's', '<Plug>(leap)'
@@ -86,14 +106,6 @@ return {
         0, 'LeapBackdrop', { link = 'Comment' }
       )
     end,
-  },
-  {
-    "gbprod/yanky.nvim",
-    cond = true,
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-    },
   },
   {
     'windwp/nvim-autopairs',

@@ -46,7 +46,8 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    cond = vim.g.vscode == nil,
+    -- cond = vim.g.vscode == nil,
+    cond = false,
     event = "InsertEnter",
     cmd = "Copilot",
     opts = {
