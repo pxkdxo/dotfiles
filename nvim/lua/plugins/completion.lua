@@ -5,7 +5,7 @@ return {
   },
   {
     "PaterJason/cmp-conjure",
-    cond = false,
+    -- cond = false,
     dependencies = { "Olical/conjure" },
   },
   {
@@ -24,7 +24,7 @@ return {
       'L3MON4D3/LuaSnip', -- Snippet engine
       'saadparwaiz1/cmp_luasnip', -- Snippet completions
       "petertriho/cmp-git", -- Git
-      -- "PaterJason/cmp-conjure", -- Conjure
+      "PaterJason/cmp-conjure", -- Conjure
       -- 'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
       'nvim-mini/mini.icons', -- Completion entry icons
       'windwp/nvim-autopairs', -- Autopairs trigger
@@ -46,13 +46,14 @@ return {
         expand = function(args) luasnip.lsp_expand(args.body) end
       }
       opts.sources = cmp.config.sources({
-        { name = "codecompanion" },
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
       },
       {
+        { name = "codecompanion" },
         { name = "conjure"  },
         { name = "lazydev"  },
+        { name = "luasnip" },
         { name = "luasnip"  },
       },
       {

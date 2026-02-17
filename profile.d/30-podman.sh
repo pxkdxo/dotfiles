@@ -7,8 +7,8 @@ if command -v podman > /dev/null; then
     Linux*|linux*)
       if DOCKER_HOST="$(podman info --format '{{ .Host.RemoteSocket.Path }}')" && test -n "${DOCKER_HOST}"; then
         export DOCKER_HOST="unix://${DOCKER_HOST}"
-      elif test -S "${XDG_RUNTIME_DIR:-${HOME}/.local/share}/podman/podman.sock"; then
-        export DOCKER_HOST="unix://${XDG_RUNTIME_DIR:-${HOME}/.local/share}/podman/podman.sock"
+      elif test -S "${XDG_RUNTIME_DIR:-/run/user/${UID:-$(id -u)}}/podman/podman.sock"; then
+        export DOCKER_HOST="unix://${XDG_RUNTIME_DIR:-/run/user/${UID:-$(id -u)}}/podman/podman.sock"
       elif test -S /run/podman/podman.sock; then
         export DOCKER_HOST='unix:///run/podman/podman.sock'
       else

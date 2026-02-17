@@ -17,7 +17,8 @@ palette = 'cyberdream'
 add_newline = true
 
 [palettes.cyberdream]
-foreground = '#ffffff'
+#foreground = '#ffffff'
+foreground = '#e9ecee'
 primary = '#16181a'
 background = '#1e2124'
 current_line = '#3c4048'

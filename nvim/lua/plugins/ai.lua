@@ -19,16 +19,58 @@ return {
       "ravitemer/mcphub.nvim",
     },
     opts = {
+      adapters = {
+        acp = {
+          codex = function()
+            return require("codecompanion.adapters").extend("codex", {
+              defaults = {
+                auth_method = "openai-api-key", -- "openai-api-key"|"codex-api-key"|"chatgpt"
+              },
+              env = {
+                OPENAI_API_KEY = os.getenv("OPENAI_API_KEY"),
+              },
+            })
+          end,
+          gemini_cli = function()
+            return require("codecompanion.adapters").extend("gemini_cli", {
+              defaults = {
+                auth_method = "gemini-api-key", -- "oauth-personal"|"gemini-api-key"|"vertex-ai"
+              },
+              env = {
+                GEMINI_API_KEY = os.getenv("GEMINI_API_KEY"),
+              },
+            })
+          end,
+        },
+      },
       interactions = {
         --NOTE: Change the adapter as required
         chat = {
-          adapter = "copilot",
-          model   = "gpt-5",
+          adapter = "gemini_cli",
+          -- model   = "gpt-5",
+          opts = {
+            completion_provider = "cmp", -- blink|cmp|coc|default
+          }
         },
         inline = {
-          adapter = "copilot",
-          model   = "gpt-5",
+          adapter = "gemini",
+          -- model   = "gpt-5",
+          opts = {
+            completion_provider = "cmp", -- blink|cmp|coc|default
+          }
         },
+        cmd = {
+          adapter = "codex",
+          opts = {
+            completion_provider = "cmp", -- blink|cmp|coc|default
+          }
+        },
+        -- background = {
+        --   adapter = {
+        --     name = "ollama",
+        --     model = "qwen-7b-instruct",
+        --   },
+        -- }
       },
       extensions = {
         mcphub = {

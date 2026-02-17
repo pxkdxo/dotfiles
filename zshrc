@@ -21,23 +21,23 @@ case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
   :plasma:*:|:*:KDE:)
     case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
       light|\'light\'|*-light|\'*-light\')
-        export DEFAULT_COLORSCHEME="dawnfox"
-        export CYBERDREAM_THEME_VARIANT='light'
+      export DEFAULT_COLORSCHEME="flexoki"
+        export THEME_VARIANT="light"
         ;;
       dark|\'dark\'|*-dark|\'*-dark\')
-        export DEFAULT_COLORSCHEME="sakura"
-        export CYBERDREAM_THEME_VARIANT='dark'
+        export DEFAULT_COLORSCHEME="cyberdream"
+        export THEME_VARIANT=""
         ;;
     esac
     ;;
   *)
     if ( hour="$(date +%H)" && test "$((hour))" -gt 6 && test "$((hour))" -lt 18; )
     then
-      export DEFAULT_COLORSCHEME="Dawnfox"
-      export CYBERDREAM_THEME_VARIANT='light'
+      export DEFAULT_COLORSCHEME="flexoki"
+      export THEME_VARIANT="light"
     else
-      export DEFAULT_COLORSCHEME="sakura"
-      export CYBERDREAM_THEME_VARIANT='dark'
+      export DEFAULT_COLORSCHEME="cyberdream"
+      export THEME_VARIANT=""
     fi
     ;;
 esac
