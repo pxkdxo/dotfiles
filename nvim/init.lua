@@ -29,17 +29,17 @@ config.lazy.setup({
 -- (If not running in VSCode) set a colorscheme and define some key mappings
 if not vim.g.vscode then
   vim.g.colorschemes = {
+    'rose-pine',
     'cyberdream',
-    'melange',
-    'flexoki',
+    'oxocarbon',
     'dayfox',
     'dawnfox',
     'carbonfox',
+    'melange',
+    'flexoki',
     'flexoki-light',
     'github_dark_dimmed',
     'github_light',
-    'oxocarbon',
-    'rose-pine',
     'rose-pine-dawn',
     'xcodedarkhc',
     'xcodelight',
