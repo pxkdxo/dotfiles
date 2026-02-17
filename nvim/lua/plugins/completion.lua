@@ -1,32 +1,19 @@
 return {
   {
-    'zbirenbaum/copilot-cmp',
-    dependencies = {
-      'zbirenbaum/copilot.lua'
-    },
-    opts = {},
+    'saadparwaiz1/cmp_luasnip',
+    dependencies = { 'L3MON4D3/LuaSnip' },
   },
   {
-    'saadparwaiz1/cmp_luasnip',
-    dependencies = {
-      'L3MON4D3/LuaSnip',
-    },
+    "PaterJason/cmp-conjure",
+    cond = false,
+    dependencies = { "Olical/conjure" },
   },
   {
     "petertriho/cmp-git",
-    dependencies = { 'hrsh7th/nvim-cmp' },
-    opts = {},
-    -- init = function()
-    --   table.insert(require("cmp").get_config().sources, { name = "git" })
-    -- end
   },
-  -- {
-  --   "PaterJason/cmp-conjure",
-  --   dependencies = { 'hrsh7th/nvim-cmp' },
-  --   lazy = true,
-  -- },
   {
     'hrsh7th/nvim-cmp',
+    event = "InsertEnter",
     dependencies = {
       'hrsh7th/cmp-buffer', -- Buffer completions
       'hrsh7th/cmp-cmdline', -- Cmdline completions
@@ -34,40 +21,43 @@ return {
       'hrsh7th/cmp-nvim-lsp', -- LSP completions
       'hrsh7th/cmp-nvim-lua', -- Neovim Lua API completions
       'hrsh7th/cmp-nvim-lsp-document-symbol',
-      'folke/lazydev.nvim', -- LazyVim types and completions
       'L3MON4D3/LuaSnip', -- Snippet engine
-      -- "PaterJason/cmp-conjure", -- Conjure
       'saadparwaiz1/cmp_luasnip', -- Snippet completions
-      'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
-      'windwp/nvim-autopairs', -- Autopairs trigger
+      "petertriho/cmp-git", -- Git
+      -- "PaterJason/cmp-conjure", -- Conjure
+      -- 'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
       'nvim-mini/mini.icons', -- Completion entry icons
+      'windwp/nvim-autopairs', -- Autopairs trigger
     },
     opts = {
-      experimental = { ghost_text = false },
+      experimental = { ghost_text = true },
     },
     config = function (_, opts)
-      local cmp = require('cmp')
-      local luasnip = require('luasnip')
       local unpack = unpack or table.unpack
       local cursor_prefix_is_whitespace = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
         local text = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
         return col == 0 or text:sub(col, col):match("%s") ~= nil
       end
+      local cmp = require('cmp')
+      local luasnip = require('luasnip')
       opts = opts or {}
-      opts.snippet = { expand = function(args) luasnip.lsp_expand(args.body) end }
+      opts.snippet = {
+        expand = function(args) luasnip.lsp_expand(args.body) end
+      }
       opts.sources = cmp.config.sources({
+        { name = "codecompanion" },
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
-        { name = "lazydev"  },
-        { name = "conjure"  },
       },
       {
-        { name = "copilot"       },
-        { name = "codecompanion" },
-        { name = "git" },
-        { name = "luasnip" },
-        { name = "buffer"  },
+        { name = "conjure"  },
+        { name = "lazydev"  },
+        { name = "luasnip"  },
+      },
+      {
+        { name = "buffer"   },
+        { name = "git"      },
       })
       opts.window = opts.window or {}
       opts.window.completion = cmp.config.window.bordered({
@@ -170,6 +160,8 @@ return {
           }),
           sources = cmp.config.sources({
             { name = 'nvim_lsp_document_symbol' },
+          },
+          {
             { name = 'buffer' },
           }),
         }
@@ -213,12 +205,12 @@ return {
             end),
           }),
           sources = cmp.config.sources({
-            { name = 'cmdline' }, { name = 'path' }
+            { name = 'cmdline' },
+            { name = 'path' }
           },
           {
             { name = 'buffer'  }
           }),
-          -- matching = { disallow_symbol_nonprefix_matching = false },
         }
       )
       -- Trigger autopairs on confirmation of a completion

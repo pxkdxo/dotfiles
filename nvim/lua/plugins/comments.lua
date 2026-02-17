@@ -4,26 +4,25 @@ return {
     opts = {
       ignore = '^$',
       toggler = {
-        line = '<leader>cc',
-        block = '<leader>CC',
+        line = '<leader>\\\\',
+        block = '<leader>;',
       },
       extra = {
-        above = '<leader>cO',
-        below = '<leader>co',
-        eol = '<leader>cA',
+        above = '<leader>\\k',
+        below = '<leader>\\j',
+        eol = '<leader>\\$',
       },
       opleader = {
-        line = '<leader>c',
-        block = '<leader>C',
+        line = '<leader>\\',
+        block = '<leader>;',
       },
     },
   },
   {
     "danymat/neogen",
-    config = true,
-    cond = false,
+    -- cond = false,
     -- Uncomment next line if you want to follow only stable versions
-    -- version = "*" 
+    version = "*"
   },
 
 }

@@ -1,7 +1,8 @@
 return {
   {
     "Olical/conjure",
-    ft = { "clojure" }, -- etc
+    cond = false,
+    ft = { "clojure",  }, -- etc
     lazy = true,
     init = function()
       -- Set configuration options here
@@ -9,8 +10,6 @@ return {
       -- This is VERY helpful when reporting an issue with the project
       -- vim.g["conjure#debug"] = true
     end,
-
     -- Optional cmp-conjure integration
-    dependencies = { "PaterJason/cmp-conjure" },
   },
 }

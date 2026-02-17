@@ -5,9 +5,9 @@ return {
   {
     "EdenEast/nightfox.nvim",
   },
-  {
-    "oxfist/night-owl.nvim",
-  },
+  -- {
+  --   "oxfist/night-owl.nvim",
+  -- },
   {
     "nyoom-engineering/oxocarbon.nvim",
   },
@@ -17,7 +17,13 @@ return {
   },
   {
     'kepano/flexoki-neovim',
-    name = 'flexoki'
+    name = 'flexoki',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      -- load the colorscheme here
+      vim.cmd([[colorscheme flexoki]])
+    end,
   },
   {
     "savq/melange-nvim",
@@ -26,9 +32,10 @@ return {
     'srcery-colors/srcery-vim',
   },
   {
+    "folke/tokyonight.nvim",
+  },
+  {
     "scottmckendry/cyberdream.nvim",
-    lazy = false,
-    priority = 1000,
     opts = {
       -- Set light or dark variant
       variant = (
@@ -37,7 +44,7 @@ return {
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look
-      saturation = 0.92, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
+      saturation = 0.94, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
       -- Enable italics comments
       italic_comments = true,
       -- Replace all fillchars with ' ' for the ultimate clean look
@@ -51,7 +58,6 @@ return {
       -- Enable or disable specific extensions
       extensions = {
         cmp = true,
-        notify = true,
       },
     },
   },
