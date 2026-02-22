@@ -217,5 +217,3 @@ path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
 path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
 
 # vi:ft=sh
-
-. "$HOME/.local/share/../bin/env"

@@ -301,5 +301,3 @@ if [[ -f ~/.env && -r ~/.env ]]; then
 fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0
-
-. "$HOME/.local/share/../bin/env"
