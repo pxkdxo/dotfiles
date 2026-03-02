@@ -135,7 +135,7 @@ class Filter:
 
     @staticmethod
     def _is_not_hidden(path: Path) -> bool:
-        return path.match(".*")
+        return not path.name.startswith(".")
 
     def match(self, root: Path | str = ".") -> Iterator[Path]:
         root = Path(root)
@@ -151,7 +151,7 @@ class Filter:
                 if not self.include_hidden:
                     matches = filter(self._is_not_hidden, matches)
                 for match in matches:
-                    if any(fnmatch(str(match), ex) for ex in excludes):
+                    if any(fnmatch(match.name, ex) for ex in excludes):
                         continue
                     fullpath = base / match
                     if any(self._filetype_test[ft](fullpath) for ft in filetypes):
@@ -173,8 +173,8 @@ class DirSource(_Source):
     def retrieve(
         self, dest: Path | str, *, update: bool = True, dry_run: bool = False
     ) -> None:
-        path = Path(self.path).expanduser().resolve()
-        dest = Path(dest).expanduser().resolve()
+        path = Path(os.path.expandvars(self.path)).expanduser().resolve()
+        dest = Path(os.path.expandvars(dest)).expanduser().resolve()
         if dest.is_dir():
             dest = dest / path.name
         if dry_run:
@@ -309,11 +309,13 @@ class Collection:
             collection_path.mkdir(parents=True, exist_ok=True)
         for target_path in target_paths:
             link_path = collection_path / target_path.name
-            # Use resolved path so symlink targets resolve correctly when the
-            # collection directory is reached via symlinks.
-            rel = target_path.relative_to(collection_path.resolve(), walk_up=True)
+            # Relative from parent of resolved link to resolved target
+            link_target = target_path.resolve().relative_to(
+                link_path.resolve().parent,
+                walk_up=True
+            )
             if dry_run:
-                print(f"  would link {link_path} -> {rel}")
+                print(f"  would link {link_path} -> {link_target}")
                 continue
             try:
                 link_path.unlink(missing_ok=True)
@@ -323,7 +325,10 @@ class Collection:
                     file=sys.stderr,
                 )
                 continue
-            link_path.symlink_to(rel, target_is_directory=target_path.is_dir())
+            link_path.symlink_to(
+                link_target,
+                target_is_directory=target_path.is_dir()
+            )
         if collection_path.exists():
             for entry in collection_path.iterdir():
                 if entry.is_symlink() and entry.name not in current_names:
@@ -336,9 +341,9 @@ class Collection:
 def _expand_data_path(p: Path | str, base: Path = COLORS_DATA_HOME) -> Path:
     """Resolve path; if relative, resolve against base ($XDG_DATA_HOME/colorschemes)."""
     expanded = Path(os.path.expanduser(str(p)))
-    if not expanded.is_absolute():
-        return (base / expanded).resolve()
-    return expanded.resolve()
+    if expanded.is_absolute():
+        return expanded.resolve()
+    return (base / expanded).resolve()
 
 
 def _expand_config_path(s: str) -> Path:
@@ -410,8 +415,11 @@ def _project_config(
                     continue
                 linked_files.add(entry.name)
                 link_path = config_app_dir / entry.name
-                # Use resolved config path
-                rel = entry.relative_to(config_app_dir.resolve(), walk_up=True)
+                # Relative from parent of resolved link to resolved target
+                rel = entry.resolve().relative_to(
+                    link_path.resolve().parent,
+                    walk_up=True
+                )
                 if dry_run:
                     print(f"  would link {link_path} -> {rel}")
                     continue

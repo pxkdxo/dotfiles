@@ -1,23 +1,8 @@
-[collections]
-directory = 'collections'
-
-[[collections.spec]]
-name = 'iTerm2-Color-Schemes'
-source = 'iTerm2-Color-Schemes'
-filter = { exclude = ['gh-pages', 'screenshots', 'tools'] }
-
-[[collections.spec]]
-name = 'cyberdream.nvim:extras'
-source = 'cyberdream.nvim'
-filter = { paths = ['extras'] }
-
-[[collections.spec]]
-name = 'tokyonight.nvim:extras'
-source = 'tokyonight.nvim'
-filter = { paths = ['extras'] }
-
 [sources]
 directory = 'sources'
+
+[collections]
+directory = 'collections'
 
 [[sources.spec]]
 name = 'iTerm2-Color-Schemes'
@@ -33,3 +18,18 @@ source = { url = 'https://github.com/scottmckendry/cyberdream.nvim.git', ref = '
 name = 'tokyonight.nvim'
 type = 'git'
 source = { url = "https://github.com/folke/tokyonight.nvim.git", ref = 'main' }
+
+[[collections.spec]]
+name = 'iTerm2-Color-Schemes'
+source = 'iTerm2-Color-Schemes'
+filter = { exclude = ['backgrounds', 'gh-pages', 'screenshots', 'tools'] }
+
+[[collections.spec]]
+name = 'cyberdream.nvim:extras'
+source = 'cyberdream.nvim'
+filter = { paths = ['extras'] }
+
+[[collections.spec]]
+name = 'tokyonight.nvim:extras'
+source = 'tokyonight.nvim'
+filter = { paths = ['extras'] }
