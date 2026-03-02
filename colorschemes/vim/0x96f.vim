@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/vim/0x96f.vim

@@ -51,7 +51,7 @@ return {
         { name = "nvim_lua" },
       },
       {
-        { name = "conjure"  },
+        -- { name = "conjure"  },
         { name = "lazydev"  },
         { name = "luasnip"  },
       },

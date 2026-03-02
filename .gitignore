@@ -12,7 +12,7 @@
 
 !/README.md
 
-!/install-dotfiles.sh
+!/*-dotfiles.sh
 
 !/asoundrc
 
@@ -33,7 +33,12 @@
 !/bat/themes
 !/bat/themes/**
 
-!/colorschemes/**
+!/colors-*.py
+!/colorschemes.py
+!/colorschemes-*.py
+!/colorschemes/*.py
+!/colorschemes/*.sh
+!/colorschemes/*.toml
 
 !/dircolors
 
@@ -102,9 +107,10 @@
 
 !/tmux.conf
 !/tmux/tmux.conf
+!/tmux/*.conf
+!/tmux/*.tmux
 !/tmux/colorschemes
 !/tmux/themes
-!/tmux/theme.default.conf
 /tmux/plugins/
 
 !/user-dirs.dirs
@@ -121,7 +127,6 @@
 
 !/xinitrc
 !/xinitrc.d/*.sh
-
 !/xprofile
 !/xserverrc
 !/xsession

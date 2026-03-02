@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/pantheonterminal/IC Green PPL.sh

@@ -2,7 +2,8 @@ return {
   {
     "Olical/conjure",
     cond = false,
-    ft = { "clojure",  }, -- etc
+    cond = not vim.g.vscode,
+    ft = { "clojure" }, -- etc
     lazy = true,
     init = function()
       -- Set configuration options here

@@ -18,12 +18,6 @@ return {
   {
     'kepano/flexoki-neovim',
     name = 'flexoki',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      -- load the colorscheme here
-      vim.cmd([[colorscheme flexoki]])
-    end,
   },
   {
     "savq/melange-nvim",
@@ -36,6 +30,13 @@ return {
   },
   {
     "scottmckendry/cyberdream.nvim",
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    -- init = function (_, opts)
+    --   -- load the colorscheme here
+    --   require("cyberdream").setup(opts)
+    --   vim.cmd.colorscheme("cyberdream")
+    -- end,
     opts = {
       -- Set light or dark variant
       variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`

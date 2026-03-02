@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/generic/12-bit Rainbow.sh

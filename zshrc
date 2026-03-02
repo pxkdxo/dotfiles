@@ -4,22 +4,23 @@
 # see zsh(1)
 
 # If this is not an interactive shell, abort.
-case $- in
+case "$-" in
   (*i*) ;;
   (*) return ;;
 esac
 
-# Path to the ohmyzsh installation.
-if test -v ZDOTDIR; then
-  ZSH="${ZDOTDIR:-${HOME}}/.ohmyzsh"
-else
-  ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
-fi
-
-# atuin for useful history
+# Zoxide (use 'd' / 'di')
 #
 if command -v zoxide > /dev/null; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init zsh --cmd d)"
+fi
+
+# FZF
+#
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
+elif command -v fzf > /dev/null; then
+  eval "$(fzf --zsh 2> /dev/null)"
 fi
 
 # Set name of the theme to load --- if set to "random", it will
@@ -86,21 +87,41 @@ DISABLE_AUTO_UPDATE="true"
 # zstyle ':omz:alpha:lib:git' async-prompt no
 
 # Use iTerm2 shell integration
-zstyle ':omz:plugins:iterm2' shell-integration yes
+# zstyle ':omz:plugins:iterm2' shell-integration yes
 
 # Set fast-syntax-highlighting theme
 # export FAST_THEME="q-jmnemonic"
 export FAST_THEME="sv-plant"
+# export FAST_THEME="zdharma"
+# export FAST_THEME="base16"
 
 # Disable fzf completion trigger
-export FZF_COMPLETION_TRIGGER=''
+export FZF_COMPLETION_TRIGGER='^s'
 
 # Set vivid (lscolors) theme
 export VIVID_THEME='modus-vivendi'
+# export VIVID_THEME='cyberdream'
 # export VIVID_THEME='cyberdream-light'
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
+
+
+# Path to the ohmyzsh installation.
+#
+if test -v ZSH && test -d "${ZSH}"; then
+  export ZSH
+elif test -n "${ZDOTDIR-}" && test -d "${ZDOTDIR}/.ohmyzsh"; then
+  export ZSH="${ZDOTDIR}/.ohmyzsh"
+elif test -n "${XDG_CONFIG_HOME-}" && test -d "${XDG_CONFIG_HOME}/ohmyzsh"; then
+  export ZSH="${XDG_CONFIG_HOME}/ohmyzsh"
+elif test -n "${HOME-}" && test -d "${HOME}/.config/ohmyzsh"; then
+  export ZSH="${HOME}/.config/ohmyzsh"
+elif test -n "${HOME-}" && test -d "${HOME}/.ohmyzsh"; then
+  export ZSH="${HOME}/.ohmyzsh"
+else
+  unset ZSH
+fi
 
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
@@ -160,20 +181,19 @@ plugins=(
 
 # Load oh-my-zsh
 #
-source "$ZSH/oh-my-zsh.sh"
+if test -v ZSH && test -f "${ZSH}/oh-my-zsh.sh"; then
+  source "${ZSH}/oh-my-zsh.sh"
+fi
 
-# fzf
+# Set completion keys
 #
-# if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
-# then
-#   source "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
-# else
-#   eval "$(fzf --zsh 2> /dev/null)"
-# fi
+# bindkey '^I' expand-or-complete
+# bindkey '^@' zic-completion
+bindkey '^@' expand-or-complete
 
-# Mark 'run-help' for autoloading
+# Mark 'run-help' for autoloading (-X: load THIS function from fpath on first call)
 #
-if alias run-help > /dev/null; then
+if alias run-help >/dev/null 2>&1; then
   unalias run-help
 fi
 function run-help() {
@@ -181,25 +201,13 @@ function run-help() {
 }
 alias help='run-help'
 
-# zsh Z shortcuts
+# Configure less defaults
 #
-if command -v z > /dev/null; then
-  alias z-'=z -c'
-  alias 'zwhich=z -e'
-  alias 'zrecent=z -t'
-fi
-
-# Set completion keys
-#
-bindkey '^I' expand-or-complete
-bindkey '^@' zic-completion
+export LESS="${LESS:-"-FiQRSX --mouse"}"
 
 # Configure man pager
 #
-#
-typeset -xT LESS="${LESS:-"-FiQRSX --mouse"}" less ' '
-
-if test -n "${MANPAGER}"; then
+if test -n "${MANPAGER-}"; then
   export MANPAGER
 elif command -v nvim > /dev/null; then
   export MANPAGER='nvim +Man!'
@@ -209,9 +217,10 @@ elif command -v bat > /dev/null; then
   export MANPAGER='bat --language=Manpage --paging=auto --decorations=auto --color=auto --style=grid,snip -- -'
 fi
 
-# Set fzf default options
+# Setup fzf default options
 #
-if test -r "${FZF_DEFAULT_OPTS_FILE}"; then
+export -T FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-}" fzf_default_opts " "
+if test -f "${FZF_DEFAULT_OPTS_FILE:-}"; then
   export FZF_DEFAULT_OPTS_FILE
   fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
 elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzfrc"; then
@@ -223,75 +232,88 @@ elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzfrc"; then
 elif test -f "${HOME}/.fzfrc"; then
   export FZF_DEFAULT_OPTS_FILE="${HOME}/.fzfrc"
   fzf_default_opts=( "${(f)$(< "${FZF_DEFAULT_OPTS_FILE}")[@]}" )
-else
-  export -T FZF_DEFAULT_OPTS fzf_default_opts " "
+elif test -z "${FZF_DEFAULT_OPTS}"; then
   fzf_default_opts=(
-  '--sort'
-  '--cycle'
-  '--smart-case'
-  '--style='\''default'\'''
-  '--layout='\''reverse'\'''
-  '--tmux='\''bottom,40%,border-native'\'''
-  '--info='\''hidden'\'''
-  '--border='\''sharp'\'''
-  '--input-border='\''line'\'''
-  '--header-border='\''line'\'''
-  '--preview-border='\''sharp'\'''
-  '--no-list-border'
-  '--color='\''dark,fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold'\'''
-  '--bind='\''shift-up:first'\'''
-  '--bind='\''shift-down:last'\'''
-  '--bind='\''alt-left:backward-word'\'''
-  '--bind='\''alt-right:forward-word'\'''
-  '--bind='\''ctrl-b:page-up'\'''
-  '--bind='\''ctrl-f:page-down'\'''
-  '--bind='\''ctrl-\\:bg-cancel'\'''
-  '--bind='\''ctrl-j:accept-or-print-query'\'''
-  '--bind='\''ctrl-s:replace-query'\'''
-  '--bind='\''insert:replace-query'\'''
-  '--bind='\''ctrl-/:toggle-preview'\'''
-  '--bind='\''ctrl-]:jump-accept'\'''
-  '--jump-labels='\''1234567890qwertyuiopasdfghjklzxcvbnm'\'''
+    '--sort'
+    '--cycle'
+    '--smart-case'
+    '--style='\''default'\'''
+    '--layout='\''reverse'\'''
+    '--tmux='\''bottom,40%,border-native'\'''
+    '--info='\''hidden'\'''
+    '--border='\''sharp'\'''
+    '--input-border='\''line'\'''
+    '--header-border='\''line'\'''
+    '--preview-border='\''sharp'\'''
+    '--no-list-border'
+    '--color='\''dark,fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold'\'''
+    '--bind='\''shift-up:first'\'''
+    '--bind='\''shift-down:last'\'''
+    '--bind='\''alt-left:backward-word'\'''
+    '--bind='\''alt-right:forward-word'\'''
+    '--bind='\''ctrl-b:page-up'\'''
+    '--bind='\''ctrl-f:page-down'\'''
+    '--bind='\''ctrl-\\:bg-cancel'\'''
+    '--bind='\''ctrl-j:accept-or-print-query'\'''
+    '--bind='\''ctrl-s:replace-query'\'''
+    '--bind='\''insert:replace-query'\'''
+    '--bind='\''ctrl-/:toggle-preview'\'''
+    '--bind='\''ctrl-]:jump-accept'\'''
+    '--jump-labels='\''1234567890qwertyuiopasdfghjklzxcvbnm'\'''
   )
 fi
 
 # Fzf completion opts
-export -T FZF_COMPLETION_OPTS fzf_completion_opts " "
-fzf_completion_opts=(
-  "${fzf_default_opts[@]}"
-  '--select-1'
-  '--exit-0'
-  '--layout='\''reverse-list'\'''
-  '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
-)
+export -T FZF_COMPLETION_OPTS="${FZF_COMPLETION_OPTS-}" fzf_completion_opts " "
+if test -z "${FZF_COMPLETION_OPTS}"; then
+  fzf_completion_opts=(
+    "${fzf_default_opts[@]}"
+    '--select-1'
+    '--exit-0'
+    '--filepath-word'
+    '--layout='\''reverse-list'\'''
+    '--bind='\''ctrl-o:execute-silent(printf %s {} | { pbcopy || wl-copy -n || xclip -sel clipboard -in || xsel --clipboard --input -n; })'\'''
+  )
+fi
 
-export -T FZF_CTRL_R_OPTS fzf_ctrl_r_opts " "
-fzf_ctrl_r_opts=(
-  "${fzf_default_opts[@]}"
-  '--filepath-word'
-  '--layout='\''reverse-list'\'''
-  '--bind='\''ctrl-x:become%zsh -c $@ -- {2..}%'\'''
-  '--bind='\''ctrl-o:execute-silent(printf %s {2..} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
-)
+export -T FZF_ALT_C_OPTS="${FZF_ALT_C_OPTS-}" fzf_alt_c_opts " "
+if test -z "${FZF_ALT_C_OPTS}"; then
+  fzf_alt_c_opts=(
+    "${fzf_default_opts[@]}"
+    '--no-sort'
+    '--filepath-word'
+    '--bind='\''ctrl-x:become%"${EDITOR:-nvim}" -- {}%'\'''
+    '--bind='\''ctrl-o:execute-silent(printf %s {} | { pbcopy || wl-copy -n || xclip -sel clipboard -in || xsel --clipboard --input -n; })'\'''
+  )
+fi
 
-export -T FZF_CTRL_T_OPTS fzf_ctrl_t_opts " "
-fzf_ctrl_t_opts=(
-  "${fzf_default_opts[@]}"
-  '--filepath-word'
-  '--no-sort'
-  '--bind='\''ctrl-m:become%open_command -- {}%'\'''
-  '--bind='\''ctrl-x:become%"${EDITOR:-vim}" -- {}%'\'''
-  '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
-)
+export -T FZF_CTRL_T_OPTS="${FZF_CTRL_T_OPTS-}" fzf_ctrl_t_opts " "
+if test -z "${FZF_CTRL_T_OPTS}"; then
+  fzf_ctrl_t_opts=(
+    "${fzf_default_opts[@]}"
+    '--no-sort'
+    '--filepath-word'
+    '--bind='\''ctrl-m:become%open_command -- {}%'\'''
+    '--bind='\''ctrl-x:become%"${EDITOR:-nvim}" -- {}%'\'''
+    '--bind='\''ctrl-o:execute-silent(printf %s {} | { pbcopy || wl-copy -n || xclip -sel clipboard -in || xsel --clipboard --input -n; })'\'''
+  )
+fi
+export -T FZF_CTRL_R_OPTS="${FZF_CTRL_R_OPTS-}" fzf_ctrl_r_opts " "
+if test -z "${FZF_CTRL_R_OPTS}"; then
+  fzf_ctrl_r_opts=(
+    "${fzf_default_opts[@]}"
+    '--filepath-word'
+    '--layout='\''reverse-list'\'''
+    '--bind='\''ctrl-x:become%zsh -c $@ -- {2..}%'\'''
+    '--bind='\''ctrl-o:execute-silent(printf %s {2..} | { pbcopy || wl-copy -n || xclip -sel clipboard -in || xsel --clipboard --input -n; })'\'''
+  )
+fi
 
-export -T FZF_ALT_C_OPTS fzf_alt_c_opts " "
-fzf_alt_c_opts=(
-  "${fzf_default_opts[@]}"
-  '--no-sort'
-  '--filepath-word'
-  '--bind='\''ctrl-x:become%"${EDITOR:-nvim}" -- {}%'\'''
-  '--bind='\''ctrl-o:execute-silent(printf %s {} | { clipcopy || wl-copy || xclip -sel clipboard; })'\'''
-)
+# # Load cursor-agent integration
+# #
+# if command -v cursor-agent > /dev/null; then
+#   eval "$(cursor-agent shell-integration zsh)"
+# fi
 
 # Load ~/.env
 # NOTE: Do this here to reduce exposure to child processes
@@ -301,5 +323,3 @@ if [[ -f ~/.env && -r ~/.env ]]; then
 fi
 
 # vi:et:ft=zsh:sts=2:sw=2:ts=8:tw=0
-
-. "$HOME/.local/share/../bin/env"

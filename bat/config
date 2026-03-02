@@ -6,7 +6,7 @@
 # for a list of all available themes
 --theme="auto"
 --theme-dark="Coldark-Dark"
---theme-light="Coldark-Cold"
+--theme-light="Catppuccin Latte"
 
 # Enable this to use italic text on the terminal. This is not supported on all
 # terminal emulators (like tmux, by default):
@@ -18,7 +18,7 @@
 # Uncomment the following line if you are using less version >= 551 and want to
 # enable mouse scrolling support in `bat` when running inside tmux. This might
 # disable text selection, unless you press shift.
---pager="less -FiQRSX --mouse"
+--pager="less -iQRSX --mouse"
 
 # Syntax mappings: map a certain filename pattern to a language.
 #   Example 1: use the C++ syntax for Arduino .ino files
@@ -30,7 +30,10 @@
 --set-terminal-title
 
 # Set a default output style.
---style=header,grid,numbers,snip
+--style=changes,header,grid,snip
 
 # Add styling unless the output is piped.
---decorations=auto
+# --decorations=auto
+
+# Show hex codes
+--nonprintable-notation=unicode

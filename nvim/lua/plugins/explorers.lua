@@ -22,22 +22,25 @@ return {
       },
       root_dirs = {
         vim.fn.getcwd(),
-        vim.fn.expand("~/"),
-        vim.fn.expand("~/.local"),
+        vim.fn.getenv("HOME"),
         vim.fn.stdpath("data"),
         vim.fn.stdpath("config"),
+        vim.fn.expand("~/.local"),
       },
       view = {
+        side = "right",
         width = {
-          min = 20,
-          max = "40%",
+          min = 22,
+          max = "29%",
           padding = 1,
         },
         float = {
-          enable = false,
+          -- enable = true,
           quit_on_focus_loss = true,
           open_win_config = {
             border = "rounded",
+            height = "80%",
+            width  = "20%",
           },
         },
       },
@@ -46,22 +49,29 @@ return {
         group_empty = true,
         indent_markers = { enable = true },
         icons = {
+          bookmarks_placement = "right_align",
+          diagnostics_placement = "right_align",
+          -- show = true,
           web_devicons = {
             folder = {
               enable = true
             }
           }
         },
-        hidden_display = "all"
+        -- hidden_display = "all",
+        -- highlight_modified = "none",
       },
       diagnostics = {
         enable = true,
         icons = {
-          hint = "󰠠 ",
-          info = "󰋽 ",
-          warning = "󰀪 ",
-          error = "󰳤 ",
+          hint = " ",
+          info = " ",
+          warning = " ",
+          error = " ",
         },
+      },
+      modified = {
+        enable = true,
       },
       filters = {
         enable = true,

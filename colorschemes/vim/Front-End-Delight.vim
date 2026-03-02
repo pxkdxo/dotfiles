@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/vim/Front-End-Delight.vim

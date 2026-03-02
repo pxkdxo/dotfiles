@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/generic/N0Tch2K.sh

@@ -34,15 +34,20 @@ else
     *-256*)
       export SYSTEMD_COLORS=256 ;;
     *) 
-      if REPLY="$(tput colors 2>/dev/null)"; then
-        if "${REPLY:-0}" -ge 256; then
-          export SYSTEMD_COLORS=256
-        elif "${REPLY:-0}" -ge 88; then
-          export SYSTEMD_COLORS=88
-        elif "${REPLY:-0}" -ge 16; then
-          export SYSTEMD_COLORS=16
-        fi
-      fi 
+      _colors="$(tput colors 2>/dev/null)"
+      case "${_colors:-0}" in
+        *[!0-9]*) ;;
+        *)
+          if test "${_colors:-0}" -ge 256; then
+            export SYSTEMD_COLORS=256
+          elif test "${_colors:-0}" -ge 88; then
+            export SYSTEMD_COLORS=88
+          elif test "${_colors:-0}" -ge 16; then
+            export SYSTEMD_COLORS=16
+          fi
+          ;;
+      esac
+      unset _colors
       ;;
   esac
 fi

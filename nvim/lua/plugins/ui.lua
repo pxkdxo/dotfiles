@@ -44,10 +44,10 @@ return {
             {
               "diagnostics",
               symbols = {
-                error = "󰳤 ",
-                warn = "󰀪 ",
-                info = "󰋽 ",
-                hint = "󰠠 ",
+                error = " ",
+                warn = " ",
+                info = " ",
+                hint = " ",
               },
             },
             {
@@ -196,7 +196,7 @@ return {
         --- this should return a string
         --- Don't get too fancy as this function will be executed a lot
         diagnostics_indicator = function(count, level)
-          local symbol= level:match("error") and "󰳤 " or level:match("warning") and "󰀪 " or ""
+          local symbol= level:match("error") and " " or level:match("warning") and " " or ""
           return " " .. symbol .. count
         end,
       },

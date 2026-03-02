@@ -9,7 +9,11 @@ fi
 # If leaving the console, clear the screen
 if (( SHLVL == 1 ))
 then
-  clear_console -q
+  if command -v clear_console >/dev/null 2>&1; then
+    clear_console -q
+  elif command -v clear >/dev/null 2>&1; then
+    clear
+  fi
 fi
 
 # vi:ft=sh

@@ -1,1 +1,0 @@
-../Collections/cyberdream.nvim:extras/wezterm/cyberdream-light.lua

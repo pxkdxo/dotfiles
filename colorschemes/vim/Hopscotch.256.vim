@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/vim/Hopscotch.256.vim
