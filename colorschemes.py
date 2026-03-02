@@ -1,32 +1,73 @@
 #!/usr/bin/env python3
-"""Download, link, and update colorscheme sources and groupings.
+"""Download, link, and manage colorscheme sources for terminal and editor applications.
 
-Settings are given by a configuration file at ${XDG_CONFIG_HOME}/colorschemes/config.toml.
-XDG_CONFIG_HOME defaults to ~/.config; XDG_DATA_HOME defaults to ~/.local/share.
+This script centralizes colorscheme management so you can pull themes from Git
+repositories or local directories, filter them into collections, and expose them
+to apps (Alacritty, Foot, Kitty, Neovim, Tmux, etc.) under a unified layout.
+Each app sees its themes at $XDG_CONFIG_HOME/colorschemes/<app>/<colorscheme>.
 
-Symlink layout:
-  ${XDG_CONFIG_HOME}/colorschemes/<APP>/<COLORSCHEME>
-    -> ${XDG_DATA_HOME}/colorschemes/collections/<COLLECTION>/<APP>/<COLORSCHEME>
-  ${XDG_DATA_HOME}/colorschemes/collections/<COLLECTION>/<APP>
-    -> ${XDG_DATA_HOME}/colorschemes/sources/<SOURCE>/[<FILTER_PATH>/]<APP>
+Configuration
+-------------
+Config is read from $XDG_CONFIG_HOME/colorschemes/config.toml by default, or
+from a path given with -c. If the default file does not exist, it is created
+with sample content.
 
-All symlinks are relative. Directories sources/ and collections/ live under
-$XDG_DATA_HOME/colorschemes. Relative paths in config are resolved against that.
+Filesystem layout
+----------------
+Two directories are used:
 
-Configuration file format:
+  $XDG_CONFIG_HOME/colorschemes/   (default: ~/.config/colorschemes)
+    Application-facing symlinks live here. Each subdirectory is an app name
+    (e.g. alacritty, kitty, nvim), containing symlinks to colorscheme files.
+
+  $XDG_DATA_HOME/colorschemes/     (default: ~/.local/share/colorschemes)
+    Sources are cloned/fetched here. Collections and symlink targets live under
+    sources/ and collections/.
+
+Concept: Sources and Collections
+--------------------------------
+A *Source* is where themes come from—either a Git repository or a local directory.
+Configure it with:
+
+  - name: Identifier for use in collections (must be a valid directory name)
+  - type: 'git' or 'dir'
+  - source: Type-specific details:
+      For type='git': url (required), ref (branch/tag, optional)
+      For type='dir': path (required)
+
+A *Collection* is a filtered view of a source. It selects which paths and files
+to include. Parameters:
+
+  - source: Name of the source
+  - filter: Optional filter with:
+      paths: Paths within the source to scan (default: '.')
+      pattern: Glob to include (default: '*')
+      exclude: Glob(s) to exclude
+      filetype: 'd' (directories), 'f' (files), or both (default: 'd')
+      include_hidden: Include hidden entries (default: false)
+
+Symlink flow
+-----------
+  1. Sources are fetched into $XDG_DATA_HOME/colorschemes/sources/<name>/
+  2. Collections link into those sources under collections/<collection>/<app>/
+  3. _project_config creates $XDG_CONFIG_HOME/colorschemes/<app>/<colorscheme>
+     symlinks that point into the collection layout
+
+Example config
+-------------
 
     [sources]
-    directory = 'sources'  # Relative to $XDG_DATA_HOME/colorschemes
+    directory = 'sources'
 
     [collections]
     directory = 'collections'
 
     [[sources.spec]]
     name = 'iTerm2-Color-Schemes'
-    type = 'git'  # Downloads and updates from git
+    type = 'git'
     source = {
       url = 'https://github.com/mbadolato/iTerm2-Color-Schemes.git',
-      ref = 'master'  # Optional branch or tag
+      ref = 'master'
     }
 
     [[collections.spec]]
@@ -36,103 +77,91 @@ Configuration file format:
       exclude = ['gh-pages', 'screenshots', 'tools']
     }
 
-A 'Source' is a data source which contains application colorschemes.
+Commands
+--------
+  sync      Fetch sources (clone or pull) and link collections and config.
+            Options: --no-update (skip git pull), --dry-run
 
-A 'Collection' is a projection of source content which requires a Source name
-and accepts the following filter parameters:
-    1. 'paths', relative to the root of the source, which will be the root of
-       the projection.
-    2. 'pattern', 'exclude', and 'filetype', which define what to match and
-       create a symlink for each match at the top level of the Collection
-       directory.
+  link      Link collections and project config only (no fetch).
+            Options: --dry-run
+
+  list      Print configured sources and collections.
 """
 
-import inspect
 import os
 import subprocess
 import sys
 import tomllib
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
 from fnmatch import fnmatch
-from glob import iglob
 from pathlib import Path
 from typing import Any, Callable, ClassVar, Final, Literal, cast, override
 
-
-_IGLOB_HAS_INCLUDE_HIDDEN = "include_hidden" in inspect.signature(iglob).parameters
-
-
-def _ensure_list[T](x: T | list[T] | tuple[T, ...]) -> list[T]:
-    if isinstance(x, list):
-        return cast(list[T], x)
-    if isinstance(x, tuple):
-        return cast(list[T], [*x])
-    return [x]
-
-
-def _from_mapping[T](cls: type[T], data: dict[str, Any]) -> T:
-    return cls(**data)
-
-
-
 XDG_CONFIG_HOME: Final[Path] = Path(
-    os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config")
+    os.getenv("XDG_CONFIG_HOME") or os.path.expanduser("~/.config")
 )
 XDG_DATA_HOME: Final[Path] = Path(
-    os.environ.get("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")
+    os.getenv("XDG_DATA_HOME") or os.path.expanduser("~/.local/share")
 )
 COLORS_CONFIG_HOME: Final[Path] = XDG_CONFIG_HOME / "colorschemes"
 COLORS_DATA_HOME: Final[Path] = XDG_DATA_HOME / "colorschemes"
 
 
-type _Filetype = Literal["d", "f"]
+def tolist[T](x: T | Iterable[T]) -> Iterable[T]:
+    if isinstance(x, str):
+        return cast(list[T], [x])
+    if isinstance(x, Iterable):
+        return cast(Iterable[T], x)
+    return [x]
 
 
 @dataclass(kw_only=True)
 class Filter:
+    type _Filetype = Literal["d", "f"]
+
+    paths: str | list[str] = "."
     pattern: str | list[str] = "*"
     exclude: str | list[str] = field(default_factory=list)
     filetype: _Filetype | list[_Filetype] = "d"
-    hidden: bool = False
-    paths: str | list[str] = "."
+    include_hidden: bool = False
 
     _filetype_test: ClassVar[dict[str, Callable[[Path], bool]]] = {
         "d": lambda p: p.is_dir(),
         "f": lambda p: p.is_file(),
     }
 
+    @staticmethod
+    def _is_not_hidden(path: Path) -> bool:
+        return path.match(".*")
+
     def match(self, root: Path | str = ".") -> Iterator[Path]:
         root = Path(root)
-        patterns = _ensure_list(self.pattern)
-        excludes = _ensure_list(self.exclude)
-        filetypes = _ensure_list(self.filetype)
-        paths = _ensure_list(self.paths)
-
-        if _IGLOB_HAS_INCLUDE_HIDDEN and self.hidden:
-            iglob_kwargs = {"include_hidden": self.hidden}
-        else:
-            iglob_kwargs = {}
+        patterns = tolist(self.pattern)
+        excludes = tolist(self.exclude)
+        filetypes = tolist(self.filetype)
+        paths = tolist(self.paths)
 
         for path in paths:
             base = root / path
             for pattern in patterns:
-                for match in iglob(pattern, root_dir=base, **iglob_kwargs):
-                    if any(fnmatch(match, ex) for ex in excludes):
+                matches = base.glob(pattern, case_sensitive=False)
+                if not self.include_hidden:
+                    matches = filter(self._is_not_hidden, matches)
+                for match in matches:
+                    if any(fnmatch(str(match), ex) for ex in excludes):
                         continue
-                    full_path = base / match
-                    for ft in filetypes:
-                        if self._filetype_test[ft](full_path):
-                            yield Path(path) / match
-                            break
+                    fullpath = base / match
+                    if any(self._filetype_test[ft](fullpath) for ft in filetypes):
+                        yield Path(path) / match
 
 
 class _Source(ABC):
     @abstractmethod
     def retrieve(
-        self, dest: Path | str, update: bool = True, *, dry_run: bool = False
+        self, dest: Path | str, *, update: bool = True, dry_run: bool = False
     ) -> None: ...
 
 
@@ -142,7 +171,7 @@ class DirSource(_Source):
 
     @override
     def retrieve(
-        self, dest: Path | str, update: bool = True, *, dry_run: bool = False
+        self, dest: Path | str, *, update: bool = True, dry_run: bool = False
     ) -> None:
         path = Path(self.path).expanduser().resolve()
         dest = Path(dest).expanduser().resolve()
@@ -163,40 +192,58 @@ class GitSource(_Source):
 
     @override
     def retrieve(
-        self, dest: Path | str, update: bool = True, *, dry_run: bool = False
+        self, dest: Path | str, *, update: bool = True, dry_run: bool = False
     ) -> None:
-        dest = Path(dest).expanduser().resolve()
+        dest = Path(os.path.expandvars(dest)).expanduser().resolve()
 
-        cmds: list[list[str]]
+        commands: list[list[str]]
         if not dest.is_dir():
-            cmds = [
-                ["git", "clone", "--single-branch", "--depth", "1",
-                 "--recurse-submodules", "--shallow-submodules"]
-                + (["--branch", self.ref] if self.ref else [])
-                + ["--", self.url, str(dest)]
+            clone = [
+                "git",
+                "clone",
+                "--depth",
+                "1",
+                "--single-branch",
+                "--recurse-submodules",
+                "--shallow-submodules",
+                *(("--branch", self.ref) if self.ref else ()),
+                "--",
+                self.url,
+                str(dest),
             ]
+            commands = [clone]
             cwd = Path.cwd()
+            if dry_run:
+                print(f"  would clone {self.url} -> {dest}")
+                return None
         elif update:
-            checkout = ["git", "checkout", "-f", "--recurse-submodules"]
-            if self.ref:
-                checkout.append(self.ref)
-            cmds = [
-                ["git", "stash", "push", "--include-untracked"],
-                checkout,
-                ["git", "pull", "--force", "--recurse-submodules=on-demand"],
+            stash = ["git", "stash", "push", "--include-untracked"]
+            checkout = [
+                "git",
+                "checkout",
+                "-f",
+                "--recurse-submodules",
+                *((self.ref,) if self.ref else ()),
             ]
+            pull = ["git", "pull", "--force", "--recurse-submodules=on-demand"]
+            commands = [stash, checkout, pull]
             cwd = dest
+            if dry_run:
+                print(f"  would update {self.url} -> {dest}")
+                return None
         else:
-            cmds = []
+            commands = []
             cwd = Path.cwd()
+            if dry_run:
+                print(f"  would skip {self.url} -> {dest}")
+                return None
 
-        if dry_run:
-            action = "clone" if not dest.is_dir() else ("pull" if update else "skip")
-            print(f"  would {action} {self.url} -> {dest}")
-            return
+        if len(commands) == 0:
+            return None
 
         dest.parent.mkdir(parents=True, exist_ok=True)
-        for cmd in cmds:
+        for cmd in commands:
+            print(">", *cmd)
             proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
             if proc.stdout:
                 print(proc.stdout, end="")
@@ -204,7 +251,9 @@ class GitSource(_Source):
                 print(proc.stderr, end="", file=sys.stderr)
             # stash can exit 1 when there's nothing to stash—allow that
             if proc.returncode != 0 and cmd[1] != "stash":
-                raise subprocess.CalledProcessError(proc.returncode, cmd, proc.stdout, proc.stderr)
+                raise subprocess.CalledProcessError(
+                    proc.returncode, cmd, proc.stdout, proc.stderr
+                )
 
 
 SOURCE_TYPES: dict[str, type[_Source]] = {
@@ -230,8 +279,12 @@ class Collection:
         source_path = sources_root / self.source
         if not source_path.is_dir():
             raise FileNotFoundError(
-                f"Source '{self.source}' not found at {source_path}; "
-                f"run 'sync' first or check collection '{self.name}' config"
+                " ".join(
+                    (
+                        f"Source '{self.source}' not found at {source_path};",
+                        f"run 'sync' first or check collection '{self.name}' config",
+                    )
+                )
             )
         for name in self.filter.match(source_path):
             yield source_path / name
@@ -297,9 +350,7 @@ class Sources:
     directory: Path | str
     spec: list[Source]
 
-    def retrieve_all(
-        self, update: bool = True, *, dry_run: bool = False
-    ) -> None:
+    def retrieve_all(self, *, update: bool = True, dry_run: bool = False) -> None:
         directory = _expand_data_path(self.directory)
         if not dry_run:
             directory.mkdir(parents=True, exist_ok=True)
@@ -314,14 +365,10 @@ class Collections:
     directory: Path | str
     spec: list[Collection]
 
-    def link_all(
-        self, sources_root: Path, *, dry_run: bool = False
-    ) -> None:
+    def link_all(self, sources_root: Path, *, dry_run: bool = False) -> None:
         collections_root = _expand_data_path(self.directory)
         for collection in self.spec:
-            collection.link_to_source(
-                collections_root, sources_root, dry_run=dry_run
-            )
+            collection.link_to_source(collections_root, sources_root, dry_run=dry_run)
 
 
 def _project_config(
@@ -329,11 +376,9 @@ def _project_config(
     *,
     dry_run: bool = False,
 ) -> None:
-    """Create $XDG_CONFIG_HOME/colorschemes/<APPLICATION>/<COLORSCHEME> symlinks.
-
-    APPLICATION is each unique subdirectory under collections/*/.
-    Each colorscheme file is symlinked from config to its collection location.
-    Stale symlinks in config are removed.
+    """Create $XDG_CONFIG_HOME/colorschemes/<application>/<colorscheme> symlinks.
+    Link each colorscheme file from its collection location.
+    Also remove stale symlinks.
     """
     if not collections_root.is_dir():
         if dry_run:
@@ -365,9 +410,7 @@ def _project_config(
                     continue
                 linked_files.add(entry.name)
                 link_path = config_app_dir / entry.name
-                # Use resolved config path: symlink targets are resolved relative to the
-                # actual directory on disk (e.g. ~/.config -> ~/.local/etc), so the
-                # relative path must be computed from the resolved location.
+                # Use resolved config path
                 rel = entry.relative_to(config_app_dir.resolve(), walk_up=True)
                 if dry_run:
                     print(f"  would link {link_path} -> {rel}")
@@ -401,6 +444,7 @@ class Config:
 
 class Command(ABC):
     """Base class for subcommands."""
+
     config: Config
     args: Namespace
 
@@ -409,12 +453,12 @@ class Command(ABC):
         self.args = args
 
     @abstractmethod
-    def run(self) -> None: ...
+    def __call__(self) -> None: ...
 
 
 class SyncCommand(Command):
     @override
-    def run(self) -> None:
+    def __call__(self) -> None:
         update = getattr(self.args, "update", True)
         dry_run = getattr(self.args, "dry_run", False)
         if dry_run:
@@ -423,9 +467,7 @@ class SyncCommand(Command):
         sources_root = _expand_data_path(self.config.sources.directory)
         if dry_run:
             print("[dry-run] would link collections:")
-        self.config.collections.link_all(
-            sources_root=sources_root, dry_run=dry_run
-        )
+        self.config.collections.link_all(sources_root=sources_root, dry_run=dry_run)
         if dry_run:
             print("[dry-run] would project config:")
         _project_config(
@@ -436,14 +478,12 @@ class SyncCommand(Command):
 
 class LinkCommand(Command):
     @override
-    def run(self) -> None:
+    def __call__(self) -> None:
         dry_run = getattr(self.args, "dry_run", False)
         sources_root = _expand_data_path(self.config.sources.directory)
         if dry_run:
             print("[dry-run] would link collections:")
-        self.config.collections.link_all(
-            sources_root=sources_root, dry_run=dry_run
-        )
+        self.config.collections.link_all(sources_root=sources_root, dry_run=dry_run)
         if dry_run:
             print("[dry-run] would project config:")
         _project_config(
@@ -454,7 +494,7 @@ class LinkCommand(Command):
 
 class ListCommand(Command):
     @override
-    def run(self) -> None:
+    def __call__(self) -> None:
         print("Sources:")
         for s in self.config.sources.spec:
             print(f"  {s.name} ({s.type})")
@@ -464,16 +504,20 @@ class ListCommand(Command):
 
 
 def _parse_source(data: dict[str, Any]) -> Source:
-    name = data["name"]
-    type_ = data["type"]
-    if type_ not in SOURCE_TYPES:
+    source_name = data["name"]
+    source_type = data["type"]
+    if source_type not in SOURCE_TYPES:
         raise ValueError(
-            f"Unknown source type '{type_}' for '{name}'; "
-            f"expected one of {list(SOURCE_TYPES)}"
+            " ".join(
+                (
+                    f"Unknown type '{source_type}' for source '{source_name}';",
+                    f"expected one of {list(SOURCE_TYPES)}",
+                )
+            )
         )
     source_data = data["source"]
-    source = _from_mapping(SOURCE_TYPES[type_], source_data)
-    return Source(name=name, type=type_, source=source)
+    source = SOURCE_TYPES[source_type](**source_data)
+    return Source(name=source_name, type=source_type, source=source)
 
 
 def _parse_collection(data: dict[str, Any]) -> Collection:
@@ -510,14 +554,17 @@ def main() -> int:
         description=(__doc__ or "").strip().partition("\n")[0],
     )
     parser.add_argument(
-        "-c", "--config",
+        "-c",
+        "--config",
         type=_expand_config_path,
         default=COLORS_CONFIG_HOME / "config.toml",
         help=f"Config file (default: {COLORS_CONFIG_HOME / 'config.toml'})",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    sync_parser = subparsers.add_parser("sync", help="Fetch sources and link collections")
+    sync_parser = subparsers.add_parser(
+        "sync", help="Fetch sources and link collections"
+    )
     sync_parser.add_argument(
         "--no-update",
         dest="update",
@@ -549,7 +596,7 @@ def main() -> int:
     try:
         config = _load_config(args.config)
         cmd: Command = args.cmd_cls(config=config, args=args)
-        cmd.run()
+        cmd()
         return 0
     except (FileNotFoundError, OSError, PermissionError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
