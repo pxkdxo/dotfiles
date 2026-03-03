@@ -1,6 +1,7 @@
 return {
   {
     'nvim-lualine/lualine.nvim',
+    'ph1losof/ecolog.nvim',
     cond = vim.g.vscode == nil,
     dependencies = {
       "echasnovski/mini.icons",
@@ -127,6 +128,7 @@ return {
             },
           },
           lualine_x = {
+            require('ecolog.integrations.statusline').lualine(),
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,

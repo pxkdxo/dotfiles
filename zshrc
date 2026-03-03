@@ -123,6 +123,9 @@ else
   unset ZSH
 fi
 
+if test -v ZSH; then
+fi
+
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -176,20 +179,52 @@ plugins=(
   fast-syntax-highlighting
   zsh-interactive-cd
   zsh-autosuggestions
-  zsh-completions
+  # zsh-autocomplete
+  # zstyles
 )
 
 # Load oh-my-zsh
 #
-if test -v ZSH && test -f "${ZSH}/oh-my-zsh.sh"; then
-  source "${ZSH}/oh-my-zsh.sh"
-fi
+if test -v ZSH; then
+  #   source "${ZSH}/custom/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh" && ZSH_AUTOCOMPLETE_LOADED=1
+  if test -f "${ZSH}/oh-my-zsh.sh"; then
+    source "${ZSH}/oh-my-zsh.sh"
+  fi
 
-# Set completion keys
-#
-# bindkey '^I' expand-or-complete
-# bindkey '^@' zic-completion
-bindkey '^@' expand-or-complete
+  # Set completion keys
+  #
+  bindkey '^I' expand-or-complete
+
+  # fzf interactive cd
+  #
+  bindkey '^S' zic-completion
+
+  # zsh-autocomplete: longest common substring matching
+  # Turn off for longest common substring matching
+  #
+  # zstyle ':completion:*:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' '+r:|[.]=**'
+
+  # zsh-autocomplete: Tab widgets
+  #
+  # zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
+  # # all history widgets
+  # zstyle ':autocomplete:*history*:*' insert-unambiguous yes
+  # # ^S
+  # zstyle ':autocomplete:menu-search:*' insert-unambiguous yes
+
+  # # Make Tab and ShiftTab cycle completions on the command line
+  # bindkey              '^I'         menu-complete
+  # bindkey "$terminfo[kcbt]" reverse-menu-complete
+
+  # # Make Tab and ShiftTab change the selection in the menu
+  # bindkey -M menuselect              '^I'         menu-complete
+  # bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
+
+  # # Make ← and → always move the cursor on the command line
+  # bindkey -M menuselect  '^[[D' .backward-char  '^[OD' .backward-char
+  # bindkey -M menuselect  '^[[C'  .forward-char  '^[OC'  .forward-char
+
+fi
 
 # Mark 'run-help' for autoloading (-X: load THIS function from fpath on first call)
 #

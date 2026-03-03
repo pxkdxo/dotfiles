@@ -50,7 +50,7 @@ Symlink flow
 -----------
   1. Sources are fetched into $XDG_DATA_HOME/colorschemes/sources/<name>/
   2. Collections link into those sources under collections/<collection>/<app>/
-  3. _project_config creates $XDG_CONFIG_HOME/colorschemes/<app>/<colorscheme>
+  3. link_config creates $XDG_CONFIG_HOME/colorschemes/<app>/<colorscheme>
      symlinks that point into the collection layout
 
 Example config
@@ -82,7 +82,7 @@ Commands
   sync      Fetch sources (clone or pull) and link collections and config.
             Options: --no-update (skip git pull), --dry-run
 
-  link      Link collections and project config only (no fetch).
+  link      Create collections and link config only (no fetch).
             Options: --dry-run
 
   list      Print configured sources and collections.
@@ -175,7 +175,7 @@ class DirSource(_Source):
     ) -> None:
         path = Path(os.path.expandvars(self.path)).expanduser().resolve()
         dest = Path(os.path.expandvars(dest)).expanduser().resolve()
-        if dest.is_dir():
+        if dest.is_dir() and not dest.is_symlink():
             dest = dest / path.name
         if dry_run:
             print(f"  would symlink {dest} -> {path}")
@@ -218,15 +218,17 @@ class GitSource(_Source):
                 return None
         elif update:
             stash = ["git", "stash", "push", "--include-untracked"]
-            checkout = [
+            fetch = [
                 "git",
-                "checkout",
-                "-f",
-                "--recurse-submodules",
-                *((self.ref,) if self.ref else ()),
+                "fetch",
+                "--depth",
+                "1",
+                "--recurse-submodules=on-demand",
+                "origin",
+                *(("--", self.ref) if self.ref else ()),
             ]
-            pull = ["git", "pull", "--force", "--recurse-submodules=on-demand"]
-            commands = [stash, checkout, pull]
+            checkout = ["git", "checkout", "-f", "--detach", "FETCH_HEAD"]
+            commands = [stash, fetch, checkout]
             cwd = dest
             if dry_run:
                 print(f"  would update {self.url} -> {dest}")
@@ -307,11 +309,13 @@ class Collection:
         current_names = {p.name for p in target_paths}
         if not dry_run:
             collection_path.mkdir(parents=True, exist_ok=True)
+        n_linked = 0
+        n_stale = 0
         for target_path in target_paths:
             link_path = collection_path / target_path.name
             # Relative from parent of resolved link to resolved target
             link_target = target_path.resolve().relative_to(
-                link_path.resolve().parent,
+                link_path.parent.resolve(),
                 walk_up=True
             )
             if dry_run:
@@ -329,6 +333,7 @@ class Collection:
                 link_target,
                 target_is_directory=target_path.is_dir()
             )
+            n_linked += 1
         if collection_path.exists():
             for entry in collection_path.iterdir():
                 if entry.is_symlink() and entry.name not in current_names:
@@ -336,9 +341,15 @@ class Collection:
                         print(f"  would remove stale {entry}")
                     else:
                         entry.unlink(missing_ok=True)
+                        n_stale += 1
+        if not dry_run:
+            parts = [f"{n_linked} linked"]
+            if n_stale:
+                parts.append(f"{n_stale} stale removed")
+            print(f"  {self.name}: {', '.join(parts)}")
 
 
-def _expand_data_path(p: Path | str, base: Path = COLORS_DATA_HOME) -> Path:
+def expand_data_path(p: Path | str, base: Path = COLORS_DATA_HOME) -> Path:
     """Resolve path; if relative, resolve against base ($XDG_DATA_HOME/colorschemes)."""
     expanded = Path(os.path.expanduser(str(p)))
     if expanded.is_absolute():
@@ -346,37 +357,35 @@ def _expand_data_path(p: Path | str, base: Path = COLORS_DATA_HOME) -> Path:
     return (base / expanded).resolve()
 
 
-def _expand_config_path(s: str) -> Path:
+def expand_config_path(s: str) -> Path:
     return Path(s).expanduser()
 
 
 @dataclass(kw_only=True)
 class Sources:
-    directory: Path | str
+    directory: Path
     spec: list[Source]
 
     def retrieve_all(self, *, update: bool = True, dry_run: bool = False) -> None:
-        directory = _expand_data_path(self.directory)
         if not dry_run:
-            directory.mkdir(parents=True, exist_ok=True)
+            self.directory.mkdir(parents=True, exist_ok=True)
         for source in self.spec:
             source.source.retrieve(
-                directory / source.name, update=update, dry_run=dry_run
+                self.directory / source.name, update=update, dry_run=dry_run
             )
 
 
 @dataclass(kw_only=True)
 class Collections:
-    directory: Path | str
+    directory: Path
     spec: list[Collection]
 
     def link_all(self, sources_root: Path, *, dry_run: bool = False) -> None:
-        collections_root = _expand_data_path(self.directory)
         for collection in self.spec:
-            collection.link_to_source(collections_root, sources_root, dry_run=dry_run)
+            collection.link_to_source(self.directory, sources_root, dry_run=dry_run)
 
 
-def _project_config(
+def link_config(
     collections_root: Path,
     *,
     dry_run: bool = False,
@@ -387,7 +396,7 @@ def _project_config(
     """
     if not collections_root.is_dir():
         if dry_run:
-            print("[dry-run] would project config (collections not yet linked)")
+            print("[dry-run] would link config (collections not yet created)")
         return
     app_names: set[str] = set()
     for coll_dir in collections_root.iterdir():
@@ -395,6 +404,9 @@ def _project_config(
             for entry in coll_dir.iterdir():
                 if entry.is_dir() or entry.is_symlink():
                     app_names.add(entry.name)
+    n_apps = 0
+    n_linked = 0
+    n_stale = 0
     for app in sorted(app_names):
         config_app_dir = COLORS_CONFIG_HOME / app
         linked_files: set[str] = set()
@@ -417,7 +429,7 @@ def _project_config(
                 link_path = config_app_dir / entry.name
                 # Relative from parent of resolved link to resolved target
                 rel = entry.resolve().relative_to(
-                    link_path.resolve().parent,
+                    link_path.parent.resolve(),
                     walk_up=True
                 )
                 if dry_run:
@@ -433,6 +445,7 @@ def _project_config(
                     )
                     continue
                 link_path.symlink_to(rel, target_is_directory=False)
+                n_linked += 1
         if config_app_dir.exists():
             for entry in config_app_dir.iterdir():
                 if entry.is_symlink() and entry.name not in linked_files:
@@ -440,8 +453,16 @@ def _project_config(
                         print(f"  would remove stale {entry}")
                     else:
                         entry.unlink(missing_ok=True)
+                        n_stale += 1
         elif dry_run and linked_files:
             print(f"  would create {config_app_dir}/ with {len(linked_files)} link(s)")
+        if linked_files:
+            n_apps += 1
+    if not dry_run:
+        parts = [f"{n_apps} apps", f"{n_linked} links"]
+        if n_stale:
+            parts.append(f"{n_stale} stale removed")
+        print(f"  {', '.join(parts)}")
 
 
 @dataclass(kw_only=True)
@@ -469,35 +490,31 @@ class SyncCommand(Command):
     def __call__(self) -> None:
         update = getattr(self.args, "update", True)
         dry_run = getattr(self.args, "dry_run", False)
-        if dry_run:
-            print("[dry-run] would fetch sources:")
+        prefix = "[dry-run] would fetch" if dry_run else "Fetching"
+        print(f"{prefix} sources:")
         self.config.sources.retrieve_all(update=update, dry_run=dry_run)
-        sources_root = _expand_data_path(self.config.sources.directory)
-        if dry_run:
-            print("[dry-run] would link collections:")
-        self.config.collections.link_all(sources_root=sources_root, dry_run=dry_run)
-        if dry_run:
-            print("[dry-run] would project config:")
-        _project_config(
-            _expand_data_path(self.config.collections.directory),
-            dry_run=dry_run,
+        prefix = "[dry-run] would create" if dry_run else "Creating"
+        print(f"{prefix} collections:")
+        self.config.collections.link_all(
+            sources_root=self.config.sources.directory, dry_run=dry_run
         )
+        prefix = "[dry-run] would link" if dry_run else "Linking"
+        print(f"{prefix} config:")
+        link_config(self.config.collections.directory, dry_run=dry_run)
 
 
 class LinkCommand(Command):
     @override
     def __call__(self) -> None:
         dry_run = getattr(self.args, "dry_run", False)
-        sources_root = _expand_data_path(self.config.sources.directory)
-        if dry_run:
-            print("[dry-run] would link collections:")
-        self.config.collections.link_all(sources_root=sources_root, dry_run=dry_run)
-        if dry_run:
-            print("[dry-run] would project config:")
-        _project_config(
-            _expand_data_path(self.config.collections.directory),
-            dry_run=dry_run,
+        prefix = "[dry-run] would create" if dry_run else "Creating"
+        print(f"{prefix} collections:")
+        self.config.collections.link_all(
+            sources_root=self.config.sources.directory, dry_run=dry_run
         )
+        prefix = "[dry-run] would link" if dry_run else "Linking"
+        print(f"{prefix} config:")
+        link_config(self.config.collections.directory, dry_run=dry_run)
 
 
 class ListCommand(Command):
@@ -537,13 +554,13 @@ def _parse_collection(data: dict[str, Any]) -> Collection:
 
 
 def _parse_sources(data: dict[str, Any]) -> Sources:
-    directory = data.get("directory", "sources")
+    directory = expand_data_path(data.get("directory", "sources"))
     spec = [_parse_source(s) for s in data.get("spec", [])]
     return Sources(directory=directory, spec=spec)
 
 
 def _parse_collections(data: dict[str, Any]) -> Collections:
-    directory = data.get("directory", "collections")
+    directory = expand_data_path(data.get("directory", "collections"))
     spec = [_parse_collection(c) for c in data.get("spec", [])]
     return Collections(directory=directory, spec=spec)
 
@@ -564,7 +581,7 @@ def main() -> int:
     parser.add_argument(
         "-c",
         "--config",
-        type=_expand_config_path,
+        type=expand_config_path,
         default=COLORS_CONFIG_HOME / "config.toml",
         help=f"Config file (default: {COLORS_CONFIG_HOME / 'config.toml'})",
     )

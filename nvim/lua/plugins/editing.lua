@@ -57,7 +57,7 @@ return {
   {
     "folke/flash.nvim",
     event = "VeryLazy",
-    cond = false,
+    cond = true,
     vscode = true,
     ---@type Flash.Config
     opts = {},
@@ -103,7 +103,7 @@ return {
   },
   {
     "https://codeberg.org/andyg/leap.nvim",
-    cond = true,
+    cond = false,
     version = false,
     opts = {
       preview_filter = function (ch0, ch1, ch2)
