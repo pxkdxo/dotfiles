@@ -35,9 +35,8 @@ else
         export JAVA_HOME="/usr/share/openjdk"
       elif test -d "/opt/openjdk"; then
         export JAVA_HOME="/opt/openjdk"
-      elif command -v /usr/libexec/java_home > /dev/null &&
-        JAVA_HOME="$(/usr/libexec/java_home 2> /dev/null)"
-      then
+      elif command -v /usr/libexec/java_home > /dev/null \
+        && JAVA_HOME="$(/usr/libexec/java_home 2> /dev/null)"; then
         export JAVA_HOME
       else
         unset JAVA_HOME
@@ -84,13 +83,13 @@ fi
 
 # Export JAVA_HOME set to whichever path we found
 if test -n "${JAVA_HOME-}" && test -d "${JAVA_HOME}/bin"; then
-    export JAVA_HOME
-    case ":${PATH}:" in
-      *":${JAVA_HOME}/bin:"*)
-        ;;
-      *) export PATH="${JAVA_HOME}/bin${PATH:+:${PATH}}"
-        ;;
-    esac
+  export JAVA_HOME
+  case ":${PATH}:" in
+    *":${JAVA_HOME}/bin:"*) ;;
+    *)
+      export PATH="${JAVA_HOME}/bin${PATH:+:${PATH}}"
+      ;;
+  esac
 else
   unset JAVA_HOME
 fi

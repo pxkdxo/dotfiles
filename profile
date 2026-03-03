@@ -2,20 +2,16 @@
 # see bash(1), dash(1), sh(1), zsh(1), ...
 # shellcheck shell=dash
 
-
 # Termcap is outdated, old, and crusty, kill it.
 unset TERMCAP
 
-
 # Man is much better than us at figuring this out
 unset MANPATH
-
 
 # Initialize tty, and make <C-s>/<C-z> usable by disabling XON/XOFF
 if test -t 1; then
   stty -ixon -ixoff || true
 fi
-
 
 # Set file creation mode mask
 # EUID is not defined in POSIX
@@ -25,7 +21,6 @@ if test "${EUID:-$(id -u)}" -eq 0; then
 else
   umask 0022
 fi
-
 
 # path_print - Print PATH elements separated by newlines or a given string
 # Description: Any backslash-escape sequences in SEPARATOR will be expanded.
@@ -49,7 +44,6 @@ path_print() {
   echo
 }
 
-
 # path_contains - Check if an element exists in PATH
 # Description: Returns 0 if DIRECTORY is in PATH and 1 otherwise.
 # Usage: path_contains DIRECTORY
@@ -65,7 +59,6 @@ path_contains() {
     *) return 1 ;;
   esac
 }
-
 
 # path_discard - Remove elements from PATH
 # Description: Remove all occurrences of each DIRECTORY from PATH.
@@ -89,7 +82,6 @@ path_discard() {
   done
 }
 
-
 # path_append - Append each element to the end of PATH
 # Description: Append each DIRECTORY to PATH and remove all other occurrences.
 # Usage: path_append DIRECTORY ...
@@ -107,7 +99,6 @@ path_append() {
   done
 }
 
-
 # path_push - Push each element to the front of PATH (LIFO)
 # Description: Prepend each DIRECTORY to PATH and remove all other occurrences.
 # Usage: path_push DIRECTORY ...
@@ -124,7 +115,6 @@ path_push() {
     shift
   done
 }
-
 
 # path_insert - Insert an element into PATH at a given position
 # Description:
@@ -175,14 +165,12 @@ path_insert() {
   fi
 }
 
-
 # Load additional profile config
 for __profile__ in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
   if test -f "${__profile__}" && test -r "${__profile__}"; then
     . "${__profile__}"
   fi
 done
-
 
 # Make sure these are at the front
 if test -d ~/.bin; then

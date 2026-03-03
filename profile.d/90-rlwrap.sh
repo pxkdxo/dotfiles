@@ -4,7 +4,7 @@
 
 if test -n "${EDITOR:-}"; then
   case "${EDITOR##*/}" in
-    vim|[mn]vim)
+    vim | [mn]vim)
       # shellcheck disable=SC2089
       export RLWRAP_EDITOR="${EDITOR} -c 'call cursor(%L,%C)' %F"
       ;;

@@ -2,14 +2,12 @@
 # extract_palette.sh NAME
 # shellcheck shell=bash
 
-
 __extract_palette_short_doc() {
   cat
   return "$((${1-0}))"
 } << EOF
 Find and scan different versions of a colorscheme to make a palette.
 EOF
-
 
 __extract_palette_usage() {
   cat
@@ -18,13 +16,11 @@ __extract_palette_usage() {
 usage: ${0##*/} COLORSCHEME_NAME [COLORSCHEME_NAME ...]
 EOF
 
-
 __extract_palette_help() {
   __extract_palette_short_doc
   __extract_palette_usage
   return "$((${1-0}))"
 }
-
 
 extract_palette() {
   local class_group='(bright_|light_|dark_|dim_|cursor_|selection_|highlight_|text_|foreground_|background_|fg_|bg_)'
@@ -54,13 +50,12 @@ extract_palette() {
     search_re="${directory}/.*/${colors//[ _-]/[ _-]}\([.][a-z0-9_-][a-z0-9_-]*\)*"
     if result=$(
       find -L "${directory}"/ -mindepth 2 -type f -iregex "${search_re}" -exec \
-        grep -E -I --ignore-case --no-filename --only-matching "${filter_re}" '{}' + |
-        LC_ALL=C tr -- ':[:upper:][:blank:]-' '=[:lower:]_' |
-        sed -E -n "s/${sub_pattern}/${sub_replace}/p" |
-        sed -E -e 's/^fg/foreground/' -e 's/^bg/background/' -e 's/_foreground/_fg/' -e 's/_background/_bg/' |
-        sort -u --field-separator '=' --key '1,1b'
-      ) && test -n "${result}"
-    then
+        grep -E -I --ignore-case --no-filename --only-matching "${filter_re}" '{}' + \
+        | LC_ALL=C tr -- ':[:upper:][:blank:]-' '=[:lower:]_' \
+        | sed -E -n "s/${sub_pattern}/${sub_replace}/p" \
+        | sed -E -e 's/^fg/foreground/' -e 's/^bg/background/' -e 's/_foreground/_fg/' -e 's/_background/_bg/' \
+        | sort -u --field-separator '=' --key '1,1b'
+    ) && test -n "${result}"; then
       if test "${put_nl}" -eq 0; then
         put_nl=1
       else
@@ -72,7 +67,6 @@ extract_palette() {
     fi
   done
 }
-
 
 if test "$#" -gt 0; then
   extract_palette "$@"

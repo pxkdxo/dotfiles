@@ -4,7 +4,7 @@
 if command -v podman > /dev/null; then
   # Set DOCKER_HOST to use Podman socket
   case "$(uname -s)" in
-    Linux*|linux*)
+    Linux* | linux*)
       if podman_socket="$(
         podman info --format '{{ .Host.RemoteSocket.Path }}' 2> /dev/null
       )" && test -S "${podman_socket}"; then
@@ -16,7 +16,7 @@ if command -v podman > /dev/null; then
       fi
       unset podman_socket
       ;;
-    Darwin*|darwin*)
+    Darwin* | darwin*)
       # If not running, auto-start wachine in the background
       if podman_state="$(
         podman machine inspect --format '{{ .State }}' 2> /dev/null

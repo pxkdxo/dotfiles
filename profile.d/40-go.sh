@@ -40,14 +40,14 @@ fi
 
 if test -n "${GOENV-}" && command -v go > /dev/null; then
   if test -n "${GOBIN-}"; then
-    _go_current=$(go env GOBIN 2>/dev/null) || _go_current=""
+    _go_current=$(go env GOBIN 2> /dev/null) || _go_current=""
     if test "${_go_current:-}" != "${GOBIN}"; then
       go env -w GOBIN="${GOBIN}"
     fi
     unset _go_current
   fi
   if test -n "${GOPATH-}"; then
-    _go_current=$(go env GOPATH 2>/dev/null) || _go_current=""
+    _go_current=$(go env GOPATH 2> /dev/null) || _go_current=""
     if test "${_go_current:-}" != "${GOPATH}"; then
       go env -w GOPATH="${GOPATH}"
     fi

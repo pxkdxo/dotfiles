@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 # cargo.sh: cargo environment config
 
-if test -d "${CARGO_HOME-}"
-then
+if test -d "${CARGO_HOME-}"; then
   case ":${PATH}:" in
     *:"${CARGO_HOME}/bin":*) ;;
     *) export PATH="${CARGO_HOME}/bin${PATH:+:${PATH}}" ;;

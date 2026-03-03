@@ -6,8 +6,7 @@ if test -z "${RIPGREP_CONFIG_PATH:-}"; then
     "${XDG_CONFIG_HOME:-${HOME}/.config}/ripgrep/ripgreprc" \
     "${XDG_CONFIG_HOME:-${HOME}/.config}/ripgreprc" \
     "${HOME}/.ripgrep/ripgreprc" \
-    "${HOME}/.ripgreprc"
-  do
+    "${HOME}/.ripgreprc"; do
     if test -r "${config_path}"; then
       export RIPGREP_CONFIG_PATH="${config_path}"
       break

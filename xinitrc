@@ -16,23 +16,32 @@ unset __xprofile
 # Identify session
 case "${1-}" in
   awesome)
-    session=awesome ;;
+    session=awesome
+    ;;
   cinnamon)
-    session=cinnamon-session ;;
+    session=cinnamon-session
+    ;;
   gnome)
-    session=gnome-session ;;
+    session=gnome-session
+    ;;
   kde)
-    session=startplasma-x11 ;;
+    session=startplasma-x11
+    ;;
   lxde)
-    session=startlxde ;;
+    session=startlxde
+    ;;
   lxqt)
-    session=lxqt-session ;;
+    session=lxqt-session
+    ;;
   mate)
-    session=mate-session ;;
+    session=mate-session
+    ;;
   xfce)
-    session=xfce4-session ;;
+    session=xfce4-session
+    ;;
   *)
-    session="" ;;
+    session=""
+    ;;
 esac
 
 # Become the session or exit with failure

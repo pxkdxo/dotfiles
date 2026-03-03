@@ -4,8 +4,8 @@
 
 # Try update-alternatives first (Debian/Ubuntu)
 if command -v update-alternatives > /dev/null && PAGER="$(
-    command -v -- "$(
-      update-alternatives --query pager | sed -E -n '
+  command -v -- "$(
+    update-alternatives --query pager | sed -E -n '
       # Find the line starting with "Value:" and extract the value it contains
       s/^[[:blank:]]*Value:[[:blank:]]*(.*[^[:blank:]])[[:blank:]]*$/\1/
       t z # Skip to z if matched
@@ -14,9 +14,8 @@ if command -v update-alternatives > /dev/null && PAGER="$(
       p
       q
       '
-    )"
   )"
-then
+)"; then
   export PAGER
 else
   for PAGER in bat less more; do
@@ -29,6 +28,5 @@ fi
 if test -z "${PAGER}"; then
   unset PAGER
 fi
-
 
 # vim:ft=sh

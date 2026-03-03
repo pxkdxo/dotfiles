@@ -17,22 +17,22 @@ if command -v gh > /dev/null; then
   elif command -v nvimpager > /dev/null; then
     export GH_PAGER='nvimpager -p'
   fi
-  
+
   # Enable color labels for terminals that can handle it
   unset GH_COLOR_LABELS
 
   case "${COLORTERM:-}" in
-    truecolor|24bit)
+    truecolor | 24bit)
       export GH_COLOR_LABELS=true
       ;;
   esac
   case "${TERM#*-}" in
-    truecolor|direct|256*)
+    truecolor | direct | 256*)
       export GH_COLOR_LABELS=true
       ;;
   esac
   case "${TERM}" in
-    alacritty|alacritty-*|foot|foot-*|iterm2|iterm2-*|kitty|kitty-*|konsole|konsole-*|mintty|mintty-*|st|st-*|wezterm|wezterm-*|xterm-iterm2|xterm-kitty|xterm-konsole)
+    alacritty | alacritty-* | foot | foot-* | iterm2 | iterm2-* | kitty | kitty-* | konsole | konsole-* | mintty | mintty-* | st | st-* | wezterm | wezterm-* | xterm-iterm2 | xterm-kitty | xterm-konsole)
       export GH_COLOR_LABELS=true
       ;;
   esac

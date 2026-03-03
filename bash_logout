@@ -1,17 +1,15 @@
 # ~/.bash_logout: bash logout script
 
 # Reset the terminal
-if command -v tput > /dev/null
-then
+if command -v tput > /dev/null; then
   tput reset
 fi
 
 # If leaving the console, clear the screen
-if (( SHLVL == 1 ))
-then
-  if command -v clear_console >/dev/null 2>&1; then
+if ((SHLVL == 1)); then
+  if command -v clear_console > /dev/null 2>&1; then
     clear_console -q
-  elif command -v clear >/dev/null 2>&1; then
+  elif command -v clear > /dev/null 2>&1; then
     clear
   fi
 fi

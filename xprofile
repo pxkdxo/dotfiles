@@ -21,45 +21,45 @@ USERMODMAP="${HOME}/.Xmodmap"
 # Merge in system resources
 #
 if test -f "${SYSRESOURCES}" && test -r "${SYSRESOURCES}"; then
-    xrdb -merge "${SYSRESOURCES}"
+  xrdb -merge "${SYSRESOURCES}"
 elif test -d "${SYSRESOURCES}" && test -r "${SYSRESOURCES}"; then
-    for __source__ in "${SYSRESOURCES}"/*; do
-        if test -f "${__source__}" && test -r "${__source__}"; then
-            xrdb -merge "${__source__}"
-        fi
-    done
+  for __source__ in "${SYSRESOURCES}"/*; do
+    if test -f "${__source__}" && test -r "${__source__}"; then
+      xrdb -merge "${__source__}"
+    fi
+  done
 fi
 
 # Merge in user resources
 #
 if test -f "${USERRESOURCES}" && test -r "${USERRESOURCES}"; then
-    xrdb -merge -I"${HOME}" "${USERRESOURCES}"
+  xrdb -merge -I"${HOME}" "${USERRESOURCES}"
 elif test -d "${USERRESOURCES}" && test -r "${USERRESOURCES}"; then
-    for __source__ in "${USERRESOURCES}"/*; do
-        if test -f "${__source__}" && test -r "${__source__}"; then
-            xrdb -merge -I"${HOME}" "${__source__}"
-        fi
-    done
+  for __source__ in "${USERRESOURCES}"/*; do
+    if test -f "${__source__}" && test -r "${__source__}"; then
+      xrdb -merge -I"${HOME}" "${__source__}"
+    fi
+  done
 fi
 
 # Run system config scripts
 #
 if test -d "${SYSSESSIONDIR}" && test -r "${SYSSESSIONDIR}"; then
-    for __source__ in "${SYSSESSIONDIR}"/*; do
-        if test -f "${__source__}" && test -r "${__source__}"; then
-            . "${__source__}"
-        fi
-    done
+  for __source__ in "${SYSSESSIONDIR}"/*; do
+    if test -f "${__source__}" && test -r "${__source__}"; then
+      . "${__source__}"
+    fi
+  done
 fi
 
 # Run user config scripts
 #
 if test -d "${USERSESSIONDIR}" && test -r "${USERSESSIONDIR}"; then
-    for __source__ in "${USERSESSIONDIR}"/*; do
-        if test -f "${__source__}" && test -r "${__source__}"; then
-            . "${__source__}"
-        fi
-    done
+  for __source__ in "${USERSESSIONDIR}"/*; do
+    if test -f "${__source__}" && test -r "${__source__}"; then
+      . "${__source__}"
+    fi
+  done
 fi
 
 # Load system keymaps
