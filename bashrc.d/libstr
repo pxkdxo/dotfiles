@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 #
 ## string manipulation library
-#
 
-if  (( __libstr__ ))
+if test -z "${BASH_VERSION%%.*}" || (( "${BASH_VERSION%%.*}" < 4 )); then
+    >&2 printf 'libstr: requires bash 4.0 or higher - found %s\n' "${BASH_VERSION}"
+    return 2 || exit 2
+fi
+
+if  (( __libstr__ )) && [[ $0 != "${BASH_SOURCE[0]}" ]]
 then
-    [[ $0 != "${BASH_SOURCE[0]}" ]] && return 0 || exit 0
+     return 0 || exit 0
 else
     (( __libstr__ = 1 ))
 fi
@@ -40,9 +44,16 @@ str::capitalize()
 ###
 str::swapcase()
 {
-    printf '%s\n' "${@~~}"
+    printf '%s\n' "${@~~}" ;  # semicolon to fix syntax highlighting
 }
 
+###
+## print the prompt expansion of each arg (requires bash >= 4.4)
+###
+str::prompt_expand()
+{
+    printf '%s\n' "${@@P}"
+}
 
 ###
 ## print numberic values of given characters
@@ -93,16 +104,6 @@ str::ord()
     done
 }
 
-
-###
-## print the prompt expansion of each arg (requires bash >= 4.4)
-###
-str::prompt_expand()
-{
-    printf '%s\n' "${@@P}"
-}
-
-
 ###
 ## print the length of a string
 ###
@@ -115,21 +116,20 @@ str::len()
         return 2
     fi
 
-    while (( $# ))
+    while printf '%d\n' "${#1}"
+        (( $# ))
     do
-        printf '%d\n' "${#1}"
         shift
-    done   
+    done
 }
-
 
 ###
 ## str::unicode_range - print a range of unicode characters (inclusive)
 ##
 ## usage: unicode_range start end
 ###
-unicode_range() 
-{ 
+unicode_range()
+{
     local char stop incr || return
 
     if (( $# > 2 ))

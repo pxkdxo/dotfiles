@@ -12,9 +12,11 @@ else
 fi
 
 
-if unset BASH_ALIASES_FILE && wait "$!" && read -d '' -r BASH_ALIASES_FILE
+if read -d '' -r BASH_ALIASES_FILE
 then
   export BASH_ALIASES_FILE="${BASH_ALIASES_FILE%/}/${BASH_SOURCE[0]##*/}"
+else 
+  unset BASH_ALIASES_FILE
 fi < <(CDPATH='' cd -- "${BASH_SOURCE[0]%/*}" && pwd && printf '\0')
 
 

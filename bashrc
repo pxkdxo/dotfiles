@@ -115,7 +115,7 @@ then
 fi
 
 # Set prompt based on whether or not this is running as root
-if [[ ${EUID} == 0 ]] 
+if [[ ${EUID} == 0 ]]
 then
   PS1='\[\033[01;31m\][\h\[\033[01;36m\] \W\[\033[01;31m\]]\$\[\033[00m\] '
 else
@@ -451,26 +451,27 @@ fi
 
 
 # sourcer - source directories too
-sourcer() {
+sourced() {
   local subpath
   local sourcepath="$1"
   shift
   if [[ -d ${sourcepath} ]]
   then
-    for subpath in "${sourcepath}"/*
+    for subpath in "${sourcepath}"/* "$@"
     do
-      sourcer "${subpath}" "$@"
+      sourced "${subpath}"
     done
   elif [[ -f ${sourcepath} ]]
   then
-    source -- "$@"
+    trap "$(declare -f sourced)" RETURN
+    source -- "${sourcepath}" "$@"
   fi
 }
 
 # Source additional startup scripts
-#if [[ -d ~/.bashrc.d ]]
-#then
-#  sourcer ~/.bashrc.d
-#fi
+if [[ -d ~/.bashrc.d ]]
+then
+  sourced ~/.bashrc.d
+fi
 
 . "$HOME/.local/share/../bin/env"
