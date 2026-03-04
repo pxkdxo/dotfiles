@@ -9,24 +9,9 @@
 ##############################
 #
 format = """\
-[╭󱑽 ](fg:foreground bold)\
-$username\
-[@](bold italic fg:foreground)\
-$hostname\
-(\\($localip\\))\
-( $cmd_duration)\
-( [$fill](fg:foreground bold dimmed) )\
-($c )\
-($python )\
-($nodejs )\
-($aws )\
-$line_break\
-[│󱑽 ](fg:foreground bold)\
-$directory\
-( [$fill](fg:foreground bold dimmed) )\
-($git_branch$git_commit$git_state$git_status$git_metrics )\
-$line_break\
-[╰󱑽 ](fg:foreground bold)\
+[╭󱑽 ](fg:foreground)$os$username$hostname(\\[$localip\\])(\\[$cmd_duration\\])( $fill )($c )($python )($nodejs )($aws)$line_break\
+[│󱑽 ](fg:foreground)$directory( $fill )($git_status $git_branch(:$git_commit)$git_state$git_metrics)$line_break\
+[╰󱑽 ](fg:foreground)\
 $character\
 """
 
@@ -35,28 +20,42 @@ add_newline = true
 palette = 'current'
 
 [palettes."current"]
-background = "#161617"
-black = "#27272a"
-blue = "#aca1cf"
-cyan = "#ea83a5"
-foreground = "#c9c7cd"
-green = "#90b99f"
-magenta = "#e29eca"
-purple = "#e29eca"
-red = "#f5a191"
-selection = "#2a2a2d"
-white = "#c1c0d4"
-yellow = "#e6b99d"
+background = "#eff1f5"
+black = "#6c6f85"
+blue = "#456eff"
+cursor_bg = "#dc8a78"
+cursor_fg = "#eff1f5"
+cyan = "#2d9fa8"
+foreground = "#4c4f69"
+green = "#49af3d"
+light_black = "#6c6f85"
+light_blue = "#456eff"
+light_cyan = "#2d9fa8"
+light_green = "#49af3d"
+light_magenta = "#fe85d8"
+light_red = "#de293e"
+light_white = "#bcc0cc"
+light_yellow = "#eea02d"
+magenta = "#fe85d8"
+purple = "#ea76cb"
+red = "#de293e"
+selection_bg = "#acb0be"
+selection_fg = "#4c4f69"
+white = "#bcc0cc"
+yellow = "#eea02d"
 
+[localip]
+ssh_only = true
+format = '[$localipv4](bold fg:foreground) '
+disabled = false
 
 [fill]
 symbol = ''
 style = 'fg:foreground bold dimmed'
 
 [os]
-format = '[ $symbol ](fg:foreground)'
-disabled = true
-
+format = '[$symbol ](bold fg:foreground)'
+disabled = false
 [os.symbols]
 Alpine = ''
 Amazon = ''
@@ -92,70 +91,62 @@ Unknown = ''
 Windows = ''
 
 [username]
-# [ ](bold fg:foreground)
 format = '[$user](italic fg:magenta)'
 show_always = true
 
 [hostname]
 #
-format = '[$hostname](italic fg:yellow)'
+format = '[@](bold italic dimmed fg:foreground)[$hostname](italic fg:yellow)'
 ssh_only = false
 # trim_at = '.*'
 disabled = false
 
 [cmd_duration]
-min_time = 20000
-format = '[[󰉁󱦟](fg:selections) $duration](italic fg:green)'
+min_time = 5000
+format = '[󰉁󱦟 ](fg:foreground bold)[$duration](italic fg:green)'
 
 [shell]
 format = '[ ](bold fg:cyan)[$indicator](fg:foreground)'
 disabled = true
 
 [python]
-format = '[[$symbol](bold fg:foreground)python(:$version)](italic fg:red)'
+format = '[$symbol](bold fg:foreground)[python(:$version)](italic fg:blue)'
 symbol = ' '
 
 [nodejs]
-format = '[[$symbol](bold fg:foreground)node.js(:$version)](italic fg:red)'
+format = '[$symbol](bold fg:foreground)[node.js(:$version)](italic fg:yellow)'
 symbol = '󰎙 '
 
 [c]
 # [$symbol](bold fg:foreground)
-format = '[[$symbol](bold fg:foreground)c:$version ](italic fg:red)'
+format = '[$symbol](bold fg:foreground)[c:$version ](italic fg:red)'
 symbol = ''
 
 [aws]
 # [$symbol](bold fg:foreground)
-format = '[[$symbol](bold fg:foreground)($profile@)aws(:$region)]($style)'
-style = 'italic fg:cyan'
+format = '[$symbol](bold fg:foreground)[($profile@)aws(:$region)]($style)'
+style = 'italic fg:magenta'
 symbol = '󰅣 '
-region_aliases = {
-  "us-west-1" = "uw1",
-  "us-west-2" = "uw2",
-  "us-east-1" = "ue1",
-  "us-east-2" = "ue2",
-  "us-east-3" = "ue3",
-}
+# region_aliases = {
+#   "us-west-1" = "uw1",
+#   "us-west-2" = "uw2",
+#   "us-east-1" = "ue1",
+#   "us-east-2" = "ue2",
+#   "us-east-3" = "ue3",
+# }
 
 [directory]
-# [󰷏 ](bold fg:foreground)
-format = '[$read_only$truncation_symbol$path](italic fg:blue)'
+format = '[󰷏 ](bold fg:foreground)[$truncation_symbol$path$read_only](italic fg:cyan)'
 home_symbol = '~'
-truncation_symbol = '*'
-truncation_length = 32
+truncation_symbol = '*/'
+truncation_length = 8
 fish_style_pwd_dir_length = 1
-read_only = '󰍷 '
-read_only_style = ''
-
-[git_branch]
-format = '[[$symbol](bold fg:foreground)$branch](italic fg:purple)'
-truncation_length = 32
-truncation_symbol = '/'
-symbol = '󰘬 '
+read_only = ' 󰍷 '
+read_only_style = 'bold fg:red'
 
 [git_status]
 format = '([$all_status$ahead_behind]($style))'
-style = 'bold italic fg:green'
+style = 'bold fg:foreground'
 # conflicted = ''
 # ahead = ''
 # behind = ''
@@ -168,18 +159,26 @@ style = 'bold italic fg:green'
 # renamed = ''
 # deleted = ''
 
+[git_branch]
+format = '[$symbol](bold fg:foreground)[$branch]($style)'
+style = 'italic fg:green'
+truncation_length = 32
+truncation_symbol = '/'
+symbol = '󰘬 '
+
 [git_commit]
+format = '[$hash([\(](fg:foreground)[$tag](bold fg:yellow)[\)](fg:foreground)]($style) '
+style = 'italic fg:cyan'
 commit_hash_length = 4
-tag_symbol = '󰓺 '
-tag_disabled = true
+tag_symbol = '󰓹 '
+tag_disabled = false
 only_detached = true
-style = 'bold fg:green'
 
 [git_state]
-format = '([:$state( \[$progress_current of $progress_total\])]($style))'
+format = '([:$state([\[](fg:foreground)[$progress_current of $progress_total](italic fg:foreground)[\]](fg:foreground))]($style))'
 cherry_pick = '[ PICK](bold fg:red)'
-merge = '[󰘭 MERGE](bold fg:purple)'
-style = 'bold fg:yellow'
+merge = '[󰘭 MERGE](bold fg:magenta)'
+style = 'bold fg:purple'
 
 [time]
 format = '[$time](italic fg:yellow)'
@@ -187,6 +186,6 @@ time_format = '%_I:%M%P'
 disabled = false
 
 [character]
-format = '[$symbol](fg:foreground) '
+format = '$symbol '
 success_symbol = '[](fg:foreground)'
 error_symbol = '[󰆽](fg:red)'

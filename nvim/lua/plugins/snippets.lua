@@ -4,7 +4,7 @@ return {
     -- Follow latest release.
     version = 'v2.*',
     -- Install jsregexp (optional!)
-    -- build = 'make install_jsregexp',
+    build = 'make install_jsregexp',
     dependencies = {
       'rafamadriz/friendly-snippets',
     },

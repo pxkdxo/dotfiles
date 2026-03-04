@@ -99,9 +99,9 @@ export FAST_THEME="sv-plant"
 export FZF_COMPLETION_TRIGGER='^s'
 
 # Set vivid (lscolors) theme
-export VIVID_THEME='modus-vivendi'
+# export VIVID_THEME='modus-vivendi'
 # export VIVID_THEME='cyberdream'
-# export VIVID_THEME='cyberdream-light'
+export VIVID_THEME='cyberdream-light'
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder

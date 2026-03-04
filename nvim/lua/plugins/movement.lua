@@ -32,39 +32,21 @@ return {
     end
   },
   {
-    "MagicDuck/grug-far.nvim",
-    cond = vim.g.vscode == nil,
-    opts = { headerMaxWidth = 80 },
-    cmd = { "GrugFar", "GrugFarWithin" },
-    keys = {
-      {
-        "<leader>sr",
-        function()
-          local grug = require("grug-far")
-          local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
-          grug.open({
-            transient = true,
-            prefills = {
-              filesFilter = ext and ext ~= "" and "*." .. ext or nil,
-            },
-          })
-        end,
-        mode = { "n", "x" },
-        desc = "Search and Replace",
-      },
-    },
-  },
-  {
     "folke/flash.nvim",
     event = "VeryLazy",
     cond = true,
-    vscode = true,
     ---@type Flash.Config
-    opts = {},
+    opts = {
+      label = {
+        rainbow ={
+          enable = true,
+        }
+      }
+    },
     -- stylua: ignore
     keys = {
       {
-        "C-g",
+        "f",
         mode = { "n", "x", "o" },
         function() require("flash").jump() end,
         desc = "Flash",
@@ -76,58 +58,24 @@ return {
         desc = "Remote Flash",
       },
       {
-        "C-s",
+        "t",
+        mode = { "n", "x", "o" },
+        function() require("flash").treesitter() end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "T",
         mode = { "o", "x" },
         function() require("flash").treesitter_search() end,
         desc = "Treesitter Search",
       },
       {
-        "<C-f>",
+        "<C-s>",
         mode = { "c" },
         function() require("flash").toggle() end,
         desc = "Toggle Flash Search",
       },
-      -- Simulate nvim-treesitter incremental selection
-      {
-        "<C-f>", mode = { "n", "o", "x" }, function()
-          require("flash").treesitter({
-            actions = {
-              ["<C-f>"] = "next",
-              ["<C-b>"] = "prev"
-            }
-          })
-        end,
-        desc = "Treesitter Incremental Selection"
-      },
     },
-  },
-  {
-    "https://codeberg.org/andyg/leap.nvim",
-    cond = false,
-    version = false,
-    opts = {
-      preview_filter = function (ch0, ch1, ch2)
-        return not (
-          ch1:match('%s') or
-          ch0:match('%a') and ch1:match('%a') and ch2:match('%a')
-        )
-      end,
-    },
-    config = function (_, opts)
-      require("leap").setup(opts)
-      require('leap.user').set_repeat_keys(
-   '<enter>', '<backspace>'
-      )
-      vim.keymap.set(
-        {'n', 'x', 'o'}, 'f', '<Plug>(leap)'
-      )
-      vim.keymap.set(
-        {'n', 'x', 'o'}, 'F', '<Plug>(leap-from-window)'
-      )
-      vim.api.nvim_set_hl(
-        0, 'LeapBackdrop', { link = 'Comment' }
-      )
-    end,
   },
   {
     'windwp/nvim-autopairs',

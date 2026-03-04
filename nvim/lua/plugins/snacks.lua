@@ -10,7 +10,6 @@ return {
       indent = { enabled = true },
       input = { enabled = true },
       -- notifier = { enabled = true },
-      picker = { enabled = true },
       profile = { enabled = true },
       rename = { enabled = true },
       scrath = { enabled = true },
@@ -18,17 +17,55 @@ return {
       scroll = { enabled = true },
       statuscolumn = { enabled = true },
       words = { enabled = true },
+      -- stylua: ignore
+      picker = {
+        enabled = true,
+        win = {
+          input = {
+            keys = {
+              ["a-m"] = { "flash", mode = { "n", "i" } },
+              ["m"] = { "flash" },
+            },
+          },
+        },
+        actions = {
+          flash = function(picker)
+            require("flash").jump({
+              pattern = "^",
+              label = { after = { 0, 0 } },
+              search = {
+                mode = "search",
+                exclude = {
+                  function(win)
+                    return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
+                  end,
+                },
+              },
+              action = function(match)
+                local idx = picker.list:row2idx(match.pos[1])
+                picker.list:_move(idx, true, true)
+              end,
+            })
+          end,
+        },
+      },
     },
-    -- stylua: ignore
-    -- keys = {
-    --   { "<leader>n", function()
-    --     if Snacks.config.picker and Snacks.config.picker.enabled then
-    --       Snacks.picker.notifications()
-    --     else
-    --       Snacks.notifier.show_history()
-    --     end
-    --   end, desc = "Notification History" },
-    --   { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-    -- },
-  },
-}
+    keys = {
+      {
+        "<leader>n",
+        function()
+          if Snacks.config.picker and Snacks.config.picker.enabled then
+            Snacks.picker.notifications()
+          else
+            Snacks.notifier.show_history()
+          end
+        end,
+        desc = "Notification History" },
+        {
+          "<leader>N",
+          function() Snacks.notifier.hide() end,
+          desc = "Dismiss All Notifications",
+        },
+      },
+    },
+  }

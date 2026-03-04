@@ -11,14 +11,14 @@ return {
       reload_on_bufenter = true,
       auto_reload_on_write = true,
       update_focused_file = {
-      --   enable = true,
-      --   update_root = {
-      --     enable = true,
-      --     ignore_list = {
-      --       "Man",
-      --       "NvimTree"
-      --     }
-      --   }
+        enable = false,
+        update_root = {
+          enable = true,
+          ignore_list = {
+            "Man",
+            "NvimTree"
+          }
+        }
       },
       root_dirs = {
         vim.fn.getcwd(),
@@ -35,7 +35,7 @@ return {
           padding = 1,
         },
         float = {
-          -- enable = true,
+          enable = false,
           quit_on_focus_loss = true,
           open_win_config = {
             border = "rounded",
@@ -59,15 +59,17 @@ return {
           }
         },
         -- hidden_display = "all",
-        -- highlight_modified = "none",
+        highlight_modified = {
+          enable = true,
+        }
       },
       diagnostics = {
         enable = true,
         icons = {
-          hint = " ",
-          info = " ",
-          warning = " ",
-          error = " ",
+          hint = "󱐌",
+          info = "",
+          warning = "󱇏",
+          error = "",
         },
       },
       modified = {
