@@ -13,7 +13,4 @@ if [[ -d ~/.local/share/zsh/site-functions ]]; then
   FPATH="${FPATH:+${FPATH}:}${HOME}/.local/share/zsh/site-functions"
 fi
 
-# Note: command_not_found_handler is defined in profile.d/cnf.sh
-# to avoid duplication and ensure consistency across shells
-
 # vi:ft=zsh

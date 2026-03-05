@@ -2,21 +2,19 @@
 # see bash(1), dash(1), sh(1), zsh(1), ...
 # shellcheck shell=dash
 
-
 # Termcap is outdated, old, and crusty, kill it.
 unset TERMCAP
-
 
 # Man is much better than us at figuring this out
 unset MANPATH
 
-
 # Initialize tty, and make <C-s>/<C-z> usable by disabling XON/XOFF
-test -t 1 && { tput init && stty -ixon -ixoff; } 2>/dev/null || true
-
+if test -t 1; then
+  stty -ixon -ixoff || true
+fi
 
 # Set file creation mode mask
-# EUID is not defined in dash(1)
+# EUID is not defined in POSIX
 # shellcheck disable=SC3028
 if test "${EUID:-$(id -u)}" -eq 0; then
   umask 0002
@@ -24,13 +22,12 @@ else
   umask 0022
 fi
 
-
-# path_print - Print the value of PATH with a chosen separator
-# Description: Returns 0 if DIRECTORY is in PATH, 1 otherwise.
-# Usage: path_print [DELIMITER]
+# path_print - Print PATH elements separated by newlines or a given string
+# Description: Any backslash-escape sequences in SEPARATOR will be expanded.
+# Usage: path_print [SEPARATOR]
 # Positional Parameters:
-#   DELIMITER: separator to use between elements - the empty string
-#         will be understood to mean a null byte (default: newline)
+#   SEPARATOR: separator to use between elements - the empty string will be
+#              interpreted as a null byte (default: '\n')
 path_print() {
   if test "$#" -gt 1; then
     >&2 printf 'usage: path_print [DELIMITER]\n'
@@ -41,14 +38,11 @@ path_print() {
   fi
   set -- "${1-\\n}" "${PATH:+${PATH}:}"
   printf '%s' "${2%%:*}"
-  while set -- "$1" "${2#*:}" && test -n "$2"; do
-    printf '%b%s' "${1:-\\x00}" "${2%%:*}"
+  while set -- "${1:-\\000}" "${2#*:}" && test -n "$2"; do
+    printf '%b%s' "$1" "${2%%:*}"
   done
-  if test "$1" != "\\n"; then
-    echo
-  fi
+  echo
 }
-
 
 # path_contains - Check if an element exists in PATH
 # Description: Returns 0 if DIRECTORY is in PATH and 1 otherwise.
@@ -66,32 +60,11 @@ path_contains() {
   esac
 }
 
-
-# path_add - Add an element to PATH
-# Description: Add each DIRECTORY to PATH if it is not already there.
-# Usage: path_add DIRECTORY ...
-# Positional Parameters:
-#   DIRECTORY: element to check for
-path_add() {
-  if test "$#" -lt 1; then
-    >&2 printf 'usage: path_add DIRECTORY ...\n'
-    return 2
-  fi
-  while test "$#" -gt 0; do
-    case ":${PATH-}:" in
-      *":$1:"*) return 0 ;;
-      *) export PATH="${PATH:+${PATH}:}$1" ;;
-    esac
-    shift
-  done
-}
-
-
 # path_discard - Remove elements from PATH
 # Description: Remove all occurrences of each DIRECTORY from PATH.
 # Usage: path_discard DIRECTORY ...
 # Positional Parameters:
-#   DIRECTORY: element to remove from PATH
+#   DIRECTORY: an element to remove from PATH
 path_discard() {
   if test "$#" -lt 1; then
     >&2 printf 'usage: path_discard DIRECTORY ...\n'
@@ -109,12 +82,11 @@ path_discard() {
   done
 }
 
-
-# path_append - Append an element to the end of PATH
-# Description: Append DIRECTORY to the end of PATH and remove all other occurrences.
+# path_append - Append each element to the end of PATH
+# Description: Append each DIRECTORY to PATH and remove all other occurrences.
 # Usage: path_append DIRECTORY ...
 # Positional Parameters:
-#   DIRECTORY: element to add to PATH
+#   DIRECTORY: an element to add to PATH
 path_append() {
   if test "$#" -lt 1; then
     >&2 printf 'usage: path_append DIRECTORY ...\n'
@@ -127,12 +99,11 @@ path_append() {
   done
 }
 
-
-# path_push - Push each element to the front of PATH
-# Description: Push each DIRECTORY to the front of PATH and remove all other occurrences.
+# path_push - Push each element to the front of PATH (LIFO)
+# Description: Prepend each DIRECTORY to PATH and remove all other occurrences.
 # Usage: path_push DIRECTORY ...
 # Positional Parameters:
-#   DIRECTORY: element to add to PATH
+#   DIRECTORY: an element to add to PATH
 path_push() {
   if test "$#" -lt 1; then
     >&2 printf 'usage: path_push DIRECTORY ...\n'
@@ -144,7 +115,6 @@ path_push() {
     shift
   done
 }
-
 
 # path_insert - Insert an element into PATH at a given position
 # Description:
@@ -195,27 +165,23 @@ path_insert() {
   fi
 }
 
-# Push this to the front of PATH
-path_push ~/.local/bin
-
-# Quick detour for Homebrew initialization
-if command -v brew > /dev/null; then
-  eval "$(brew shellenv)"
-fi
-
 # Load additional profile config
-for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
-  if test -f "${profile}" && test -r "${profile}"; then
-    . "${profile}"
+for __profile__ in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
+  if test -f "${__profile__}" && test -r "${__profile__}"; then
+    . "${__profile__}"
   fi
 done
 
-# Push this stuff back to the front if it wasn't already there
-path_push ~/.local/bin
-
-path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
-path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
+# Make sure these are at the front
+if test -d ~/.bin; then
+  path_push ~/.bin
+fi
+if test -d ~/.local/bin; then
+  path_push ~/.local/bin
+fi
+if test -d "${HOMEBREW_PREFIX-}"; then
+  path_push "${HOMEBREW_PREFIX}/sbin"
+  path_push "${HOMEBREW_PREFIX}/bin"
+fi
 
 # vi:ft=sh
-
-. "$HOME/.local/share/../bin/env"

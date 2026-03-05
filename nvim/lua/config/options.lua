@@ -40,7 +40,7 @@ local defaults = {
     nrformats      = "bin,hex,unsigned",
     number         = true, -- Show line numbers
     numberwidth    = 3, -- Min width of number column
-    pumblend       = 15, -- Popup blend
+    pumblend       = 11, -- Popup blend
     pumheight      = 30, -- Maximum number of entries in a popup
     relativenumber = false, -- Give us absolute line numbers
     ruler          = true, -- Enable the default ruler
@@ -77,7 +77,7 @@ local defaults = {
     wildignorecase = true,
     wildmenu       = true,
     wildmode       = "longest:noselect,full", -- Command-line completion mode
-    winblend       = 20,
+    winblend       = 15,
     winborder      = "rounded",
     winminwidth    = 10, -- Minimum window width
   },

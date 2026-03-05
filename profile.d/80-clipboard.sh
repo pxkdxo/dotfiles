@@ -5,7 +5,7 @@
 cbdetect() {
   # shellcheck disable=SC2329
   if case "$(uname -s)" in
-    Darwin*|darwin*)
+    Darwin* | darwin*)
       {
         command -v pbcopy && command -v pbpaste
       } > /dev/null && {
@@ -13,7 +13,7 @@ cbdetect() {
         cbpaste() { pbpaste; }
       }
       ;;
-    Linux*Android*|Linux*android*|linux*android*)
+    Linux*Android* | Linux*android* | linux*android*)
       {
         command -v termux-clipboard-set && command -v termux-clipboard-get
       } > /dev/null && {
@@ -21,15 +21,14 @@ cbdetect() {
         cbpaste() { termux-clipboard-get; }
       }
       ;;
-    Cygwin*|cygwin*|Msys*|msys*)
+    Cygwin* | cygwin* | Msys* | msys*)
       cbcopy() { cat "${1:-/dev/stdin}" > /dev/clipboard; }
       cbpaste() { cat /dev/clipboard; }
       ;;
     *)
       false
       ;;
-  esac
-  then
+  esac then
     :
   elif test "${XDG_SESSION_TYPE:-}" = "wayland" \
     && test -n "${WAYLAND_DISPLAY:-}" \

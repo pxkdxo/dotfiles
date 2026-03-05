@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/generic/Midnight In Mojave.sh

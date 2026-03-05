@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/iterm-dynamic-colors/12-bit Rainbow.sh

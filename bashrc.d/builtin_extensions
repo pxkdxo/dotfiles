@@ -193,15 +193,24 @@ addalias()
   while getopts ':o:h' option
   do
     case "${option}" in
-      o ) output="${OPTARG}"
+      o )
+        output="${OPTARG}"
         ;;
-      h ) msg::std "${FUNCNAME[0]}"  'usage: %s [-o file] name[=value] ...'
-        ;;&
-      : ) msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'option requires an argument'
-        ;;&
-      \?) msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'invalid option'
-        ;;&
-      * ) return 2
+      h )
+        msg::std "${FUNCNAME[0]}"  'usage: %s [-o file] name[=value] ...'
+        return 2
+        ;;
+      : )
+        msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'option requires an argument'
+        return 2
+        ;;
+      \?)
+        msg::err "${FUNCNAME[0]}" "-${OPTARG}" 'invalid option'
+        return 2
+        ;;
+      * )
+        msg::err "${FUNCNAME[0]}" 'unhandled' "${option}"
+        return 1
     esac
   done
   shift "$((OPTIND - 1))"

@@ -4,8 +4,8 @@
 
 # Try update-alternatives first (Debian/Ubuntu)
 if command -v update-alternatives > /dev/null && EDITOR="$(
-    command -v -- "$(
-      update-alternatives --query editor | sed -E -n '
+  command -v -- "$(
+    update-alternatives --query editor | sed -E -n '
       # Find the line starting with "Value:" and extract the value it contains
       s/^[[:blank:]]*Value:[[:blank:]]*(.*[^[:blank:]])[[:blank:]]*$/\1/
       t z # Skip to z if matched
@@ -14,9 +14,8 @@ if command -v update-alternatives > /dev/null && EDITOR="$(
       p
       q
       '
-    )"
   )"
-then
+)"; then
   export EDITOR
 else
   for EDITOR in nvim vim vi; do
@@ -29,6 +28,5 @@ fi
 if test -z "${EDITOR}"; then
   unset EDITOR
 fi
-
 
 # vim:ft=sh

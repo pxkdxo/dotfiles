@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # cabal.sh: cabal path config
 
-if test -n "${CABAL_HOME}"; then
+if test -d "${CABAL_HOME-}"; then
   export CABAL_HOME
   case ":${PATH}:" in
     *:"${CABAL_HOME}/bin":*) ;;
@@ -25,9 +25,7 @@ elif test -d "${HOME}/.cabal"; then
     *:"${CABAL_HOME}/bin":*) ;;
     *) export PATH="${CABAL_HOME}/bin${PATH:+:${PATH}}" ;;
   esac
-elif command -v brew > /dev/null &&
-  CABAL_HOME="$(brew --prefix --quiet --installed cabal-install 2> /dev/null)/cabal"
-then
+elif CABAL_HOME="${HOMEBREW_PREFIX:-$(brew --prefix 2> /dev/null)}/opt/cabal-install" && test -d "${CABAL_HOME}"; then
   export CABAL_HOME
   case ":${PATH}:" in
     *:"${CABAL_HOME}/bin":*) ;;

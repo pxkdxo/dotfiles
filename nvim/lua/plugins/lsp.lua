@@ -1,5 +1,11 @@
 return {
   {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "mason.nvim",
+    },
+  },
+  {
     "mason-org/mason.nvim",
     opts = {},
   },
@@ -18,13 +24,6 @@ return {
     ft = "lua",
     opts = {
       library = { "nvim-dap-ui" },
-    },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "mason.nvim",
-      "mason-org/mason-lspconfig.nvim",
     },
   },
 }

@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/dynamic-colors/IC Green PPL.sh

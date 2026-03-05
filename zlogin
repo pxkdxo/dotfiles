@@ -6,7 +6,7 @@
 # Only for interactive login shells
 if [[ -o login && -o interactive ]]; then
   # Make Ctrl-S/Ctrl-Q usable in terminals by disabling XON/XOFF flow control
-  [[ -t 0 ]] && stty -ixon -ixoff 2>/dev/null || true
+  [[ -t 0 ]] && stty -ixon -ixoff 2> /dev/null || true
 fi
 
 # vi:ft=zsh

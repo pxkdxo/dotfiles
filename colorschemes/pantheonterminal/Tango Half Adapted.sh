@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/pantheonterminal/Tango Half Adapted.sh

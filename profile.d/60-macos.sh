@@ -6,15 +6,15 @@ case "$(uname -s 2> /dev/null)" in
     for name in ~/Library/Python/*/bin; do
       if test -d "${name}"; then
         case ":${PATH}:" in
-          *":${name}:"*)
-            ;;
-          *) export PATH="${PATH:+${PATH}:}${name}"
+          *":${name}:"*) ;;
+          *)
+            export PATH="${PATH:+${PATH}:}${name}"
             ;;
         esac
       fi
     done
     unset name
-  ;;
+    ;;
 esac
 
 # vim:ft=sh

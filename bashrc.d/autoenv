@@ -21,15 +21,14 @@ autoenv::main()
 # Set default browser
 autoenv::BROWSER()
 {
-    local BROWSER=( "$@" google-chrome firefox ) || return
+    local _BROWSER=( "$@" google-chrome firefox ) || return
 
-    while (( ${#BROWSER[@]} )); do
-        if command -v "${BROWSER[0]}" 1>/dev/null; then
+    for _BROWSER in "${_BROWSER[@]}"; do
+        if command -v "${_BROWSER[0]}" 1>/dev/null; then
             # shellcheck disable=SC2178
-            declare -gx BROWSER="${BROWSER[0]}"
+            export _BROWSER="${_BROWSER[0]}"
             break
         fi
-        BROWSER=( "${BROWSER[@]:1}" )
     done
 }
 
@@ -37,74 +36,49 @@ autoenv::BROWSER()
 # Set default text editor
 autoenv::EDITOR()
 {
-    local EDITOR=( "$@" vim nvim nano ) || return
+    local _EDITOR=( "$@" vim nvim nano ) || return
 
-    while (( ${#EDITOR[@]} )); do
-        if command -v "${EDITOR[0]}" 1>/dev/null; then
+    for _EDITOR in "${_EDITOR[@]}"; do
+        if command -v "${_EDITOR[0]}" 1>/dev/null; then
             # shellcheck disable=SC2178
-            declare -gx EDITOR="${EDITOR[0]}"
+            export _EDITOR="${_EDITOR[0]}"
             break
         fi
-        EDITOR=( "${EDITOR[@]:1}" )
     done
-}
-
-
-# Set GCC output formatting
-autoenv::GCC_COLORS()
-{
-    local -A GCC_COLORS=(
-        ['caret']='01;34' ['error']='01;31'
-        ['locus']='01'    ['note']='33'
-        ['quote']='01;32' ['warning']='01;35'
-    ) || return
-
-    while (( $# )); do
-        GCC_COLORS["${1%%=*}"]="${1#*=}"
-        shift
-    done
-
-    for _ in "${!GCC_COLORS[@]}"
-    do
-        GCC_COLORS[0]="${GCC_COLORS[0]:+${GCC_COLORS[0]}:}$_=${GCC_COLORS[$_]}"
-    done
-
-    # shellcheck disable=SC2178
-    declare -gx GCC_COLORS="${GCC_COLORS[0]}"
 }
 
 
 # Set command output colors
 autoenv::LS_COLORS()
 {
-    local IFS LS_COLORS && command -v dircolors 1>/dev/null || return
+    local IFS _LS_COLORS && command -v dircolors 1>/dev/null || return
 
     case "$#" in
         0)
             if [[ -f ~/.dircolors ]]; then
                 IFS="'" read -r _ LS_COLORS _ < <(dircolors -b ~/.dircolors)
-                declare -gx LS_COLORS="${LS_COLORS}"
+                export LS_COLORS="${_LS_COLORS}"
             else
                 IFS="'" read -r _ LS_COLORS _ < <(dircolors -b)
-                declare -gx LS_COLORS="${LS_COLORS}"
+                export LS_COLORS="${_LS_COLORS}"
             fi
             ;;
         1)
             if [[ -f $1 ]]; then
                 IFS="'" read -r _ LS_COLORS _ < <(dircolors -b -- "$1")
-                declare -gx LS_COLORS="${LS_COLORS}"
+                export LS_COLORS="${_LS_COLORS}"
             fi
             ;;
         *)
             IFS=':'
-            declare -gx LS_COLORS="$*"
+            export LS_COLORS="$*"
             ;;
     esac
 }
 
 
 # Apply default configuration
-autoenv::main 'BROWSER' 'EDITOR' 'GCC_COLORS' 'LS_COLORS'
+autoenv::main 'BROWSER' 'EDITOR' 'LS_COLORS'
 
 
 # vi:ft=sh

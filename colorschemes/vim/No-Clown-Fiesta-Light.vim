@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/vim/No-Clown-Fiesta-Light.vim

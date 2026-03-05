@@ -1,1 +1,0 @@
-../Collections/iTerm2-Color-Schemes/vim/Tomorrow-Night-Burns.vim

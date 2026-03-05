@@ -1,6 +1,7 @@
 return {
   {
     'nvim-lualine/lualine.nvim',
+    'ph1losof/ecolog.nvim',
     cond = vim.g.vscode == nil,
     dependencies = {
       "echasnovski/mini.icons",
@@ -44,10 +45,10 @@ return {
             {
               "diagnostics",
               symbols = {
-                error = "󰳤 ",
-                warn = "󰀪 ",
-                info = "󰋽 ",
-                hint = "󰠠 ",
+                error = " ",
+                warn = " ",
+                info = " ",
+                hint = " ",
               },
             },
             {
@@ -127,6 +128,7 @@ return {
             },
           },
           lualine_x = {
+            require('ecolog.integrations.statusline').lualine(),
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
@@ -196,7 +198,7 @@ return {
         --- this should return a string
         --- Don't get too fancy as this function will be executed a lot
         diagnostics_indicator = function(count, level)
-          local symbol= level:match("error") and "󰳤 " or level:match("warning") and "󰀪 " or ""
+          local symbol= level:match("error") and " " or level:match("warning") and " " or ""
           return " " .. symbol .. count
         end,
       },
