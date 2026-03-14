@@ -17,32 +17,36 @@ $character\
 
 add_newline = true
 
-palette = 'current'
+palette = 'mellow'
+[palettes."mellow"]
+background = "#161617"
+black = "#424246"
+blue = "#b9aeda"
+bright_fg = "#eaeaea"
+cursor_bg = "#cac9dd"
+cursor_fg = "#161617"
+cyan = "#f591b2"
+foreground = "#c9c7cd"
+green = "#9dc6ac"
+highlight_bg = "#2a2a2d"
+highlight_fg = "#c1c0d4"
+light_black = "#424246"
+light_blue = "#b9aeda"
+light_cyan = "#f591b2"
+light_green = "#9dc6ac"
+light_magenta = "#ecaad6"
+light_red = "#ffae9f"
+light_white = "#cac9dd"
+light_yellow = "#f0c5a9"
+magenta = "#ecaad6"
+purple = "#e29eca"
+red = "#ffae9f"
+selection_bg = "#2a2a2d"
+selection_fg = "#c1c0d4"
+white = "#cac9dd"
+yellow = "#f0c5a9"
 
-[palettes."current"]
-background = "#eff1f5"
-black = "#6c6f85"
-blue = "#456eff"
-cursor_bg = "#dc8a78"
-cursor_fg = "#eff1f5"
-cyan = "#2d9fa8"
-foreground = "#4c4f69"
-green = "#49af3d"
-light_black = "#6c6f85"
-light_blue = "#456eff"
-light_cyan = "#2d9fa8"
-light_green = "#49af3d"
-light_magenta = "#fe85d8"
-light_red = "#de293e"
-light_white = "#bcc0cc"
-light_yellow = "#eea02d"
-magenta = "#fe85d8"
-purple = "#ea76cb"
-red = "#de293e"
-selection_bg = "#acb0be"
-selection_fg = "#4c4f69"
-white = "#bcc0cc"
-yellow = "#eea02d"
+
 
 [localip]
 ssh_only = true

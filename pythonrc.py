@@ -3,7 +3,6 @@
 # pylint: disable=unused-import,unresolved-import
 # ruff: noqa: F401
 
-import ast
 import base64
 import bisect
 import builtins
@@ -25,6 +24,7 @@ import math
 import mimetypes
 import operator
 import os
+
 try:
     import pathlib
 except ImportError:
@@ -33,6 +33,7 @@ import posix
 import pprint
 import pstats
 import pty
+
 try:
     import queue
 except ImportError:
@@ -50,25 +51,53 @@ import time
 import timeit
 import tty
 import types
+
 try:
     import typing
 except ImportError:
     pass
 import uuid
 
-try:
-    from jedi.utils import setup_readline
-except ImportError:
-    print("* Failed to import 'jedi' - falling back to 'readline' *")
-    # Fallback to the stdlib readline completer if it is installed.
-    # Taken from http://docs.python.org/2/library/rlcompleter.html
-    try:
-        import readline
-        import rlcompleter
-    except ImportError:
-        print("* Failed to import 'readline' - completion is unavailable *")
-    else:
-        readline.parse_and_bind("tab: complete")
-else:
-    setup_readline()
 
+def __load_readline_setup():
+    try:
+        _jedi = __import__("jedi.utils", fromlist=("jedi",))
+
+        def _setup_readline() -> None:
+            print("* > Setting up Jedi - long live the Republic.")
+            return _jedi.setup_readline()
+
+        return _setup_readline
+    except (ImportError, ModuleNotFoundError):
+        print("> * Failed to import 'jedi' - falling back to 'readline'...")
+        try:
+            _rl = __import__("readline")
+
+            def _setup_readline() -> None:
+                print("* > Setting up RL <Tab> completion.")
+                return _rl.parse_and_bind("tab: complete")
+
+            return _setup_readline
+        except ImportError:
+            print("* > Failed to import 'readline' - completion is not available.")
+
+    return lambda: None
+
+
+def __load_pretty_setup():
+    try:
+        _rich = __import__("rich.pretty")
+
+        def __setup_pretty():
+            print("$ > Loaded 'rich' - now output will be fancy")
+            return _rich.pretty.install()
+
+        return __setup_pretty
+    except (ImportError, ModuleNotFoundError):
+        print("* > Failed to import 'rich' - no fancy output this time.")
+
+    return lambda: None
+
+
+_ = __load_readline_setup()()
+_ = __load_pretty_setup()()

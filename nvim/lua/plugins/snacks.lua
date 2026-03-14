@@ -6,10 +6,10 @@ return {
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
+      dim = { enabled = true },
       images = { enabled = true },
       indent = { enabled = true },
       input = { enabled = true },
-      -- notifier = { enabled = true },
       profile = { enabled = true },
       rename = { enabled = true },
       scrath = { enabled = true },
@@ -17,6 +17,8 @@ return {
       scroll = { enabled = true },
       statuscolumn = { enabled = true },
       words = { enabled = true },
+      zen = { enabled = true },
+      -- notifier = { enabled = true },
       -- stylua: ignore
       picker = {
         enabled = true,
@@ -60,12 +62,29 @@ return {
             Snacks.notifier.show_history()
           end
         end,
-        desc = "Notification History" },
-        {
-          "<leader>N",
-          function() Snacks.notifier.hide() end,
-          desc = "Dismiss All Notifications",
-        },
+        desc = "Notification History",
+      },
+      {
+        "<leader>N",
+        function()
+          Snacks.notifier.hide()
+        end,
+        desc = "Dismiss All Notifications",
+      },
+      {
+        "<leader>z",
+        function()
+          Snacks.zen()
+        end,
+        desc = "Zen Mode",
+      },
+      {
+        "<leader>Z",
+        function()
+          Snacks.zen.zoom()
+        end,
+        desc = "Zen Zoom",
       },
     },
-  }
+  },
+}

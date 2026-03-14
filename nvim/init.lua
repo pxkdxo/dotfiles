@@ -11,15 +11,15 @@ vim.g.mapleader = ","
 vim.g.maplocalleader = ";"
 
 -- <Esc> to return to normal mode (even from a terminal)
-vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true })
 
 -- Set builtin fallback colorschemes
 vim.g.colorschemes = {
-  'shine',
-  'lunaperche',
-  'blue',
-  'habamax',
-  'wildcharm',
+  "shine",
+  "wildcharm",
+  "blue",
+  "lunaperche",
+  "habamax",
 }
 
 -- Load plugins
@@ -33,58 +33,100 @@ config.lazy.setup({
 -- If not running in VSCode...
 if not vim.g.vscode then
   vim.g.colorschemes = {
-    'cyberdream',
-    'flexoki',
-    'dayfox',
-    'dawnfox',
-    'carbonfox',
-    'github_dark_dimmed',
-    'github_light',
-    'flexoki-light',
-    'oxocarbon',
-    'melange',
-    'rose-pine',
-    'rose-pine-dawn',
-    'xcodedarkhc',
-    'xcodelight',
-    'shine',
-    'lunaperche',
-    'blue',
-    'habamax',
-    'wildcharm',
+    "xcodedarkhc",
+    "github_light",
+    "carbonfox",
+    "flexoki",
+    "cyberdream",
+    "dayfox",
+    "dawnfox",
+    "github_dark_dimmed",
+    "blue",
+    "oasis-dune",
+    "oasis-desert",
+    "flexoki-light",
+    "oxocarbon",
+    "xcodelight",
+    "rose-pine",
+    "rose-pine-dawn",
+    "melange",
+    "wildcharm",
+    "shine",
+    "lunaperche",
+    "habamax",
   }
   local colors = require("utils.colors")
   colors.setup({ colorschemes = vim.g.colorschemes })
   colors.next()
 
-  if vim.fn.exists(':NvimTreeToggle') then
-    vim.keymap.set('n', '<F1>', function () vim.cmd.NvimTreeToggle() end, { desc = "Open/Close File Explorer" })
-  end
+  -- Function keys
+  vim.keymap.set("n", "<F1>", function()
+    vim.cmd.NvimTreeToggle()
+  end, { desc = "Toggle File Explorer" })
+  vim.keymap.set("n", "<F2>", function()
+    require("fzf-lua").helptags()
+  end, { desc = "Find Helptags" })
+  vim.keymap.set("n", "<F3>", function()
+    require("fzf-lua").global()
+  end, { desc = "Find Files & Buffers & Stuff" })
+  vim.keymap.set("n", "<F4>", function()
+    vim.cmd.GrugFar()
+  end, { desc = "Search Files by Content" })
+  vim.keymap.set("n", "<F5>", function()
+    require("fzf-lua").keymaps()
+  end, { desc = "Find Keymaps" })
+  vim.keymap.set("n", "<F6>", function()
+    require("fzf-lua").commands()
+  end, { desc = "Find Commands" })
+  vim.keymap.set("n", "<F10>", function()
+    vim.o.hlsearch = not vim.o.hlsearch
+  end, { desc = "Toggle Search Highlighting" })
+  vim.keymap.set("n", "<F11>", colors.prev, { desc = "Previous preferred colorscheme" })
+  vim.keymap.set("n", "<F12>", colors.next, { desc = "Next preferred colorscheme" })
+  vim.keymap.set("n", "<F24>", colors.shuffle, { desc = "Random preferred colorscheme" })
 
-  if vim.fn.exists(':FzfLua') then
-    vim.keymap.set('n', '<F2>', require('fzf-lua').helptags, { desc = "Find Helptags" })
-  end
+  -- Window navigation with <leader>w
+  vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Go to left window" })
+  vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Go to lower window" })
+  vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Go to upper window" })
+  vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Go to right window" })
+  vim.keymap.set("n", "<leader>ws", "<C-w>s", { desc = "Split window below" })
+  vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "Split window right" })
+  vim.keymap.set("n", "<leader>wq", "<C-w>q", { desc = "Close window" })
+  vim.keymap.set("n", "<leader>wo", "<C-w>o", { desc = "Close other windows" })
+  vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "Equalize window sizes" })
+  vim.keymap.set("n", "<leader>wT", "<C-w>T", { desc = "Move window to tab" })
 
-  if vim.fn.exists(':FzfLua') then
-    vim.keymap.set('n', '<F3>', require('fzf-lua').global, { desc = "Find Files & Buffers & Stuff" })
-  end
+  -- Buffer navigation with <leader>b
+  vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
+  vim.keymap.set("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
+  vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+  vim.keymap.set("n", "<leader>bo", function()
+    local current = vim.api.nvim_get_current_buf()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if buf ~= current and vim.bo[buf].buflisted then
+        vim.api.nvim_buf_delete(buf, {})
+      end
+    end
+  end, { desc = "Close other buffers" })
+  vim.keymap.set("n", "<leader>bb", function()
+    require("fzf-lua").buffers()
+  end, { desc = "Find buffers" })
 
-  if vim.fn.exists(':FzfLua') then
-    vim.keymap.set('n', '<F4>', vim.cmd.GrugFar, { desc = "Search Files by Content" })
-  end
+  -- Quick window resize with arrows
+  vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+  vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+  vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+  vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
-  if vim.fn.exists(':FzfLua') then
-    vim.keymap.set('n', '<F5>', require('fzf-lua').keymaps, { desc = "Find Keymaps" })
-  end
+  -- Move lines in visual mode
+  vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move lines down" })
+  vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move lines up" })
 
-  if vim.fn.exists(':FzfLua') then
-    vim.keymap.set('n', '<F6>', require('fzf-lua').commands, { desc = "Find Commands" })
-  end
+  -- Better indenting (stay in visual mode)
+  vim.keymap.set("v", "<", "<gv")
+  vim.keymap.set("v", ">", ">gv")
 
-  vim.keymap.set('n', '<F10>', function () vim.o.hlsearch = not vim.o.hlsearch end, { desc = "Toggle Search Highlighting" })
-
-  vim.keymap.set('n', '<F11>', colors.next, { desc = 'Next preferred colorscheme' })
-  vim.keymap.set('n', '<F12>', colors.prev, { desc = 'previous preferred colorschemes' })
-  vim.keymap.set('n', '<F24>', colors.shuffle, { desc = 'Random preferred colorschemes' })
-
+  -- Quick save
+  vim.keymap.set("n", "<leader><leader>", "<cmd>w<cr>", { desc = "Save file" })
 end

@@ -2,9 +2,8 @@
 local M = {}
 
 local Playlist = {
-  queue = nil,
-  history = nil,
-  current = nil,
+  ring = nil,
+  cursor = nil,
   play = function (_) return true end,
 }
 
@@ -185,71 +184,74 @@ function Deque:is_empty()
 end
 
 function Playlist:new(list, play)
-  local play = play or function (element)
-    print(element)
-    return true
-  end
   local new = {
-    queue = Deque:new(list),
-    history = Deque:new(nil),
-    current = nil,
-    play = play,
+    ring = Deque:new(list),
+    cursor = nil,
+    play = play or function(element)
+      print(element)
+      return true
+    end,
   }
   setmetatable(new, self)
   self.__index = self
   return new
 end
 
-function Playlist:restart()
-  while not self.history:is_empty() do
-    self.queue:push_front(self.history:pop_front())
-  end
-  self.current = nil
-  return self
-end
-
 function Playlist:add(element)
-  self.queue:push_rear(element)
+  self.ring:push_rear(element)
   return self
 end
 
-function Playlist:skip(shuffle)
-  if not self.queue:is_empty() then
-    if shuffle then
-      self.queue:shift(math.random(self.queue.length))
-    end
-    return self.queue:pop_front()
+function Playlist:skip(n)
+  if self.ring:is_empty() then return nil end
+  n = n or 1
+  if self.cursor == nil then
+    self.cursor = self.ring.head
+    n = n - 1
   end
-  return nil
+  for _ = 1, n do
+    self.cursor = self.cursor.next
+  end
+  return self.cursor.data
 end
 
 function Playlist:next(shuffle)
-  while not self.queue:is_empty() do
-    if shuffle then
-      self.queue:shift(math.random(self.queue.length))
-    end
-    self.current = self.queue:pop_front()
-    self.history:push_front(self.current)
-    if self.play(self.current) then
-      return self.current
+  if self.ring:is_empty() then return nil end
+  if self.cursor == nil then
+    self.cursor = self.ring.head
+  else
+    self.cursor = self.cursor.next
+  end
+  if shuffle then
+    local steps = math.random(self.ring.length) - 1
+    for _ = 1, steps do
+      self.cursor = self.cursor.next
     end
   end
+  local start = self.cursor
+  repeat
+    if self.play(self.cursor.data) then
+      return self.cursor.data
+    end
+    self.cursor = self.cursor.next
+  until self.cursor == start
   return nil
 end
 
 function Playlist:prev()
-  self.current = self.history:pop_front()
-  while not self.history:is_empty() do
-    self.queue:push_front(self.current)
-    self.current = self.history:pop_front()
-    if self.play(self.current) then
-      self.history:push_front(self.current)
-      return self.current
+  if self.ring:is_empty() then return nil end
+  if self.cursor == nil then
+    self.cursor = self.ring.rear
+  else
+    self.cursor = self.cursor.prev
+  end
+  local start = self.cursor
+  repeat
+    if self.play(self.cursor.data) then
+      return self.cursor.data
     end
-  end
-  if self.current ~= nil then
-    self.history:push_front(self.current)
-  end
+    self.cursor = self.cursor.prev
+  until self.cursor == start
   return nil
 end
 
@@ -265,50 +267,33 @@ M.setup = function (opts)
   )
 
   function M.add(name)
-    if M.playlist:add(name) then
-      print("Added " .. name)
+    M.playlist:add(name)
+    print("Added " .. name)
+  end
+
+  function M.skip()
+    if M.playlist.ring:is_empty() then
+      print("Add colorschemes to vim.g.colorschemes")
     else
-      print("Failed to add " .. name)
+      M.playlist:skip()
+      print(M.playlist.cursor.data)
     end
   end
 
-  function M.skip(options)
-    options = options or {}
-    local shuffle = options.shuffle or false
-    if M.playlist.queue:is_empty() then
-      M.playlist:restart()
-    end
-    if M.playlist.queue:is_empty() then
+  function M.next()
+    if M.playlist.ring:is_empty() then
       print("Add colorschemes to vim.g.colorschemes")
-    elseif M.playlist:skip(shuffle) then
-      print(vim.g.colors_name)
-    end
-  end
-
-  function M.next(options)
-    options = options or {}
-    local shuffle = options.shuffle or false
-    if M.playlist.queue:is_empty() then
-      M.playlist:restart()
-    end
-    if M.playlist.queue:is_empty() then
-      print("Add colorschemes to vim.g.colorschemes")
-    elseif M.playlist:next(shuffle) then
+    elseif M.playlist:next() then
       print(vim.g.colors_name)
     else
       print("None of vim.g.colorschemes found on the system")
     end
   end
 
-  function M.prev(options)
-    options = options or {}
-    local shuffle = options.shuffle or false
-    if M.playlist.queue:is_empty() then
-      M.playlist:restart()
-    end
-    if M.playlist.queue:is_empty() then
+  function M.prev()
+    if M.playlist.ring:is_empty() then
       print("Add colorschemes to vim.g.colorschemes")
-    elseif M.playlist:prev(shuffle) then
+    elseif M.playlist:prev() then
       print(vim.g.colors_name)
     else
       print("None of vim.g.colorschemes found on the system")
@@ -316,7 +301,13 @@ M.setup = function (opts)
   end
 
   function M.shuffle()
-    M.next({ shuffle = true })
+    if M.playlist.ring:is_empty() then
+      print("Add colorschemes to vim.g.colorschemes")
+    elseif M.playlist:next(true) then
+      print(vim.g.colors_name)
+    else
+      print("None of vim.g.colorschemes found on the system")
+    end
   end
 
   return M

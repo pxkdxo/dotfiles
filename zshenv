@@ -7,4 +7,6 @@
 # (pager.sh, editor.sh) to avoid duplication and ensure consistency.
 # These are loaded via ~/.profile which is sourced in zprofile.
 
+export _ZO_ECHO=1
+
 # vi:ft=zsh

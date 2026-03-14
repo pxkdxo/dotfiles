@@ -16,17 +16,20 @@ return {
     name = "github-theme",
   },
   {
-    'kepano/flexoki-neovim',
-    name = 'flexoki',
+    "kepano/flexoki-neovim",
+    name = "flexoki",
   },
   {
     "savq/melange-nvim",
   },
   {
-    'srcery-colors/srcery-vim',
+    "srcery-colors/srcery-vim",
   },
   {
     "folke/tokyonight.nvim",
+  },
+  {
+    "uhs-robert/oasis.nvim",
   },
   {
     "scottmckendry/cyberdream.nvim",
@@ -39,8 +42,8 @@ return {
     -- end,
     opts = {
       -- Set light or dark variant
-      -- variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
-      variant = "light", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+      variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+      -- variant = "light", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look

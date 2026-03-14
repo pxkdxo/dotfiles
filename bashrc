@@ -260,55 +260,50 @@ ps0_update() {
 }
 
 # Set the primary prompt
-ps1_update() {
-  PS1="\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\\u\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]\
-@\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\\h\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]\
-:\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\\w\
-\\[${__ti_sgr0:=$(tput sgr0)}\\]\
-\\n\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\$>\
+ps1_update()
+{
+PS1="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\\u\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]@\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\\h\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]:\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\\w\
+\\[${__ti_sgr0:=$(tput sgr0)}\\]\\n\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\$\
 \\[${__ti_sgr0:=$(tput sgr0)}\\] "
 }
 
+if [[ -n ${BASH_VERSINFO-} ]] && [[ ${BASH_VERSINFO[0]:-0} -ge 4 ]]
+then
 # Set the secondary prompt
-if [[ ${BASH_VERSINFO[0]:-0} -ge 4 ]]; then
-  ps2_update() {
-    PS2="\
+ps2_update()
+{
+PS2="\
 \\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-$(((LINENO - $((BASH_LINENO[-1]))) / 10))\
-$(((LINENO - $((BASH_LINENO[-1]))) % 10))\
-\\[${__ti_sgr0:=$(tput sgr0)}\] "
-  }
-
+$(( (LINENO - (BASH_LINENO[-1])) / 10 ))$(( (LINENO - (BASH_LINENO[-1])) % 10 ))\
+\\[${__ti_sgr0:="$(tput sgr0)"}\\] "
+}
 else
-  ps2_update() {
-    PS2="\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-.>\
+ps2_update()
+{
+PS2="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]...\
 \\[${__ti_sgr0:=$(tput sgr0)}\] "
-  }
+}
 fi
 
 # Set the select prompt
-ps3_update() {
-  PS3="\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-*>\
+ps3_update()
+{
+PS3="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]*>\
 \\[${__ti_sgr0:=$(tput sgr0)}\\] "
 }
 
 # Set the execution-trace prompt
-ps4_update() {
-  PS4='+> '
+ps4_update()
+{
+PS4='+> '
 }
 
 # Update the prompt strings
@@ -426,3 +421,5 @@ if [[ -d ~/.bashrc.d ]]; then
 fi
 
 . "$HOME/.local/share/../bin/env"
+
+source /Users/patrick.deyoreo/.config/broot/launcher/bash/br

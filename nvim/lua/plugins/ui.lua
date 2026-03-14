@@ -1,7 +1,6 @@
 return {
   {
-    'nvim-lualine/lualine.nvim',
-    'ph1losof/ecolog.nvim',
+    "nvim-lualine/lualine.nvim",
     cond = vim.g.vscode == nil,
     dependencies = {
       "echasnovski/mini.icons",
@@ -19,8 +18,9 @@ return {
       local filetype_map = {
         lazy = { name = "lazy.nvim", icon = "󰒲 " },
         mason = { name = "mason", icon = "󱌣 " },
-        snacks_picker_input = { name = "picker", icon = " " },
-        ["copilot-chat"] = { name = "copilot", icon = " " },
+        snacks_picker_input = { name = "picker", icon = "󰩕 " },
+        ["Avante"] = { name = "avante", icon = " " },
+        -- ["copilot-chat"] = { name = "copilot", icon = " " },
       }
       return {
         options = {
@@ -40,15 +40,26 @@ return {
               end,
             },
           },
-          lualine_b = { { "branch", icon = "" } },
+          lualine_b = {
+            { "branch", icon = "" },
+            {
+              function()
+                return "recording @" .. vim.fn.reg_recording()
+              end,
+              cond = function()
+                return vim.fn.reg_recording() ~= ""
+              end,
+              color = { fg = "#ff6666" },
+            },
+          },
           lualine_c = {
             {
               "diagnostics",
               symbols = {
-                error = " ",
-                warn = " ",
-                info = " ",
-                hint = " ",
+                error = " ",
+                warn = " ",
+                info = " ",
+                hint = "󱐌 ",
               },
             },
             {
@@ -128,7 +139,7 @@ return {
             },
           },
           lualine_x = {
-            require('ecolog.integrations.statusline').lualine(),
+            require("ecolog.integrations.statusline").lualine(),
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
@@ -153,10 +164,24 @@ return {
               end,
             },
             {
-              "diff"
+              "diff",
             },
           },
           lualine_y = {
+            {
+              function()
+                local ok, result = pcall(vim.fn.searchcount, { maxcount = 999 })
+                if not ok or result.total == 0 then
+                  return ""
+                end
+                return result.current .. "/" .. result.total
+              end,
+              cond = function()
+                return vim.v.hlsearch == 1
+              end,
+              icon = " ",
+              color = utils.get_hlgroup("String"),
+            },
             {
               "progress",
             },
@@ -176,11 +201,11 @@ return {
     end,
   },
   {
-    'akinsho/bufferline.nvim',
+    "akinsho/bufferline.nvim",
     cond = vim.g.vscode == nil,
     version = false,
     dependencies = {
-      'nvim-tree/nvim-web-devicons'
+      "nvim-tree/nvim-web-devicons",
     },
     opts = {
       options = {
@@ -198,7 +223,10 @@ return {
         --- this should return a string
         --- Don't get too fancy as this function will be executed a lot
         diagnostics_indicator = function(count, level)
-          local symbol= level:match("error") and " " or level:match("warning") and " " or ""
+          local symbol = level:match("error") and " "
+            or level:match("warning") and " "
+            or level:match("info") and " "
+            or ""
           return " " .. symbol .. count
         end,
       },
@@ -207,26 +235,106 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     cond = vim.g.vscode == nil,
+    dependencies = {
+      "HiPhish/rainbow-delimiters.nvim",
+    },
     main = "ibl",
     ---@module "ibl"
     ---@type ibl.config
     opts = {
       indent = {
-        char = "▎",
+        char = "▏",
       },
       scope = {
-        enabled = true
-      }
+        enabled = true,
+        show_start = true,
+        show_end = true,
+      },
+      whitespace = {
+        highlight = { "PmenuSbar", "DiffText" },
+        remove_blankline_trail = true,
+      },
+      exclude = {
+        filetypes = {
+          "lspinfo",
+          "packer",
+          "checkhealth",
+          "help",
+          "man",
+          "gitcommit",
+          "TelescopePrompt",
+          "TelescopeResults",
+          "",
+        },
+        buftypes = {
+          "nofile",
+          "terminal",
+          "quickfix",
+          "prompt",
+        },
+      },
     },
+    config = function(_, opts)
+      local highlight = {
+        "RainbowDelimiterOrange",
+        "RainbowDelimiterYellow",
+        "RainbowDelimiterGreen",
+        "RainbowDelimiterViolet",
+        "RainbowDelimiterCyan",
+        "RainbowDelimiterBlue",
+        "RainbowDelimiterRed",
+      }
+      local ibl = require("ibl")
+      local _rd = require("rainbow-delimiters.setup")
+      opts = opts or {}
+      opts.scope = opts.scope or {}
+      opts.scope.highlight = highlight
+      vim.g.rainbow_delimiters = { highlight = highlight }
+      ibl.setup(opts)
+      require("ibl").setup({ scope = { highlight = highlight } })
+
+      local hooks = require("ibl.hooks")
+      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+    end,
   },
   {
-    'kevinhwang91/nvim-bqf',
+    "HiPhish/rainbow-delimiters.nvim",
     cond = vim.g.vscode == nil,
-    ft = 'qf',
+    opts = {
+      strategy = {
+        [""] = "rainbow-delimiters.strategy.global",
+      },
+      query = {
+        [""] = "rainbow-delimiters",
+        lua = "rainbow-blocks",
+      },
+      priority = {
+        [""] = 110,
+        lua = 210,
+      },
+      highlight = {
+        "RainbowDelimiterOrange",
+        "RainbowDelimiterYellow",
+        "RainbowDelimiterGreen",
+        "RainbowDelimiterViolet",
+        "RainbowDelimiterCyan",
+        "RainbowDelimiterBlue",
+      },
+      blacklist = { "c", "cpp" },
+    },
+    config = function(_, opts)
+      local rd = require("rainbow-delimiters.setup")
+      rd.setup(opts)
+    end,
+  },
+  {
+    "kevinhwang91/nvim-bqf",
+    cond = vim.g.vscode == nil,
+    ft = "qf",
     opts = {},
   },
   {
-    'RRethy/vim-illuminate',
+    "RRethy/vim-illuminate",
     cond = vim.g.vscode == nil,
     event = "InsertEnter",
     opts = {
@@ -236,57 +344,139 @@ return {
       },
       hint_prefix = "✭ ",
     },
-    config = function (_, opts)
-      require('illuminate').configure(opts)
-    end
+    config = function(_, opts)
+      require("illuminate").configure(opts)
+    end,
   },
   {
     "goolord/alpha-nvim",
     cond = vim.g.vscode == nil,
     dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
     },
     config = function()
       local alpha = require("alpha")
-      local theme = require("alpha.themes.startify")
-      theme.file_icons = theme.file_icons or {}
-      theme.file_icons.provider = "devicons"
-      alpha.setup(theme.config)
+      local dashboard = require("alpha.themes.dashboard")
+
+      local function greeting()
+        local hour = tonumber(os.date("%H"))
+        local period
+        if hour >= 5 and hour < 12 then
+          period = "morning"
+        elseif hour >= 12 and hour < 17 then
+          period = "afternoon"
+        elseif hour >= 17 and hour < 21 then
+          period = "evening"
+        else
+          period = "night"
+        end
+        return "✧ good " .. period .. ", " .. (vim.env.USER or "traveler") .. " ✧"
+      end
+
+      local stars = {
+        type = "text",
+        val = "✧                               ✧",
+        opts = { position = "center", hl = "Special" },
+      }
+
+      local art = {
+        type = "text",
+        val = {
+          [[███╗   ██╗██╗   ██╗██╗███╗   ███╗]],
+          [[████╗  ██║██║   ██║██║████╗ ████║]],
+          [[██╔██╗ ██║██║   ██║██║██╔████╔██║]],
+          [[██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║]],
+          [[██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║]],
+          [[╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+        },
+        opts = { position = "center", hl = "Function" },
+      }
+
+      local greet = {
+        type = "text",
+        val = greeting(),
+        opts = { position = "center", hl = "Comment" },
+      }
+
+      dashboard.section.buttons.val = {
+        dashboard.button("n", "✧  New file", "<cmd>ene<cr>"),
+        dashboard.button("f", "  Find file", "<cmd>FzfLua files<cr>"),
+        dashboard.button("g", "  Find text", "<cmd>FzfLua live_grep<cr>"),
+        dashboard.button("r", "  Recent files", "<cmd>FzfLua oldfiles<cr>"),
+        dashboard.button("s", "  Git status", "<cmd>FzfLua git_status<cr>"),
+        dashboard.button("c", "  Config", "<cmd>e " .. vim.fn.stdpath("config") .. "/init.lua<cr>"),
+        dashboard.button("l", "󰒲  Lazy", "<cmd>Lazy<cr>"),
+        dashboard.button("m", "  Mason", "<cmd>Mason<cr>"),
+        dashboard.button("q", "  Quit", "<cmd>qa<cr>"),
+      }
+
+      dashboard.section.footer.opts.hl = "Comment"
+
+      dashboard.config.layout = {
+        { type = "padding", val = 2 },
+        stars,
+        { type = "padding", val = 1 },
+        art,
+        { type = "padding", val = 1 },
+        stars,
+        { type = "padding", val = 1 },
+        greet,
+        { type = "padding", val = 2 },
+        dashboard.section.buttons,
+        { type = "padding", val = 1 },
+        dashboard.section.footer,
+      }
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LazyVimStarted",
+        once = true,
+        callback = function()
+          local stats = require("lazy").stats()
+          local cs = vim.g.colors_name or "default"
+          dashboard.section.footer.val = "✧ "
+            .. stats.loaded .. "/" .. stats.count .. " plugins"
+            .. " · " .. string.format("%.0f", stats.startuptime) .. "ms"
+            .. " · " .. cs
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
+
+      alpha.setup(dashboard.config)
     end,
   },
   {
-    'kevinhwang91/nvim-ufo',
+    "kevinhwang91/nvim-ufo",
     cond = vim.g.vscode == nil,
     dependencies = {
-      'kevinhwang91/promise-async'
+      "kevinhwang91/promise-async",
     },
     opts = {
       open_fold_hl_timeout = 150,
       preview = {
         win_config = {
-          border = 'rounded',
-          winhighlight = 'Normal:Folded',
+          border = "rounded",
+          winhighlight = "Normal:Folded",
           winblend = 40,
           maxheight = 25,
         },
         mappings = {
-          scrollU = '<C-u>',
-          scrollD = '<C-d>',
-          jumpTop = '<Home>',
-          jumpBot = '<End>',
-        }
+          scrollU = "<C-u>",
+          scrollD = "<C-d>",
+          jumpTop = "<Home>",
+          jumpBot = "<End>",
+        },
       },
       provider_selector = function(_, _, _)
-        return {'treesitter', 'indent'}
+        return { "treesitter", "indent" }
       end,
     },
-    config = function (_, opts)
+    config = function(_, opts)
       -- Load ufo
-      local ufo = require('ufo')
+      local ufo = require("ufo")
 
       -- Set nvim folding options
-      vim.o.foldcolumn = '1' -- '0' is not bad
+      vim.o.foldcolumn = "1" -- '0' is not bad
       vim.o.foldlevel = 99 -- Using ufo provider need a large value
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
@@ -299,13 +489,13 @@ return {
           local chunk_hl_group = chunk[2]
           local chunk_width = vim.fn.strdisplaywidth(chunk_text)
           if new_width + chunk_width < max_width then
-            table.insert(new_text, {chunk_text, chunk_hl_group})
+            table.insert(new_text, { chunk_text, chunk_hl_group })
             new_width = new_width + chunk_width
             return _fold_handler_rec(orig_text, new_text, max_width, new_width, truncate, index)
           end
           chunk_text = truncate(chunk_text, max_width - new_width)
           chunk_width = vim.fn.strdisplaywidth(chunk_text)
-          table.insert(new_text, {chunk_text, chunk_hl_group})
+          table.insert(new_text, { chunk_text, chunk_hl_group })
           new_width = new_width + chunk_width
         end
         return new_text, new_width
@@ -313,11 +503,11 @@ return {
 
       -- Custom fold handler
       local function fold_handler(virt_text, lnum, end_lnum, width, truncate)
-        local suffix = (' 󰁂 %d  '):format(end_lnum - lnum)
+        local suffix = (" 󰁂 %d  "):format(end_lnum - lnum)
         local target_width = width - vim.fn.strdisplaywidth(suffix)
         local result_text, result_width = _fold_handler_rec(virt_text, {}, target_width, 0, truncate)
-        local spaces = (' '):rep(target_width - result_width)
-        table.insert(result_text, {suffix .. spaces, 'MoreMsg'})
+        local spaces = (" "):rep(target_width - result_width)
+        table.insert(result_text, { suffix .. spaces, "MoreMsg" })
         return result_text
       end
 
@@ -328,9 +518,9 @@ return {
       ufo.setup(opts)
 
       -- Set key mappings
-      vim.keymap.set('n', 'zR', ufo.openAllFolds)
-      vim.keymap.set('n', 'zM', ufo.closeAllFolds)
-      vim.keymap.set('n', 'zK', function()
+      vim.keymap.set("n", "zR", ufo.openAllFolds)
+      vim.keymap.set("n", "zM", ufo.closeAllFolds)
+      vim.keymap.set("n", "zK", function()
         if not ufo.peekFoldedLinesUnderCursor() then
           vim.lsp.buf.hover()
         end
@@ -353,7 +543,7 @@ return {
       top_down = false,
       time_formats = {
         notification = "%a, %I:%M %p",
-        notification_history = "%F %T%z"
+        notification_history = "%F %T%z",
       },
     },
   },
@@ -497,9 +687,9 @@ return {
         },
       },
     },
-    config = function (_, opts)
-      local noice = require('noice')
-      local noice_lsp = require('noice.lsp')
+    config = function(_, opts)
+      local noice = require("noice")
+      local noice_lsp = require("noice.lsp")
 
       -- Set up noice
       noice.setup(opts)

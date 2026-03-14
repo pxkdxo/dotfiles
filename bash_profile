@@ -23,3 +23,5 @@ if [[ -z ${DISPLAY-} ]] && ((XDG_VTNR == 1)); then
 fi
 
 # vi:ft=sh
+
+source /Users/patrick.deyoreo/.config/broot/launcher/bash/br

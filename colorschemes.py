@@ -110,6 +110,7 @@ COLORS_CONFIG_HOME: Final[Path] = XDG_CONFIG_HOME / "colorschemes"
 COLORS_DATA_HOME: Final[Path] = XDG_DATA_HOME / "colorschemes"
 
 
+
 def tolist[T](x: T | Iterable[T]) -> Iterable[T]:
     if isinstance(x, str):
         return cast(list[T], [x])

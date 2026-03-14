@@ -23,6 +23,10 @@ elif command -v fzf > /dev/null; then
   eval "$(fzf --zsh 2> /dev/null)"
 fi
 
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"
+fi
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -99,9 +103,17 @@ export FAST_THEME="sv-plant"
 export FZF_COMPLETION_TRIGGER='^s'
 
 # Set vivid (lscolors) theme
-# export VIVID_THEME='modus-vivendi'
+# export VIVID_THEME='embark'
+# export VIVID_THEME='tokyonight-night'
+# export VIVID_THEME='carbonfox'
+# export VIVID_THEME='cyberdyne'
+# export VIVID_THEME='cyberpunk'
 # export VIVID_THEME='cyberdream'
-export VIVID_THEME='cyberdream-light'
+# export VIVID_THEME='cyberdream-light'
+# export VIVID_THEME='kanso-pearl'
+# export VIVID_THEME='modus-vivendi'
+# export VIVID_THEME='poimandres'
+export VIVID_THEME='xcode-dark-hc'
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder

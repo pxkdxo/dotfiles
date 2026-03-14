@@ -19,6 +19,16 @@
       },
       "url": "https://mcp.context7.com/mcp"
     },
+    "aws_docs": {
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "command": "uvx",
+      "env": {
+        "AWS_DOCUMENTATION_PARTITION": "aws",
+        "FASTMCP_LOG_LEVEL": "WARNING"
+      }
+    },
     "browser_tools": {
       "args": [
         "@agentdeskai/browser-tools-mcp@latest"
@@ -31,10 +41,26 @@
       ],
       "command": "uvx"
     },
+    "filesystem": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${HOME}/Documents"
+      ],
+      "command": "npx",
+      "env": {}
+    },
     "memory": {
       "args": [
         "-y",
         "@modelcontextprotocol/server-memory"
+      ],
+      "command": "npx"
+    },
+    "puppeteer": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
       ],
       "command": "npx"
     },
@@ -44,6 +70,18 @@
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "command": "npx"
+    },
+    "slack": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "command": "npx",
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_CHANNEL_IDS": "${SLACK_CHANNEL_IDS}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      }
     },
     "time": {
       "args": [

@@ -1,12 +1,5 @@
 return {
   {
-    'saadparwaiz1/cmp_luasnip',
-    dependencies = { 'L3MON4D3/LuaSnip' },
-  },
-  {
-    "petertriho/cmp-git",
-  },
-  {
     'hrsh7th/nvim-cmp',
     event = "InsertEnter",
     dependencies = {
@@ -19,14 +12,16 @@ return {
       'L3MON4D3/LuaSnip', -- Snippet engine
       'saadparwaiz1/cmp_luasnip', -- Snippet completions
       "petertriho/cmp-git", -- Git
-      "PaterJason/cmp-conjure", -- Conjure
+      -- "PaterJason/cmp-conjure", -- Conjure
       "ph1losof/ecolog.nvim", -- ecolog
-      -- 'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
+      'zbirenbaum/copilot-cmp', -- GitHub Copilot completions
       'nvim-mini/mini.icons', -- Completion entry icons
       'windwp/nvim-autopairs', -- Autopairs trigger
     },
     opts = {
-      experimental = { ghost_text = true },
+      experimental = {
+        -- ghost_text = true
+      },
     },
     config = function (_, opts)
       local unpack = unpack or table.unpack
@@ -42,13 +37,15 @@ return {
         expand = function(args) luasnip.lsp_expand(args.body) end
       }
       opts.sources = cmp.config.sources({
-        { name = "codecompanion" },
+        { name = "avante" },
+        -- { name = "codecompanion" },
         { name = "lazydev"  },
         { name = "nvim_lsp" },
-        { name = 'ecolog' },
       },
       {
-        { name = "conjure"  },
+        { name = "copilot" },
+        -- { name = "conjure"  },
+        { name = 'ecolog' },
         { name = "luasnip"  },
         { name = "nvim_lua" },
       },
@@ -219,5 +216,104 @@ return {
       -- Extra LSP config
       vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
     end
+  },
+  {
+    "petertriho/cmp-git",
+    config = function (_, opts)
+      local _ = require("cmp_git.format")
+      local _ = require("cmp_git.sort")
+      require("cmp_git").setup(opts)
+    end,
+    opts = {
+      -- defaults
+      filetypes = { "gitcommit", "octo", "NeogitCommitMessage" },
+      remotes = { "upstream", "origin" }, -- in order of most to least prioritized
+      enableRemoteUrlRewrites = false, -- enable git url rewrites, see https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlltbasegtinsteadOf
+      git = {
+        commits = {
+          limit = 100,
+          sha_length = 7,
+        },
+      },
+      github = {
+        hosts = {},  -- list of private instances of github
+        issues = {
+          fields = { "title", "number", "body", "updatedAt", "state" },
+          filter = "all", -- assigned, created, mentioned, subscribed, all, repos
+          limit = 100,
+          state = "open", -- open, closed, all
+        },
+        mentions = {
+          limit = 100,
+        },
+        pull_requests = {
+          fields = { "title", "number", "body", "updatedAt", "state" },
+          limit = 100,
+          state = "open", -- open, closed, merged, all
+        },
+      },
+      gitlab = {
+        hosts = {},  -- list of private instances of gitlab
+        issues = {
+          limit = 100,
+          state = "opened", -- opened, closed, all
+        },
+        mentions = {
+          limit = 100,
+        },
+        merge_requests = {
+          limit = 100,
+          state = "opened", -- opened, closed, locked, merged
+        },
+      },
+      trigger_actions = {
+        {
+          debug_name = "git_commits",
+          trigger_character = ":",
+          action = function(sources, trigger_char, callback, params, git_info)
+            return sources.git:get_commits(callback, params, trigger_char)
+          end,
+        },
+        {
+          debug_name = "gitlab_issues",
+          trigger_character = "#",
+          action = function(sources, trigger_char, callback, params, git_info)
+            return sources.gitlab:get_issues(callback, git_info, trigger_char)
+          end,
+        },
+        {
+          debug_name = "gitlab_mentions",
+          trigger_character = "@",
+          action = function(sources, trigger_char, callback, params, git_info)
+            return sources.gitlab:get_mentions(callback, git_info, trigger_char)
+          end,
+        },
+        {
+          debug_name = "gitlab_mrs",
+          trigger_character = "!",
+          action = function(sources, trigger_char, callback, params, git_info)
+            return sources.gitlab:get_merge_requests(callback, git_info, trigger_char)
+          end,
+        },
+        {
+          debug_name = "github_issues_and_pr",
+          trigger_character = "#",
+          action = function(sources, trigger_char, callback, params, git_info)
+            return sources.github:get_issues_and_prs(callback, git_info, trigger_char)
+          end,
+        },
+        {
+          debug_name = "github_mentions",
+          trigger_character = "@",
+          action = function(sources, trigger_char, callback, params, git_info)
+            return sources.github:get_mentions(callback, git_info, trigger_char)
+          end,
+        },
+      },
+    },
+  },
+  {
+    'saadparwaiz1/cmp_luasnip',
+    dependencies = { 'L3MON4D3/LuaSnip' },
   },
 }
