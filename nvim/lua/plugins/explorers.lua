@@ -1,4 +1,3 @@
-local highlight = require("noice.text.highlight")
 return {
   {
     "nvim-tree/nvim-tree.lua",
