@@ -67,6 +67,7 @@
 !/kitty/themes
 
 !/launchd/agents/*.plist
+!/launchd/*.sh
 
 !/mcphub/servers.json
 
