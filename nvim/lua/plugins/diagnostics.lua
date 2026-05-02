@@ -7,7 +7,6 @@ return {
       -- preset = "classic",
       --transparent_bg = false,
       transparent_bg = true,
-      transparent_cursorline = true,
       options = {
         -- Settings for multiline diagnostics
         multilines = {
@@ -21,7 +20,7 @@ return {
           display_count = true,
         },
         -- Only show source if multiple sources exist for the same diagnostic
-        show_source = { if_many = true },
+        show_source = { enabled = true, if_many = true },
         -- Throttle update frequency in milliseconds to improve performance
         -- Higher values reduce CPU usage but may feel less responsive
         -- Set to 0 for immediate updates (may cause lag on slow systems)
@@ -32,9 +31,9 @@ return {
         left = " ",
         right = " ",
         diag = "󱨧", --  󱨧 ✦ ✧ ✱ ⛤ ⛧ ✹ ✸ ✶   󰎂 󰎃
-        arrow = "", --  󰩔 󱖚 󰬩 󰧙 󰳞      󰶢 󰧀
-        up_arrow = " ", --  ↑ 󰩕 󱖗 󰧇     󰛃 󰜸 󰶣 
-        vertical = " 󰇝", --   󰇝 󱋱 󰇙 󰟄 󰮎  󰮾  󰝀 󰜹 
+        arrow = "", --  󰩔 󱖚 󰬩 󰧙 󰳞     󰧀
+        up_arrow = "󰩕", --  ↑ 󰩕 󱖗 󰧇      󰛃 󰜸 
+        vertical = " 󰇝", --   󰇝 󱋱 󰇙 󰟄 󰮎  󰮾  󰝀 󰜹  
         vertical_end = " ",
       },
       blend = {
@@ -129,7 +128,7 @@ return {
         desc = "LSP Definitions / references / ... (Trouble)",
       },
       {
-        "<leader>xL",
+        "<leader>xl",
         "<cmd>Trouble loclist toggle<cr>",
         desc = "Location List (Trouble)",
       },

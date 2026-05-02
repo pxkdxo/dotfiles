@@ -6,13 +6,11 @@ return {
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
-      dim = { enabled = true },
       images = { enabled = true },
-      indent = { enabled = true },
       input = { enabled = true },
       profile = { enabled = true },
       rename = { enabled = true },
-      scrath = { enabled = true },
+      scratch = { enabled = true },
       scope = { enabled = true },
       scroll = { enabled = true },
       statuscolumn = { enabled = true },
@@ -25,8 +23,7 @@ return {
         win = {
           input = {
             keys = {
-              ["a-m"] = { "flash", mode = { "n", "i" } },
-              ["m"] = { "flash" },
+              ["<a-m>"] = { "flash", mode = { "n", "i" } },
             },
           },
         },

@@ -6,18 +6,20 @@ return {
       "nvim-lua/plenary.nvim",
     },
     build = "npm install -g mcp-hub@latest",  -- Installs `mcp-hub` node binary globally
-    opts = {
-      native_servers = {
-        orchestrator = require("servers.orchestrator"),
-      },
-      extensions = {
-        avante = {
-          make_slash_commands = true, -- make /slash commands from MCP server prompts
-          make_tools = true,
-          make_vars = true,
+    opts = function()
+      return {
+        native_servers = {
+          orchestrator = require("servers.orchestrator"),
+        },
+        extensions = {
+          avante = {
+            make_slash_commands = true, -- make /slash commands from MCP server prompts
+            make_tools = true,
+            make_vars = true,
+          }
         }
       }
-    },
+    end,
     config = function(_, opts)
       require("mcphub").setup(opts)
     end
@@ -141,7 +143,7 @@ return {
       "MunifTanjim/nui.nvim",
       --- The below dependencies are optional,
       -- "nvim-mini/mini.pick", -- for file_selector provider mini.pick
-      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      -- "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
       "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
       "ibhagwan/fzf-lua", -- for file_selector provider fzf
       "stevearc/dressing.nvim", -- for input provider dressing

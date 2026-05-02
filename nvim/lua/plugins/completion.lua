@@ -81,7 +81,7 @@ return {
         end,
       }
       opts.mapping = cmp.mapping.preset.insert({
-        ['<C-q'] = cmp.mapping.abort(),
+        ['<C-q>'] = cmp.mapping.abort(),
         ['<C-@>'] = cmp.mapping.complete(),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-u>'] = cmp.mapping.scroll_docs(-4),
@@ -213,15 +213,11 @@ return {
         'confirm_done',
         require('nvim-autopairs.completion.cmp').on_confirm_done()
       )
-      -- Extra LSP config
-      vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
     end
   },
   {
     "petertriho/cmp-git",
     config = function (_, opts)
-      local _ = require("cmp_git.format")
-      local _ = require("cmp_git.sort")
       require("cmp_git").setup(opts)
     end,
     opts = {

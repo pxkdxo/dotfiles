@@ -139,7 +139,25 @@ return {
             },
           },
           lualine_x = {
-            require("ecolog.integrations.statusline").lualine(),
+            (function()
+              local _ecolog_component
+              return {
+                function()
+                  if _ecolog_component == nil then
+                    local ok, mod = pcall(require, "ecolog.integrations.statusline")
+                    _ecolog_component = ok and mod.lualine() or false
+                  end
+                  if not _ecolog_component then return "" end
+                  if type(_ecolog_component) == "function" then
+                    return _ecolog_component()
+                  end
+                  return _ecolog_component
+                end,
+                cond = function()
+                  return package.loaded["ecolog"] ~= nil
+                end,
+              }
+            end)(),
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
@@ -244,11 +262,27 @@ return {
     opts = {
       indent = {
         char = "▏",
+        highlight = {
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterYellow",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+          "RainbowDelimiterBlue",
+        },
       },
       scope = {
         enabled = true,
         show_start = true,
         show_end = true,
+        highlight = {
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterYellow",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+          "RainbowDelimiterBlue",
+        },
       },
       whitespace = {
         highlight = { "PmenuSbar", "DiffText" },
@@ -275,24 +309,7 @@ return {
       },
     },
     config = function(_, opts)
-      local highlight = {
-        "RainbowDelimiterOrange",
-        "RainbowDelimiterYellow",
-        "RainbowDelimiterGreen",
-        "RainbowDelimiterViolet",
-        "RainbowDelimiterCyan",
-        "RainbowDelimiterBlue",
-        "RainbowDelimiterRed",
-      }
-      local ibl = require("ibl")
-      local _rd = require("rainbow-delimiters.setup")
-      opts = opts or {}
-      opts.scope = opts.scope or {}
-      opts.scope.highlight = highlight
-      vim.g.rainbow_delimiters = { highlight = highlight }
-      ibl.setup(opts)
-      require("ibl").setup({ scope = { highlight = highlight } })
-
+      require("ibl").setup(opts)
       local hooks = require("ibl.hooks")
       hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
     end,
@@ -323,8 +340,31 @@ return {
       blacklist = { "c", "cpp" },
     },
     config = function(_, opts)
-      local rd = require("rainbow-delimiters.setup")
-      rd.setup(opts)
+      require("rainbow-delimiters.setup").setup(opts)
+
+      -- The plugin ships gruvbox-muted defaults (its "Cyan" is #a89984, a tan
+      -- that barely reads as a distinct color). Override with a vivid palette
+      -- and re-apply on every colorscheme change so rainbow indent guides stay
+      -- visible across the F11/F12/F24 rotation.
+      local palette = {
+        RainbowDelimiterRed    = "#f38ba8",
+        RainbowDelimiterOrange = "#fab387",
+        RainbowDelimiterYellow = "#f9e2af",
+        RainbowDelimiterGreen  = "#a6e3a1",
+        RainbowDelimiterCyan   = "#94e2d5",
+        RainbowDelimiterBlue   = "#89b4fa",
+        RainbowDelimiterViolet = "#cba6f7",
+      }
+      local apply = function()
+        for name, fg in pairs(palette) do
+          vim.api.nvim_set_hl(0, name, { fg = fg })
+        end
+      end
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("rainbow-delimiter-palette", { clear = true }),
+        callback = apply,
+      })
+      apply()
     end,
   },
   {

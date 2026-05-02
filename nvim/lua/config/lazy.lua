@@ -16,14 +16,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.opt.formatexpr = "v:lua.require('lazyvim.util').format.formatexpr()"
+vim.opt.formatexpr = "v:lua.vim.lsp.formatexpr()"
 if vim.fn.has("nvim-0.10") == 1 then
   vim.opt.foldmethod = "expr"
   vim.opt.foldtext = ""
-  vim.opt.foldexpr = "v:lua.require('lazyvim.util').ui.foldexpr()"
+  vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 else
   vim.opt.foldmethod = "indent"
-  vim.opt.foldtext = "v:lua.require('lazyvim.util').ui.foldtext()"
+  vim.opt.foldtext = ""
 end
 
 return require("lazy")
