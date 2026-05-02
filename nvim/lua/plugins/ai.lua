@@ -1,13 +1,20 @@
 return {
   {
     "ravitemer/mcphub.nvim",
-    cond = vim.g.vscode == nil and vim.fn.executable("npm") == 1,
+    cond = vim.g.vscode == nil,
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
-    build = "npm install -g mcp-hub@latest",  -- Installs `mcp-hub` node binary globally
+    -- Only run the global npm install when npm is actually available.
+    -- The plugin itself works without npm at runtime when `server_url` points
+    -- at an externally-managed mcp-hub (e.g. systemd/launchd-supervised).
+    build = vim.fn.executable("npm") == 1 and "npm install -g mcp-hub@latest" or nil,
     opts = function()
       return {
+        -- Connect to the launchd-managed mcp-hub at ~/Library/LaunchAgents/com.patrickdeyoreo.mcphub.plist
+        -- instead of spawning a duplicate on a different port. Falls back to
+        -- the plugin spawning its own hub if this URL is unreachable.
+        server_url = "http://localhost:37373",
         native_servers = {
           orchestrator = require("servers.orchestrator"),
         },

@@ -1,0 +1,56 @@
+[Unit]
+Description=MCP Hub aggregator (mcp-hub) — central proxy that fans out to all configured MCP servers
+Documentation=https://github.com/ravitemer/mcp-hub
+# Wait until the user session has network access. graphical-session.target is also fine
+# for desktop users, but network-online is the more universally portable choice.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# All env loading and exec is delegated to the wrapper script so that
+# ~/.env is sourced consistently across launchd (macOS) and systemd (Linux).
+# Service managers do not read shell rc files; the wrapper is the seam.
+ExecStart=%h/.local/bin/mcphub-launch.sh
+
+# Restart policy: only on crash/abnormal exit, not after a clean stop.
+# Mirrors the macOS launchd KeepAlive { SuccessfulExit=false, Crashed=true } behavior.
+Restart=on-failure
+RestartSec=10s
+
+# Keep cumulative restart attempts bounded so a config-induced crash loop
+# eventually surfaces as a "failed" unit instead of burning CPU forever.
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+# Ensure mcp-hub child MCP servers (uvx, npx, brew, github-mcp-server, ...)
+# can be located. systemd does not import the user's interactive PATH.
+# Includes both linuxbrew (standard Linux) and macOS-style homebrew paths
+# so this unit works on either OS without modification.
+Environment=PATH=%h/.local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:%h/.linuxbrew/bin:%h/.linuxbrew/sbin:%h/.local/share/homebrew/bin:%h/.local/share/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+WorkingDirectory=%h
+
+# Logging: journald captures stdout/stderr by default. View with:
+#   journalctl --user -u mcphub.service -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mcphub
+
+# Light hardening. Aggressive sandboxing (ProtectHome, PrivateTmp, etc.)
+# would break sourcing ~/.env and spawning user-level child processes,
+# so we stick to the safe set. /home is not affected by ProtectSystem=strict,
+# so no ReadWritePaths line is needed for backend MCP servers that cache to
+# ~/.cache or ~/.local/state.
+NoNewPrivileges=true
+ProtectSystem=strict
+
+# Memory ceiling. cgroup-enforced via systemd. MemoryHigh applies pressure
+# (throttling page reclaim) before MemoryMax kills the cgroup. These values
+# are sized for ~14 backend MCP servers — adjust if you add many more.
+MemoryHigh=2G
+MemoryMax=4G
+
+[Install]
+WantedBy=default.target

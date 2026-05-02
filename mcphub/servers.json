@@ -2,7 +2,7 @@
   "mcpServers": {
     "AWS Documentation": {
       "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
+        "awslabs.aws-documentation-mcp-server@1.1.21"
       ],
       "command": "uvx",
       "env": {
@@ -19,13 +19,44 @@
       },
       "url": "https://mcp.context7.com/mcp"
     },
-    "aws_docs": {
+    "atlassian": {
       "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
+        "mcp-atlassian@0.21.1"
       ],
       "command": "uvx",
       "env": {
-        "AWS_DOCUMENTATION_PARTITION": "aws",
+        "JIRA_URL": "${JIRA_URL}",
+        "JIRA_USERNAME": "${JIRA_USERNAME}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      }
+    },
+    "awslabs.cloudwatch-mcp-server": {
+      "args": [
+        "awslabs.cloudwatch-mcp-server@0.0.26"
+      ],
+      "command": "uvx",
+      "env": {
+        "AWS_REGION": "${AWS_REGION}",
+        "FASTMCP_LOG_LEVEL": "WARNING"
+      }
+    },
+    "awslabs.dynamodb-mcp-server": {
+      "args": [
+        "awslabs.dynamodb-mcp-server@2.1.1"
+      ],
+      "command": "uvx",
+      "env": {
+        "AWS_REGION": "${AWS_REGION}",
+        "FASTMCP_LOG_LEVEL": "WARNING"
+      }
+    },
+    "awslabs.lambda-tool-mcp-server": {
+      "args": [
+        "awslabs.lambda-tool-mcp-server@2.0.17"
+      ],
+      "command": "uvx",
+      "env": {
+        "AWS_REGION": "${AWS_REGION}",
         "FASTMCP_LOG_LEVEL": "WARNING"
       }
     },
@@ -37,7 +68,7 @@
     },
     "fetch": {
       "args": [
-        "mcp-server-fetch"
+        "mcp-server-fetch@2025.4.7"
       ],
       "command": "uvx"
     },
@@ -49,6 +80,24 @@
       ],
       "command": "npx",
       "env": {}
+    },
+    "Homebrew": {
+      "args": [
+        "mcp-server"
+      ],
+      "command": "brew"
+    },
+    "github": {
+      "args": [
+        "stdio",
+        "--toolsets",
+        "default",
+        "--read-only"
+      ],
+      "command": "github-mcp-server",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
     },
     "memory": {
       "args": [
@@ -85,7 +134,7 @@
     },
     "time": {
       "args": [
-        "mcp-server-time"
+        "mcp-server-time@2026.1.26"
       ],
       "command": "uvx"
     }
