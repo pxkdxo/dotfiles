@@ -66,6 +66,8 @@
 !/kitty/colorschemes
 !/kitty/themes
 
+!/launchd/agents/*.plist
+
 !/mcphub/servers.json
 
 !/mpd/mpd.conf
