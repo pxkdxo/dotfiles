@@ -499,7 +499,7 @@ function! RotateColorscheme(n)
     try
       let l:size = len(g:colorschemes)
     catch /^Vim(let)\=:E121/
-      let l:size
+      let l:size = 1
     endtry
     let l:shift = a:n % l:size
     let g:colorschemes = slice(g:colorschemes, shift) + slice(g:colorschemes, 0, shift)
@@ -681,7 +681,7 @@ let g:airline_themes = [
       \ 'soda'
       \ ]
 let g:airline_theme = g:airline_themes[1]
-eval('AirlineTheme' .. ' ' .. g:airline_theme)
+execute 'AirlineTheme' g:airline_theme
 "
 "
 " Define a function to rotate the colorscheme
@@ -690,7 +690,7 @@ function! RotateAirlineThemes(n)
     try
       let l:size = len(g:airline_themes)
     catch /^Vim(let)\=:E121/
-      let l:size
+      let l:size = 1
     endtry
     let l:shift = a:n % l:size
     let g:airline_themes = slice(g:airline_themes, shift) + slice(g:airline_themes, 0, shift)
@@ -832,8 +832,8 @@ let g:syntastic_mode_map = {
 
 " Tagbar
 "
-" F10: Toggle the tagbar
-nnoremap <silent> <F10> :TagbarToggle<CR>
+" F12: Toggle the tagbar
+nnoremap <silent> <F12> :TagbarToggle<CR>
 
 
 " YouCompleteMe
@@ -990,15 +990,6 @@ nnoremap <silent> <F3> :Commands<CR>
 inoremap <silent> <F3> <Esc>:Commands<CR>
 nnoremap <silent> <Esc><F3> :Commands!<CR>
 inoremap <silent> <Esc><F3> <Esc>:Commands!<CR>
-
-" F4:
-" Find helptags
-nnoremap <silent> <F4> :Helptags<CR>
-inoremap <silent> <F4> <Esc>:Helptags<CR>
-nnoremap <silent> <Esc><F4> :Helptags!<CR>
-inoremap <silent> <Esc><F4> <Esc>:Helptags!<CR>
-
-
 
 " Tabs
 "

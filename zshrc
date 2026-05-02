@@ -135,9 +135,6 @@ else
   unset ZSH
 fi
 
-if test -v ZSH; then
-fi
-
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/

@@ -24,4 +24,6 @@ fi
 
 # vi:ft=sh
 
-source /Users/patrick.deyoreo/.config/broot/launcher/bash/br
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"
+fi

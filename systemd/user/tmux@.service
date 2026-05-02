@@ -6,7 +6,7 @@ Requires=tmux@%i.socket
 [Service]
 Environment=TMUX_TMPDIR=%T
 Type=exec
-ExecStart=tmux -D
+ExecStart=tmux -L%i -D
 ExecStartPost=tmux -L%i start-server \; new-session -d -s main -t %i
 Slice=tmux-%i.slice
 

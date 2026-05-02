@@ -229,7 +229,8 @@ class GitSource(_Source):
                 *(("--", self.ref) if self.ref else ()),
             ]
             checkout = ["git", "checkout", "-f", "--detach", "FETCH_HEAD"]
-            commands = [stash, fetch, checkout]
+            pop = ["git", "stash", "pop"]
+            commands = [stash, fetch, checkout, pop]
             cwd = dest
             if dry_run:
                 print(f"  would update {self.url} -> {dest}")
@@ -252,8 +253,9 @@ class GitSource(_Source):
                 print(proc.stdout, end="")
             if proc.stderr:
                 print(proc.stderr, end="", file=sys.stderr)
-            # stash can exit 1 when there's nothing to stash—allow that
-            if proc.returncode != 0 and cmd[1] != "stash":
+            # `git stash push` can exit 1 when there's nothing to stash, and
+            # `git stash pop` can exit 1 when nothing was pushed. Tolerate both.
+            if proc.returncode != 0 and not (cmd[1] == "stash" and cmd[2] in ("push", "pop")):
                 raise subprocess.CalledProcessError(
                     proc.returncode, cmd, proc.stdout, proc.stderr
                 )

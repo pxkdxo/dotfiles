@@ -242,11 +242,11 @@ __ti_smul="$(tput smul)"
 __ti_rmul="$(tput rmul)"
 __ti_sgr0="$(tput sgr0)"
 __ti_colors="$(tput colors)"
-declare -a fg=()
-declare -a bg=()
-while ((${#fg[@]} < ${__ti_colors:-8})); do
-  fg[${#fg[@]}]="$(tput setaf "${#fg[@]}")"
-  bg[${#bg[@]}]="$(tput setab "${#bg[@]}")"
+declare -a __ti_fg=()
+declare -a __ti_bg=()
+while ((${#__ti_fg[@]} < ${__ti_colors:-8})); do
+  __ti_fg[${#__ti_fg[@]}]="$(tput setaf "${#__ti_fg[@]}")"
+  __ti_bg[${#__ti_bg[@]}]="$(tput setab "${#__ti_bg[@]}")"
 done
 
 # Limit depth of paths produced by '\w' upon prompt expansion
@@ -324,7 +324,7 @@ add_precmd_functions ps_update
 if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]; then
   __window_title_precmd() {
     TTY="$(tty)"
-    WINDOW_TITLE="${TTY##/dev/}) \\u@\\h (\${0##*/})"
+    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
   }
   __window_title_preexec() {
     TTY="$(tty)"
@@ -338,7 +338,7 @@ elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   # shellcheck disable=SC1003
   __window_title_precmd() {
     TTY="$(tty)"
-    WINDOW_TITLE="${TTY##/dev/}) \\u@\\h (\${0##*/})"
+    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
   # shellcheck disable=SC1003
@@ -422,4 +422,6 @@ fi
 
 . "$HOME/.local/share/../bin/env"
 
-source /Users/patrick.deyoreo/.config/broot/launcher/bash/br
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"
+fi
