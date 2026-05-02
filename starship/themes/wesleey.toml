@@ -9,7 +9,7 @@
 ##############################
 #
 format = """\
-[╭󱑽 ](fg:foreground)$os$username$hostname(\\[$localip\\])(\\[$cmd_duration\\])( $fill )($c )($python )($nodejs )($aws)$line_break\
+[╭󱑽 ](fg:foreground)$os$username$hostname( [\\[$localip\\]](fg:foreground))( [\\[$cmd_duration\\]](fg:foreground))( $fill )($c )($python )($nodejs )($aws)$line_break\
 [│󱑽 ](fg:foreground)$directory( $fill )($git_status $git_branch(:$git_commit)$git_state$git_metrics)$line_break\
 [╰󱑽 ](fg:foreground)\
 $character\
@@ -100,14 +100,14 @@ show_always = true
 
 [hostname]
 #
-format = '[@](bold italic dimmed fg:foreground)[$hostname](italic fg:yellow)'
+format = '[@](bold dimmed fg:foreground)[$hostname](italic fg:yellow)'
 ssh_only = false
 # trim_at = '.*'
 disabled = false
 
 [cmd_duration]
 min_time = 5000
-format = '[󰉁󱦟 ](fg:foreground bold)[$duration](italic fg:green)'
+format = '[󱦟 ](fg:foreground bold)[$duration](italic fg:green)'
 
 [shell]
 format = '[ ](bold fg:cyan)[$indicator](fg:foreground)'
@@ -171,7 +171,7 @@ truncation_symbol = '/'
 symbol = '󰘬 '
 
 [git_commit]
-format = '[$hash([\(](fg:foreground)[$tag](bold fg:yellow)[\)](fg:foreground)]($style) '
+format = '[$hash([\(](fg:foreground)[$tag](bold fg:yellow)[\)](fg:foreground))]($style) '
 style = 'italic fg:cyan'
 commit_hash_length = 4
 tag_symbol = '󰓹 '
