@@ -1,6 +1,7 @@
 return {
   {
     "gbprod/yanky.nvim",
+    cond = vim.g.vscode == nil,
     dependencies = {
       { "kkharji/sqlite.lua" },
       { "folke/snacks.nvim" },

@@ -28,7 +28,7 @@ return {
           section_separators = { left = " ", right = " " },
           theme = "auto",
           globalstatus = true,
-          disabled_filetypes = { statusline = { "dashboard", "alpha" } },
+          disabled_filetypes = { statusline = { "alpha" } },
         },
         sections = {
           lualine_a = {
@@ -64,22 +64,14 @@ return {
             },
             {
               function()
-                local devicons = require("nvim-web-devicons")
                 local ft = vim.bo.filetype
-                local icon
                 if filetype_map[ft] then
                   return " " .. filetype_map[ft].icon
                 end
-                if icon == nil then
-                  icon = devicons.get_icon(vim.fn.expand("%:t"))
-                end
-                if icon == nil then
-                  icon = devicons.get_icon_by_filetype(ft)
-                end
-                if icon == nil then
-                  icon = " 󰈤"
-                end
-
+                local devicons = require("nvim-web-devicons")
+                local icon = devicons.get_icon(vim.fn.expand("%:t"))
+                  or devicons.get_icon_by_filetype(ft)
+                  or " 󰈤"
                 return icon .. " "
               end,
               color = function()
