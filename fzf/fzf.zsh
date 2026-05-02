@@ -5,13 +5,12 @@ for __fzf_dir in \
   "${XDG_DATA_HOME:-${HOME}/.local/share}/fzf" \
   "${HOME}/.local/opt/fzf" \
   "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/fzf"; do
-  if [[ -d "${__fzf_dir}/bin" ]]; then
-    case ":${PATH}:" in
-      *":${__fzf_dir}/bin:"*) ;;
-      *) PATH="${PATH:+${PATH}:}${__fzf_dir}/bin" ;;
-    esac
-    break
-  fi
+  [[ -n "${__fzf_dir}" && -d "${__fzf_dir}/bin" ]] || continue
+  case ":${PATH}:" in
+    *":${__fzf_dir}/bin:"*) ;;
+    *) PATH="${PATH:+${PATH}:}${__fzf_dir}/bin" ;;
+  esac
+  break
 done
 unset __fzf_dir
 

@@ -132,23 +132,12 @@ return {
           },
           lualine_x = {
             (function()
-              local _ecolog_component
-              return {
-                function()
-                  if _ecolog_component == nil then
-                    local ok, mod = pcall(require, "ecolog.integrations.statusline")
-                    _ecolog_component = ok and mod.lualine() or false
-                  end
-                  if not _ecolog_component then return "" end
-                  if type(_ecolog_component) == "function" then
-                    return _ecolog_component()
-                  end
-                  return _ecolog_component
-                end,
-                cond = function()
-                  return package.loaded["ecolog"] ~= nil
-                end,
-              }
+              -- ecolog.integrations.statusline.lualine() returns a lualine
+              -- Component class table; pass it through directly. The pcall
+              -- + class form keeps lualine happy if ecolog isn't installed.
+              local ok, mod = pcall(require, "ecolog.integrations.statusline")
+              if ok then return mod.lualine() end
+              return { function() return "" end, cond = function() return false end }
             end)(),
             {
               require("lazy.status").updates,

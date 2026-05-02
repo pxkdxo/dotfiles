@@ -218,23 +218,11 @@ class GitSource(_Source):
                 print(f"  would clone {self.url} -> {dest}")
                 return None
         elif update:
-            stash = ["git", "stash", "push", "--include-untracked"]
-            fetch = [
-                "git",
-                "fetch",
-                "--depth",
-                "1",
-                "--recurse-submodules=on-demand",
-                "origin",
-                *(("--", self.ref) if self.ref else ()),
-            ]
-            checkout = ["git", "checkout", "-f", "--detach", "FETCH_HEAD"]
-            pop = ["git", "stash", "pop"]
-            commands = [stash, fetch, checkout, pop]
-            cwd = dest
             if dry_run:
                 print(f"  would update {self.url} -> {dest}")
                 return None
+            self._update(dest)
+            return None
         else:
             commands = []
             cwd = Path.cwd()
@@ -253,12 +241,61 @@ class GitSource(_Source):
                 print(proc.stdout, end="")
             if proc.stderr:
                 print(proc.stderr, end="", file=sys.stderr)
-            # `git stash push` can exit 1 when there's nothing to stash, and
-            # `git stash pop` can exit 1 when nothing was pushed. Tolerate both.
-            if proc.returncode != 0 and not (cmd[1] == "stash" and cmd[2] in ("push", "pop")):
+            if proc.returncode != 0:
                 raise subprocess.CalledProcessError(
                     proc.returncode, cmd, proc.stdout, proc.stderr
                 )
+
+    def _update(self, dest: Path) -> None:
+        """Fetch the latest ref into `dest`, preserving any local edits.
+
+        Stashes uncommitted changes before fetching/checking out, then pops
+        the stash. If fetch/checkout fails, the pop still runs so local
+        edits are restored. A `git stash pop` that produces merge conflicts
+        is escalated as an error (the working tree is left with conflict
+        markers); a benign "nothing to pop" is silently absorbed.
+        """
+        def run(cmd: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
+            print(">", *cmd)
+            proc = subprocess.run(cmd, cwd=dest, capture_output=True, text=True)
+            if proc.stdout:
+                print(proc.stdout, end="")
+            if proc.stderr:
+                print(proc.stderr, end="", file=sys.stderr)
+            if check and proc.returncode != 0:
+                raise subprocess.CalledProcessError(
+                    proc.returncode, cmd, proc.stdout, proc.stderr
+                )
+            return proc
+
+        stash_proc = run(["git", "stash", "push", "--include-untracked"], check=False)
+        if stash_proc.returncode != 0 and "No local changes to save" not in (stash_proc.stdout or ""):
+            raise subprocess.CalledProcessError(
+                stash_proc.returncode,
+                ["git", "stash", "push", "--include-untracked"],
+                stash_proc.stdout,
+                stash_proc.stderr,
+            )
+        stashed = "No local changes to save" not in (stash_proc.stdout or "")
+
+        try:
+            fetch = [
+                "git", "fetch", "--depth", "1",
+                "--recurse-submodules=on-demand", "origin",
+                *(("--", self.ref) if self.ref else ()),
+            ]
+            run(fetch)
+            run(["git", "checkout", "-f", "--detach", "FETCH_HEAD"])
+        finally:
+            if stashed:
+                pop_proc = run(["git", "stash", "pop"], check=False)
+                if pop_proc.returncode != 0:
+                    raise subprocess.CalledProcessError(
+                        pop_proc.returncode,
+                        ["git", "stash", "pop"],
+                        pop_proc.stdout,
+                        pop_proc.stderr,
+                    )
 
 
 SOURCE_TYPES: dict[str, type[_Source]] = {
