@@ -138,5 +138,13 @@
 !/yazi/package.toml
 !/yazi/theme.toml
 
+# Vendored / package-manager-managed trees that should never be tracked.
+# These are anchored so git stops descending into them and listing the
+# directories themselves as untracked.
+/superpowers/
+/tmux/plugins/
+/vim/plug/
+/yazi/packages/
+
 # macOS AppleDouble metadata (must come after allowlist negations)
 **/._*
