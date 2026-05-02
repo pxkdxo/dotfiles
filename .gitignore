@@ -30,7 +30,6 @@
 !/bashrc.d/**
 
 !/bat/config
-!/bat/themes
 !/bat/themes/**
 
 !/colors-*.py
@@ -44,8 +43,8 @@
 
 !/environment.d/**
 
-!foot/*.ini
-!foot/colorschemes
+!/foot/*.ini
+!/foot/colorschemes
 
 !/fzf/fzfrc
 !/fzf/*.bash
@@ -63,9 +62,9 @@
 !/inputrc
 !/inputrc.d/**
 
-!kitty/*.conf
-!kitty/colorschemes
-!kitty/themes
+!/kitty/*.conf
+!/kitty/colorschemes
+!/kitty/themes
 
 !/mcphub/servers.json
 
@@ -77,8 +76,6 @@
 
 !/npmrc
 
-!/nvim/autoload
-!/nvim/colors
 !/nvim/init.vim
 !/nvim/init.lua
 !/nvim/lua/**
@@ -101,7 +98,6 @@
 !/systemd/user/*.socket
 
 !/termux/colorschemes
-!/termux/themes
 !/termux/colors.properties
 !/termux/termux.properties
 
@@ -110,8 +106,6 @@
 !/tmux/*.conf
 !/tmux/*.tmux
 !/tmux/colorschemes
-!/tmux/themes
-/tmux/plugins/
 
 !/user-dirs.dirs
 !/user-dirs.locale
@@ -121,7 +115,6 @@
 !/vim/autoload/**
 !/vim/colorschemes
 !/vim/vimrc
-/vim/plug/
 
 !/vivid/themes/*
 
@@ -144,4 +137,6 @@
 !/yazi/plugins/*/**
 !/yazi/package.toml
 !/yazi/theme.toml
-/yazi/packages/
+
+# macOS AppleDouble metadata (must come after allowlist negations)
+**/._*
