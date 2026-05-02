@@ -14,9 +14,13 @@ Type=simple
 # Service managers do not read shell rc files; the wrapper is the seam.
 ExecStart=%h/.local/bin/mcphub-launch.sh
 
-# Restart policy: only on crash/abnormal exit, not after a clean stop.
-# Mirrors the macOS launchd KeepAlive { SuccessfulExit=false, Crashed=true } behavior.
-Restart=on-failure
+# Restart policy: always relaunch unless explicitly stopped via systemctl.
+# mcp-hub can shut itself down "cleanly" when an upstream MCP server
+# misbehaves (e.g. a stack overflow while closing a cursor-vscode session
+# triggers a graceful shutdown), so Restart=on-failure would leave the unit
+# down and stop serving the SSE endpoint that mcphub.nvim depends on.
+# Mirrors the macOS launchd KeepAlive=true setting in the matching plist.
+Restart=always
 RestartSec=10s
 
 # Keep cumulative restart attempts bounded so a config-induced crash loop
