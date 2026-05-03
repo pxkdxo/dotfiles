@@ -196,8 +196,19 @@ def _replace_with_symlink(
         print(f"  {action} {link_path} -> {target}")
         return True
     link_path.parent.mkdir(parents=True, exist_ok=True)
-    link_path.unlink(missing_ok=True)
-    link_path.symlink_to(target, target_is_directory=target_is_directory)
+    # Atomic swap: build the new symlink at a sibling temp name (same dir =
+    # same filesystem, so rename(2) is atomic), then os.replace over the
+    # destination. Any prior symlink or (clobber-allowed) regular file at
+    # link_path is replaced in a single step; real directories are already
+    # rejected by the pre-check above.
+    tmp_link = link_path.parent / f".{link_path.name}.{os.getpid()}.tmp"
+    tmp_link.unlink(missing_ok=True)
+    try:
+        tmp_link.symlink_to(target, target_is_directory=target_is_directory)
+        os.replace(tmp_link, link_path)
+    except OSError:
+        tmp_link.unlink(missing_ok=True)
+        raise
     return True
 
 
@@ -279,7 +290,7 @@ class GitSource(SourceBackend):
                 print(f"  would clone {self.url} -> {dest}")
                 return
             dest.parent.mkdir(parents=True, exist_ok=True)
-            _git(
+            _ = _git(
                 [
                     "git",
                     "clone",
@@ -317,7 +328,7 @@ class GitSource(SourceBackend):
         status = _git(["git", "status", "--porcelain", "-uall"], cwd=dest, quiet=True)
         stashed = bool(status.stdout.strip())
         if stashed:
-            _git(["git", "stash", "push", "--include-untracked"], cwd=dest)
+            _ = _git(["git", "stash", "push", "--include-untracked"], cwd=dest)
 
         try:
             fetch = [
@@ -329,8 +340,8 @@ class GitSource(SourceBackend):
                 "origin",
                 *(("--", self.ref) if self.ref else ()),
             ]
-            _git(fetch, cwd=dest)
-            _git(["git", "checkout", "-f", "--detach", "FETCH_HEAD"], cwd=dest)
+            _ = _git(fetch, cwd=dest)
+            _ = _git(["git", "checkout", "-f", "--detach", "FETCH_HEAD"], cwd=dest)
         finally:
             if stashed:
                 pop = _git(["git", "stash", "pop"], cwd=dest, check=False)
@@ -495,8 +506,13 @@ def link_config(
     nothing but symlinks; otherwise warn and leave it alone).
     """
     if not collections_root.is_dir():
+        msg = (
+            f"collections directory {collections_root} does not exist; run 'sync' first"
+        )
         if dry_run:
-            print("[dry-run] would link config (collections not yet created)")
+            print(f"  would skip link config ({msg})", file=sys.stderr)
+        else:
+            print(f"Warning: cannot link config ({msg}); skipping", file=sys.stderr)
         return
     app_to_dirs: dict[str, list[Path]] = {}
     for coll_dir in sorted(collections_root.iterdir()):
@@ -760,11 +776,11 @@ def main() -> int:
         cmd: Command = args.cmd_cls(config=config, args=args)
         cmd()
         return 0
-    except (FileNotFoundError, OSError, PermissionError) as exc:
+    except OSError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         if (
             isinstance(exc, FileNotFoundError)
-            and args.config == COLORS_CONFIG_HOME / "config.toml"
+            and args.config.resolve() == (COLORS_CONFIG_HOME / "config.toml").resolve()
         ):
             print(
                 f"Hint: see --help for an example config to place at {args.config}",
