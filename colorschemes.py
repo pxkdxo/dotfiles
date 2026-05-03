@@ -196,11 +196,8 @@ def _replace_with_symlink(
         print(f"  {action} {link_path} -> {target}")
         return True
     link_path.parent.mkdir(parents=True, exist_ok=True)
-    # Atomic swap: build the new symlink at a sibling temp name (same dir =
-    # same filesystem, so rename(2) is atomic), then os.replace over the
-    # destination. Any prior symlink or (clobber-allowed) regular file at
-    # link_path is replaced in a single step; real directories are already
-    # rejected by the pre-check above.
+    # Build the new symlink at a sibling temp name, then atomically swap
+    # it over link_path. Real directories are already rejected above.
     tmp_link = link_path.parent / f".{link_path.name}.{os.getpid()}.tmp"
     tmp_link.unlink(missing_ok=True)
     try:
