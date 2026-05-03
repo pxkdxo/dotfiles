@@ -576,7 +576,10 @@ def link_config(
     for key in sorted(app_to_dirs):
         app = app_canonical[key]
         config_app_dir = config_root / app
-        linked_files: set[str] = set()
+        # Dedupe across collections: if two collections both ship e.g.
+        # ghostty/README.md, keep the first and warn -- otherwise the link
+        # ping-pongs on every sync.
+        chosen: dict[str, Path] = {}
         for app_dir in app_to_dirs[key]:
             try:
                 entries = list(app_dir.iterdir())
@@ -585,16 +588,26 @@ def link_config(
             for entry in entries:
                 if not entry.is_file():
                     continue
-                linked_files.add(entry.name)
-                link_path = config_app_dir / entry.name
-                # Relative from parent of resolved link to resolved target
-                rel = entry.resolve().relative_to(
-                    link_path.parent.resolve(), walk_up=True
-                )
-                if _replace_with_symlink(
-                    link_path, rel, clobber=clobber, dry_run=dry_run
-                ):
-                    n_linked += 1
+                existing = chosen.get(entry.name)
+                if existing is None:
+                    chosen[entry.name] = entry
+                else:
+                    print(
+                        f"Warning: app '{app}' file '{entry.name}' provided by "
+                        f"multiple collections ({existing} and {entry}); keeping first",
+                        file=sys.stderr,
+                    )
+        linked_files: set[str] = set(chosen)
+        for entry in chosen.values():
+            link_path = config_app_dir / entry.name
+            # Relative from parent of resolved link to resolved target
+            rel = entry.resolve().relative_to(
+                link_path.parent.resolve(), walk_up=True
+            )
+            if _replace_with_symlink(
+                link_path, rel, clobber=clobber, dry_run=dry_run
+            ):
+                n_linked += 1
         if config_app_dir.exists():
             for entry in config_app_dir.iterdir():
                 if entry.is_symlink() and entry.name not in linked_files:
