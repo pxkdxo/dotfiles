@@ -511,10 +511,9 @@ def link_config(
         else:
             print(f"Warning: cannot link config ({msg}); skipping", file=sys.stderr)
         return
-    # Key by case-folded app name so two collections contributing the same
-    # app under different cases (e.g. 'Xresources' and 'xresources') collapse
-    # to one on-disk dir on case-insensitive filesystems (default APFS, NTFS).
-    # First-seen casing wins for the on-disk name.
+    # Group by case-folded app name so case-only duplicates (e.g. 'Xresources'
+    # vs 'xresources') collapse to one on-disk dir on case-insensitive
+    # filesystems. First-seen casing wins.
     app_to_dirs: dict[str, list[Path]] = {}
     app_canonical: dict[str, str] = {}
     for coll_dir in sorted(collections_root.iterdir()):
@@ -523,7 +522,8 @@ def link_config(
         for entry in coll_dir.iterdir():
             if entry.is_dir() or entry.is_symlink():
                 key = entry.name.casefold()
-                _ = app_canonical.setdefault(key, entry.name)
+                if key not in app_canonical:
+                    app_canonical[key] = entry.name
                 app_to_dirs.setdefault(key, []).append(entry)
     n_apps = 0
     n_linked = 0
