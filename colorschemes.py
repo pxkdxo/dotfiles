@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Download, link, and manage colorscheme sources for terminal and editor applications.
 
+Requires Python 3.12+ (PEP 695 type aliases/generics, ``Path.glob(case_sensitive=...)``,
+``Path.relative_to(..., walk_up=True)``, ``typing.override``, ``tomllib``).
+
 This script centralizes colorscheme management so you can pull themes from Git
 repositories or local directories, filter them into collections, and expose them
 to apps (Alacritty, Foot, Kitty, Neovim, Tmux, etc.) under a unified layout.
@@ -97,8 +100,10 @@ import os
 import subprocess
 import sys
 import tomllib
+import uuid
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace
+from collections import Counter
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
 from fnmatch import fnmatch
@@ -146,6 +151,7 @@ class Filter:
         filetypes = as_list(self.filetype)
         paths = as_list(self.paths)
 
+        seen: set[Path] = set()
         for path in paths:
             base = root / path
             for pattern in patterns:
@@ -154,8 +160,13 @@ class Filter:
                         continue
                     if any(fnmatch(entry.name, ex) for ex in excludes):
                         continue
-                    if any(self._filetype_test[ft](entry) for ft in filetypes):
-                        yield entry.relative_to(root)
+                    if not any(self._filetype_test[ft](entry) for ft in filetypes):
+                        continue
+                    rel = entry.relative_to(root)
+                    if rel in seen:
+                        continue
+                    seen.add(rel)
+                    yield rel
 
 
 def _replace_with_symlink(
@@ -187,6 +198,13 @@ def _replace_with_symlink(
             )
         return False
 
+    if link_path.is_symlink():
+        try:
+            if os.readlink(link_path) == os.fspath(target):
+                return False
+        except OSError:
+            pass
+
     if dry_run:
         action = (
             "would clobber"
@@ -198,7 +216,7 @@ def _replace_with_symlink(
     link_path.parent.mkdir(parents=True, exist_ok=True)
     # Build the new symlink at a sibling temp name, then atomically swap
     # it over link_path. Real directories are already rejected above.
-    tmp_link = link_path.parent / f".{link_path.name}.{os.getpid()}.tmp"
+    tmp_link = link_path.parent / f".{link_path.name}.{uuid.uuid4().hex}.tmp"
     tmp_link.unlink(missing_ok=True)
     try:
         tmp_link.symlink_to(target, target_is_directory=target_is_directory)
@@ -216,14 +234,14 @@ def _git(
     check: bool = True,
     quiet: bool = False,
 ) -> subprocess.CompletedProcess[str]:
-    """Run git, echoing the command and its output unless quiet=True."""
-    if not quiet:
+    """Run git. When quiet=True output is captured and returned; otherwise
+    git inherits this process's stdio so progress streams live to the user.
+    """
+    if quiet:
+        proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    else:
         print(">", *cmd)
-    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
-    if not quiet and proc.stdout:
-        print(proc.stdout, end="")
-    if not quiet and proc.stderr:
-        print(proc.stderr, end="", file=sys.stderr)
+        proc = subprocess.run(cmd, cwd=cwd, text=True)
     if check and proc.returncode != 0:
         raise subprocess.CalledProcessError(
             proc.returncode, cmd, proc.stdout, proc.stderr
@@ -257,6 +275,8 @@ class DirSource(SourceBackend):
         clobber: bool = False,
     ) -> None:
         path = Path(os.path.expandvars(self.path)).expanduser().resolve()
+        if not path.exists():
+            raise FileNotFoundError(f"DirSource path does not exist: {path}")
         dest = Path(os.path.expandvars(dest)).expanduser()
         _replace_with_symlink(
             dest,
@@ -282,6 +302,11 @@ class GitSource(SourceBackend):
         clobber: bool = False,  # unused: git owns its workspace
     ) -> None:
         dest = Path(os.path.expandvars(dest)).expanduser().resolve()
+        if dest.exists() and not dest.is_dir():
+            raise FileExistsError(
+                f"{dest} exists and is not a directory; "
+                "remove or move it aside before retrying"
+            )
         if not dest.is_dir():
             if dry_run:
                 print(f"  would clone {self.url} -> {dest}")
@@ -348,12 +373,14 @@ class GitSource(SourceBackend):
                         f"resolve manually with: git -C {dest} stash pop",
                         file=sys.stderr,
                     )
-                    raise subprocess.CalledProcessError(
-                        pop.returncode,
-                        ["git", "stash", "pop"],
-                        pop.stdout,
-                        pop.stderr,
-                    )
+                    # Don't mask an in-flight exception with the stash-pop error.
+                    if sys.exception() is None:
+                        raise subprocess.CalledProcessError(
+                            pop.returncode,
+                            ["git", "stash", "pop"],
+                            pop.stdout,
+                            pop.stderr,
+                        )
 
 
 SOURCE_TYPES: dict[str, type[SourceBackend]] = {
@@ -362,8 +389,7 @@ SOURCE_TYPES: dict[str, type[SourceBackend]] = {
 }
 
 _SOURCE_TYPE_LABELS: dict[type[SourceBackend], str] = {
-    DirSource: "dir",
-    GitSource: "git",
+    cls: name for name, cls in SOURCE_TYPES.items()
 }
 
 
@@ -408,8 +434,19 @@ class Collection:
             )
             return
         collection_path = collections_root / self.name
-        target_paths = list(self.filter_names(sources_root))
-        current_names = {p.name for p in target_paths}
+        deduped: dict[str, Path] = {}
+        for tp in self.filter_names(sources_root):
+            existing = deduped.get(tp.name)
+            if existing is None:
+                deduped[tp.name] = tp
+            else:
+                print(
+                    f"Warning: collection '{self.name}': basename collision "
+                    f"'{tp.name}' between {existing} and {tp}; keeping first",
+                    file=sys.stderr,
+                )
+        target_paths = list(deduped.values())
+        current_names = set(deduped)
         if not dry_run:
             collection_path.mkdir(parents=True, exist_ok=True)
         n_linked = 0
@@ -520,11 +557,18 @@ def link_config(
         if not coll_dir.is_dir():
             continue
         for entry in coll_dir.iterdir():
-            if entry.is_dir() or entry.is_symlink():
+            if entry.is_dir():
                 key = entry.name.casefold()
                 if key not in app_canonical:
                     app_canonical[key] = entry.name
                 app_to_dirs.setdefault(key, []).append(entry)
+            elif not entry.name.startswith("."):
+                print(
+                    f"Warning: collection '{coll_dir.name}' contains non-directory "
+                    f"entry '{entry.name}'; link_config expects "
+                    f"<collection>/<app>/<file>",
+                    file=sys.stderr,
+                )
     n_apps = 0
     n_linked = 0
     n_stale = 0
@@ -534,8 +578,6 @@ def link_config(
         config_app_dir = config_root / app
         linked_files: set[str] = set()
         for app_dir in app_to_dirs[key]:
-            if not app_dir.is_dir() and not app_dir.is_symlink():
-                continue
             try:
                 entries = list(app_dir.iterdir())
             except OSError:
@@ -628,9 +670,9 @@ class Command(ABC):
 class SyncCommand(Command):
     @override
     def __call__(self) -> None:
-        update = getattr(self.args, "update", True)
-        dry_run = getattr(self.args, "dry_run", False)
-        clobber = getattr(self.args, "clobber", False)
+        update: bool = self.args.update
+        dry_run: bool = self.args.dry_run
+        clobber: bool = self.args.clobber
         prefix = "[dry-run] would fetch" if dry_run else "Fetching"
         print(f"{prefix} sources:")
         self.config.sources.retrieve_all(
@@ -651,8 +693,8 @@ class SyncCommand(Command):
 class LinkCommand(Command):
     @override
     def __call__(self) -> None:
-        dry_run = getattr(self.args, "dry_run", False)
-        clobber = getattr(self.args, "clobber", False)
+        dry_run: bool = self.args.dry_run
+        clobber: bool = self.args.clobber
         prefix = "[dry-run] would create" if dry_run else "Creating"
         print(f"{prefix} collections:")
         self.config.collections.link_all(
@@ -701,15 +743,23 @@ def _parse_collection(data: dict[str, Any]) -> Collection:
     return Collection(name=name, source=source, filter=filter_obj)
 
 
+def _check_unique_names(names: list[str], kind: str) -> None:
+    dups = sorted(n for n, c in Counter(names).items() if c > 1)
+    if dups:
+        raise ValueError(f"duplicate {kind} name(s): {dups}")
+
+
 def _parse_sources(data: dict[str, Any]) -> Sources:
     directory = expand_data_path(data.get("directory", "sources"))
     spec = [_parse_source(s) for s in data.get("spec", [])]
+    _check_unique_names([s.name for s in spec], "source")
     return Sources(directory=directory, spec=spec)
 
 
 def _parse_collections(data: dict[str, Any]) -> Collections:
     directory = expand_data_path(data.get("directory", "collections"))
     spec = [_parse_collection(c) for c in data.get("spec", [])]
+    _check_unique_names([c.name for c in spec], "collection")
     return Collections(directory=directory, spec=spec)
 
 
@@ -724,7 +774,7 @@ def _load_config(config_path: Path) -> Config:
 
 def main() -> int:
     parser = ArgumentParser(
-        description=(__doc__ or "").strip().partition("\n")[0],
+        description=__doc__.splitlines()[0] if __doc__ else None,
     )
     parser.add_argument(
         "-c",
