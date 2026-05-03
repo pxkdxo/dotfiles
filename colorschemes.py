@@ -9,8 +9,8 @@ Each app sees its themes at $XDG_CONFIG_HOME/colorschemes/<app>/<colorscheme>.
 Configuration
 -------------
 Config is read from $XDG_CONFIG_HOME/colorschemes/config.toml by default, or
-from a path given with -c. If the default file does not exist, it is created
-with sample content.
+from a path given with -c. If the default file does not exist, the script
+exits with an error pointing to --help for a sample config.
 
 Filesystem layout
 ----------------
@@ -24,8 +24,8 @@ Two directories are used:
     Sources are cloned/fetched here. Collections and symlink targets live under
     sources/ and collections/.
 
-Concept: Sources and Collections
---------------------------------
+Sources / Collections
+---------------------
 A *Source* is where themes come from—either a Git repository or a local directory.
 Configure it with:
 
@@ -42,7 +42,7 @@ to include. Parameters:
   - filter: Optional filter with:
       paths: Paths within the source to scan (default: '.')
       pattern: Glob to include (default: '*')
-      exclude: Glob(s) to exclude
+      exclude: Glob(s) to exclude (matched against basename only)
       filetype: 'd' (directories), 'f' (files), or both (default: 'd')
       include_hidden: Include hidden entries (default: false)
 
@@ -51,7 +51,9 @@ Symlink flow
   1. Sources are fetched into $XDG_DATA_HOME/colorschemes/sources/<name>/
   2. Collections link into those sources under collections/<collection>/<app>/
   3. link_config creates $XDG_CONFIG_HOME/colorschemes/<app>/<colorscheme>
-     symlinks that point into the collection layout
+     symlinks that point into the collection layout. Themes must be files;
+     directory-shaped themes are linked into collections (step 2) but not
+     into the application-facing layout.
 
 Example config
 -------------
@@ -110,12 +112,11 @@ COLORS_CONFIG_HOME: Final[Path] = XDG_CONFIG_HOME / "colorschemes"
 COLORS_DATA_HOME: Final[Path] = XDG_DATA_HOME / "colorschemes"
 
 
-
-def tolist[T](x: T | Iterable[T]) -> Iterable[T]:
+def as_list[T](x: T | Iterable[T]) -> list[T]:
     if isinstance(x, str):
         return cast(list[T], [x])
     if isinstance(x, Iterable):
-        return cast(Iterable[T], x)
+        return list(cast(Iterable[T], x))
     return [x]
 
 
@@ -134,29 +135,68 @@ class Filter:
         "f": lambda p: p.is_file(),
     }
 
-    @staticmethod
-    def _is_not_hidden(path: Path) -> bool:
-        return not path.name.startswith(".")
-
     def match(self, root: Path | str = ".") -> Iterator[Path]:
+        """Yield matched paths, expressed relative to `root`."""
         root = Path(root)
-        patterns = tolist(self.pattern)
-        excludes = tolist(self.exclude)
-        filetypes = tolist(self.filetype)
-        paths = tolist(self.paths)
+        patterns = as_list(self.pattern)
+        excludes = as_list(self.exclude)
+        filetypes = as_list(self.filetype)
+        paths = as_list(self.paths)
 
         for path in paths:
             base = root / path
             for pattern in patterns:
-                matches = base.glob(pattern, case_sensitive=False)
-                if not self.include_hidden:
-                    matches = filter(self._is_not_hidden, matches)
-                for match in matches:
-                    if any(fnmatch(match.name, ex) for ex in excludes):
+                for entry in base.glob(pattern, case_sensitive=False):
+                    if not self.include_hidden and entry.name.startswith("."):
                         continue
-                    fullpath = base / match
-                    if any(self._filetype_test[ft](fullpath) for ft in filetypes):
-                        yield Path(path) / match
+                    if any(fnmatch(entry.name, ex) for ex in excludes):
+                        continue
+                    if any(self._filetype_test[ft](entry) for ft in filetypes):
+                        yield entry.relative_to(root)
+
+
+def _replace_with_symlink(
+    link_path: Path,
+    target: Path | str,
+    *,
+    target_is_directory: bool = False,
+) -> bool:
+    """Symlink link_path -> target, replacing any existing symlink (live or
+    broken). Real files and directories are left alone; returns True on success.
+    """
+    if link_path.exists() and not link_path.is_symlink():
+        kind = "directory" if link_path.is_dir() else "file"
+        print(
+            f"Warning: cannot replace {link_path} (existing {kind}); skipping",
+            file=sys.stderr,
+        )
+        return False
+    link_path.parent.mkdir(parents=True, exist_ok=True)
+    link_path.unlink(missing_ok=True)
+    link_path.symlink_to(target, target_is_directory=target_is_directory)
+    return True
+
+
+def _git(
+    cmd: list[str],
+    *,
+    cwd: Path | None = None,
+    check: bool = True,
+    quiet: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    """Run git, echoing the command and its output unless quiet=True."""
+    if not quiet:
+        print(">", *cmd)
+    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    if not quiet and proc.stdout:
+        print(proc.stdout, end="")
+    if not quiet and proc.stderr:
+        print(proc.stderr, end="", file=sys.stderr)
+    if check and proc.returncode != 0:
+        raise subprocess.CalledProcessError(
+            proc.returncode, cmd, proc.stdout, proc.stderr
+        )
+    return proc
 
 
 class _Source(ABC):
@@ -175,15 +215,11 @@ class DirSource(_Source):
         self, dest: Path | str, *, update: bool = True, dry_run: bool = False
     ) -> None:
         path = Path(os.path.expandvars(self.path)).expanduser().resolve()
-        dest = Path(os.path.expandvars(dest)).expanduser().resolve()
-        if dest.is_dir() and not dest.is_symlink():
-            dest = dest / path.name
+        dest = Path(os.path.expandvars(dest)).expanduser()
         if dry_run:
             print(f"  would symlink {dest} -> {path}")
             return
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.unlink(missing_ok=True)
-        dest.symlink_to(path, target_is_directory=path.is_dir())
+        _replace_with_symlink(dest, path, target_is_directory=path.is_dir())
 
 
 @dataclass(kw_only=True)
@@ -196,105 +232,64 @@ class GitSource(_Source):
         self, dest: Path | str, *, update: bool = True, dry_run: bool = False
     ) -> None:
         dest = Path(os.path.expandvars(dest)).expanduser().resolve()
-
-        commands: list[list[str]]
         if not dest.is_dir():
-            clone = [
-                "git",
-                "clone",
-                "--depth",
-                "1",
-                "--single-branch",
-                "--recurse-submodules",
-                "--shallow-submodules",
-                *(("--branch", self.ref) if self.ref else ()),
-                "--",
-                self.url,
-                str(dest),
-            ]
-            commands = [clone]
-            cwd = Path.cwd()
             if dry_run:
                 print(f"  would clone {self.url} -> {dest}")
-                return None
-        elif update:
-            if dry_run:
-                print(f"  would update {self.url} -> {dest}")
-                return None
-            self._update(dest)
-            return None
-        else:
-            commands = []
-            cwd = Path.cwd()
-            if dry_run:
-                print(f"  would skip {self.url} -> {dest}")
-                return None
-
-        if len(commands) == 0:
-            return None
-
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        for cmd in commands:
-            print(">", *cmd)
-            proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
-            if proc.stdout:
-                print(proc.stdout, end="")
-            if proc.stderr:
-                print(proc.stderr, end="", file=sys.stderr)
-            if proc.returncode != 0:
-                raise subprocess.CalledProcessError(
-                    proc.returncode, cmd, proc.stdout, proc.stderr
-                )
+                return
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            _git(
+                [
+                    "git",
+                    "clone",
+                    "--depth",
+                    "1",
+                    "--single-branch",
+                    "--recurse-submodules",
+                    "--shallow-submodules",
+                    *(("--branch", self.ref) if self.ref else ()),
+                    "--",
+                    self.url,
+                    str(dest),
+                ]
+            )
+            return
+        if not update:
+            print(f"  {'would skip' if dry_run else 'skipping'} {self.url} -> {dest}")
+            return
+        if dry_run:
+            print(f"  would update {self.url} -> {dest}")
+            return
+        self._update(dest)
 
     def _update(self, dest: Path) -> None:
-        """Fetch the latest ref into `dest`, preserving any local edits.
-
-        Stashes uncommitted changes before fetching/checking out, then pops
-        the stash. If fetch/checkout fails, the pop still runs so local
-        edits are restored. A `git stash pop` that produces merge conflicts
-        is escalated as an error (the working tree is left with conflict
-        markers); a benign "nothing to pop" is silently absorbed.
-        """
-        def run(cmd: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
-            print(">", *cmd)
-            proc = subprocess.run(cmd, cwd=dest, capture_output=True, text=True)
-            if proc.stdout:
-                print(proc.stdout, end="")
-            if proc.stderr:
-                print(proc.stderr, end="", file=sys.stderr)
-            if check and proc.returncode != 0:
-                raise subprocess.CalledProcessError(
-                    proc.returncode, cmd, proc.stdout, proc.stderr
-                )
-            return proc
-
-        stash_proc = run(["git", "stash", "push", "--include-untracked"], check=False)
-        if stash_proc.returncode != 0 and "No local changes to save" not in (stash_proc.stdout or ""):
-            raise subprocess.CalledProcessError(
-                stash_proc.returncode,
-                ["git", "stash", "push", "--include-untracked"],
-                stash_proc.stdout,
-                stash_proc.stderr,
-            )
-        stashed = "No local changes to save" not in (stash_proc.stdout or "")
+        """Fetch the latest ref into `dest`, stashing local edits around the
+        fetch/checkout."""
+        status = _git(["git", "status", "--porcelain", "-uall"], cwd=dest, quiet=True)
+        stashed = bool(status.stdout.strip())
+        if stashed:
+            _git(["git", "stash", "push", "--include-untracked"], cwd=dest)
 
         try:
             fetch = [
-                "git", "fetch", "--depth", "1",
-                "--recurse-submodules=on-demand", "origin",
+                "git",
+                "fetch",
+                "--depth",
+                "1",
+                "--recurse-submodules=on-demand",
+                "origin",
                 *(("--", self.ref) if self.ref else ()),
             ]
-            run(fetch)
-            run(["git", "checkout", "-f", "--detach", "FETCH_HEAD"])
+            _git(fetch, cwd=dest)
+            _git(["git", "checkout", "-f", "--detach", "FETCH_HEAD"], cwd=dest)
         finally:
             if stashed:
-                pop_proc = run(["git", "stash", "pop"], check=False)
-                if pop_proc.returncode != 0:
+                pop = _git(["git", "stash", "pop"], cwd=dest, check=False)
+                if pop.returncode != 0:
                     raise subprocess.CalledProcessError(
-                        pop_proc.returncode,
+                        pop.returncode,
                         ["git", "stash", "pop"],
-                        pop_proc.stdout,
-                        pop_proc.stderr,
+                        pop.stdout,
+                        pop.stderr,
                     )
 
 
@@ -303,11 +298,15 @@ SOURCE_TYPES: dict[str, type[_Source]] = {
     "git": GitSource,
 }
 
+_SOURCE_TYPE_LABELS: dict[type[_Source], str] = {
+    DirSource: "dir",
+    GitSource: "git",
+}
+
 
 @dataclass(kw_only=True)
 class Source:
     name: str
-    type: Literal["dir", "git"]
     source: _Source
 
 
@@ -355,25 +354,15 @@ class Collection:
             link_path = collection_path / target_path.name
             # Relative from parent of resolved link to resolved target
             link_target = target_path.resolve().relative_to(
-                link_path.parent.resolve(),
-                walk_up=True
+                link_path.parent.resolve(), walk_up=True
             )
             if dry_run:
                 print(f"  would link {link_path} -> {link_target}")
                 continue
-            try:
-                link_path.unlink(missing_ok=True)
-            except (IsADirectoryError, OSError, PermissionError) as exc:
-                print(
-                    f"Warning: cannot replace {link_path} ({exc}); skipping",
-                    file=sys.stderr,
-                )
-                continue
-            link_path.symlink_to(
-                link_target,
-                target_is_directory=target_path.is_dir()
-            )
-            n_linked += 1
+            if _replace_with_symlink(
+                link_path, link_target, target_is_directory=target_path.is_dir()
+            ):
+                n_linked += 1
         if collection_path.exists():
             for entry in collection_path.iterdir():
                 if entry.is_symlink() and entry.name not in current_names:
@@ -391,14 +380,14 @@ class Collection:
 
 def expand_data_path(p: Path | str, base: Path = COLORS_DATA_HOME) -> Path:
     """Resolve path; if relative, resolve against base ($XDG_DATA_HOME/colorschemes)."""
-    expanded = Path(os.path.expanduser(str(p)))
+    expanded = Path(os.path.expandvars(str(p))).expanduser()
     if expanded.is_absolute():
         return expanded.resolve()
     return (base / expanded).resolve()
 
 
 def expand_config_path(s: str) -> Path:
-    return Path(s).expanduser()
+    return Path(os.path.expandvars(s)).expanduser()
 
 
 @dataclass(kw_only=True)
@@ -438,24 +427,20 @@ def link_config(
         if dry_run:
             print("[dry-run] would link config (collections not yet created)")
         return
-    app_names: set[str] = set()
-    for coll_dir in collections_root.iterdir():
-        if coll_dir.is_dir():
-            for entry in coll_dir.iterdir():
-                if entry.is_dir() or entry.is_symlink():
-                    app_names.add(entry.name)
+    app_to_dirs: dict[str, list[Path]] = {}
+    for coll_dir in sorted(collections_root.iterdir()):
+        if not coll_dir.is_dir():
+            continue
+        for entry in coll_dir.iterdir():
+            if entry.is_dir() or entry.is_symlink():
+                app_to_dirs.setdefault(entry.name, []).append(entry)
     n_apps = 0
     n_linked = 0
     n_stale = 0
-    for app in sorted(app_names):
+    for app in sorted(app_to_dirs):
         config_app_dir = COLORS_CONFIG_HOME / app
         linked_files: set[str] = set()
-        for coll_dir in sorted(collections_root.iterdir()):
-            if not coll_dir.is_dir():
-                continue
-            app_dir = coll_dir / app
-            if not app_dir.exists():
-                continue
+        for app_dir in app_to_dirs[app]:
             if not app_dir.is_dir() and not app_dir.is_symlink():
                 continue
             try:
@@ -469,23 +454,13 @@ def link_config(
                 link_path = config_app_dir / entry.name
                 # Relative from parent of resolved link to resolved target
                 rel = entry.resolve().relative_to(
-                    link_path.parent.resolve(),
-                    walk_up=True
+                    link_path.parent.resolve(), walk_up=True
                 )
                 if dry_run:
                     print(f"  would link {link_path} -> {rel}")
                     continue
-                config_app_dir.mkdir(parents=True, exist_ok=True)
-                try:
-                    link_path.unlink(missing_ok=True)
-                except (IsADirectoryError, OSError, PermissionError) as exc:
-                    print(
-                        f"Warning: cannot replace {link_path} ({exc}); skipping",
-                        file=sys.stderr,
-                    )
-                    continue
-                link_path.symlink_to(rel, target_is_directory=False)
-                n_linked += 1
+                if _replace_with_symlink(link_path, rel):
+                    n_linked += 1
         if config_app_dir.exists():
             for entry in config_app_dir.iterdir():
                 if entry.is_symlink() and entry.name not in linked_files:
@@ -562,7 +537,7 @@ class ListCommand(Command):
     def __call__(self) -> None:
         print("Sources:")
         for s in self.config.sources.spec:
-            print(f"  {s.name} ({s.type})")
+            print(f"  {s.name} ({_SOURCE_TYPE_LABELS[type(s.source)]})")
         print("\nCollections:")
         for c in self.config.collections.spec:
             print(f"  {c.name} <- {c.source}")
@@ -582,7 +557,7 @@ def _parse_source(data: dict[str, Any]) -> Source:
         )
     source_data = data["source"]
     source = SOURCE_TYPES[source_type](**source_data)
-    return Source(name=source_name, type=source_type, source=source)
+    return Source(name=source_name, source=source)
 
 
 def _parse_collection(data: dict[str, Any]) -> Collection:
@@ -665,8 +640,16 @@ def main() -> int:
         return 0
     except (FileNotFoundError, OSError, PermissionError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
+        if (
+            isinstance(exc, FileNotFoundError)
+            and args.config == COLORS_CONFIG_HOME / "config.toml"
+        ):
+            print(
+                f"Hint: see --help for an example config to place at {args.config}",
+                file=sys.stderr,
+            )
         return 1
-    except (TypeError, ValueError) as exc:
+    except (TypeError, ValueError, KeyError) as exc:
         print(f"Config error: {exc}", file=sys.stderr)
         return 1
     except subprocess.CalledProcessError as exc:
