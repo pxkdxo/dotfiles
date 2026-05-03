@@ -82,12 +82,15 @@ Example config
 Commands
 --------
   sync      Fetch sources (clone or pull) and link collections and config.
-            Options: --no-update (skip git pull), --dry-run
+            Options: --no-update (skip git pull), --dry-run, --clobber
 
   link      Create collections and link config only (no fetch).
-            Options: --dry-run
+            Options: --dry-run, --clobber
 
   list      Print configured sources and collections.
+
+Existing regular files at link sites are preserved by default; pass --clobber
+to replace them. Existing directories are always preserved.
 """
 
 import os
@@ -160,17 +163,38 @@ def _replace_with_symlink(
     target: Path | str,
     *,
     target_is_directory: bool = False,
+    clobber: bool = False,
+    dry_run: bool = False,
 ) -> bool:
     """Symlink link_path -> target, replacing any existing symlink (live or
-    broken). Real files and directories are left alone; returns True on success.
+    broken). Real files are skipped unless clobber=True; real directories are
+    always skipped. Returns True if a link was (or would be) created.
     """
+    blocking: str | None = None
     if link_path.exists() and not link_path.is_symlink():
-        kind = "directory" if link_path.is_dir() else "file"
-        print(
-            f"Warning: cannot replace {link_path} (existing {kind}); skipping",
-            file=sys.stderr,
-        )
+        if link_path.is_dir():
+            blocking = "existing directory"
+        elif not clobber:
+            blocking = "existing file; pass --clobber to overwrite"
+
+    if blocking:
+        if dry_run:
+            print(f"  would skip {link_path} ({blocking})", file=sys.stderr)
+        else:
+            print(
+                f"Warning: cannot replace {link_path} ({blocking}); skipping",
+                file=sys.stderr,
+            )
         return False
+
+    if dry_run:
+        action = (
+            "would clobber"
+            if link_path.exists() and not link_path.is_symlink()
+            else "would link"
+        )
+        print(f"  {action} {link_path} -> {target}")
+        return True
     link_path.parent.mkdir(parents=True, exist_ok=True)
     link_path.unlink(missing_ok=True)
     link_path.symlink_to(target, target_is_directory=target_is_directory)
@@ -199,37 +223,55 @@ def _git(
     return proc
 
 
-class _Source(ABC):
+class SourceBackend(ABC):
     @abstractmethod
     def retrieve(
-        self, dest: Path | str, *, update: bool = True, dry_run: bool = False
+        self,
+        dest: Path | str,
+        *,
+        update: bool = True,
+        dry_run: bool = False,
+        clobber: bool = False,
     ) -> None: ...
 
 
 @dataclass(kw_only=True)
-class DirSource(_Source):
+class DirSource(SourceBackend):
     path: Path | str
 
     @override
     def retrieve(
-        self, dest: Path | str, *, update: bool = True, dry_run: bool = False
+        self,
+        dest: Path | str,
+        *,
+        update: bool = True,
+        dry_run: bool = False,
+        clobber: bool = False,
     ) -> None:
         path = Path(os.path.expandvars(self.path)).expanduser().resolve()
         dest = Path(os.path.expandvars(dest)).expanduser()
-        if dry_run:
-            print(f"  would symlink {dest} -> {path}")
-            return
-        _replace_with_symlink(dest, path, target_is_directory=path.is_dir())
+        _replace_with_symlink(
+            dest,
+            path,
+            target_is_directory=path.is_dir(),
+            clobber=clobber,
+            dry_run=dry_run,
+        )
 
 
 @dataclass(kw_only=True)
-class GitSource(_Source):
+class GitSource(SourceBackend):
     url: str
     ref: str | None = None
 
     @override
     def retrieve(
-        self, dest: Path | str, *, update: bool = True, dry_run: bool = False
+        self,
+        dest: Path | str,
+        *,
+        update: bool = True,
+        dry_run: bool = False,
+        clobber: bool = False,  # unused: git owns its workspace
     ) -> None:
         dest = Path(os.path.expandvars(dest)).expanduser().resolve()
         if not dest.is_dir():
@@ -253,6 +295,11 @@ class GitSource(_Source):
                 ]
             )
             return
+        if not (dest / ".git").exists():
+            raise FileExistsError(
+                f"{dest} exists but is not a git checkout; "
+                "remove or move it aside before retrying"
+            )
         if not update:
             print(f"  {'would skip' if dry_run else 'skipping'} {self.url} -> {dest}")
             return
@@ -263,7 +310,10 @@ class GitSource(_Source):
 
     def _update(self, dest: Path) -> None:
         """Fetch the latest ref into `dest`, stashing local edits around the
-        fetch/checkout."""
+        fetch/checkout. If the post-fetch `git stash pop` fails (typically a
+        merge conflict against the new HEAD), the stash entry is left in
+        place and the caller must resolve it manually.
+        """
         status = _git(["git", "status", "--porcelain", "-uall"], cwd=dest, quiet=True)
         stashed = bool(status.stdout.strip())
         if stashed:
@@ -285,6 +335,11 @@ class GitSource(_Source):
             if stashed:
                 pop = _git(["git", "stash", "pop"], cwd=dest, check=False)
                 if pop.returncode != 0:
+                    print(
+                        f"Local changes preserved as a stash entry in {dest}; "
+                        f"resolve manually with: git -C {dest} stash pop",
+                        file=sys.stderr,
+                    )
                     raise subprocess.CalledProcessError(
                         pop.returncode,
                         ["git", "stash", "pop"],
@@ -293,12 +348,12 @@ class GitSource(_Source):
                     )
 
 
-SOURCE_TYPES: dict[str, type[_Source]] = {
+SOURCE_TYPES: dict[str, type[SourceBackend]] = {
     "dir": DirSource,
     "git": GitSource,
 }
 
-_SOURCE_TYPE_LABELS: dict[type[_Source], str] = {
+_SOURCE_TYPE_LABELS: dict[type[SourceBackend], str] = {
     DirSource: "dir",
     GitSource: "git",
 }
@@ -307,7 +362,7 @@ _SOURCE_TYPE_LABELS: dict[type[_Source], str] = {
 @dataclass(kw_only=True)
 class Source:
     name: str
-    source: _Source
+    source: SourceBackend
 
 
 @dataclass(kw_only=True)
@@ -336,6 +391,7 @@ class Collection:
         sources_root: Path,
         *,
         dry_run: bool = False,
+        clobber: bool = False,
     ) -> None:
         source_path = sources_root / self.source
         if dry_run and not source_path.is_dir():
@@ -356,11 +412,12 @@ class Collection:
             link_target = target_path.resolve().relative_to(
                 link_path.parent.resolve(), walk_up=True
             )
-            if dry_run:
-                print(f"  would link {link_path} -> {link_target}")
-                continue
             if _replace_with_symlink(
-                link_path, link_target, target_is_directory=target_path.is_dir()
+                link_path,
+                link_target,
+                target_is_directory=target_path.is_dir(),
+                clobber=clobber,
+                dry_run=dry_run,
             ):
                 n_linked += 1
         if collection_path.exists():
@@ -370,12 +427,12 @@ class Collection:
                         print(f"  would remove stale {entry}")
                     else:
                         entry.unlink(missing_ok=True)
-                        n_stale += 1
-        if not dry_run:
-            parts = [f"{n_linked} linked"]
-            if n_stale:
-                parts.append(f"{n_stale} stale removed")
-            print(f"  {self.name}: {', '.join(parts)}")
+                    n_stale += 1
+        parts = [f"{n_linked} linked"]
+        if n_stale:
+            parts.append(f"{n_stale} stale removed")
+        prefix = "[dry-run] " if dry_run else ""
+        print(f"  {prefix}{self.name}: {', '.join(parts)}")
 
 
 def expand_data_path(p: Path | str, base: Path = COLORS_DATA_HOME) -> Path:
@@ -395,12 +452,17 @@ class Sources:
     directory: Path
     spec: list[Source]
 
-    def retrieve_all(self, *, update: bool = True, dry_run: bool = False) -> None:
+    def retrieve_all(
+        self, *, update: bool = True, dry_run: bool = False, clobber: bool = False
+    ) -> None:
         if not dry_run:
             self.directory.mkdir(parents=True, exist_ok=True)
         for source in self.spec:
             source.source.retrieve(
-                self.directory / source.name, update=update, dry_run=dry_run
+                self.directory / source.name,
+                update=update,
+                dry_run=dry_run,
+                clobber=clobber,
             )
 
 
@@ -409,19 +471,28 @@ class Collections:
     directory: Path
     spec: list[Collection]
 
-    def link_all(self, sources_root: Path, *, dry_run: bool = False) -> None:
+    def link_all(
+        self, sources_root: Path, *, dry_run: bool = False, clobber: bool = False
+    ) -> None:
         for collection in self.spec:
-            collection.link_to_source(self.directory, sources_root, dry_run=dry_run)
+            collection.link_to_source(
+                self.directory, sources_root, dry_run=dry_run, clobber=clobber
+            )
 
 
 def link_config(
     collections_root: Path,
     *,
+    config_root: Path = COLORS_CONFIG_HOME,
     dry_run: bool = False,
+    clobber: bool = False,
 ) -> None:
-    """Create $XDG_CONFIG_HOME/colorschemes/<application>/<colorscheme> symlinks.
-    Link each colorscheme file from its collection location.
-    Also remove stale symlinks.
+    """Create <config_root>/<application>/<colorscheme> symlinks.
+
+    Link each colorscheme file from its collection location, remove stale
+    per-colorscheme symlinks, and remove per-app directories whose app no
+    longer appears in any collection (only if the directory contains
+    nothing but symlinks; otherwise warn and leave it alone).
     """
     if not collections_root.is_dir():
         if dry_run:
@@ -437,8 +508,9 @@ def link_config(
     n_apps = 0
     n_linked = 0
     n_stale = 0
+    n_stale_apps = 0
     for app in sorted(app_to_dirs):
-        config_app_dir = COLORS_CONFIG_HOME / app
+        config_app_dir = config_root / app
         linked_files: set[str] = set()
         for app_dir in app_to_dirs[app]:
             if not app_dir.is_dir() and not app_dir.is_symlink():
@@ -456,10 +528,9 @@ def link_config(
                 rel = entry.resolve().relative_to(
                     link_path.parent.resolve(), walk_up=True
                 )
-                if dry_run:
-                    print(f"  would link {link_path} -> {rel}")
-                    continue
-                if _replace_with_symlink(link_path, rel):
+                if _replace_with_symlink(
+                    link_path, rel, clobber=clobber, dry_run=dry_run
+                ):
                     n_linked += 1
         if config_app_dir.exists():
             for entry in config_app_dir.iterdir():
@@ -468,16 +539,49 @@ def link_config(
                         print(f"  would remove stale {entry}")
                     else:
                         entry.unlink(missing_ok=True)
-                        n_stale += 1
+                    n_stale += 1
         elif dry_run and linked_files:
             print(f"  would create {config_app_dir}/ with {len(linked_files)} link(s)")
         if linked_files:
             n_apps += 1
-    if not dry_run:
-        parts = [f"{n_apps} apps", f"{n_linked} links"]
-        if n_stale:
-            parts.append(f"{n_stale} stale removed")
-        print(f"  {', '.join(parts)}")
+
+    # Skip dot-prefixed names (e.g. .git, .github) -- never valid app names,
+    # and may be VCS metadata for the parent dir.
+    if config_root.is_dir():
+        for app_dir in sorted(config_root.iterdir()):
+            if (
+                not app_dir.is_dir()
+                or app_dir.is_symlink()
+                or app_dir.name.startswith(".")
+                or app_dir.name in app_to_dirs
+            ):
+                continue
+            try:
+                contents = list(app_dir.iterdir())
+            except OSError:
+                continue
+            if not all(p.is_symlink() for p in contents):
+                print(
+                    f"Warning: stale app dir {app_dir} has non-symlink "
+                    "entries; leaving in place",
+                    file=sys.stderr,
+                )
+                continue
+            if dry_run:
+                print(f"  would remove stale app dir {app_dir}")
+            else:
+                for p in contents:
+                    p.unlink(missing_ok=True)
+                app_dir.rmdir()
+            n_stale_apps += 1
+
+    parts = [f"{n_apps} apps", f"{n_linked} links"]
+    if n_stale:
+        parts.append(f"{n_stale} stale removed")
+    if n_stale_apps:
+        parts.append(f"{n_stale_apps} stale app dirs removed")
+    prefix = "[dry-run] " if dry_run else ""
+    print(f"  {prefix}{', '.join(parts)}")
 
 
 @dataclass(kw_only=True)
@@ -505,31 +609,39 @@ class SyncCommand(Command):
     def __call__(self) -> None:
         update = getattr(self.args, "update", True)
         dry_run = getattr(self.args, "dry_run", False)
+        clobber = getattr(self.args, "clobber", False)
         prefix = "[dry-run] would fetch" if dry_run else "Fetching"
         print(f"{prefix} sources:")
-        self.config.sources.retrieve_all(update=update, dry_run=dry_run)
+        self.config.sources.retrieve_all(
+            update=update, dry_run=dry_run, clobber=clobber
+        )
         prefix = "[dry-run] would create" if dry_run else "Creating"
         print(f"{prefix} collections:")
         self.config.collections.link_all(
-            sources_root=self.config.sources.directory, dry_run=dry_run
+            sources_root=self.config.sources.directory,
+            dry_run=dry_run,
+            clobber=clobber,
         )
         prefix = "[dry-run] would link" if dry_run else "Linking"
         print(f"{prefix} config:")
-        link_config(self.config.collections.directory, dry_run=dry_run)
+        link_config(self.config.collections.directory, dry_run=dry_run, clobber=clobber)
 
 
 class LinkCommand(Command):
     @override
     def __call__(self) -> None:
         dry_run = getattr(self.args, "dry_run", False)
+        clobber = getattr(self.args, "clobber", False)
         prefix = "[dry-run] would create" if dry_run else "Creating"
         print(f"{prefix} collections:")
         self.config.collections.link_all(
-            sources_root=self.config.sources.directory, dry_run=dry_run
+            sources_root=self.config.sources.directory,
+            dry_run=dry_run,
+            clobber=clobber,
         )
         prefix = "[dry-run] would link" if dry_run else "Linking"
         print(f"{prefix} config:")
-        link_config(self.config.collections.directory, dry_run=dry_run)
+        link_config(self.config.collections.directory, dry_run=dry_run, clobber=clobber)
 
 
 class ListCommand(Command):
@@ -616,6 +728,11 @@ def main() -> int:
         action="store_true",
         help="Show what would be done without making changes",
     )
+    sync_parser.add_argument(
+        "--clobber",
+        action="store_true",
+        help="Overwrite existing regular files at link sites (directories are still preserved)",
+    )
     sync_parser.set_defaults(cmd_cls=SyncCommand)
 
     link_parser = subparsers.add_parser("link", help="Link collections only (no fetch)")
@@ -623,6 +740,11 @@ def main() -> int:
         "--dry-run",
         action="store_true",
         help="Show what would be done without making changes",
+    )
+    link_parser.add_argument(
+        "--clobber",
+        action="store_true",
+        help="Overwrite existing regular files at link sites (directories are still preserved)",
     )
     link_parser.set_defaults(cmd_cls=LinkCommand)
 
