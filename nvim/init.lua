@@ -1,4 +1,4 @@
--- ~/.config/nvim/init.lua: Nvim initializaiton script
+-- ~/.config/nvim/init.lua: Nvim initialization script
 
 -- Disable Neovim's built-in ftplugin maps so they don't conflict with
 -- nvim-treesitter-textobjects keymaps. Set early, before any ftplugin
