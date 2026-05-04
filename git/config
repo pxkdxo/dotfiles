@@ -6,7 +6,6 @@
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
 	ignorecase = false
-	compression = 0
 
 [init]
 	defaultBranch = main
@@ -24,9 +23,6 @@
 
 [pull]
 	rebase = false
-
-[advice]
-	pushUpdateRejected
 
 [color]
 	ui = auto
@@ -81,7 +77,7 @@
 	# List of contributors with commit totals
 	contrib = shortlog -sn
 
-	# Ammend last commit with its original message
+	# Amend last commit with its original message
 	amend = "!__git_amend() { git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend; }; __git_amend"
 
 	# Initialize, add all files and commit

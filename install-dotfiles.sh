@@ -9,8 +9,8 @@
 set -o errexit
 
 argzero_name="${0##*/}"
-argzero_dirname="${0%"${__name}"}"
-argzero_dirname="${__dirname:-.}"
+argzero_dirname="${0%"${argzero_name}"}"
+argzero_dirname="${argzero_dirname:-.}"
 
 usage="${argzero_name} [-n|-i|-f] [--] [TARGET_DIRECTORY]"
 

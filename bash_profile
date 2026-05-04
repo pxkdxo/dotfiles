@@ -23,3 +23,7 @@ if [[ -z ${DISPLAY-} ]] && ((XDG_VTNR == 1)); then
 fi
 
 # vi:ft=sh
+
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"
+fi

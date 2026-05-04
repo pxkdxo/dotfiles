@@ -1,9 +1,6 @@
 [sources]
 directory = 'sources'
 
-[collections]
-directory = 'collections'
-
 [[sources.spec]]
 name = 'iTerm2-Color-Schemes'
 type = 'git'
@@ -19,6 +16,14 @@ name = 'tokyonight.nvim'
 type = 'git'
 source = { url = "https://github.com/folke/tokyonight.nvim.git", ref = 'main' }
 
+[[sources.spec]]
+name = 'vivid-themes'
+type = 'dir'
+source = { path = '${XDG_CONFIG_HOME}/vivid/themes' }
+
+[collections]
+directory = 'collections'
+
 [[collections.spec]]
 name = 'iTerm2-Color-Schemes'
 source = 'iTerm2-Color-Schemes'
@@ -33,3 +38,7 @@ filter = { paths = ['extras'] }
 name = 'tokyonight.nvim:extras'
 source = 'tokyonight.nvim'
 filter = { paths = ['extras'] }
+
+[[collections.spec]]
+name = "vivid-themes"
+source = "vivid-themes"

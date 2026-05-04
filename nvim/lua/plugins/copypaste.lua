@@ -1,6 +1,7 @@
 return {
   {
     "gbprod/yanky.nvim",
+    cond = vim.g.vscode == nil,
     dependencies = {
       { "kkharji/sqlite.lua" },
       { "folke/snacks.nvim" },
@@ -21,14 +22,7 @@ return {
       },
     },
     keys = {
-      {
-        "<leader>p",
-        function()
-          Snacks.picker.yanky()
-        end,
-        mode = { "n", "x" },
-        desc = "Open Yank History",
-      },
+      { "<leader>p", "<cmd>YankyRingHistory<cr>", mode = { "n", "x" }, desc = "Open Yank History" },
       { "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank text" },
       { "p", "<Plug>(YankyPutAfter)", mode = { "n", "x" }, desc = "Put yanked text after cursor" },
       { "P", "<Plug>(YankyPutBefore)", mode = { "n", "x" }, desc = "Put yanked text before cursor" },
@@ -40,15 +34,7 @@ return {
       { "=P", "<Plug>(YankyPutBeforeFilter)", desc = "Put before applying a filter" },
     },
     config = function (_, opts)
-      local yanky = require("yanky")
-      yanky.setup(opts)
-      vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-      vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-      vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
-      vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
-      vim.keymap.set("n", "<C-p>", "<Plug>(YankyPreviousEntry)")
-      vim.keymap.set("n", "<C-n>", "<Plug>(YankyNextEntry)")
-      return yanky
+      require("yanky").setup(opts)
     end,
   }
 }

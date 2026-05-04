@@ -16,32 +16,27 @@ return {
     name = "github-theme",
   },
   {
-    'kepano/flexoki-neovim',
-    name = 'flexoki',
+    "kepano/flexoki-neovim",
+    name = "flexoki",
   },
   {
     "savq/melange-nvim",
   },
   {
-    'srcery-colors/srcery-vim',
+    "srcery-colors/srcery-vim",
   },
   {
     "folke/tokyonight.nvim",
   },
   {
+    "uhs-robert/oasis.nvim",
+  },
+  {
     "scottmckendry/cyberdream.nvim",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    -- init = function (_, opts)
-    --   -- load the colorscheme here
-    --   require("cyberdream").setup(opts)
-    --   vim.cmd.colorscheme("cyberdream")
-    -- end,
     opts = {
       -- Set light or dark variant
-      variant = (
-        function (t, s, d) return t[s] or d end
-      )({ light = "light", dark = "dark" }, os.getenv("THEME_VARIANT"), "auto"), -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+      variant = "auto", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+      -- variant = "light", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look

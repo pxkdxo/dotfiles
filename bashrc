@@ -242,11 +242,11 @@ __ti_smul="$(tput smul)"
 __ti_rmul="$(tput rmul)"
 __ti_sgr0="$(tput sgr0)"
 __ti_colors="$(tput colors)"
-declare -a fg=()
-declare -a bg=()
-while ((${#fg[@]} < ${__ti_colors:-8})); do
-  fg[${#fg[@]}]="$(tput setaf "${#fg[@]}")"
-  bg[${#bg[@]}]="$(tput setab "${#bg[@]}")"
+declare -a __ti_fg=()
+declare -a __ti_bg=()
+while ((${#__ti_fg[@]} < ${__ti_colors:-8})); do
+  __ti_fg[${#__ti_fg[@]}]="$(tput setaf "${#__ti_fg[@]}")"
+  __ti_bg[${#__ti_bg[@]}]="$(tput setab "${#__ti_bg[@]}")"
 done
 
 # Limit depth of paths produced by '\w' upon prompt expansion
@@ -260,55 +260,50 @@ ps0_update() {
 }
 
 # Set the primary prompt
-ps1_update() {
-  PS1="\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\\u\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]\
-@\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\\h\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]\
-:\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\\w\
-\\[${__ti_sgr0:=$(tput sgr0)}\\]\
-\\n\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-\$>\
+ps1_update()
+{
+PS1="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\\u\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]@\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\\h\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}${1:+${__ti_fg[$(($1)) % 8]}}\\]:\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\\w\
+\\[${__ti_sgr0:=$(tput sgr0)}\\]\\n\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\$\
 \\[${__ti_sgr0:=$(tput sgr0)}\\] "
 }
 
+if [[ -n ${BASH_VERSINFO-} ]] && [[ ${BASH_VERSINFO[0]:-0} -ge 4 ]]
+then
 # Set the secondary prompt
-if [[ ${BASH_VERSINFO[0]:-0} -ge 4 ]]; then
-  ps2_update() {
-    PS2="\
+ps2_update()
+{
+PS2="\
 \\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-$(((LINENO - $((BASH_LINENO[-1]))) / 10))\
-$(((LINENO - $((BASH_LINENO[-1]))) % 10))\
-\\[${__ti_sgr0:=$(tput sgr0)}\] "
-  }
-
+$(( (LINENO - (BASH_LINENO[-1])) / 10 ))$(( (LINENO - (BASH_LINENO[-1])) % 10 ))\
+\\[${__ti_sgr0:="$(tput sgr0)"}\\] "
+}
 else
-  ps2_update() {
-    PS2="\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-.>\
+ps2_update()
+{
+PS2="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]...\
 \\[${__ti_sgr0:=$(tput sgr0)}\] "
-  }
+}
 fi
 
 # Set the select prompt
-ps3_update() {
-  PS3="\
-\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]\
-*>\
+ps3_update()
+{
+PS3="\
+\\[${__ti_sgr0:=$(tput sgr0)}${__ti_bold:=$(tput bold)}\\]*>\
 \\[${__ti_sgr0:=$(tput sgr0)}\\] "
 }
 
 # Set the execution-trace prompt
-ps4_update() {
-  PS4='+> '
+ps4_update()
+{
+PS4='+> '
 }
 
 # Update the prompt strings
@@ -329,7 +324,7 @@ add_precmd_functions ps_update
 if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]; then
   __window_title_precmd() {
     TTY="$(tty)"
-    WINDOW_TITLE="${TTY##/dev/}) \\u@\\h (\${0##*/})"
+    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
   }
   __window_title_preexec() {
     TTY="$(tty)"
@@ -343,7 +338,7 @@ elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   # shellcheck disable=SC1003
   __window_title_precmd() {
     TTY="$(tty)"
-    WINDOW_TITLE="${TTY##/dev/}) \\u@\\h (\${0##*/})"
+    WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
   # shellcheck disable=SC1003
@@ -426,3 +421,7 @@ if [[ -d ~/.bashrc.d ]]; then
 fi
 
 . "$HOME/.local/share/../bin/env"
+
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"
+fi

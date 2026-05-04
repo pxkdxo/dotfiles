@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.patrickdeyoreo.mcphub</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/patrick.deyoreo/.local/bin/mcphub-launch.sh</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!--
+        KeepAlive=true (unconditional) rather than the SuccessfulExit/Crashed
+        dict. mcp-hub can shut itself down cleanly when an upstream MCP server
+        misbehaves (e.g. "Maximum call stack size exceeded" while closing a
+        cursor-vscode session triggered a graceful shutdown 2026-05-02), and
+        with a conditional KeepAlive launchd treats that clean exit as
+        intentional and never relaunches. ThrottleInterval below still caps
+        the relaunch rate so a hard-failing config can't crash-loop the box.
+    -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/patrick.deyoreo/Library/Logs/mcphub.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/patrick.deyoreo/Library/Logs/mcphub.err.log</string>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/patrick.deyoreo</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/patrick.deyoreo/.local/share/homebrew/bin:/Users/patrick.deyoreo/.local/share/homebrew/sbin:/Users/patrick.deyoreo/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+
+    <!--
+        Memory caps deliberately omitted on macOS: launchd SoftResourceLimits
+        ResidentSetSize maps to setrlimit(RLIMIT_RSS), which the XNU kernel
+        does not enforce. The Linux systemd unit uses cgroup MemoryHigh/Max,
+        which are real. If a runaway hub becomes a recurring problem on macOS,
+        the right tool is `taskpolicy` or a sandbox profile, not this plist.
+    -->
+</dict>
+</plist>

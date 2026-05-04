@@ -16,9 +16,9 @@ return {
           enable = true,
           ignore_list = {
             "Man",
-            "NvimTree"
-          }
-        }
+            "NvimTree",
+          },
+        },
       },
       root_dirs = {
         vim.fn.getcwd(),
@@ -40,36 +40,34 @@ return {
           open_win_config = {
             border = "rounded",
             height = "80%",
-            width  = "20%",
+            width = "20%",
           },
+        },
+      },
+      diagnostics = {
+        enable = true,
+        show_on_dirs = true,
+        icons = {
+          error = " ",
+          warning = " ",
+          info = " ",
+          hint = "󱐌 ",
         },
       },
       renderer = {
         add_trailing = true,
         group_empty = true,
         indent_markers = { enable = true },
+        highlight_modified = "all",
         icons = {
           bookmarks_placement = "right_align",
           diagnostics_placement = "right_align",
-          -- show = true,
+          symlink_arrow = "🠚 ",
           web_devicons = {
             folder = {
-              enable = true
-            }
-          }
-        },
-        -- hidden_display = "all",
-        highlight_modified = {
-          enable = true,
-        }
-      },
-      diagnostics = {
-        enable = true,
-        icons = {
-          hint = "󱐌",
-          info = "",
-          warning = "󱇏",
-          error = "",
+              enable = true,
+            },
+          },
         },
       },
       modified = {
@@ -81,23 +79,22 @@ return {
         git_ignored = false,
       },
     },
-    init = function ()
+    init = function()
       -- Disable netrw
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
-
     end,
     config = function(_, opts)
       -- Setup nvim-tre
       require("nvim-tree").setup(opts)
 
       -- Set key mappings to open/close/locate etc.
-      vim.keymap.set('n', '<leader>mm', function ()
-        require('nvim-tree.api').tree.toggle({ focus = false })
-      end, { desc = "Toggle File Explorer", })
+      vim.keymap.set("n", "<leader>mm", function()
+        require("nvim-tree.api").tree.toggle({ focus = false })
+      end, { desc = "Toggle File Explorer" })
 
-      vim.keymap.set('n', '<leader>ml', function ()
-        require('nvim-tree.api').tree.open({ focus = true, find_file = true, update_root = true })
+      vim.keymap.set("n", "<leader>ml", function()
+        require("nvim-tree.api").tree.open({ focus = true, find_file = true, update_root = true })
       end, { desc = "Show Current File in File Explorer" })
     end,
   },

@@ -1,0 +1,1 @@
+../../../share/colorschemes/sources/cyberdream.nvim/extras/vivid/README.md

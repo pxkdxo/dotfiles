@@ -18,7 +18,7 @@ return {
       'nvim-treesitter/nvim-treesitter',
     },
     opts = {
-      vuse_default_keymaps = false,
+      use_default_keymaps = false,
     },
     config = function (_, opts)
       local treesj = require('treesj')
@@ -96,10 +96,5 @@ return {
         highlight_grey='Comment',
       },
     },
-  },
-  {
-    'stevearc/conform.nvim',
-    cond = vim.g.vscode == nil,
-    opts = {},
   },
 }

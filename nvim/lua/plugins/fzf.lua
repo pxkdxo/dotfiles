@@ -31,7 +31,7 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    cmd = "Fzf",
+    cmd = { "FzfLua" },
     config = function (_, opts)
       require("fzf-lua").setup(opts)
       vim.cmd.FzfLua("setup_fzfvim_cmds")

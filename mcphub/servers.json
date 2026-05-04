@@ -1,12 +1,39 @@
 {
   "mcpServers": {
+    "atlassian": {
+      "args": [
+        "mcp-atlassian@0.21.1"
+      ],
+      "command": "uvx",
+      "env": {
+        "JIRA_URL": "${JIRA_URL}",
+        "JIRA_USERNAME": "${JIRA_USERNAME}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      }
+    },
     "AWS Documentation": {
       "args": [
-        "awslabs.aws-documentation-mcp-server@latest"
+        "awslabs.aws-documentation-mcp-server@1.1.21"
       ],
       "command": "uvx",
       "env": {
         "AWS_DOCUMENTATION_PARTITION": "aws",
+        "FASTMCP_LOG_LEVEL": "WARNING"
+      }
+    },
+    "browser_tools": {
+      "args": [
+        "@agentdeskai/browser-tools-mcp@latest"
+      ],
+      "command": "npx"
+    },
+    "cloudwatch": {
+      "args": [
+        "awslabs.cloudwatch-mcp-server@0.0.26"
+      ],
+      "command": "uvx",
+      "env": {
+        "AWS_REGION": "${AWS_REGION}",
         "FASTMCP_LOG_LEVEL": "WARNING"
       }
     },
@@ -19,22 +46,70 @@
       },
       "url": "https://mcp.context7.com/mcp"
     },
-    "browser_tools": {
+    "dynamodb": {
       "args": [
-        "@agentdeskai/browser-tools-mcp@latest"
+        "awslabs.dynamodb-mcp-server@2.1.1"
       ],
-      "command": "npx"
+      "command": "uvx",
+      "env": {
+        "AWS_REGION": "${AWS_REGION}",
+        "FASTMCP_LOG_LEVEL": "WARNING"
+      }
     },
     "fetch": {
       "args": [
-        "mcp-server-fetch"
+        "mcp-server-fetch@2025.4.7"
       ],
       "command": "uvx"
+    },
+    "filesystem": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${HOME}/Documents"
+      ],
+      "command": "npx",
+      "env": {}
+    },
+    "github": {
+      "args": [
+        "stdio",
+        "--toolsets",
+        "default",
+        "--read-only"
+      ],
+      "command": "github-mcp-server",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "Homebrew": {
+      "args": [
+        "mcp-server"
+      ],
+      "command": "brew"
+    },
+    "lambda": {
+      "args": [
+        "awslabs.lambda-tool-mcp-server@2.0.17"
+      ],
+      "command": "uvx",
+      "env": {
+        "AWS_REGION": "${AWS_REGION}",
+        "FASTMCP_LOG_LEVEL": "WARNING"
+      }
     },
     "memory": {
       "args": [
         "-y",
         "@modelcontextprotocol/server-memory"
+      ],
+      "command": "npx"
+    },
+    "puppeteer": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
       ],
       "command": "npx"
     },
@@ -45,9 +120,21 @@
       ],
       "command": "npx"
     },
+    "slack": {
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "command": "npx",
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_CHANNEL_IDS": "${SLACK_CHANNEL_IDS}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      }
+    },
     "time": {
       "args": [
-        "mcp-server-time"
+        "mcp-server-time@2026.1.26"
       ],
       "command": "uvx"
     }

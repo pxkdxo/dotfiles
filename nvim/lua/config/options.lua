@@ -9,7 +9,7 @@ local defaults = {
     autowrite      = true,
     backspace      = "indent,eol,start",
     belloff        = "all",
-    clipboard      = vim.fn.has("nvim-0.10") == 1 and vim.env.SSH_TTY ~= nil and "" or "unnamedplus", -- Copy over SSH or sync with system
+    clipboard      = (vim.env.SSH_TTY == nil or vim.fn.has("nvim-0.10") == 1) and "unnamedplus" or "", -- Use OSC52 over SSH on nvim-0.10+, otherwise system clipboard
     cmdheight      = vim.g.vscode and 2 or 1,
     complete       = ".,w,b,u,t,i",
     completeopt    = "fuzzy,noselect,menuone,popup",
@@ -22,7 +22,7 @@ local defaults = {
     foldlevel      = 99,
     formatoptions  = "jcroqlnt",
     grepformat     = "%f:%l:%c:%m",
-    grepprg        = "rg, --vimgrep",
+    grepprg        = "rg --vimgrep",
     hidden         = true,
     history        = 10000,
     hlsearch       = false, -- Do not highlight search results
@@ -78,7 +78,7 @@ local defaults = {
     wildmenu       = true,
     wildmode       = "longest:noselect,full", -- Command-line completion mode
     winblend       = 15,
-    winborder      = "rounded",
+    winborder      = vim.fn.has("nvim-0.11") == 1 and "rounded" or nil, -- Added in 0.11
     winminwidth    = 10, -- Minimum window width
   },
   hooks = {
@@ -103,12 +103,18 @@ local defaults = {
         vim.opt.undodir:append(string.format("%s/nvim/undo/", vim.fn.stdpath("run")))
       end,
       _undofile = function ()
-        local noundolist = {
+        local ephemeral_patterns = {
           "/run/*", "/var/run/*", string.format("%s/*", vim.fn.stdpath("run") or "/var/run"),
           "/tmp/*", "/var/tmp/*", string.format("%s/*", vim.env.TMPDIR or "/var/tmp"),
         }
-        vim.cmd.autocmd({
-          args = { "BufWritePre", table.concat(noundolist, ","), "setlocal", "noundofile" },
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          group = vim.api.nvim_create_augroup("user_noundofile", { clear = true }),
+          pattern = ephemeral_patterns,
+          -- 'undofile' is local to buffer (see :h 'undofile'), so we use vim.bo
+          -- here (equivalent to :setlocal noundofile). Using vim.o would change
+          -- the global default and leak the override to unrelated future buffers.
+          callback = function() vim.bo.undofile = false end,
+          desc = "Disable persistent undo in ephemeral directories",
         })
         vim.o.undofile = vim.o.swapfile
       end,

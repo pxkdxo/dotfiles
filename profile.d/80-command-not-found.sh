@@ -51,7 +51,7 @@ if test -n "${BASH_VERSION-}${ZSH_VERSION-}"; then
     __command_not_found_configured=1
     __command_not_found_func() {
       /usr/bin/command-not-found "$1"
-      "$?"
+      return "$?"
     }
   elif test -n "${ZSH_VERSION}" && test -f /usr/share/doc/pkgfile/command-not-found.zsh; then
     . "/usr/share/doc/pkgfile/command-not-found.zsh"

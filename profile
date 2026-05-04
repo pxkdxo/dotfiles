@@ -9,7 +9,7 @@ unset TERMCAP
 unset MANPATH
 
 # Initialize tty, and make <C-s>/<C-z> usable by disabling XON/XOFF
-if test -t 1; then
+if test -t 0; then
   stty -ixon -ixoff || true
 fi
 

@@ -54,7 +54,6 @@ return {
       integrations = {
         lspsaga = false,
         lsp = false,
-        blink_cmp = true,
         fzf = {
           shelter = {
             mask_on_copy = false, -- Whether to mask values when copying
@@ -73,7 +72,7 @@ return {
           },
           keys = {
             copy_value = "<C-y>",  -- Copy variable value to clipboard
-            copy_name = "<C-u>",   -- Copy variable name to clipboard
+            copy_name = "<C-S-y>", -- Copy variable name to clipboard (avoid <C-u> which snacks input uses for kill-to-line-start)
             append_value = "<C-a>", -- Append value at cursor position
             append_name = "<CR>",   -- Append name at cursor position
             edit_var = "<C-e>",     -- Edit environment variable
