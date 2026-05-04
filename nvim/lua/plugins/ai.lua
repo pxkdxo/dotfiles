@@ -23,13 +23,13 @@ return {
             make_slash_commands = true, -- make /slash commands from MCP server prompts
             make_tools = true,
             make_vars = true,
-          }
-        }
+          },
+        },
       }
     end,
     config = function(_, opts)
       require("mcphub").setup(opts)
-    end
+    end,
   },
   {
     "yetone/avante.nvim",
@@ -38,33 +38,31 @@ return {
     event = "VeryLazy",
     version = false, -- Never set this value to "*"! Never!
     keys = {
-        {
-            "<leader>a+",
-            function()
-                local tree_ext = require("avante.extensions.nvim_tree")
-                tree_ext.add_file()
-            end,
-            desc = "Select file in NvimTree",
-            ft = "NvimTree",
-        },
-        {
-            "<leader>a-",
-            function()
-                local tree_ext = require("avante.extensions.nvim_tree")
-                tree_ext.remove_file()
-            end,
-            desc = "Deselect file in NvimTree",
-            ft = "NvimTree",
-        },
+      {
+        "<leader>a<Tab>",
+        function()
+          require("avante.extensions.nvim_tree").add_file()
+        end,
+        desc = "Select file in NvimTree",
+        ft = "NvimTree",
+      },
+      {
+        "<leader>a<S-Tab>",
+        function()
+          require("avante.extensions.nvim_tree").remove_file()
+        end,
+        desc = "Deselect file in NvimTree",
+        ft = "NvimTree",
+      },
     },
     opts = {
       -- this file can contain specific instructions for your project
       instructions_file = "avante.md",
-
-      provider = "cursor",
       mode = "agentic",
+      provider = "cursor",
+      auto_suggestions_provider = "claude-code",
       behaviour = {
-        auto_suggestions = false,
+        auto_suggestions = true,
         enable_fastapply = true,
         auto_add_current_file = true,
         auto_approve_tool_permissions = true,
@@ -76,8 +74,14 @@ return {
         ---@type "ours" | "theirs"
         focus_on_apply = "ours", -- which diff to focus after applying
       },
+      providers = {
+        claude = {
+          auth_type = "max",
+          model = "claude-haiku-4.5",
+        },
+      },
       acp_providers = {
-        cursor = {
+        ["cursor"] = {
           command = vim.fn.exepath("cursor-agent"),
           args = { "acp" },
           auth_method = "cursor_login",
@@ -85,6 +89,23 @@ return {
             HOME = os.getenv("HOME"),
             PATH = os.getenv("PATH"),
           },
+        },
+        ["claude-code"] = {
+          auth_type = "max",
+          command = "npx",
+          args = { "@zed-industries/claude-code-acp" },
+          env = {
+            NODE_NO_WARNINGS = "1",
+            CLAUDE_CODE_OAUTH_TOKEN = os.getenv("CLAUDE_CODE_OAUTH_TOKEN"),
+            ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY"),
+          },
+        },
+      },
+      shortcuts = {
+        {
+          name = "refactor",
+          description = "Refactor code with best practices",
+          prompt = "Please refactor this code following best practices.",
         },
       },
       system_prompt = function()
@@ -138,11 +159,13 @@ return {
         provider = "snacks",
         enabled = true,
         provider_opts = {
-          title = "*avante input*",
+          title = "<avante input>",
         },
       },
       selector = {
-          exclude_auto_select = { "NvimTree" },
+        provider = "fzf_lua",
+        provider_opts = {},
+        exclude_auto_select = { "NvimTree" },
       },
     },
     dependencies = {
@@ -156,11 +179,11 @@ return {
       "stevearc/dressing.nvim", -- for input provider dressing
       "folke/snacks.nvim", -- for input provider snacks
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
-      {"HakonHarnes/img-clip.nvim"},
+      -- "zbirenbaum/copilot.lua", -- for providers='copilot'
+      { "HakonHarnes/img-clip.nvim" },
       {
         -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
+        "MeanderingProgrammer/render-markdown.nvim",
         opts = {
           file_types = { "markdown", "Avante" },
         },
@@ -170,8 +193,8 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    cond = vim.g.vscode == nil,
-    -- cond = false,
+    -- cond = vim.g.vscode == nil,
+    cond = false,
     event = "InsertEnter",
     cmd = "Copilot",
     opts = {
@@ -191,20 +214,19 @@ return {
           dismiss = "<M-BS>",
         },
       },
-      copilot_node_command = 'node',
+      copilot_node_command = "node",
       workspace_folders = {},
     },
   },
   {
-    'Exafunction/windsurf.vim',
+    "Exafunction/windsurf.vim",
     cond = false,
     -- cond = vim.g.vscode == nil,
-    event = 'BufEnter'
+    event = "BufEnter",
   },
   {
     "olimorris/codecompanion.nvim",
-    -- cond = vim.g.vscode == nil,
-    cond = false,
+    cond = vim.g.vscode == nil,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
@@ -215,12 +237,12 @@ return {
       interactions = {
         --NOTE: Change the adapter as required
         chat = {
-          adapter = "copilot",
-          model   = "gpt-5.3-codex",
+          adapter = "claude",
+          model = "claude-sonnet-4.6",
         },
         inline = {
-          adapter = "copilot",
-          model   = "gpt-5.3-codex",
+          adapter = "claude",
+          model = "claude-haiku-4.5",
         },
       },
       extensions = {
@@ -238,13 +260,13 @@ return {
             show_server_tools_in_chat = true,
             add_mcp_prefix_to_tool_names = false,
             show_result_in_chat = true,
-            -- MCP Prompts
-            make_slash_commands = true,
             -- MCP Resources
             make_vars = false, -- Broken, tries to access 'variables'
-           },
+            -- MCP Prompts
+            make_slash_commands = true,
+          },
         },
-      }
+      },
     },
   },
 }

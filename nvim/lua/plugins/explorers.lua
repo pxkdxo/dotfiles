@@ -89,11 +89,11 @@ return {
       require("nvim-tree").setup(opts)
 
       -- Set key mappings to open/close/locate etc.
-      vim.keymap.set("n", "<leader>mm", function()
+      vim.keymap.set("n", "<leader>M", function()
         require("nvim-tree.api").tree.toggle({ focus = false })
       end, { desc = "Toggle File Explorer" })
 
-      vim.keymap.set("n", "<leader>ml", function()
+      vim.keymap.set("n", "<leader>mm", function()
         require("nvim-tree.api").tree.open({ focus = true, find_file = true, update_root = true })
       end, { desc = "Show Current File in File Explorer" })
     end,
