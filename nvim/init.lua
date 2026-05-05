@@ -18,12 +18,28 @@ vim.g.maplocalleader = ";"
 -- <Esc> to return to normal mode (even from a terminal)
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true })
 
--- Set builtin fallback colorschemes
+-- Preferred colorschemes, with builtin fallbacks at the tail
 vim.g.colorschemes = {
-  "shine",
-  "wildcharm",
+  "dawnfox",
+  "xcodedarkhc",
+  "github_light",
+  "carbonfox",
+  "flexoki",
+  "cyberdream",
+  "dayfox",
+  "github_dark_dimmed",
+  "oasis-dune",
+  "oasis-desert",
+  "flexoki-light",
+  "oxocarbon",
+  "xcodelight",
+  "rose-pine",
+  "rose-pine-dawn",
+  "melange",
   "blue",
   "lunaperche",
+  "shine",
+  "wildcharm",
   "habamax",
 }
 
@@ -37,32 +53,8 @@ config.lazy.setup({
 
 -- If not running in VSCode...
 if not vim.g.vscode then
-  vim.g.colorschemes = {
-    "xcodedarkhc",
-    "github_light",
-    "carbonfox",
-    "flexoki",
-    "cyberdream",
-    "dayfox",
-    "dawnfox",
-    "github_dark_dimmed",
-    "blue",
-    "oasis-dune",
-    "oasis-desert",
-    "flexoki-light",
-    "oxocarbon",
-    "xcodelight",
-    "rose-pine",
-    "rose-pine-dawn",
-    "melange",
-    "wildcharm",
-    "shine",
-    "lunaperche",
-    "habamax",
-  }
   local colors = require("utils.colors")
-  colors.setup({ colorschemes = vim.g.colorschemes })
-  colors.next()
+  colors.setup({ colorschemes = vim.g.colorschemes }).shuffle()
 
   -- Function keys
   vim.keymap.set("n", "<F1>", function()

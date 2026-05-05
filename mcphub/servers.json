@@ -1,16 +1,5 @@
 {
   "mcpServers": {
-    "atlassian": {
-      "args": [
-        "mcp-atlassian@0.21.1"
-      ],
-      "command": "uvx",
-      "env": {
-        "JIRA_URL": "${JIRA_URL}",
-        "JIRA_USERNAME": "${JIRA_USERNAME}",
-        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
-      }
-    },
     "AWS Documentation": {
       "args": [
         "awslabs.aws-documentation-mcp-server@1.1.21"
@@ -19,6 +8,32 @@
       "env": {
         "AWS_DOCUMENTATION_PARTITION": "aws",
         "FASTMCP_LOG_LEVEL": "WARNING"
+      }
+    },
+    "Context7": {
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "Homebrew": {
+      "args": [
+        "mcp-server"
+      ],
+      "command": "brew"
+    },
+    "atlassian": {
+      "args": [
+        "mcp-atlassian@0.21.1"
+      ],
+      "command": "uvx",
+      "env": {
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+        "JIRA_URL": "${JIRA_URL}",
+        "JIRA_USERNAME": "${JIRA_USERNAME}"
       }
     },
     "browser_tools": {
@@ -36,15 +51,6 @@
         "AWS_REGION": "${AWS_REGION}",
         "FASTMCP_LOG_LEVEL": "WARNING"
       }
-    },
-    "Context7": {
-      "env": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      },
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      },
-      "url": "https://mcp.context7.com/mcp"
     },
     "dynamodb": {
       "args": [
@@ -82,12 +88,6 @@
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
-    },
-    "Homebrew": {
-      "args": [
-        "mcp-server"
-      ],
-      "command": "brew"
     },
     "lambda": {
       "args": [
@@ -130,6 +130,26 @@
         "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
         "SLACK_CHANNEL_IDS": "${SLACK_CHANNEL_IDS}",
         "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      }
+    },
+    "task_master": {
+      "args": [
+        "-y",
+        "--package=task-master-ai",
+        "task-master-ai"
+      ],
+      "command": "npx",
+      "env": {
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
+        "AZURE_OPENAI_API_KEY": "${AZURE_OPENAI_API_KEY}",
+        "CLAUDE_CODE_OAUTH_TOKEN": "${CLAUDE_CODE_OAUTH_TOKEN}",
+        "GOOGLE_API_KEY": "${GOOGLE_API_KEY}",
+        "MISTRAL_API_KEY": "${MISTRAL_API_KEY}",
+        "OLLAMA_API_KEY": "${OLLAMA_API_KEY}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}",
+        "XAI_API_KEY": "${XAI_API_KEY}"
       }
     },
     "time": {

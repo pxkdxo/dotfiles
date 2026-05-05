@@ -49,7 +49,7 @@ return {
               cond = function()
                 return vim.fn.reg_recording() ~= ""
               end,
-              color = { fg = "#ff6666" },
+              color = { fg = "#f24bb0" },
             },
           },
           lualine_c = {
@@ -69,9 +69,7 @@ return {
                   return " " .. filetype_map[ft].icon
                 end
                 local devicons = require("nvim-web-devicons")
-                local icon = devicons.get_icon(vim.fn.expand("%:t"))
-                  or devicons.get_icon_by_filetype(ft)
-                  or " 󰈤"
+                local icon = devicons.get_icon(vim.fn.expand("%:t")) or devicons.get_icon_by_filetype(ft) or " 󰈤"
                 return icon .. " "
               end,
               color = function()
@@ -136,8 +134,17 @@ return {
               -- Component class table; pass it through directly. The pcall
               -- + class form keeps lualine happy if ecolog isn't installed.
               local ok, mod = pcall(require, "ecolog.integrations.statusline")
-              if ok then return mod.lualine() end
-              return { function() return "" end, cond = function() return false end }
+              if ok then
+                return mod.lualine()
+              end
+              return {
+                function()
+                  return ""
+                end,
+                cond = function()
+                  return false
+                end,
+              }
             end)(),
             {
               require("lazy.status").updates,
@@ -266,7 +273,6 @@ return {
         },
       },
       whitespace = {
-        highlight = { "PmenuSbar", "DiffText" },
         remove_blankline_trail = true,
       },
       exclude = {
@@ -328,12 +334,12 @@ return {
       -- and re-apply on every colorscheme change so rainbow indent guides stay
       -- visible across the F11/F12/F24 rotation.
       local palette = {
-        RainbowDelimiterRed    = "#f38ba8",
+        RainbowDelimiterRed = "#f24bb0",
         RainbowDelimiterOrange = "#fab387",
         RainbowDelimiterYellow = "#f9e2af",
-        RainbowDelimiterGreen  = "#a6e3a1",
-        RainbowDelimiterCyan   = "#94e2d5",
-        RainbowDelimiterBlue   = "#89b4fa",
+        RainbowDelimiterGreen = "#a6e3a1",
+        RainbowDelimiterCyan = "#94e2d5",
+        RainbowDelimiterBlue = "#89b4fa",
         RainbowDelimiterViolet = "#cba6f7",
       }
       local apply = function()
@@ -456,9 +462,15 @@ return {
           local stats = require("lazy").stats()
           local cs = vim.g.colors_name or "default"
           dashboard.section.footer.val = "✧ "
-            .. stats.loaded .. "/" .. stats.count .. " plugins"
-            .. " · " .. string.format("%.0f", stats.startuptime) .. "ms"
-            .. " · " .. cs
+            .. stats.loaded
+            .. "/"
+            .. stats.count
+            .. " plugins"
+            .. " · "
+            .. string.format("%.0f", stats.startuptime)
+            .. "ms"
+            .. " · "
+            .. cs
           pcall(vim.cmd.AlphaRedraw)
         end,
       })

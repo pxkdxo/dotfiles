@@ -14,7 +14,8 @@ argzero_dirname="${argzero_dirname:-.}"
 
 usage="${argzero_name} [-n|-i|-f] [--] [TARGET_DIRECTORY]"
 
-print_help() {
+print_help()
+             {
   cat << EOF
 usage: ${usage}
 
@@ -76,15 +77,15 @@ if test "$#" -gt 1; then
 fi
 
 if test "$#" -eq 0; then
-  home_path="$(> /dev/null cd && pwd -P && echo '@')"
+  home_path="$(            > /dev/null cd && pwd -P && echo '@')"
   home_path="${home_path%?@}"
 else
-  home_path="$(> /dev/null cd -- "$1" && pwd -P && echo '@')"
+  home_path="$(            > /dev/null cd -- "$1" && pwd -P && echo '@')"
   home_path="${home_path%?@}"
   shift
 fi
 
-tree_path="$(> /dev/null cd -- "${argzero_dirname}" && pwd -P && echo '@')"
+tree_path="$(            > /dev/null cd -- "${argzero_dirname}" && pwd -P && echo '@')"
 tree_path="${tree_path%?@}"
 
 rel_to_ancestor="./"
@@ -125,5 +126,22 @@ case "${filename}" in "${caller}"|.*|*.md) exit 0 ;; esac
 set -x
 ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
 ' -- "${argzero_name}" "${ln_opts}" "${tree_path}" "${home_path}" || :
+
+# On macOS, link launchd agent plists into ~/Library/LaunchAgents
+case "$(uname -s)" in Darwin)
+  launch_agents="${home_path}/Library/LaunchAgents"
+  mkdir -p -- "${launch_agents}"
+  # shellcheck disable=SC2016
+  git -C "${home_path}/${tree_path}" ls-tree --name-only -z HEAD:launchd/agents \
+    | xargs -0 -n 1 -o -- sh -c '
+optchars=$1
+src_dir=$2
+dst_dir=$3
+filename=$4
+set -x
+ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}"
+' -- "${ln_opts}" "${home_path}/${tree_path}/launchd/agents" "${launch_agents}" || :
+  ;;
+esac
 
 exit

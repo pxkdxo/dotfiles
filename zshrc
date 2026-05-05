@@ -205,7 +205,6 @@ plugins=(
   gpg-agent
   zsh-history-substring-search
   iterm2
-  kubernetes
   mkcd
   nmap
   npm

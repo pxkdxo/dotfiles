@@ -199,3 +199,5 @@ flycheck_*.el
 .ionide
 
 # vi:et:ft=gitignore:sts=2:sw=2:ts=8:tw=0
+
+**/.claude/settings.local.json

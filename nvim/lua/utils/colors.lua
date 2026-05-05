@@ -1,32 +1,52 @@
 -- colors.lua: return an interface to cycle through vim.g.colorschemes
 local M = {}
 
-local Playlist = {
-  ring = nil,
-  cursor = nil,
-  play = function (_) return true end,
+---@class DoubleNode
+---@field data any
+---@field prev DoubleNode?
+---@field next DoubleNode?
+local DoubleNode = {
+  data = nil,
+  prev = nil,
+  next = nil,
 }
+DoubleNode.__index = DoubleNode
 
+---@class Deque
+---@field head DoubleNode?
+---@field rear DoubleNode?
+---@field length integer
 local Deque = {
   head = nil,
   rear = nil,
   length = 0,
 }
+Deque.__index = Deque
 
-local DoubleListNode = {
-  data = nil,
-  prev = nil,
-  next = nil,
+---@class Playlist
+---@field ring Deque?
+---@field cursor DoubleNode?
+---@field play fun(element: any): boolean
+local Playlist = {
+  ring = nil,
+  cursor = nil,
+  play = function(_)
+    return true
+  end,
 }
+Playlist.__index = Playlist
 
-function DoubleListNode:new(data)
-  local new = { data = data }
-  setmetatable(new, self)
-  self.__index = self
+---@param data any
+---@return DoubleNode
+function DoubleNode:new(data)
+  local new = setmetatable({}, self)
+  new.data = data
   return new
 end
 
-function DoubleListNode:insert_next(node)
+---@param node DoubleNode?
+---@return DoubleNode
+function DoubleNode:insert_next(node)
   if node ~= nil then
     node.prev = self
     if self.next ~= nil then
@@ -40,7 +60,9 @@ function DoubleListNode:insert_next(node)
   return self
 end
 
-function DoubleListNode:insert_prev(node)
+---@param node DoubleNode?
+---@return DoubleNode
+function DoubleNode:insert_prev(node)
   if node ~= nil then
     node.next = self
     if self.prev ~= nil then
@@ -54,7 +76,8 @@ function DoubleListNode:insert_prev(node)
   return self
 end
 
-function DoubleListNode:remove()
+---@return DoubleNode?, DoubleNode?
+function DoubleNode:remove()
   local next = nil
   local prev = nil
   if self.next ~= self then
@@ -74,20 +97,18 @@ function DoubleListNode:remove()
   return next, prev
 end
 
+---@param values any[]?
+---@return Deque
 function Deque:new(values)
-  local new = {
-    head = nil,
-    rear = nil,
-    length = 0,
-  }
-  setmetatable(new, self)
-  self.__index = self
+  local new = setmetatable({}, self)
   if values ~= nil then
     new = new:init(values)
   end
   return new
 end
 
+---@param values any[]
+---@return Deque
 function Deque:init(values)
   self:clear()
   for _, element in ipairs(values) do
@@ -96,6 +117,7 @@ function Deque:init(values)
   return self
 end
 
+---@return Deque
 function Deque:clear()
   self.head = nil
   self.rear = nil
@@ -103,8 +125,10 @@ function Deque:clear()
   return self
 end
 
+---@param value any
+---@return Deque
 function Deque:push_front(value)
-  local node = DoubleListNode:new(value)
+  local node = DoubleNode:new(value)
   if self.head == nil then
     self.head = node:insert_next(node)
     self.rear = self.head
@@ -115,8 +139,10 @@ function Deque:push_front(value)
   return self
 end
 
+---@param value any
+---@return Deque
 function Deque:push_rear(value)
-  local node = DoubleListNode:new(value)
+  local node = DoubleNode:new(value)
   if self.rear == nil then
     self.rear = node:insert_prev(node)
     self.head = self.rear
@@ -127,6 +153,7 @@ function Deque:push_rear(value)
   return self
 end
 
+---@return any?
 function Deque:peek_front()
   local data = nil
   if self.head ~= nil then
@@ -135,6 +162,7 @@ function Deque:peek_front()
   return data
 end
 
+---@return any?
 function Deque:peek_rear()
   local data = nil
   if self.rear ~= nil then
@@ -143,6 +171,7 @@ function Deque:peek_rear()
   return data
 end
 
+---@return any?
 function Deque:pop_front()
   local data = nil
   if self.head ~= nil then
@@ -153,6 +182,7 @@ function Deque:pop_front()
   return data
 end
 
+---@return any?
 function Deque:pop_rear()
   local data = nil
   if self.rear ~= nil then
@@ -163,13 +193,22 @@ function Deque:pop_rear()
   return data
 end
 
+---@param n integer
+---@return Deque
 function Deque:shift(n)
+  if self:is_empty() then
+    return self
+  end
   local traverse
   if n > 0 then
-    traverse = function (node) return node.next end
+    traverse = function(node)
+      return node.next
+    end
   else
     n = n * -1
-    traverse = function (node) return node.prev end
+    traverse = function(node)
+      return node.prev
+    end
   end
   n = n % self.length
   while n > 0 do
@@ -179,31 +218,38 @@ function Deque:shift(n)
   return self
 end
 
+---@return boolean
 function Deque:is_empty()
   return self.head == nil
 end
 
+---@param list any[]?
+---@param play (fun(element: any): boolean)?
+---@return Playlist
 function Playlist:new(list, play)
-  local new = {
-    ring = Deque:new(list),
-    cursor = nil,
-    play = play or function(element)
-      print(element)
-      return true
-    end,
-  }
-  setmetatable(new, self)
-  self.__index = self
+  local new = setmetatable({}, self)
+  new.ring = Deque:new(list)
+  new.cursor = nil
+  new.play = play or function(element)
+    print(element)
+    return true
+  end
   return new
 end
 
+---@param element any
+---@return Playlist
 function Playlist:add(element)
   self.ring:push_rear(element)
   return self
 end
 
+---@param n integer?
+---@return any?
 function Playlist:skip(n)
-  if self.ring:is_empty() then return nil end
+  if self.ring:is_empty() then
+    return nil
+  end
   n = n or 1
   if self.cursor == nil then
     self.cursor = self.ring.head
@@ -215,8 +261,12 @@ function Playlist:skip(n)
   return self.cursor.data
 end
 
+---@param shuffle boolean?
+---@return any?
 function Playlist:next(shuffle)
-  if self.ring:is_empty() then return nil end
+  if self.ring:is_empty() then
+    return nil
+  end
   if self.cursor == nil then
     self.cursor = self.ring.head
   else
@@ -238,8 +288,11 @@ function Playlist:next(shuffle)
   return nil
 end
 
+---@return any?
 function Playlist:prev()
-  if self.ring:is_empty() then return nil end
+  if self.ring:is_empty() then
+    return nil
+  end
   if self.cursor == nil then
     self.cursor = self.ring.rear
   else
@@ -255,16 +308,13 @@ function Playlist:prev()
   return nil
 end
 
-M.setup = function (opts)
+function M.setup(opts)
   opts = opts or {}
-  vim.g.colorschemes = opts.colorschemes or vim.g.colorschemes or {}
+  local colorschemes = opts.colorschemes or vim.g.colorschemes or {}
 
-  M.playlist = Playlist:new(
-    vim.g.colorschemes,
-    function (name)
-      return pcall(vim.cmd.colorscheme, name)
-    end
-  )
+  M.playlist = Playlist:new(colorschemes, function(x)
+    return pcall(vim.cmd.colorscheme, x)
+  end)
 
   function M.add(name)
     M.playlist:add(name)
@@ -273,40 +323,40 @@ M.setup = function (opts)
 
   function M.skip()
     if M.playlist.ring:is_empty() then
-      print("Add colorschemes to vim.g.colorschemes")
+      print("Add colorscheme names to `vim.g.colorschemes`")
     else
       M.playlist:skip()
-      print(M.playlist.cursor.data)
+      print("Skipped colorscheme: " .. M.playlist.cursor.data)
     end
   end
 
   function M.next()
     if M.playlist.ring:is_empty() then
-      print("Add colorschemes to vim.g.colorschemes")
+      print("Add colorscheme names to  `vim.g.colorschemes`")
     elseif M.playlist:next() then
-      print(vim.g.colors_name)
+      print("Set colorscheme: " .. vim.g.colors_name)
     else
-      print("None of vim.g.colorschemes found on the system")
+      print("None of the colorschemes in `vim.g.colorschemes` were found on the system")
     end
   end
 
   function M.prev()
     if M.playlist.ring:is_empty() then
-      print("Add colorschemes to vim.g.colorschemes")
+      print("Add colorscheme names to `vim.g.colorschemes`")
     elseif M.playlist:prev() then
       print(vim.g.colors_name)
     else
-      print("None of vim.g.colorschemes found on the system")
+      print("None of the colorschemes in `vim.g.colorschemes` were found on the system")
     end
   end
 
   function M.shuffle()
     if M.playlist.ring:is_empty() then
-      print("Add colorschemes to vim.g.colorschemes")
+      print("Add colorscheme names to `vim.g.colorschemes`")
     elseif M.playlist:next(true) then
       print(vim.g.colors_name)
     else
-      print("None of vim.g.colorschemes found on the system")
+      print("None of the colorschemes in `vim.g.colorschemes` were found on the system")
     end
   end
 

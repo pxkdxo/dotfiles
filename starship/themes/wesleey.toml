@@ -167,7 +167,7 @@ style = 'bold fg:foreground'
 [git_branch]
 format = '[$symbol](bold fg:foreground)[$branch]($style)'
 style = 'italic fg:green'
-truncation_length = 32
+truncation_length = 40
 truncation_symbol = '/'
 symbol = '󰘬 '
 
