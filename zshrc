@@ -16,7 +16,7 @@ else
   ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
 fi
 
-# Try to capture current theme details  
+# Try to capture current theme details
 case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
   :plasma:*:|:*:KDE:)
     case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
@@ -186,6 +186,7 @@ fi
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  archlinux
   aws
   brew
   codex

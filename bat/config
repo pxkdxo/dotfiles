@@ -2,10 +2,16 @@
 # a command-line option that you want to pass to `bat` by default. You can
 # run `bat --help` to get a list of all possible configuration options.
 
+# Clear style prefs
+--plain
+
+# Set default output style
+--style=changes,grid,snip
+
 # Specify desired highlighting theme (e.g. "TwoDark"). Run `bat --list-themes`
 # for a list of all available themes
 --theme="auto"
---theme-dark="Coldark-Dark"
+--theme-dark="Catppuccin Frappe"
 --theme-light="Catppuccin Latte"
 
 # Enable this to use italic text on the terminal. This is not supported on all
@@ -18,7 +24,10 @@
 # Uncomment the following line if you are using less version >= 551 and want to
 # enable mouse scrolling support in `bat` when running inside tmux. This might
 # disable text selection, unless you press shift.
---pager="less -iQRSX --mouse"
+# --pager="less -iQRSX --mouse"
+# OR
+# Use the builtin pager ``minus``
+--pager="builtin"
 
 # Syntax mappings: map a certain filename pattern to a language.
 #   Example 1: use the C++ syntax for Arduino .ino files
@@ -28,9 +37,6 @@
 
 # Set the terminal title when using a pager
 --set-terminal-title
-
-# Set a default output style.
---style=changes,header,grid,snip
 
 # Add styling unless the output is piped.
 # --decorations=auto
