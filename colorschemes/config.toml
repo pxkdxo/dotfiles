@@ -12,6 +12,11 @@ type = 'git'
 source = { url = 'https://github.com/scottmckendry/cyberdream.nvim.git', ref = 'main' }
 
 [[sources.spec]]
+name = 'squirrelsong'
+type = 'git'
+source = { url = 'https://github.com/sapegin/squirrelsong.git', ref = 'master' }
+
+[[sources.spec]]
 name = 'tokyonight.nvim'
 type = 'git'
 source = { url = "https://github.com/folke/tokyonight.nvim.git", ref = 'main' }
@@ -33,6 +38,11 @@ filter = { exclude = ['backgrounds', 'gh-pages', 'screenshots', 'tools'] }
 name = 'cyberdream.nvim:extras'
 source = 'cyberdream.nvim'
 filter = { paths = ['extras'] }
+
+[[collections.spec]]
+name = 'squirrelsong:themes'
+source = 'squirrelsong'
+filter = { paths = ['themes'] }
 
 [[collections.spec]]
 name = 'tokyonight.nvim:extras'
