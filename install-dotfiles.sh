@@ -6,7 +6,7 @@
 # of the link will match the name of the file it links to, prefixed with
 # a period ('.').
 
-set -o errexit
+set -o errexit -o pipefail
 
 argzero_name="${0##*/}"
 argzero_dirname="${0%"${argzero_name}"}"
@@ -33,7 +33,7 @@ the user is not prompted and files are replaced.
 EOF
 }
 
-ln_opts="snv"
+ln_opts="snv"  # -s symlink, -n no-dereference, -v verbose
 
 if test -t 0; then
   ln_replace='i'
@@ -49,16 +49,16 @@ while getopts "${optstr}" option; do
   case "${option}" in
     'h')
       print_help
-      exit 2
+      exit 0
       ;;
     '?')
       printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
-      printf 'usage: %s' "${usage}" >&2
+      printf 'usage: %s\n' "${usage}" >&2
       exit 2
       ;;
     ':')
       printf '%s: -%c: missing required argument\n' "${argzero_name}" "${OPTARG}" >&2
-      printf 'usage: %s' "${usage}" >&2
+      printf 'usage: %s\n' "${usage}" >&2
       exit 2
       ;;
     'n') ln_replace='' ;;
@@ -72,22 +72,25 @@ ln_opts="${ln_opts}${ln_replace}"
 
 if test "$#" -gt 1; then
   printf '%s: received too many arguments\n' "${argzero_name}" >&2
-  printf 'usage: %s' "${usage}" >&2
+  printf 'usage: %s\n' "${usage}" >&2
   exit 2
 fi
 
 if test "$#" -eq 0; then
-  home_path="$(            > /dev/null cd && pwd -P && echo '@')"
+  home_path="$(cd 2> /dev/null && pwd -P && echo '@')"
   home_path="${home_path%?@}"
 else
-  home_path="$(            > /dev/null cd -- "$1" && pwd -P && echo '@')"
+  home_path="$(cd -- "$1" > /dev/null && pwd -P && echo '@')"  # suppress CDPATH stdout noise
   home_path="${home_path%?@}"
   shift
 fi
 
-tree_path="$(            > /dev/null cd -- "${argzero_dirname}" && pwd -P && echo '@')"
+tree_path="$(cd -- "${argzero_dirname}" > /dev/null && pwd -P && echo '@')"  # suppress CDPATH stdout noise
 tree_path="${tree_path%?@}"
+repo_path="${tree_path}"
 
+# Compute tree_path relative to home_path so symlinks are relative rather
+# than absolute, keeping dotfiles portable across home directory renames.
 rel_to_ancestor="./"
 next_parent_dir="${home_path%/}"
 while test -n "${next_parent_dir}"; do
@@ -116,31 +119,30 @@ if test "${common_ancestor}" != '/'; then
 fi
 
 # shellcheck disable=SC2016
-git -C "${home_path}/${tree_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
+git -C "${repo_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
 caller=$1
 optchars=$2
 treepath=$3
 destpath=$4
 filename=$5
+# skip: this script, dotfiles already prefixed with '.', and markdown files
 case "${filename}" in "${caller}"|.*|*.md) exit 0 ;; esac
-set -x
-ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
-' -- "${argzero_name}" "${ln_opts}" "${tree_path}" "${home_path}" || :
+ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}" || :
+' -- "${argzero_name}" "${ln_opts}" "${tree_path}" "${home_path}"
 
 # On macOS, link launchd agent plists into ~/Library/LaunchAgents
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   mkdir -p -- "${launch_agents}"
   # shellcheck disable=SC2016
-  git -C "${home_path}/${tree_path}" ls-tree --name-only -z HEAD:launchd/agents \
+  git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents \
     | xargs -0 -n 1 -o -- sh -c '
 optchars=$1
 src_dir=$2
 dst_dir=$3
 filename=$4
-set -x
-ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}"
-' -- "${ln_opts}" "${home_path}/${tree_path}/launchd/agents" "${launch_agents}" || :
+ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
+' -- "${ln_opts}" "${repo_path}/launchd/agents" "${launch_agents}" || :
   ;;
 esac
 

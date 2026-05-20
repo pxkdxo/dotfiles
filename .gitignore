@@ -115,7 +115,7 @@
 
 !/user-tmpfiles.d/**
 
-!/vim/autoload/**
+!/vim/autoload/.gitkeep
 !/vim/colorschemes
 !/vim/vimrc
 
