@@ -79,6 +79,8 @@
 
 !/npmrc
 
+!/nvim/AGENTS.md
+!/nvim/README.md
 !/nvim/init.vim
 !/nvim/init.lua
 !/nvim/lua/**

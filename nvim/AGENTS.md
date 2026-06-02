@@ -1,0 +1,220 @@
+# Neovim Configuration — Handover Document
+
+## Overview
+
+This is a personal Neovim configuration located at `~/.local/etc/nvim` (symlinked or set via `$XDG_CONFIG_HOME`). It is part of a larger dotfiles repository rooted at `~/.local/etc`. The config is written entirely in Lua, uses [lazy.nvim](https://github.com/folke/lazy.nvim) as the plugin manager, and is designed to work both as a standalone Neovim instance and inside VSCode (via the vscode-neovim extension).
+
+## Directory Structure
+
+```
+nvim/
+├── init.lua                     # Entry point: options, leader keys, keymaps, plugin bootstrap
+├── lazy-lock.json               # lazy.nvim lockfile (pinned plugin versions)
+├── lua/
+│   ├── config/
+│   │   ├── init.lua             # Config module aggregator (exposes options + lazy)
+│   │   ├── options.lua          # Editor options with default values and hook system
+│   │   └── lazy.lua             # lazy.nvim bootstrap + fold/format integration with native nvim builtins
+│   ├── core/
+│   │   └── utils.lua            # Shared utility helpers (get_hlgroup, get_buffer_count, parse_hex)
+│   ├── utils/
+│   │   ├── init.lua             # Utils module aggregator (exposes colors)
+│   │   └── colors.lua           # Colorscheme rotation engine (Deque + Playlist data structures)
+│   └── plugins/                 # All plugin specs (auto-imported by lazy.nvim)
+│       ├── ai.lua               # AI assistants: Avante, Copilot, MCPHub, CodeCompanion
+│       ├── colorschemes.lua     # Colorscheme plugins (cyberdream, rose-pine, nightfox, etc.)
+│       ├── completion.lua       # nvim-cmp setup with multiple sources and custom mappings
+│       ├── copypaste.lua        # yanky.nvim — persistent yank ring with sqlite storage
+│       ├── dap.lua              # Debug Adapter Protocol: nvim-dap, dap-ui, Go + Python adapters
+│       ├── diagnostics.lua      # tiny-inline-diagnostic, todo-comments, nvim-lint, Trouble
+│       ├── env.lua              # ecolog.nvim — environment variable management and shelter
+│       ├── explorers.lua        # nvim-tree file explorer (right-side panel, netrw disabled)
+│       ├── formatting.lua       # conform.nvim — format-on-save and :FormatToggle
+│       ├── fzf.lua              # fzf-lua — primary fuzzy finder (replaces telescope)
+│       ├── git.lua              # Git: gitsigns, neogit, git-conflict
+│       ├── images.lua           # img-clip.nvim — image paste support
+│       ├── keymaps.lua          # which-key.nvim — keymap discovery with helix preset
+│       ├── lsp.lua              # LSP: nvim-lspconfig, mason, mason-lspconfig, navic, lazydev
+│       ├── markdown.lua         # Markdown preview + render-markdown.nvim
+│       ├── mini.lua             # mini.icons + mini.comment
+│       ├── movement.lua         # Motion/editing: nvim-surround, treesj, flash, autopairs
+│       ├── nvim-treesitter.lua  # Treesitter: parsers, context, textobjects (select/move/swap)
+│       ├── repl.lua             # Conjure REPL integration (disabled by default)
+│       ├── search.lua           # grug-far.nvim — search and replace
+│       ├── sessions.lua         # persistence.nvim sessions + neorg note-taking
+│       ├── snacks.lua           # snacks.nvim — multipurpose utility (picker, scroll, indent, etc.)
+│       ├── snippets.lua         # LuaSnip + friendly-snippets
+│       ├── terminal.lua         # toggleterm.nvim — integrated terminal
+│       └── ui.lua               # UI: lualine, bufferline, indent-blankline, ufo (folding),
+│                                #     noice, alpha (dashboard), bqf, vim-illuminate, nvim-notify
+└── lazy/                        # lazy.nvim cache and state (auto-generated, do not edit)
+```
+
+## Initialization Flow
+
+1. **`init.lua`** loads the `config` and `utils` packages (aggregator modules that expose submodules; they do not provide a `setup()` — submodules are setup directly)
+2. **`config.options.setup()`** applies all editor options (see `lua/config/options.lua`)
+3. Leader keys are set: `mapleader = ","` and `maplocalleader = ";"`
+4. **`config.lazy.setup(...)`** bootstraps lazy.nvim and imports all plugin specs from `lua/plugins/`
+5. If NOT in VSCode (`vim.g.vscode == nil`):
+   - A curated colorscheme list is set on `vim.g.colorschemes`
+   - The colorscheme rotation engine (`utils.colors.setup()`) is initialized and advances to the first scheme via `colors.next()`
+   - Global keymaps are bound (function keys, window/buffer navigation, visual line moves, etc.)
+
+## VSCode Compatibility
+
+Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCode. The lazy.nvim setup also sets `defaults.cond = not vim.g.vscode`. Plugins that work in both contexts (e.g., nvim-surround, flash, treesj, autopairs, treesitter) use `cond = true` to force-enable.
+
+## Leader Key and Keymap Conventions
+
+| Prefix | Group | Examples |
+|---|---|---|
+| `,` | **mapleader** | All `<leader>` mappings |
+| `;` | **maplocalleader** | Filetype-local / Conjure |
+| `<leader>a` | AI | Avante file select (`a+`, `a-`) |
+| `<leader>b` | Buffers | `bd` delete, `bn`/`bp` navigate, `bb` picker |
+| `<leader>c` | Comment | `cc` line, `c` visual toggle (mini.comment) |
+| `<leader>d` | Debug | `db` breakpoint, `dc` continue, `du` UI toggle |
+| `<leader>e` | Env | ecolog peek, copy, toggle |
+| `<leader>g` | Git | gitsigns stage/reset/blame, neogit |
+| `<leader>l` | LSP | `la` code action, `lr` rename, `lf` format |
+| `<leader>m` | Explorer | `mm` toggle nvim-tree, `ml` locate file |
+| `<leader>n` | Notifications | Snacks notification history |
+| `<leader>p` | Yank History | yanky.nvim picker |
+| `<leader>q` | Session | persistence.nvim load/save/select |
+| `<leader>s` | Search | `sr` grug-far search & replace |
+| `<leader>w` | Windows | `wh/j/k/l` navigate, `ws/wv` split, `wq` close |
+| `<leader>x` | Diagnostics | Trouble toggles |
+| `` <leader>` `` | Terminal | toggleterm send lines |
+| `<leader><leader>` | Quick Save | `:w` |
+| `<Space>` | TreeSJ | `t` toggle, `s` split, `j` join |
+| `f` / `F` | Flash | Jump / Remote flash |
+| `t` / `T` | Flash Treesitter | Treesitter select / search |
+| `af`/`if` `ac`/`ic` `aa`/`ia` `al`/`il` `ao`/`io` | Textobjects (select) | around / inside function, class, argument, loop, conditional |
+| `]f`/`[f` `]c`/`[c` (and `]F`/`[F`, `]C`/`[C` for ends) | Textobjects (move) | Next / prev function or class |
+| `<M-j>` / `<M-k>` | Textobjects (swap) | Swap parameter with next / previous |
+| `;` / `,` | Textobjects (repeat) | Repeat last treesitter move forward / backward |
+| `v_an` / `v_in` / `v_]n` / `v_[n` | Incremental selection | Neovim 0.12 core treesitter defaults (init/grow-outer/next-sibling/prev-sibling) |
+| `F1`–`F6` | Quick Access | Tree, helptags, fzf global, grug-far, keymaps, commands |
+| `F10` | Toggle hlsearch | |
+| `F11`/`F12`/`F24` | Colorscheme | Previous / Next / Shuffle |
+
+## Key Architectural Decisions
+
+### Plugin Manager: lazy.nvim
+- Bootstrapped in `lua/config/lazy.lua` via git clone
+- Uses Neovim's native `vim.lsp.formatexpr()` for `formatexpr` and `vim.treesitter.foldexpr()` for fold expression (no LazyVim dependency)
+- Plugin specs are auto-discovered from `lua/plugins/` via `{ import = "plugins" }`
+- The plugin checker is disabled (`checker.enabled = false`)
+
+### Options System (`lua/config/options.lua`)
+- Uses a declarative `defaults.values` table for all `vim.o` options
+- Supports before/after hooks for complex option logic (e.g., `shiftwidth` derived from `softtabstop`, undo/swap/backup directory setup)
+- Hook keys prefixed with `_` are "private" — they run side effects without setting a `vim.o` value
+
+### Colorscheme Rotation (`lua/utils/colors.lua`)
+- Custom `Deque` (doubly-linked circular list) and `Playlist` data structures
+- `Playlist:next()` cycles forward, trying `pcall(vim.cmd.colorscheme, name)` for each candidate
+- `Playlist:prev()` cycles backward; `Playlist:next(true)` shuffles randomly
+- Exposed via `colors.next()`, `colors.prev()`, `colors.shuffle()`, bound to F11/F12/F24
+
+### Completion (`lua/plugins/completion.lua`)
+- Three priority groups of sources: (1) avante + lazydev + nvim_lsp, (2) copilot + ecolog + luasnip + nvim_lua, (3) buffer + git
+- Smart `<Tab>` behavior: auto-confirm if single entry, jump snippets, trigger completion on non-whitespace
+- `<CR>` only confirms when an entry is actively selected (prevents accidental confirm)
+- Cmdline completions configured separately for `/` `?` (buffer/lsp symbols) and `:` (cmdline/path)
+- Triggers `nvim-autopairs` on `confirm_done`
+
+### AI Stack (`lua/plugins/ai.lua`)
+- **Primary**: [Avante.nvim](https://github.com/yetone/avante.nvim) — uses the `cursor` provider via `cursor-agent` ACP binary, agentic mode
+- **MCP**: [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim) — provides MCP tool access to Avante, disables Avante's built-in file/bash tools in favor of MCP equivalents
+- **Copilot**: `zbirenbaum/copilot.lua` — inline suggestions on `InsertEnter`, accept with `<M-Space>`
+- **Disabled**: CodeCompanion (`cond = false`), Windsurf (`cond = false`)
+
+### LSP (`lua/plugins/lsp.lua`)
+- Uses `mason.nvim` + `mason-lspconfig.nvim` with `automatic_enable = true`
+- LSP keymaps set via a single `LspAttach` autocmd (not per-server)
+- `nvim-navic` breadcrumbs auto-attach when server supports `documentSymbol`
+- `lazydev.nvim` provides Neovim Lua API completions (scoped to `ft = "lua"`)
+- `cmp_nvim_lsp` capabilities are injected via `vim.lsp.config("*", ...)`
+
+### Formatting and Linting
+- **Formatting**: `conform.nvim` in `lua/plugins/formatting.lua` with format-on-save (toggleable via `:FormatToggle` or `vim.g.disable_autoformat`)
+- **Linting**: `nvim-lint` triggered on `BufWritePost`, `BufReadPost`, `InsertLeave`
+- Per-filetype formatter/linter assignments cover: Go, Python, JS/TS, Lua, Rust, Terraform, YAML, Shell, Markdown, HTML/CSS
+
+### Diagnostics Display
+- `tiny-inline-diagnostic.nvim` replaces default `virtual_text` (`vim.diagnostic.config({ virtual_text = false })`)
+- `Trouble.nvim` for structured diagnostic/TODO/quickfix list browsing
+
+### UI Layer
+- **Statusline**: lualine with custom sections (mode, branch, diagnostics, file icon via devicons, navic breadcrumbs, copilot status, lazy updates, clock)
+- **Tabline**: bufferline.nvim with LSP diagnostics indicators
+- **Command line**: noice.nvim (classic bottom cmdline view, custom icons, treesitter markdown override)
+- **Dashboard**: alpha-nvim with startify theme
+- **Folding**: nvim-ufo with treesitter+indent provider and custom fold virtual text handler
+- **Notifications**: nvim-notify is disabled; noice notify is also disabled; snacks notifier is primary
+
+### Fuzzy Finding
+- **Primary**: `fzf-lua` (replaces telescope, which is commented out)
+- **Secondary**: `snacks.nvim` picker (used by yanky, notifications, etc.)
+- fzf-lua configured with ivy/border-fused/hide profiles, tmux integration, custom color scheme
+
+## Plugins That Are Currently Disabled
+
+These plugins exist in the config but are set to `cond = false`:
+- `Exafunction/windsurf.vim` — Windsurf AI coding (alternative to Copilot)
+- `olimorris/codecompanion.nvim` — CodeCompanion chat (alternative to Avante)
+- `rcarriga/nvim-notify` — notification UI (replaced by snacks/noice mini)
+- `Olical/conjure` + `PaterJason/cmp-conjure` — REPL integration
+
+## External Dependencies
+
+These tools must be available on `$PATH` for full functionality:
+- `node` / `npm` — required for MCPHub, Copilot, markdown-preview
+- `yarn` — required for markdown-preview build
+- `rg` (ripgrep) — used as `grepprg` and by fzf-lua
+- `fzf` — used by fzf-lua (also supports tmux popup via `--tmux`)
+- `git` — lazy.nvim bootstrap, gitsigns, neogit
+- `make` — Avante build, LuaSnip jsregexp
+- `python3` — nvim-dap-python
+- `cursor-agent` — Avante cursor ACP provider
+- Language-specific: `shellcheck`, `hadolint`, `golangcilint`, `eslint_d`, `markdownlint`, `ruff`, `tflint`, `yamllint`, `prettierd`/`prettier`, `goimports`, `gofumpt`, `stylua`, `shfmt`, `taplo`, `rustfmt`, `terraform`
+
+## Common Tasks for Maintainers
+
+### Adding a new plugin
+Create or edit a file in `lua/plugins/`. Return a table of lazy.nvim plugin specs. It will be auto-imported.
+
+### Adding a new colorscheme
+1. Add the plugin spec to `lua/plugins/colorschemes.lua`
+2. Add the colorscheme name to the `vim.g.colorschemes` list in `init.lua` (the non-VSCode block)
+
+### Changing the AI provider
+Edit `lua/plugins/ai.lua`. Avante's `provider` option selects the backend. The `acp_providers` table configures the cursor-agent binary. To switch to CodeCompanion, flip its `cond` to `true` and Avante's to `false`.
+
+### Changing formatter/linter for a filetype
+- Formatters: `lua/plugins/formatting.lua` → conform.nvim `formatters_by_ft`
+- Linters: `lua/plugins/diagnostics.lua` → nvim-lint `linters_by_ft`
+
+### Modifying editor options
+Edit `lua/config/options.lua`. Add values to `defaults.values` or hooks to `defaults.hooks.before`/`defaults.hooks.after`.
+
+### Debugging startup issues
+Run `nvim --startuptime /tmp/startup.log` or use `:Lazy profile`. The snacks.nvim `profile` module is also enabled.
+
+## Known Quirks
+
+- `Deque:pop_front()` and `Deque:pop_rear()` in `colors.lua` swap head/rear on remove — this is correct for the circular list but non-obvious
+- `indent-blankline.nvim` and `rainbow-delimiters.nvim` share a scope-colored indent-guide setup: ibl's `scope.highlight` and `indent.highlight` lists point to the `RainbowDelimiter*` groups, and the `scope_highlight_from_extmark` hook links scope line colors to the enclosing bracket color when rainbow-delimiters provides an extmark (treesitter-enabled filetypes with delimiter queries)
+- `rainbow-delimiters.nvim` ships a muted Gruvbox-inspired default palette. `plugins/ui.lua` overrides the `RainbowDelimiter*` highlight groups with a vivid Catppuccin-Mocha palette and re-applies them on every `ColorScheme` event so rainbow indent guides stay visible during F11/F12/F24 rotation
+- `nvim-treesitter` runs on `branch = 'main'` (the full rewrite). It is intentionally not lazy-loaded per upstream. Parser installation uses an **explicit list of ~87 parsers** passed to `require('nvim-treesitter').install({...})` (async on startup, idempotent thereafter, installed to `~/.local/share/nvim/site/parser/`). Note the main-branch tier names are misleading — `'stable'` is only 7 hand-picked parsers and `'unstable'` is the 315-parser bulk (contains markdown, lua, python, etc.), so we bypass tiers entirely and curate the list. A `FileType` autocmd calls `vim.treesitter.start(buf)` wrapped in `pcall` (silently swallows errors for filetypes without a parser, e.g. `help`/`man`). `nvim-treesitter-textobjects` is also on its `main` branch with `require('nvim-treesitter-textobjects').setup{...}` and explicit `vim.keymap.set` wiring. `nvim-treesitter-context` remains on its own `master` (different repo, unchanged API)
+- Incremental selection uses Neovim 0.12 core defaults (`v_an`/`v_in`/`v_]n`/`v_[n`) — the old `<leader>nn`/`<leader>rn`/`<leader>rc`/`<leader>rm` keymaps from nvim-treesitter master are retired. Semantic note: `v_]n`/`v_[n` navigate to sibling nodes (not grow to an enclosing scope); use textobject selection (e.g., `vaf`) for scope-based grow-to-function
+- `;` / `,` are rebound to `repeatable_move` from `nvim-treesitter-textobjects` (not the native repeat of `f`/`F`/`t`/`T`) — fine here because `f`/`F`/`t`/`T` are owned by flash.nvim, which doesn't rely on `;` / `,`
+- `_undofile` hook in `config/options.lua` uses `vim.bo.undofile = false` (buffer-local) inside a `BufWritePre` autocmd, matching the old `:setlocal noundofile` behavior. Using `vim.o.undofile` there would leak the disabled state to unrelated future buffers
+
+## File Naming Conventions
+
+- Plugin files are named by functional domain, not by plugin name (e.g., `movement.lua` contains surround, treesj, flash, and autopairs; `ui.lua` contains lualine, bufferline, indent-blankline, rainbow-delimiters, ufo, noice, alpha, bqf, illuminate, and notify)
+- Utility modules follow a `module/init.lua` + `module/name.lua` pattern
+- The `core/utils.lua` vs `utils/` split is historical — `core/utils.lua` has UI helpers used by lualine; `utils/colors.lua` has the colorscheme engine

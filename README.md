@@ -36,9 +36,9 @@ editing plugins force-enabled, everything else gated behind `cond = vim.g.vscode
 No separate VSCode config.
 
 **Built to degrade gracefully.** Shell drop-ins detect what's present (`command -v`) and
-fall through ordered backends rather than assuming a tool exists — clipboard across a dozen
-providers, `command-not-found` across seven distros, XDG-aware language setup. A partial
-install means fewer features, not breakage.
+fall through ordered backends rather than assuming a tool exists — clipboard across several
+providers, `command-not-found` resolution probing the usual system paths, XDG-aware language
+setup. A partial install means fewer features, not breakage.
 
 **Cross-platform by construction.** XDG base-directory compliant throughout. macOS uses
 launchd agents; Linux uses systemd user units. Shell startup
