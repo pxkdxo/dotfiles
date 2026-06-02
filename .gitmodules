@@ -1,4 +1,4 @@
 [submodule "ohmyzsh"]
 	path = ohmyzsh
-	url = https://github.com/pxkdxp/ohmyzsh.git
+	url = https://github.com/pxkdxo/ohmyzsh.git
 	branch = personal
