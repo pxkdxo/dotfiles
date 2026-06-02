@@ -132,4 +132,4 @@ defines them.
 ## Author
 
 [Patrick DeYoreo](https://github.com/pxkdxo) — platform engineer (DevOps,
-Cloudsud).
+Cloud)
