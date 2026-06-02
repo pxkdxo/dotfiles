@@ -582,6 +582,7 @@ return {
   },
   {
     "folke/noice.nvim",
+    -- cond = false,
     event = "VeryLazy",
     dependencies = {
       "MunifTanjim/nui.nvim",

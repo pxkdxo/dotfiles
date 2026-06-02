@@ -9,6 +9,50 @@ case "$-" in
   (*) return ;;
 esac
 
+# Path to the ohmyzsh installation.
+if test -v ZDOTDIR; then
+  ZSH="${ZDOTDIR:-${HOME}}/.ohmyzsh"
+else
+  ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
+fi
+
+# Try to capture current theme details
+case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
+  :plasma:*:|:*:KDE:)
+    case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
+      light|\'light\'|*-light|\'*-light\')
+      export DEFAULT_COLORSCHEME="flexoki"
+        export THEME_VARIANT="light"
+        ;;
+      dark|\'dark\'|*-dark|\'*-dark\')
+        export DEFAULT_COLORSCHEME="cyberdream"
+        export THEME_VARIANT=""
+        ;;
+    esac
+    ;;
+  *)
+    if ( hour="$(date +%H)" && test "$((hour))" -gt 6 && test "$((hour))" -lt 18; )
+    then
+      export DEFAULT_COLORSCHEME="flexoki"
+      export THEME_VARIANT="light"
+    else
+      export DEFAULT_COLORSCHEME="cyberdream"
+      export THEME_VARIANT=""
+    fi
+    ;;
+esac
+
+# Set vivid (lscolors) theme
+case "${${CYBERDREAM_VARIANT#cyberdream}#-}" in
+  auto|dark|"")
+    export VIVID_THEME="cyberdream"
+    ;;
+  light)
+    export VIVID_THEME="cyberdream-${${CYBERDREAM_VARIANT#cyberdream}#-}"
+    ;;
+esac
+
+# export VIVID_THEME='modus-vivendi'
 # Zoxide (use 'd' / 'di')
 #
 if command -v zoxide > /dev/null; then
@@ -17,6 +61,8 @@ fi
 
 # FZF
 #
+export FZF_COMPLETION_TRIGGER='^s'
+
 if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
 elif command -v fzf > /dev/null; then
@@ -118,7 +164,6 @@ export VIVID_THEME='xcode-dark-hc'
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-
 # Path to the ohmyzsh installation.
 #
 if test -v ZSH && test -d "${ZSH}"; then
@@ -141,6 +186,7 @@ fi
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+  archlinux
   aws
   brew
   codex

@@ -234,6 +234,30 @@ return {
       "ravitemer/codecompanion-history.nvim",
     },
     opts = {
+      adapters = {
+        acp = {
+          codex = function()
+            return require("codecompanion.adapters").extend("codex", {
+              defaults = {
+                auth_method = "openai-api-key", -- "openai-api-key"|"codex-api-key"|"chatgpt"
+              },
+              env = {
+                OPENAI_API_KEY = os.getenv("OPENAI_API_KEY"),
+              },
+            })
+          end,
+          gemini_cli = function()
+            return require("codecompanion.adapters").extend("gemini_cli", {
+              defaults = {
+                auth_method = "gemini-api-key", -- "oauth-personal"|"gemini-api-key"|"vertex-ai"
+              },
+              env = {
+                GEMINI_API_KEY = os.getenv("GEMINI_API_KEY"),
+              },
+            })
+          end,
+        },
+      },
       interactions = {
         --NOTE: Change the adapter as required
         chat = {
@@ -244,6 +268,18 @@ return {
           adapter = "claude",
           model = "claude-haiku-4.5",
         },
+        cmd = {
+          adapter = "codex",
+          opts = {
+            completion_provider = "cmp", -- blink|cmp|coc|default
+          }
+        },
+        -- background = {
+        --   adapter = {
+        --     name = "ollama",
+        --     model = "qwen-7b-instruct",
+        --   },
+        -- }
       },
       extensions = {
         history = {

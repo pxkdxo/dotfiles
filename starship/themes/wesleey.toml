@@ -60,6 +60,7 @@ style = 'fg:foreground bold dimmed'
 [os]
 format = '[$symbol ](bold fg:foreground)'
 disabled = false
+
 [os.symbols]
 Alpine = ''
 Amazon = ''

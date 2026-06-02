@@ -5,7 +5,9 @@
 if test -n "${BASH_VERSION-}${ZSH_VERSION-}"; then
   __command_not_found_configured=""
 
-  if test -n "${HOMEBREW_REPOSITORY-}" || HOMEBREW_REPOSITORY="$(brew --repository)" && test -f "${HOMEBREW_REPOSITORY}/Library/Homebrew/command-not-found/handler.sh"; then
+  if test -n "${HOMEBREW_REPOSITORY-}" || {
+    command -v brew >/dev/null && HOMEBREW_REPOSITORY="$(brew --repository)" && test -f "${HOMEBREW_REPOSITORY}/Library/Homebrew/command-not-found/handler.sh"
+  }; then
     # Use homebrew if we have it...
     . "${HOMEBREW_REPOSITORY}/Library/Homebrew/command-not-found/handler.sh"
   # Debian and derivatives (https://launchpad.net/ubuntu/+source/command-not-found)
