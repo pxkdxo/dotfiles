@@ -175,7 +175,7 @@ symbol = '󰘬 '
 [git_commit]
 format = '[$hash([\(](fg:foreground)[$tag](bold fg:yellow)[\)](fg:foreground))]($style) '
 style = 'italic fg:cyan'
-commit_hash_length = 4
+commit_hash_length = 6
 tag_symbol = '󰓹 '
 tag_disabled = false
 only_detached = true

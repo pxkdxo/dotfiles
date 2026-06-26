@@ -10,6 +10,7 @@ cursor-style = bar
 cursor-style-blink = false
 
 background-opacity = 0.84
+background-blur = 15
 
 window-padding-x = 5
 window-padding-y = 4
