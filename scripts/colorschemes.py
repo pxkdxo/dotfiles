@@ -361,12 +361,16 @@ class GitSource(SourceBackend):
         stash_msg = f"colorschemes-sync: {self.url}"
         stash_created = False
         if stashed:
-            push = _git(
+            _ = _git(
                 ["git", "stash", "push", "--include-untracked", "--message", stash_msg],
+                cwd=dest,
+            )
+            listed = _git(
+                ["git", "stash", "list", f"--grep={stash_msg}", "--max-count=1"],
                 cwd=dest,
                 quiet=True,
             )
-            stash_created = "No local changes to save" not in (push.stdout or "")
+            stash_created = bool(listed.stdout.strip())
 
         try:
             fetch = [
