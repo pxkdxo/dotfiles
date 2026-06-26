@@ -1,0 +1,12 @@
+[Unit]
+Description=Kitty Dropdown Terminal
+Documentation=man:kitten-quick-access-terminal(1)
+Requires=kitty-quick-access@%i.socket
+After=kitty-quick-access@%i.socket
+
+[Service]
+Type=simple
+ExecStart=kitten quick-access-terminal -o allow_remote_control=socket-only -o listen_on=unix:@kitty-quick-access-%i
+
+[Install]
+Also=kitty-quick-access@%i.socket

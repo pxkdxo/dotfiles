@@ -17,6 +17,7 @@ $character\
 
 add_newline = true
 
+# Overridden at shell startup by _starship_palette() in zshrc; only active if that fails.
 palette = 'mellow'
 [palettes."mellow"]
 background = "#161617"

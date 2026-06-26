@@ -1,0 +1,10 @@
+[Unit]
+Description=Kitty Dropdown Terminal Socket
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Socket]
+ListenStream=@kitty-quick-access-%i
+
+[Install]
+WantedBy=graphical-session.target
