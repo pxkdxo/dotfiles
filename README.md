@@ -15,12 +15,18 @@ infrastructure. Neovim · Zsh · Tmux · Starship · fzf, configured to work tog
 
 ## Highlights
 
-**Coordinated colorscheme system.** Theme definitions live in one place and propagate to
-every tool — Neovim, Alacritty, Kitty, Foot, bat, and `LS_COLORS` via vivid. A small
-`colorschemes.py` (typed Python 3.12+) fetches themes from Git repos or local dirs and links
-them into a per-app layout; a thin symlink layer lets each terminal switch the active theme
-without editing its config. Inside Neovim, a custom `Deque` / `Playlist` engine rotates
-through schemes at runtime (`F11` / `F12` / `F24`), skipping any not installed on the box.
+**Light/dark that follows the whole machine.** Theme definitions live in one place and
+propagate to every tool — Neovim, Alacritty, Ghostty, Kitty, Foot, bat, and `LS_COLORS` via
+vivid — and the stack tracks your OS appearance *live*. Flip macOS dark mode (or GNOME's
+`color-scheme`) and one signal cascades: terminals re-theme (Ghostty natively, Foot via its
+`[colors-dark]`/`[colors-light]` + `SIGUSR1`/`SIGUSR2`, Alacritty/Kitty via a selector
+symlink), the shell reads the new background over OSC 11 and re-derives `VIVID_THEME`, the
+Starship palette, and the tmux theme — and **already-open shells catch up on their next
+prompt** via a small cache file and a `precmd` watcher. It's POSIX `sh` end to end, driven by
+a launchd agent on macOS and a systemd user service on Linux. A `colorschemes.py` (typed
+Python 3.12+) fetches schemes from Git/local dirs into the per-app layout; inside Neovim a
+custom `Deque` / `Playlist` engine cycles them at runtime (`F11` / `F12` / `F24`), skipping
+any not installed.
 
 <!-- screenshot: colorscheme cycling (multiple frames or GIF) -->
 ![Colorscheme cycling](.github/screenshots/colorschemes.gif)
@@ -52,9 +58,9 @@ launchd agents; Linux uses systemd user units. Shell startup
 |---|---|
 | **Neovim** | Lua · lazy.nvim · full LSP (mason) · nvim-cmp · Treesitter · Avante + MCPHub + Copilot · which-key |
 | **Zsh** | Oh-My-Zsh (personal fork) · fzf bindings · zoxide · fast-syntax-highlighting · autosuggestions |
-| **Tmux** | Vi keys · true-color · system clipboard · powerline status · socket-activated user service |
+| **Tmux** | Vi keys · true-color · system clipboard · auto light/dark statusline · socket-activated user service |
 | **Starship** | Two-line prompt · git status · language versions · AWS context |
-| **Terminals** | Alacritty (primary) · Kitty · Foot — coordinated colorschemes |
+| **Terminals** | Alacritty · Ghostty · Kitty · Foot — coordinated, auto light/dark |
 | **Bat / Ripgrep / Vivid** | Pager · search · `LS_COLORS` theming |
 | **Yazi / Ranger** | Terminal file managers |
 | **Git** | Aliases · color config |
