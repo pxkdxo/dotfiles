@@ -122,9 +122,9 @@ return {
       vim.keymap.set("n", "<M-j>", function () swap.swap_next("@parameter.inner") end,     { desc = "Swap parameter with next" })
       vim.keymap.set("n", "<M-k>", function () swap.swap_previous("@parameter.inner") end, { desc = "Swap parameter with previous" })
 
-      -- Make textobject move/swap motions repeatable via ; and , (like native f/t).
-      vim.keymap.set({ "n", "x", "o" }, ";", repeatable.repeat_last_move,          { desc = "Repeat last treesitter move" })
-      vim.keymap.set({ "n", "x", "o" }, ",", repeatable.repeat_last_move_opposite, { desc = "Repeat last treesitter move (opposite)" })
+      -- Repeat last move. <M-n>/<M-p> since ;/, are leader/localleader.
+      vim.keymap.set({ "n", "x", "o" }, "<M-n>", repeatable.repeat_last_move,          { desc = "Repeat last treesitter move" })
+      vim.keymap.set({ "n", "x", "o" }, "<M-p>", repeatable.repeat_last_move_opposite, { desc = "Repeat last treesitter move (opposite)" })
     end,
   },
 }

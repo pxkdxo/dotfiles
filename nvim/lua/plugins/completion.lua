@@ -20,7 +20,7 @@ return {
     },
     opts = {
       experimental = {
-        ghost_text = true,
+        ghost_text = false, -- Copilot owns inline ghost text
       },
     },
     config = function(_, opts)

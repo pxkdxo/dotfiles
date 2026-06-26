@@ -739,12 +739,13 @@ return {
           return "<C-f>"
         end
       end, { silent = true, expr = true })
-      vim.keymap.set({ "n", "i", "s" }, "<C-u>", function()
+      -- Normal only; cmp owns <C-u>/<C-d> in insert mode
+      vim.keymap.set({ "n" }, "<C-u>", function()
         if not noice_lsp.scroll(-4) then
           return "<C-u>"
         end
       end, { silent = true, expr = true })
-      vim.keymap.set({ "n", "i", "s" }, "<C-d>", function()
+      vim.keymap.set({ "n" }, "<C-d>", function()
         if not noice_lsp.scroll(4) then
           return "<C-d>"
         end

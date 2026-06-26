@@ -59,10 +59,10 @@ return {
       -- this file can contain specific instructions for your project
       instructions_file = "avante.md",
       mode = "agentic",
-      provider = "cursor",
-      auto_suggestions_provider = "claude-code",
+      provider = "cursor-agent",
+      auto_suggestions_provider = "copilot",
       behaviour = {
-        auto_suggestions = true,
+        auto_suggestions = false, -- inline suggestions handled by copilot.lua
         enable_fastapply = true,
         auto_add_current_file = true,
         auto_approve_tool_permissions = true,
@@ -74,14 +74,8 @@ return {
         ---@type "ours" | "theirs"
         focus_on_apply = "ours", -- which diff to focus after applying
       },
-      providers = {
-        claude = {
-          auth_type = "max",
-          model = "claude-haiku-4.5",
-        },
-      },
       acp_providers = {
-        ["cursor"] = {
+        ["cursor-agent"] = {
           command = vim.fn.exepath("cursor-agent"),
           args = { "acp" },
           auth_method = "cursor_login",
@@ -193,8 +187,7 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
-    -- cond = vim.g.vscode == nil,
-    cond = false,
+    cond = vim.g.vscode == nil,
     event = "InsertEnter",
     cmd = "Copilot",
     opts = {
@@ -272,7 +265,7 @@ return {
           adapter = "codex",
           opts = {
             completion_provider = "cmp", -- blink|cmp|coc|default
-          }
+          },
         },
         -- background = {
         --   adapter = {
