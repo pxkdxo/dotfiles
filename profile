@@ -2,31 +2,27 @@
 # see bash(1), dash(1), sh(1), zsh(1), ...
 # shellcheck shell=dash
 
-
 # Termcap is outdated, old, and crusty, kill it.
 unset TERMCAP
-
 
 # Man is much better than us at figuring this out
 unset MANPATH
 
-
 # Initialize tty, and make <C-s>/<C-z> usable by disabling XON/XOFF
-test -t 1 && { tput init && stty -ixon -ixoff; } 2>/dev/null || true
-
+if test -t 1; then
+  tput init && stty -ixon -ixoff || :
+fi 2>/dev/null
 
 # Set file creation mode mask
 # EUID is not defined in dash(1)
 # shellcheck disable=SC3028
 if test "${EUID:-$(id -u)}" -eq 0; then
-  umask 0002
-else
   umask 0022
+else
+  umask 0002
 fi
 
-
 # path_print - Print the value of PATH with a chosen separator
-# Description: Returns 0 if DIRECTORY is in PATH, 1 otherwise.
 # Usage: path_print [DELIMITER]
 # Positional Parameters:
 #   DELIMITER: separator to use between elements - the empty string
@@ -49,7 +45,6 @@ path_print() {
   fi
 }
 
-
 # path_contains - Check if an element exists in PATH
 # Description: Returns 0 if DIRECTORY is in PATH and 1 otherwise.
 # Usage: path_contains DIRECTORY
@@ -61,11 +56,10 @@ path_contains() {
     return 2
   fi
   case ":${PATH-}:" in
-    *":$1:"*) ;;
-    *) return 1 ;;
+  *":$1:"*) ;;
+  *) return 1 ;;
   esac
 }
-
 
 # path_add - Add an element to PATH
 # Description: Add each DIRECTORY to PATH if it is not already there.
@@ -79,13 +73,12 @@ path_add() {
   fi
   while test "$#" -gt 0; do
     case ":${PATH-}:" in
-      *":$1:"*) ;;
-      *) export PATH="${PATH:+${PATH}:}$1" ;;
+    *":$1:"*) ;;
+    *) export PATH="${PATH:+${PATH}:}$1" ;;
     esac
     shift
   done
 }
-
 
 # path_discard - Remove elements from PATH
 # Description: Remove all occurrences of each DIRECTORY from PATH.
@@ -109,7 +102,6 @@ path_discard() {
   done
 }
 
-
 # path_append - Append an element to the end of PATH
 # Description: Append DIRECTORY to the end of PATH and remove all other occurrences.
 # Usage: path_append DIRECTORY ...
@@ -126,7 +118,6 @@ path_append() {
     shift
   done
 }
-
 
 # path_push - Push each element to the front of PATH
 # Description: Push each DIRECTORY to the front of PATH and remove all other occurrences.
@@ -145,7 +136,6 @@ path_push() {
   done
 }
 
-
 # path_insert - Insert an element into PATH at a given position
 # Description:
 #   Remove all occurrences of DIRECTORY from PATH, then insert at the specified index.
@@ -160,29 +150,29 @@ path_insert() {
   elif test "$#" -eq 2; then
     if test "$2" = "#"; then
       path_append "$1"
-    elif { set -- "$1" "$(($2))"; } 2> /dev/null; then
+    elif { set -- "$1" "$(($2))"; } 2>/dev/null; then
       if test "$2" -eq 0; then
         path_push "$1"
       else
         path_discard "$1"
         case "$2" in
-          -*)
-            set -- "$1" "$2" "${PATH:+:${PATH}}" ""
-            while test -n "$3" && test "$2" -ne 0; do
-              set -- "$1" "$(($2 + 1))" "${3%:*}" "${3##*:}${4:+:$4}"
-            done
-            path_discard "$1"
-            PATH="${3#:}" && export PATH="${PATH:+${PATH}:}$1${4:+:$4}"
-            ;;
-          *)
-            path_discard "$1"
-            set -- "$1" "$2" "" "${PATH:+${PATH}:}"
-            while test -n "$4" && test "$2" -ne 0; do
-              set -- "$1" "$(($2 + 1))" "${3:+$3:}${4%%:*}" "${4#*:}"
-            done
-            path_discard "$1"
-            PATH="${4%:}" && export PATH="${3:+$3:}$1${PATH:+:${PATH}}"
-            ;;
+        -*)
+          set -- "$1" "$2" "${PATH:+:${PATH}}" ""
+          while test -n "$3" && test "$2" -ne 0; do
+            set -- "$1" "$(($2 + 1))" "${3%:*}" "${3##*:}${4:+:$4}"
+          done
+          path_discard "$1"
+          PATH="${3#:}" && export PATH="${PATH:+${PATH}:}$1${4:+:$4}"
+          ;;
+        *)
+          path_discard "$1"
+          set -- "$1" "$2" "" "${PATH:+${PATH}:}"
+          while test -n "$4" && test "$2" -ne 0; do
+            set -- "$1" "$(($2 + 1))" "${3:+$3:}${4%%:*}" "${4#*:}"
+          done
+          path_discard "$1"
+          PATH="${4%:}" && export PATH="${3:+$3:}$1${PATH:+:${PATH}}"
+          ;;
         esac
       fi
     else
@@ -199,7 +189,7 @@ path_insert() {
 path_push ~/.local/bin
 
 # Quick detour for Homebrew initialization
-if command -v brew > /dev/null; then
+if command -v brew >/dev/null; then
   eval "$(brew shellenv)"
 fi
 
@@ -215,6 +205,5 @@ path_push ~/.local/bin
 
 path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
 path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
-
 
 # vi:ft=sh
