@@ -10,7 +10,7 @@ if command -v podman > /dev/null; then
       )" && test -S "${podman_socket}"; then
         export DOCKER_HOST="unix://${podman_socket}"
       elif test -S "${XDG_RUNTIME_DIR:-/run/user/${UID:-$(id -u)}}/podman/podman.sock"; then
-        export DOCKER_HOST="unix://${XDG_RUNTIME_DIR:-${HOME}/.local/share}/podman/podman.sock"
+        export DOCKER_HOST="unix://${XDG_RUNTIME_DIR:-/run/user/${UID:-$(id -u)}}/podman/podman.sock"
       elif test -S /run/podman/podman.sock; then
         export DOCKER_HOST='unix:///run/podman/podman.sock'
       fi

@@ -79,7 +79,7 @@ path_add() {
   fi
   while test "$#" -gt 0; do
     case ":${PATH-}:" in
-      *":$1:"*) return 0 ;;
+      *":$1:"*) ;;
       *) export PATH="${PATH:+${PATH}:}$1" ;;
     esac
     shift

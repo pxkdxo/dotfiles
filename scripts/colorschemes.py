@@ -359,11 +359,14 @@ class GitSource(SourceBackend):
             )
             raise subprocess.CalledProcessError(1, ["git", "stash", "pop"], "", "")
         stash_msg = f"colorschemes-sync: {self.url}"
+        stash_created = False
         if stashed:
-            _ = _git(
+            push = _git(
                 ["git", "stash", "push", "--include-untracked", "--message", stash_msg],
                 cwd=dest,
+                quiet=True,
             )
+            stash_created = "No local changes to save" not in (push.stdout or "")
 
         try:
             fetch = [
@@ -378,7 +381,7 @@ class GitSource(SourceBackend):
             _ = _git(fetch, cwd=dest)
             _ = _git(["git", "checkout", "-f", "--detach", "FETCH_HEAD"], cwd=dest)
         finally:
-            if stashed:
+            if stash_created:
                 pop = _git(["git", "stash", "pop"], cwd=dest, check=False)
                 if pop.returncode != 0:
                     print(

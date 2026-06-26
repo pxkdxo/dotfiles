@@ -60,6 +60,10 @@ if test -n "${BASH_VERSION-}${ZSH_VERSION-}"; then
   elif test -n "${BASH_VERSION}" && test -f /usr/share/doc/pkgfile/command-not-found.bash; then
     . "/usr/share/doc/pkgfile/command-not-found.bash"
   fi
+  if test -n "${__command_not_found_configured-}"; then
+    command_not_found_handle()  { __command_not_found_func "$@"; }
+    command_not_found_handler() { __command_not_found_func "$@"; }
+  fi
   unset __command_not_found_configured
 fi
 

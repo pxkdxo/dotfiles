@@ -7,7 +7,7 @@ Requires=tmux@%i.socket
 Environment=TMUX_TMPDIR=%T
 Type=exec
 ExecStart=tmux -L%i -D
-ExecStartPost=tmux -L%i start-server \; new-session -d -s main -t %i
+ExecStartPost=tmux -L%i new-session -d -s main
 Slice=tmux-%i.slice
 
 [Install]

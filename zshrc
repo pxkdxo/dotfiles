@@ -27,7 +27,7 @@ case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
     esac
     ;;
   *)
-    if ( hour="$(date +%H)" && test "$((hour))" -gt 6 && test "$((hour))" -lt 18; )
+    if ( hour="$(date +%H)" && test "$((hour))" -ge 7 && test "$((hour))" -lt 19; )
     then
       export THEME_VARIANT="light"
     else
