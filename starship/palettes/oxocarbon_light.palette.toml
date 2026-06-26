@@ -1,4 +1,4 @@
-[palette."oxocarbon"]
+[palettes."oxocarbon_light"]
 background = "#f2f4f8"
 foreground = "#393939"
 cursor_bg = "#161616"

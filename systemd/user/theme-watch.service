@@ -1,0 +1,30 @@
+[Unit]
+Description=Follow the GNOME light/dark color-scheme and re-theme terminals
+Documentation=file://%h/.local/bin/set-term-theme.sh
+# Needs the graphical session's D-Bus (gsettings monitor) and dies with it.
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+
+# Applies `set-term-theme auto` once, then re-applies on every color-scheme change.
+# set-term-theme itself falls back to time of day when gsettings is unavailable, but
+# --watch needs gsettings to have something to monitor.
+ExecStart=%h/.local/bin/set-term-theme.sh --watch
+
+# gsettings, pkill, defaults, etc. systemd does not import the interactive PATH.
+Environment=PATH=%h/.local/bin:%h/.local/share/homebrew/bin:%h/.local/share/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+# The monitor exits if the session bus goes away; let it come back with the session.
+Restart=on-failure
+RestartSec=5s
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=theme-watch
+
+[Install]
+WantedBy=graphical-session.target

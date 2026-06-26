@@ -63,7 +63,7 @@ extract_palette() {
       fi
       colors="${colors//[[:blank:][:cntrl:][:punct:]]/_}"
       printf '%b>>>%b %b%s%b\n' '\e[0;1m' '\e[0m' '\e[1;4m' "${colors}.palette.toml" '\e[0m'
-      printf '[palette."%s"]\n%s\n' "${colors}" "${result}" | tee "${colors}.palette.toml"
+      printf '[palettes."%s"]\n%s\n' "${colors}" "${result}" | tee "${colors}.palette.toml"
     fi
   done
 }

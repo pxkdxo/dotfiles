@@ -16,43 +16,82 @@ else
   ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
 fi
 
-# Try to capture current theme details
+# Fallback light/dark guess from the desktop session, else time of day. The
+# OSC query below supersedes this whenever the terminal answers; THEME_VARIANT
+# only applies when it can't (TERM=dumb, unsupported emulator, no tty).
 case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
   :plasma:*:|:*:KDE:)
     case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
-      light|\'light\'|*-light|\'*-light\')
-      export DEFAULT_COLORSCHEME="flexoki"
-        export THEME_VARIANT="light"
-        ;;
-      dark|\'dark\'|*-dark|\'*-dark\')
-        export DEFAULT_COLORSCHEME="cyberdream"
-        export THEME_VARIANT=""
-        ;;
+      light|\'light\'|*-light|\'*-light\') export THEME_VARIANT="light" ;;
+      dark|\'dark\'|*-dark|\'*-dark\')     export THEME_VARIANT="dark" ;;
     esac
     ;;
   *)
     if ( hour="$(date +%H)" && test "$((hour))" -gt 6 && test "$((hour))" -lt 18; )
     then
-      export DEFAULT_COLORSCHEME="flexoki"
       export THEME_VARIANT="light"
     else
-      export DEFAULT_COLORSCHEME="cyberdream"
-      export THEME_VARIANT=""
+      export THEME_VARIANT="dark"
     fi
     ;;
 esac
 
-# Set vivid (lscolors) theme
-case "${${CYBERDREAM_VARIANT#cyberdream}#-}" in
-  auto|dark|"")
-    export VIVID_THEME="cyberdream"
-    ;;
-  light)
-    export VIVID_THEME="cyberdream-${${CYBERDREAM_VARIANT#cyberdream}#-}"
-    ;;
-esac
+# Resolve this file's directory (the dotfiles repo) once; %x is only reliable
+# while sourcing, but the helpers below also run interactively.
+typeset -g _dotfiles_etc="${${(%):-%x}:A:h}"
 
-# export VIVID_THEME='modus-vivendi'
+# Detect the terminal background (light/dark) via OSC 11 and derive color
+# settings from it. detect-term-bg.sh is sourced (not executed) so it runs
+# in-process; term-bg-resync re-runs detection on demand (bind it to a key or
+# call it after toggling your terminal theme). Falls back to THEME_VARIANT.
+[[ -r $_dotfiles_etc/scripts/detect-term-bg.sh ]] && source "$_dotfiles_etc/scripts/detect-term-bg.sh"
+
+# Assemble starship's active theme + the background-appropriate palette into a
+# cache file and point $STARSHIP_CONFIG at it. starship re-reads it each prompt,
+# so a resync makes the prompt follow light/dark without restarting the shell.
+_starship_palette() {
+  emulate -L zsh
+  command -v starship > /dev/null || return
+  local name cache theme
+  case ${TERM_BACKGROUND:-dark} in
+    light) name=catppuccin_latte ;;
+    *)     name=catppuccin_mocha ;;
+  esac
+  theme="$_dotfiles_etc/starship/starship.toml"
+  [[ -r $theme && -r $_dotfiles_etc/starship/palettes/$name.palette.toml ]] || return
+  cache="${XDG_CACHE_HOME:-$HOME/.cache}/starship.toml"
+  mkdir -p "${cache:h}" 2>/dev/null
+  {
+    print -r -- "palette = \"$name\""
+    grep -vE '^palette[[:space:]]*=' "$theme"
+    cat "$_dotfiles_etc/starship/palettes/$name.palette.toml"
+  } > "$cache" 2>/dev/null && export STARSHIP_CONFIG="$cache"
+}
+
+# Re-source the tmux statusline theme for the current background. Server-global,
+# so the last client to resync wins if two are attached in different polarities.
+_tmux_theme() {
+  emulate -L zsh
+  [[ -n $TMUX ]] || return
+  tmux set -g @bg "${TERM_BACKGROUND:-dark}" 2>/dev/null
+  tmux source-file -F "#{@theme_dir}/tmux-theme.conf" 2>/dev/null
+}
+
+term-bg-resync() {
+  emulate -L zsh
+  local bg
+  (( $+functions[detect_term_bg] )) && bg="$(detect_term_bg)"
+  export TERM_BACKGROUND="${bg:-${THEME_VARIANT:-dark}}"
+  case $TERM_BACKGROUND in
+    light) export VIVID_THEME=cyberdream-light ;;
+    *)     export VIVID_THEME=cyberdream ;;
+  esac
+  _starship_palette
+  _tmux_theme
+}
+# Detect once per terminal; reuse the inherited value in nested shells but still
+# theme this tmux pane (a new pane needs it even when detection is skipped).
+if [[ -v TERM_BACKGROUND ]]; then _tmux_theme; else term-bg-resync; fi
 # Zoxide (use 'd' / 'di')
 #
 if command -v zoxide > /dev/null; then
@@ -148,7 +187,8 @@ export FAST_THEME="sv-plant"
 # Disable fzf completion trigger
 export FZF_COMPLETION_TRIGGER='^s'
 
-# Set vivid (lscolors) theme
+# VIVID_THEME is selected dynamically near the top of this file from the
+# terminal's background color. Uncomment one of these to pin it instead.
 # export VIVID_THEME='embark'
 # export VIVID_THEME='tokyonight-night'
 # export VIVID_THEME='carbonfox'
@@ -159,7 +199,7 @@ export FZF_COMPLETION_TRIGGER='^s'
 # export VIVID_THEME='kanso-pearl'
 # export VIVID_THEME='modus-vivendi'
 # export VIVID_THEME='poimandres'
-export VIVID_THEME='xcode-dark-hc'
+# export VIVID_THEME='xcode-dark-hc'
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -335,7 +375,7 @@ elif test -z "${FZF_DEFAULT_OPTS}"; then
     '--header-border='\''line'\'''
     '--preview-border='\''sharp'\'''
     '--no-list-border'
-    '--color='\''dark,fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold'\'''
+    "--color='${TERM_BACKGROUND:-dark},fg:5,fg+:1:bold,hl:3,hl+:3:bold,bg:-1,bg+:-1:bold,pointer:2:bold,border:3,query:-1:regular,prompt:2:bold,input-border:3,header:2,header-border:3,footer:6,footer-border:3,info:-1:dim,gutter:-1:bold'"
     '--bind='\''shift-up:first'\'''
     '--bind='\''shift-down:last'\'''
     '--bind='\''alt-left:backward-word'\'''

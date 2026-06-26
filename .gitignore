@@ -14,7 +14,7 @@
 
 !/*-dotfiles.sh
 
-!/term-bg-lightness.sh
+!/scripts/*.sh
 
 !/asoundrc
 

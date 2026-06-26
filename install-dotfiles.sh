@@ -128,13 +128,28 @@ filename=$5
 # skip: this script, dotfiles already prefixed with '.', markdown files, and
 # XDG-specific directories that have canonical locations outside ~/.*
 case "${filename}" in
-  "${caller}"|.*|*.md|environment.d|launchd|systemd|user-tmpfiles.d)
+  "${caller}"|.*|*.md|environment.d|launchd|scripts|systemd|user-tmpfiles.d)
     exit 0
     ;;
 esac
 ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}" \
   || case "${optchars}" in *f*) exit 1 ;; esac
 ' -- "${argzero_name}" "${ln_opts}" "${tree_path}" "${home_path}"
+
+# Link tracked helper scripts into ~/.local/bin so they are on PATH (the
+# launchd/systemd units reference them there). New scripts dropped in scripts/
+# become available on the next install with no further wiring.
+local_bin="${home_path}/.local/bin"
+mkdir -p -- "${local_bin}"
+# shellcheck disable=SC2016
+git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts \
+  | xargs -0 -n 1 -o -- sh -c '
+optchars=$1
+src_dir=$2
+dst_dir=$3
+filename=$4
+ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
+' -- "${ln_opts}" "${repo_path}/scripts" "${local_bin}" || :
 
 # On macOS, link launchd agent plists into ~/Library/LaunchAgents
 case "$(uname -s)" in Darwin)
