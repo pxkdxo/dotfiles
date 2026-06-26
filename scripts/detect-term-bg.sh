@@ -24,7 +24,10 @@ detect_term_bg() {
   local saved reply rest comp rgb r g b lightness bel oldifs
   saved="$(stty -g </dev/tty 2>/dev/null)" || return 1
 
-  # min 0 + time 2 = non-canonical, 0.2 s timeout (time is in tenths of a second).
+  # min 0 + time 2 = non-canonical read with a 0.2s timeout (tenths of a
+  # second). A read that times out with no data returns EOF, so a single dd
+  # collects the whole reply and stops shortly after the last byte — or
+  # immediately if the terminal ignores the query.
   stty -echo -icanon min 0 time 2 </dev/tty
   # Multiplexers (tmux 3.x, Zellij) answer OSC 11 themselves, so a plain query
   # works inside them with no passthrough wrapping.
@@ -93,7 +96,9 @@ detect_term_bg__main() {
   esac
 }
 
-# Run only when executed directly, not when sourced.
+# Run only when executed directly, not when sourced. The sourced-vs-executed
+# test covers zsh and bash (the shells we source into); under a bare POSIX sh
+# the file is meant to be executed, so falling through to main is correct.
 detect_term_bg__sourced=0
 if [ -n "${ZSH_VERSION-}" ]; then
   case "${ZSH_EVAL_CONTEXT-}" in
