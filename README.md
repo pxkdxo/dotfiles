@@ -5,8 +5,9 @@
 ![Neovim](https://img.shields.io/badge/Neovim-57A143?logo=neovim&logoColor=white)
 ![Shell](https://img.shields.io/badge/POSIX_sh-4EAA25?logo=gnubash&logoColor=white)
 
-A keyboard-driven development environment for macOS and Linux — managed like
-infrastructure. Neovim · Zsh · Tmux · Starship · fzf, configured to work together.
+A keyboard-driven development environment for macOS and Linux, configured as a system
+rather than a collection of configs. Neovim · Zsh · Tmux · Starship · fzf — with live
+theming, AI tools, and graceful fallbacks throughout.
 
 <!-- screenshot: nvim with LSP, lualine, bufferline -->
 ![Neovim](.github/screenshots/nvim.png)
@@ -17,38 +18,30 @@ infrastructure. Neovim · Zsh · Tmux · Starship · fzf, configured to work tog
 
 **Light/dark that follows the whole machine.** Theme definitions live in one place and
 propagate to every tool — Neovim, Alacritty, Ghostty, Kitty, Foot, bat, and `LS_COLORS` via
-vivid — and the stack tracks your OS appearance *live*. Flip macOS dark mode (or GNOME's
-`color-scheme`) and one signal cascades: terminals re-theme (Ghostty natively, Foot via its
-`[colors-dark]`/`[colors-light]` + `SIGUSR1`/`SIGUSR2`, Alacritty/Kitty via a selector
-symlink), the shell reads the new background over OSC 11 and re-derives `VIVID_THEME`, the
-Starship palette, and the tmux theme — and **already-open shells catch up on their next
-prompt** via a small cache file and a `precmd` watcher. It's POSIX `sh` end to end, driven by
-a launchd agent on macOS and a systemd user service on Linux. A `colorschemes.py` (typed
-Python 3.12+) fetches schemes from Git/local dirs into the per-app layout; inside Neovim a
-custom `Deque` / `Playlist` engine cycles them at runtime (`F11` / `F12` / `F24`), skipping
-any not installed.
+vivid. Flip macOS dark mode or GNOME's `color-scheme` and the change propagates live: terminals
+re-theme, the shell re-derives `VIVID_THEME`, the Starship palette, and the tmux statusline —
+and already-open shells catch up at the next prompt. `colorschemes.py` (Python 3.12+) manages
+scheme sources; inside Neovim, `F11` / `F12` / `F24` cycle them prev / next / shuffle.
 
 <!-- screenshot: colorscheme cycling (multiple frames or GIF) -->
 ![Colorscheme cycling](.github/screenshots/colorschemes.gif)
 
-**AI-first editing stack.** [Avante.nvim](https://github.com/yetone/avante.nvim) drives
+**AI-assisted editing stack.** [Avante.nvim](https://github.com/yetone/avante.nvim) drives
 agentic editing via `cursor-agent` (ACP); [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim)
-routes MCP tools into it — connecting to an externally-supervised hub (launchd on macOS,
-systemd on Linux) rather than spawning a duplicate, and replacing Avante's built-in
-file/bash tools with the hub's equivalents. Copilot handles inline completions.
+routes MCP tools into it — connecting to an externally-managed hub rather than spawning a
+duplicate, and replacing Avante's built-in file/bash tools with the hub's equivalents.
+Copilot handles inline completions.
 
-**Neovim works inside VSCode.** The entire config loads inside vscode-neovim — motion and
-editing plugins force-enabled, everything else gated behind `cond = vim.g.vscode == nil`.
-No separate VSCode config.
+**Neovim works inside VSCode.** The full config loads inside vscode-neovim, with UI plugins
+gated off and motion/editing plugins active. No separate VSCode config.
 
 **Built to degrade gracefully.** Shell drop-ins detect what's present (`command -v`) and
 fall through ordered backends rather than assuming a tool exists — clipboard across several
 providers, `command-not-found` resolution probing the usual system paths, XDG-aware language
 setup. A partial install means fewer features, not breakage.
 
-**Cross-platform by construction.** XDG base-directory compliant throughout. macOS uses
-launchd agents; Linux uses systemd user units. Shell startup
-(`zshenv` → `zprofile` → `zshrc`, plus `profile.d/` and `environment.d/`) is POSIX-portable.
+**Portable.** XDG base-directory compliant throughout; macOS uses launchd agents, Linux uses
+systemd user units. Shell startup is POSIX-portable across both.
 
 ---
 
@@ -112,7 +105,7 @@ few; the rest enhance specific features.
 - **Optional, per feature:** **eza** / **lsd** (dir previews) · **wl-clipboard** / **xsel** /
   **xclip** (clipboard) · **pass** + **gnupg** (password store) · **podman** (Docker
   substitute) · **go** / **rust** / **java** / **cabal** (language envs) · **yarn** (markdown
-  preview) · **eza**, **gh**, **kubectl**, **htop**.
+  preview) · **gh**, **kubectl**, **htop**.
 
 ---
 
@@ -120,9 +113,10 @@ few; the rest enhance specific features.
 
 `F11` / `F12` / `F24` — cycle colorschemes prev / next / shuffle. Everything else lives under
 `,` (leader); press it and wait for the which-key popup. Function keys cover the common
-actions — file explorer (`F1`), pickers (`F2`–`F6`), search-highlight toggle (`F10`).
+actions — file explorer (`F1`), fzf pickers and search/replace (`F2`–`F6`), search-highlight
+toggle (`F10`).
 
-In Zsh, `^S` triggers interactive fzf completion (file/dir picking via fzf + zoxide).
+In Zsh, `^S` triggers interactive directory completion (`cd` with fzf).
 
 ---
 

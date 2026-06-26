@@ -125,10 +125,12 @@ else
 fi
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _term_bg_watch
-# Zoxide (use 'd' / 'di')
+# Zoxide (use 'z' / 'zi')
 #
 if command -v zoxide > /dev/null; then
-  eval "$(zoxide init zsh --cmd d)"
+  eval "$(zoxide init zsh --cmd z)"
+  _zoxide_zi_widget() { zi; zle reset-prompt }
+  zle -N _zoxide_zi_widget
 fi
 
 # FZF
@@ -324,7 +326,11 @@ if test -v ZSH; then
 
   # fzf interactive cd
   #
-  bindkey '^S' zic-completion
+  bindkey '^@' zic-completion
+
+  # zoxide interactive jump
+  #
+  bindkey '^[z' _zoxide_zi_widget
 
   # zsh-autocomplete: longest common substring matching
   # Turn off for longest common substring matching
