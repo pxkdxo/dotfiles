@@ -22,36 +22,38 @@ detect_term_bg() {
 
   # Need a usable terminal and a controlling tty to talk to.
   case "${TERM-}" in
-    '' | dumb) return 1 ;;
+  '' | dumb) return 1 ;;
   esac
-  { : < /dev/tty; } 2>/dev/null || return 1
+  {
+    : </dev/tty
+  } 2>/dev/null || return 1
 
   local saved reply rest comp rgb r g b lightness bel oldifs
-  saved="$(stty -g < /dev/tty 2>/dev/null)" || return 1
+  saved="$(stty -g </dev/tty 2>/dev/null)" || return 1
 
   # min 0 + time 2 = non-canonical read with a 0.2s timeout (tenths of a
   # second). A read that times out with no data returns EOF, so a single dd
   # collects the whole reply and stops shortly after the last byte — or
   # immediately if the terminal ignores the query.
-  stty -echo -icanon min 0 time 2 < /dev/tty
+  stty -echo -icanon min 0 time 2 </dev/tty
   # Multiplexers (tmux 3.x, Zellij) answer OSC 11 themselves, so a plain query
   # works inside them with no passthrough wrapping.
-  printf '\033]11;?\007' > /dev/tty
+  printf '\033]11;?\007' >/dev/tty
   reply="$(dd if=/dev/tty bs=1 count=64 2>/dev/null)"
-  stty "$saved" < /dev/tty 2>/dev/null
+  stty "$saved" </dev/tty 2>/dev/null
 
   # Strip the trailing terminator (BEL or ST) from the reply, if present.
   bel="$(printf '\007')"
   reply="${reply%%"$bel"*}"
 
   case "$reply" in
-    *rgb:*)
-      rest="${reply#*rgb:}"                 # RRRR/GGGG/BBBB
-      rest="${rest%%[!0-9A-Fa-f/]*}"        # drop any junk after the color
-      ;;
-    *)
-      return 1
-      ;;
+  *rgb:*)
+    rest="${reply#*rgb:}"          # RRRR/GGGG/BBBB
+    rest="${rest%%[!0-9A-Fa-f/]*}" # drop any junk after the color
+    ;;
+  *)
+    return 1
+    ;;
   esac
 
   # Split RRRR/GGGG/BBBB into three hex components.
@@ -66,10 +68,10 @@ detect_term_bg() {
   rgb=
   for comp in "$1" "$2" "$3"; do
     case "${#comp}" in
-      1) comp="$comp$comp" ;;                # 4-bit -> duplicate nibble
-      2) ;;                                  # already 8-bit
-      3 | 4) comp="${comp%"${comp#??}"}" ;;  # keep the high byte
-      *) return 1 ;;
+    1) comp="$comp$comp" ;;               # 4-bit -> duplicate nibble
+    2) ;;                                 # already 8-bit
+    3 | 4) comp="${comp%"${comp#??}"}" ;; # keep the high byte
+    *) return 1 ;;
     esac
     rgb="$rgb $((0x$comp))"
   done
@@ -87,17 +89,17 @@ detect_term_bg() {
 
 detect_term_bg__main() {
   case "${1-}" in
-    -q | --quiet)
-      detect_term_bg
-      ;;
-    '')
-      verdict="$(detect_term_bg)" || return $?
-      printf 'Terminal background looks %s.\n' "$verdict"
-      ;;
-    *)
-      printf 'usage: %s [-q|--quiet]\n' "${0##*/}" >&2
-      return 64
-      ;;
+  -q | --quiet)
+    detect_term_bg
+    ;;
+  '')
+    verdict="$(detect_term_bg)" || return $?
+    printf 'Terminal background looks %s.\n' "$verdict"
+    ;;
+  *)
+    printf 'usage: %s [-q|--quiet]\n' "${0##*/}" >&2
+    return 64
+    ;;
   esac
 }
 
@@ -107,7 +109,7 @@ detect_term_bg__main() {
 detect_term_bg__sourced=0
 if [ -n "${ZSH_VERSION-}" ]; then
   case "${ZSH_EVAL_CONTEXT-}" in
-    *file*) detect_term_bg__sourced=1 ;;
+  *file*) detect_term_bg__sourced=1 ;;
   esac
 elif [ -n "${BASH_VERSION-}" ]; then
   [ "${BASH_SOURCE-}" != "${0-}" ] && detect_term_bg__sourced=1

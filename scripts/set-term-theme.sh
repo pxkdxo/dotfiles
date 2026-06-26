@@ -31,10 +31,16 @@ detect_variant() {
     fi
     return
   fi
-  if command -v gsettings > /dev/null 2>&1; then
+  if command -v gsettings >/dev/null 2>&1; then
     case "$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)" in
-      *prefer-dark*)              echo dark;  return ;;
-      *prefer-light* | *default*) echo light; return ;;
+    *prefer-dark*)
+      echo dark
+      return
+      ;;
+    *prefer-light* | *default*)
+      echo light
+      return
+      ;;
     esac
   fi
   # No system signal: daytime is light, night is dark.
@@ -48,7 +54,7 @@ detect_variant() {
 
 # Watch mode: apply once, then follow GNOME appearance changes.
 if [ "${1:-}" = --watch ]; then
-  if ! gsettings get org.gnome.desktop.interface color-scheme > /dev/null 2>&1; then
+  if ! gsettings get org.gnome.desktop.interface color-scheme >/dev/null 2>&1; then
     echo "${0##*/}: --watch needs the GNOME color-scheme gsetting" >&2
     exit 1
   fi
@@ -61,16 +67,19 @@ fi
 
 variant="${1:-auto}"
 case "$variant" in
-  light | dark) ;;
-  auto) variant="$(detect_variant)" ;;
-  *) echo "usage: ${0##*/} [light|dark|auto|--watch]" >&2; exit 64 ;;
+light | dark) ;;
+auto) variant="$(detect_variant)" ;;
+*)
+  echo "usage: ${0##*/} [light|dark|auto|--watch]" >&2
+  exit 64
+  ;;
 esac
 
 # Publish the active variant so live shells can follow it (zshrc reads this each
 # prompt and re-themes on change). XDG_CACHE_HOME, with a ~/.cache fallback.
 theme_file="${XDG_CACHE_HOME:-$HOME/.cache}/term-theme.txt"
 mkdir -p -- "${theme_file%/*}"
-printf '%s\n' "$variant" > "$theme_file" 2>/dev/null || true
+printf '%s\n' "$variant" >"$theme_file" 2>/dev/null || true
 
 # Re-point one app's selector, only when it actually changes. Sets `changed`
 # so we reload terminals just once, and never when already on the variant.
@@ -86,7 +95,7 @@ repoint() {
 }
 
 repoint alacritty toml
-repoint kitty     conf
+repoint kitty conf
 
 # kitty reloads its config (and the symlink we just repointed) on SIGUSR1 —
 # only nudge it when something changed. alacritty live-reloads on file change.
