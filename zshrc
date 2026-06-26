@@ -149,7 +149,25 @@ fi
 
 ZSH_THEME=""
 DISABLE_AUTO_UPDATE="true"
+
+# export FAST_THEME="q-jmnemonic"
 export FAST_THEME="sv-plant"
+# export FAST_THEME="zdharma"
+# export FAST_THEME="base16"
+
+# VIVID_THEME is selected dynamically near the top of this file from the
+# terminal's background color. Uncomment one of these to pin it instead.
+# export VIVID_THEME='embark'
+# export VIVID_THEME='tokyonight-night'
+# export VIVID_THEME='carbonfox'
+# export VIVID_THEME='cyberdyne'
+# export VIVID_THEME='cyberpunk'
+# export VIVID_THEME='cyberdream'
+# export VIVID_THEME='cyberdream-light'
+# export VIVID_THEME='kanso-pearl'
+# export VIVID_THEME='modus-vivendi'
+# export VIVID_THEME='poimandres'
+# export VIVID_THEME='xcode-dark-hc'
 
 # Path to the ohmyzsh installation.
 #
@@ -241,6 +259,20 @@ if test -v ZSH; then
   # zoxide interactive jump
   #
   bindkey '^[z' _zoxide_zi_widget
+
+  # zsh-autocomplete: longest common substring matching
+  # zstyle ':completion:*:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' '+r:|[.]=**'
+
+  # zsh-autocomplete: Tab widgets
+  # zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
+  # zstyle ':autocomplete:*history*:*' insert-unambiguous yes
+  # zstyle ':autocomplete:menu-search:*' insert-unambiguous yes
+
+  # zsh-autocomplete: make Tab/ShiftTab cycle completions
+  # bindkey              '^I'         menu-complete
+  # bindkey "$terminfo[kcbt]" reverse-menu-complete
+  # bindkey -M menuselect              '^I'         menu-complete
+  # bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
 
 fi
 
