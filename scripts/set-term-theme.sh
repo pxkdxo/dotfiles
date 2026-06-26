@@ -7,11 +7,15 @@
 #   --watch        apply auto now, then re-apply on every GNOME color-scheme
 #                  change (Linux; needs gsettings). Used by theme-watch.service.
 #
-# Each app keeps the convention:
+# alacritty and kitty follow the symlink-selector convention:
 #   <app>/default.theme.EXT -> {light,dark}.theme.EXT -> colorschemes/<theme>.EXT
-# so switching is just re-pointing default.theme.EXT. This is the upstream
-# driver: once the terminal re-themes, the shell's OSC detection (see
-# detect-term-bg.sh) carries light/dark on to vivid, starship, and tmux.
+# switching = re-point default.theme.EXT (alacritty live-reloads; kitty on
+# SIGUSR1). foot is different: it has no config reload, but switches between its
+# own [colors-dark]/[colors-light] sections live on SIGUSR1 (dark) / SIGUSR2
+# (light), so it needs no symlink — just the signal.
+#
+# Upstream driver: the shell's OSC detection (detect-term-bg.sh) carries the
+# change downstream to vivid, starship, and tmux.
 set -eu
 
 config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -62,6 +66,12 @@ case "$variant" in
   *) echo "usage: ${0##*/} [light|dark|auto|--watch]" >&2; exit 64 ;;
 esac
 
+# Publish the active variant so live shells can follow it (zshrc reads this each
+# prompt and re-themes on change). XDG_CACHE_HOME, with a ~/.cache fallback.
+theme_file="${XDG_CACHE_HOME:-$HOME/.cache}/term-theme.txt"
+mkdir -p -- "${theme_file%/*}"
+printf '%s\n' "$variant" > "$theme_file" 2>/dev/null || true
+
 # Re-point one app's selector, only when it actually changes. Sets `changed`
 # so we reload terminals just once, and never when already on the variant.
 # $1 = app config subdir, $2 = file extension.
@@ -76,15 +86,21 @@ repoint() {
 }
 
 repoint alacritty toml
-repoint foot      ini
 repoint kitty     conf
 
-# Reload only if something changed. alacritty live-reloads on file change;
-# foot and kitty reload their config on SIGUSR1.
+# kitty reloads its config (and the symlink we just repointed) on SIGUSR1 —
+# only nudge it when something changed. alacritty live-reloads on file change.
 if [ "$changed" -eq 1 ]; then
-  for app in foot kitty; do
-    pkill -USR1 -x "$app" 2>/dev/null || true
-  done
+  pkill -USR1 -x kitty 2>/dev/null || true
+fi
+
+# foot switches between its own [colors-dark]/[colors-light] sections live:
+# SIGUSR1 -> dark, SIGUSR2 -> light. No symlink, no reload. Safe no-op when
+# foot is not running; its trigger is event-driven, so this never spams.
+if [ "$variant" = light ]; then
+  pkill -USR2 -x foot 2>/dev/null || true
+else
+  pkill -USR1 -x foot 2>/dev/null || true
 fi
 
 echo "theme: $variant"

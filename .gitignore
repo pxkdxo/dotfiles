@@ -14,7 +14,7 @@
 
 !/*-dotfiles.sh
 
-!/scripts/*.sh
+!/scripts/*
 
 !/asoundrc
 
@@ -35,7 +35,6 @@
 !/bat/themes/**
 
 !/colors-*.py
-!/colorschemes.py
 !/colorschemes-*.py
 !/colorschemes/*.py
 !/colorschemes/*.sh
@@ -47,6 +46,11 @@
 
 !/foot/*.ini
 !/foot/colorschemes
+
+!/ghostty/config
+!/ghostty/*.theme
+!/ghostty/colorschemes
+!/ghostty/themes
 
 !/fzf/fzfrc
 !/fzf/*.bash

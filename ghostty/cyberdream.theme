@@ -1,0 +1,3 @@
+# cyberdream — Ghostty switches between these with the OS appearance.
+# Names resolve to themes/<name> (-> colorschemes/ghostty/<name>).
+theme = light:cyberdream-light,dark:cyberdream

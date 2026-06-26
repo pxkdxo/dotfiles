@@ -1,0 +1,22 @@
+# Ghostty — mirrors the other terminals (size 12.5, beam cursor, ~0.84 opacity,
+# small padding) with SpaceMono. Light/dark is native: the theme line in
+# default.theme switches with the OS appearance, so no set-term-theme signal is
+# needed — Ghostty follows the same system appearance everything else does.
+
+font-family = SpaceMono Nerd Font
+font-size = 12.5
+
+cursor-style = bar
+cursor-style-blink = false
+
+background-opacity = 0.84
+
+window-padding-x = 5
+window-padding-y = 4
+
+macos-option-as-alt = true
+confirm-close-surface = false
+
+# Active colorscheme: default.theme -> <name>.theme (a light:/dark: pair Ghostty
+# follows automatically). Re-point default.theme to switch schemes.
+config-file = default.theme

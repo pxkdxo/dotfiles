@@ -77,21 +77,54 @@ _tmux_theme() {
   tmux source-file -F "#{@theme_dir}/tmux-theme.conf" 2>/dev/null
 }
 
-term-bg-resync() {
+# Apply a known background (light|dark) to this shell: export the signal, map
+# VIVID_THEME (the lscolors precmd then regenerates LS_COLORS), and refresh
+# starship + tmux. No detection — the caller supplies the variant.
+_term_bg_apply() {
   emulate -L zsh
-  local bg
-  (( $+functions[detect_term_bg] )) && bg="$(detect_term_bg)"
-  export TERM_BACKGROUND="${bg:-${THEME_VARIANT:-dark}}"
-  case $TERM_BACKGROUND in
+  export TERM_BACKGROUND="$1"
+  case $1 in
     light) export VIVID_THEME=cyberdream-light ;;
     *)     export VIVID_THEME=cyberdream ;;
   esac
   _starship_palette
   _tmux_theme
 }
-# Detect once per terminal; reuse the inherited value in nested shells but still
-# theme this tmux pane (a new pane needs it even when detection is skipped).
-if [[ -v TERM_BACKGROUND ]]; then _tmux_theme; else term-bg-resync; fi
+
+term-bg-resync() {
+  emulate -L zsh
+  local bg
+  (( $+functions[detect_term_bg] )) && bg="$(detect_term_bg)"
+  _term_bg_apply "${bg:-${THEME_VARIANT:-dark}}"
+}
+
+# Follow set-term-theme live: it writes the active variant to this file; check
+# it cheaply each prompt (zsh reads $(<file) without a fork) and re-apply only
+# when it *changes* — so a manual terminal tweak isn't clobbered by a stale file.
+_term_bg_file="${XDG_CACHE_HOME:-$HOME/.cache}/term-theme.txt"
+_term_bg_watch() {
+  emulate -L zsh
+  local want
+  [[ -r $_term_bg_file ]] && want="$(<$_term_bg_file)" || return
+  [[ $want == $_term_bg_seen ]] && return
+  _term_bg_seen=$want
+  [[ -n $want ]] && _term_bg_apply "$want"
+}
+
+# Establish this shell's background, and seed the watcher so the first prompt
+# doesn't re-apply over it: a fresh shell trusts OSC detection (seed from the
+# file, so a stale file can't clobber it); a nested shell seeds from the
+# inherited value (so the watcher still catches up if the file moved on).
+typeset -g _term_bg_seen=
+if [[ -v TERM_BACKGROUND ]]; then
+  _tmux_theme
+  _term_bg_seen=$TERM_BACKGROUND
+else
+  term-bg-resync
+  [[ -r $_term_bg_file ]] && _term_bg_seen="$(<$_term_bg_file)"
+fi
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _term_bg_watch
 # Zoxide (use 'd' / 'di')
 #
 if command -v zoxide > /dev/null; then
