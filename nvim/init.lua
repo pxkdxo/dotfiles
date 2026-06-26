@@ -18,43 +18,56 @@ vim.g.maplocalleader = ";"
 -- <Esc> to return to normal mode (even from a terminal)
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true })
 
--- Preferred colorschemes, with builtin fallbacks at the tail
+-- Match Neovim's background to the terminal's (the shell exports $TERM_BACKGROUND)
+-- so background-aware colorschemes render correctly and rotation can filter by it.
+if vim.env.TERM_BACKGROUND == "light" or vim.env.TERM_BACKGROUND == "dark" then
+  vim.o.background = vim.env.TERM_BACKGROUND
+end
+
+-- Preferred colorschemes, with builtin fallbacks at the tail. Entries are a
+-- name or { "name", light = <bool>?, dark = <bool>? }; the tags let rotation
+-- filter to the active background. Untagged entries suit both; adaptive schemes
+-- (flexoki/oxocarbon/melange follow &background) are tagged for both.
 vim.g.colorschemes = {
-  "dawnfox",
-  "xcodedarkhc",
-  "github_light",
-  "carbonfox",
-  "flexoki",
-  "cyberdream",
-  "dayfox",
-  "github_dark_dimmed",
+  { "dawnfox", light = true },
+  { "xcodedarkhc", dark = true },
+  { "github_light", light = true },
+  { "carbonfox", dark = true },
+  { "flexoki", light = true, dark = true },
+  { "cyberdream", dark = true },
+  { "dayfox", light = true },
+  { "github_dark_dimmed", dark = true },
   "oasis-dune",
   "oasis-desert",
-  "flexoki-light",
-  "oxocarbon",
-  "xcodelight",
-  "rose-pine",
-  "rose-pine-dawn",
-  "melange",
-  "blue",
-  "lunaperche",
-  "shine",
-  "wildcharm",
-  "habamax",
+  { "flexoki-light", light = true },
+  { "oxocarbon", light = true, dark = true },
+  { "xcodelight", light = true },
+  { "rose-pine", dark = true },
+  { "rose-pine-dawn", light = true },
+  { "melange", light = true, dark = true },
+  { "blue", dark = true },
+  { "lunaperche", dark = true },
+  { "shine", light = true },
+  { "wildcharm", dark = true },
+  { "habamax", dark = true },
 }
 
 -- Load plugins
 config.lazy.setup({
   defaults = { cond = not vim.g.vscode },
   spec = { { import = "plugins" } },
-  install = { colorscheme = vim.g.colorschemes },
+  install = {
+    colorscheme = vim.tbl_map(function(c)
+      return type(c) == "table" and c[1] or c
+    end, vim.g.colorschemes),
+  },
   checker = { enabled = false },
 })
 
 -- If not running in VSCode...
 if not vim.g.vscode then
   local colors = require("utils.colors")
-  colors.setup({ colorschemes = vim.g.colorschemes }).shuffle()
+  colors.setup({ colorschemes = vim.g.colorschemes }).restore()
 
   -- Function keys
   vim.keymap.set("n", "<F1>", function()

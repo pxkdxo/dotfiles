@@ -262,8 +262,9 @@ function Playlist:skip(n)
 end
 
 ---@param shuffle boolean?
+---@param ignore (fun(element: any): boolean)?  -- skip elements where this returns true
 ---@return any?
-function Playlist:next(shuffle)
+function Playlist:next(shuffle, ignore)
   if self.ring:is_empty() then
     return nil
   end
@@ -280,7 +281,7 @@ function Playlist:next(shuffle)
   end
   local start = self.cursor
   repeat
-    if self.play(self.cursor.data) then
+    if not (ignore and ignore(self.cursor.data)) and self.play(self.cursor.data) then
       return self.cursor.data
     end
     self.cursor = self.cursor.next
@@ -288,8 +289,9 @@ function Playlist:next(shuffle)
   return nil
 end
 
+---@param ignore (fun(element: any): boolean)?  -- skip elements where this returns true
 ---@return any?
-function Playlist:prev()
+function Playlist:prev(ignore)
   if self.ring:is_empty() then
     return nil
   end
@@ -300,7 +302,7 @@ function Playlist:prev()
   end
   local start = self.cursor
   repeat
-    if self.play(self.cursor.data) then
+    if not (ignore and ignore(self.cursor.data)) and self.play(self.cursor.data) then
       return self.cursor.data
     end
     self.cursor = self.cursor.prev
@@ -308,13 +310,62 @@ function Playlist:prev()
   return nil
 end
 
+-- Colorscheme entries are either a name (string) or a table
+-- { "name", light = <bool>?, dark = <bool>? }. name_of pulls the name; suits
+-- says whether an entry fits a given &background ("light"/"dark") — an untagged
+-- entry (a bare string, or a table with neither key set) suits both.
+---@param element any
+---@return string
+local function name_of(element)
+  if type(element) == "table" then
+    return element[1]
+  end
+  return element
+end
+
+---@param element any
+---@param background string  -- "light" or "dark"
+---@return boolean
+local function suits(element, background)
+  if type(element) ~= "table" then
+    return true
+  end
+  if element.light == nil and element.dark == nil then
+    return true
+  end
+  return element[background] == true
+end
+
 function M.setup(opts)
   opts = opts or {}
   local colorschemes = opts.colorschemes or vim.g.colorschemes or {}
+  local cache = (vim.env.XDG_CACHE_HOME or vim.env.HOME .. "/.cache") .. "/nvim-colorscheme.txt"
 
-  M.playlist = Playlist:new(colorschemes, function(x)
-    return pcall(vim.cmd.colorscheme, x)
+  M.playlist = Playlist:new(colorschemes, function(element)
+    return pcall(vim.cmd.colorscheme, name_of(element))
   end)
+
+  -- An ignore predicate that skips entries not suiting the current &background,
+  -- so rotation stays within the active light/dark set.
+  local function off_background()
+    local background = vim.o.background
+    return function(element)
+      return not suits(element, background)
+    end
+  end
+
+  -- Remember the active colorscheme across launches: rewrite the cache on every
+  -- change (manual via the keymaps below, or any :colorscheme).
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    desc = "Cache the active colorscheme",
+    callback = function(ev)
+      local file = io.open(cache, "w")
+      if file then
+        file:write(ev.match .. "\n")
+        file:close()
+      end
+    end,
+  })
 
   function M.add(name)
     M.playlist:add(name)
@@ -326,38 +377,56 @@ function M.setup(opts)
       print("Add colorscheme names to `vim.g.colorschemes`")
     else
       M.playlist:skip()
-      print("Skipped colorscheme: " .. M.playlist.cursor.data)
+      print("Skipped colorscheme: " .. name_of(M.playlist.cursor.data))
     end
   end
 
   function M.next()
     if M.playlist.ring:is_empty() then
-      print("Add colorscheme names to  `vim.g.colorschemes`")
-    elseif M.playlist:next() then
+      print("Add colorscheme names to `vim.g.colorschemes`")
+    elseif M.playlist:next(false, off_background()) then
       print("Set colorscheme: " .. vim.g.colors_name)
     else
-      print("None of the colorschemes in `vim.g.colorschemes` were found on the system")
+      print("No colorscheme in `vim.g.colorschemes` suits background=" .. vim.o.background)
     end
   end
 
   function M.prev()
     if M.playlist.ring:is_empty() then
       print("Add colorscheme names to `vim.g.colorschemes`")
-    elseif M.playlist:prev() then
+    elseif M.playlist:prev(off_background()) then
       print(vim.g.colors_name)
     else
-      print("None of the colorschemes in `vim.g.colorschemes` were found on the system")
+      print("No colorscheme in `vim.g.colorschemes` suits background=" .. vim.o.background)
     end
   end
 
   function M.shuffle()
     if M.playlist.ring:is_empty() then
       print("Add colorscheme names to `vim.g.colorschemes`")
-    elseif M.playlist:next(true) then
+    elseif M.playlist:next(true, off_background()) then
       print(vim.g.colors_name)
     else
-      print("None of the colorschemes in `vim.g.colorschemes` were found on the system")
+      print("No colorscheme in `vim.g.colorschemes` suits background=" .. vim.o.background)
     end
+  end
+
+  -- On launch: restore the cached colorscheme if it still loads, else shuffle
+  -- (filtered to the current background).
+  function M.restore()
+    if M.playlist.ring:is_empty() then
+      print("Add colorscheme names to `vim.g.colorschemes`")
+      return nil
+    end
+    local file = io.open(cache, "r")
+    local cached = file and file:read("*l") or nil
+    if file then
+      file:close()
+    end
+    if cached and cached ~= "" and pcall(vim.cmd.colorscheme, cached) then
+      return cached
+    end
+    return M.shuffle()
   end
 
   return M
