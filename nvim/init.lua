@@ -24,25 +24,27 @@ if vim.env.TERM_BACKGROUND == "light" or vim.env.TERM_BACKGROUND == "dark" then
   vim.o.background = vim.env.TERM_BACKGROUND
 end
 
--- Preferred colorschemes, with builtin fallbacks at the tail. Entries are a
--- name or { "name", light = <bool>?, dark = <bool>? }; the tags let rotation
--- filter to the active background. Untagged entries suit both; adaptive schemes
--- (flexoki/oxocarbon/melange follow &background) are tagged for both.
-vim.g.colorschemes = {
+-- Preferred colorschemes (builtin fallbacks at the tail), annotated with
+-- optional light/dark tags so rotation can filter to the active background.
+-- Untagged entries suit both; adaptive schemes (cyberdream/rose-pine via
+-- variant="auto", flexoki/oxocarbon/melange follow &background) are tagged for
+-- both. Kept as a Lua local: vim.g can't hold tables with mixed integer+string
+-- keys, so vim.g.colorschemes below holds just the names.
+local colorschemes = {
   { "dawnfox", light = true },
   { "xcodedarkhc", dark = true },
   { "github_light", light = true },
   { "carbonfox", dark = true },
   { "flexoki", light = true, dark = true },
-  { "cyberdream", dark = true },
+  { "cyberdream", light = true, dark = true },
   { "dayfox", light = true },
   { "github_dark_dimmed", dark = true },
-  "oasis-dune",
-  "oasis-desert",
+  { "oasis-dune", light = true, dark = true },
+  { "oasis-desert", light = true, dark = true },
   { "flexoki-light", light = true },
   { "oxocarbon", light = true, dark = true },
   { "xcodelight", light = true },
-  { "rose-pine", dark = true },
+  { "rose-pine", light = true, dark = true },
   { "rose-pine-dawn", light = true },
   { "melange", light = true, dark = true },
   { "blue", dark = true },
@@ -52,22 +54,23 @@ vim.g.colorschemes = {
   { "habamax", dark = true },
 }
 
+-- Flat name list for lazy and :colorscheme discovery (vim.g needs plain values).
+vim.g.colorschemes = vim.tbl_map(function(scheme)
+  return type(scheme) == "table" and scheme[1] or scheme
+end, colorschemes)
+
 -- Load plugins
 config.lazy.setup({
   defaults = { cond = not vim.g.vscode },
   spec = { { import = "plugins" } },
-  install = {
-    colorscheme = vim.tbl_map(function(c)
-      return type(c) == "table" and c[1] or c
-    end, vim.g.colorschemes),
-  },
+  install = { colorscheme = vim.g.colorschemes },
   checker = { enabled = false },
 })
 
 -- If not running in VSCode...
 if not vim.g.vscode then
   local colors = require("utils.colors")
-  colors.setup({ colorschemes = vim.g.colorschemes }).restore()
+  colors.setup({ colorschemes = colorschemes }).restore()
 
   -- Function keys
   vim.keymap.set("n", "<F1>", function()

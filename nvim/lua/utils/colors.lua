@@ -339,7 +339,8 @@ end
 function M.setup(opts)
   opts = opts or {}
   local colorschemes = opts.colorschemes or vim.g.colorschemes or {}
-  local cache = (vim.env.XDG_CACHE_HOME or vim.env.HOME .. "/.cache") .. "/nvim-colorscheme.txt"
+  local cache_dir = vim.env.XDG_CACHE_HOME or vim.env.HOME .. "/.cache"
+  local cache = cache_dir .. "/nvim-colorscheme.txt"
 
   M.playlist = Playlist:new(colorschemes, function(element)
     return pcall(vim.cmd.colorscheme, name_of(element))
@@ -428,6 +429,45 @@ function M.setup(opts)
     end
     return M.shuffle()
   end
+
+  -- Find the annotated entry for the active colorscheme (matched by name).
+  local function active_entry()
+    for _, element in ipairs(colorschemes) do
+      if name_of(element) == vim.g.colors_name then
+        return element
+      end
+    end
+    return nil
+  end
+
+  -- Follow the terminal's light/dark live. set-term-theme publishes the active
+  -- variant to this file (the same one the shell's precmd watcher reads); on
+  -- focus, match &background and keep the colorscheme suitable.
+  local term_theme_file = cache_dir .. "/term-theme.txt"
+  function M.sync()
+    local file = io.open(term_theme_file, "r")
+    local want = file and file:read("*l") or nil
+    if file then
+      file:close()
+    end
+    if (want ~= "light" and want ~= "dark") or want == vim.o.background then
+      return
+    end
+    vim.o.background = want
+    local current = active_entry()
+    if current and suits(current, want) then
+      pcall(vim.cmd.colorscheme, name_of(current))
+    else
+      M.shuffle()
+    end
+  end
+
+  vim.api.nvim_create_autocmd("FocusGained", {
+    desc = "Follow the terminal's light/dark theme",
+    callback = function()
+      M.sync()
+    end,
+  })
 
   return M
 end
