@@ -24,11 +24,4 @@ elif command -v vimcolor > /dev/null; then
   export LESSCOLORIZER='vimcolor'
 fi
 
-# Use lesspipe.sh pre-processor
-# if command -v lesspipe.sh > /dev/null; then
-#   export LESSOPEN='lesspipe.sh %s'
-# else
-#   unset LESSOPEN
-# fi
-
 # vim:ft=sh

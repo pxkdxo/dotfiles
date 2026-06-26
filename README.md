@@ -116,7 +116,8 @@ few; the rest enhance specific features.
 actions — file explorer (`F1`), fzf pickers and search/replace (`F2`–`F6`), search-highlight
 toggle (`F10`).
 
-In Zsh, `^S` triggers interactive directory completion (`cd` with fzf).
+In Zsh, `Ctrl+Space` (`^@`) triggers interactive directory completion (`cd` with fzf);
+`Alt+z` opens zoxide's interactive jump picker.
 
 ---
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # java.sh: java environment config
 
-# Keep JAVA_HOME is it's already valid
+# Keep JAVA_HOME if it's already valid
 if test -d "${JAVA_HOME:+${JAVA_HOME}/bin}"; then
   export JAVA_HOME
 else
