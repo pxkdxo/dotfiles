@@ -268,13 +268,15 @@ function Playlist:next(shuffle, ignore)
   if self.ring:is_empty() then
     return nil
   end
+  local advanced = self.cursor ~= nil
   if self.cursor == nil then
     self.cursor = self.ring.head
   else
     self.cursor = self.cursor.next
   end
   if shuffle then
-    local steps = math.random(self.ring.length) - 1
+    local n = (advanced and self.ring.length > 1) and self.ring.length - 1 or self.ring.length
+    local steps = math.random(n) - 1
     for _ = 1, steps do
       self.cursor = self.cursor.next
     end
