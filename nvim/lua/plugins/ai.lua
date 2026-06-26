@@ -59,7 +59,8 @@ return {
       -- this file can contain specific instructions for your project
       instructions_file = "avante.md",
       mode = "agentic",
-      provider = "cursor-agent",
+      -- provider = "cursor-agent",
+      provider = "claude-code",
       auto_suggestions_provider = "copilot",
       behaviour = {
         auto_suggestions = false, -- inline suggestions handled by copilot.lua
@@ -85,13 +86,13 @@ return {
           },
         },
         ["claude-code"] = {
-          auth_type = "max",
           command = "npx",
-          args = { "@zed-industries/claude-code-acp" },
+          args = { "@agentclientprotocol/claude-agent-acp" },
           env = {
             NODE_NO_WARNINGS = "1",
-            CLAUDE_CODE_OAUTH_TOKEN = os.getenv("CLAUDE_CODE_OAUTH_TOKEN"),
             ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY"),
+            CLAUDE_CODE_OAUTH_TOKEN = os.getenv("CLAUDE_CODE_OAUTH_TOKEN"),
+            ACP_PERMISSION_MODE = "bypassPermissions",
           },
         },
       },
@@ -299,3 +300,4 @@ return {
     },
   },
 }
+
