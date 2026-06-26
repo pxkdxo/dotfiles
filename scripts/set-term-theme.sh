@@ -6,16 +6,6 @@
 #   auto           follow the system appearance, else time of day (default)
 #   --watch        apply auto now, then re-apply on every GNOME color-scheme
 #                  change (Linux; needs gsettings). Used by theme-watch.service.
-#
-# alacritty and kitty follow the symlink-selector convention:
-#   <app>/default.theme.EXT -> {light,dark}.theme.EXT -> colorschemes/<theme>.EXT
-# switching = re-point default.theme.EXT (alacritty live-reloads; kitty on
-# SIGUSR1). foot is different: it has no config reload, but switches between its
-# own [colors-dark]/[colors-light] sections live on SIGUSR1 (dark) / SIGUSR2
-# (light), so it needs no symlink — just the signal.
-#
-# Upstream driver: the shell's OSC detection (detect-term-bg.sh) carries the
-# change downstream to vivid, starship, and tmux.
 set -eu
 
 config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -103,9 +93,7 @@ if [ "$changed" -eq 1 ]; then
   pkill -USR1 -x kitty 2>/dev/null || true
 fi
 
-# foot switches between its own [colors-dark]/[colors-light] sections live:
-# SIGUSR1 -> dark, SIGUSR2 -> light. No symlink, no reload. Safe no-op when
-# foot is not running; its trigger is event-driven, so this never spams.
+# foot: SIGUSR1 -> dark, SIGUSR2 -> light (no symlink, no reload needed).
 if [ "$variant" = light ]; then
   pkill -USR2 -x foot 2>/dev/null || true
 else

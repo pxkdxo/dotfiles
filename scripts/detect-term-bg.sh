@@ -4,14 +4,7 @@
 #
 # Dual purpose:
 #   * SOURCE it  -> defines detect_term_bg(); no other side effects.
-#                   Lets a shell call it in-process, with no extra shell spawn.
 #   * EXECUTE it -> prints the verdict. Add -q/--quiet for just "light"/"dark".
-#
-# The function body is POSIX sh. The only shell-specific bits are guarded:
-#   * `local` for scoping (ubiquitous, though not strictly POSIX),
-#   * `emulate sh` under zsh so unquoted word-splitting matches POSIX when the
-#     function is called in-process from an interactive zsh,
-#   * the sourced-vs-executed test, which inspects zsh/bash internals.
 
 detect_term_bg() {
   # zsh does not word-split unquoted expansions by default; match POSIX so the
@@ -31,10 +24,7 @@ detect_term_bg() {
   local saved reply rest comp rgb r g b lightness bel oldifs
   saved="$(stty -g </dev/tty 2>/dev/null)" || return 1
 
-  # min 0 + time 2 = non-canonical read with a 0.2s timeout (tenths of a
-  # second). A read that times out with no data returns EOF, so a single dd
-  # collects the whole reply and stops shortly after the last byte — or
-  # immediately if the terminal ignores the query.
+  # min 0 + time 2 = non-canonical, 0.2 s timeout (time is in tenths of a second).
   stty -echo -icanon min 0 time 2 </dev/tty
   # Multiplexers (tmux 3.x, Zellij) answer OSC 11 themselves, so a plain query
   # works inside them with no passthrough wrapping.
@@ -103,9 +93,7 @@ detect_term_bg__main() {
   esac
 }
 
-# Run only when executed directly, not when sourced. The sourced-vs-executed
-# test covers zsh and bash (the shells we source into); under a bare POSIX sh
-# the file is meant to be executed, so falling through to main is correct.
+# Run only when executed directly, not when sourced.
 detect_term_bg__sourced=0
 if [ -n "${ZSH_VERSION-}" ]; then
   case "${ZSH_EVAL_CONTEXT-}" in
