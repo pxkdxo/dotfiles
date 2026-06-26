@@ -348,6 +348,38 @@ function M.setup(opts)
     return pcall(vim.cmd.colorscheme, name_of(element))
   end)
 
+  -- The cache remembers the last colorscheme per &background, one
+  -- "<variant> <name>" line each, so a light/dark flip restores the theme you
+  -- last used in that variant instead of a random one.
+  ---@return table<string, string>
+  local function read_cache()
+    local remembered = {}
+    local file = io.open(cache, "r")
+    if file then
+      for line in file:lines() do
+        local variant, name = line:match("^(%S+)%s+(.+)$")
+        if variant == "light" or variant == "dark" then
+          remembered[variant] = name
+        end
+      end
+      file:close()
+    end
+    return remembered
+  end
+
+  ---@param remembered table<string, string>
+  local function write_cache(remembered)
+    local file = io.open(cache, "w")
+    if file then
+      for _, variant in ipairs({ "light", "dark" }) do
+        if remembered[variant] then
+          file:write(variant .. " " .. remembered[variant] .. "\n")
+        end
+      end
+      file:close()
+    end
+  end
+
   -- An ignore predicate that skips entries not suiting the current &background,
   -- so rotation stays within the active light/dark set.
   local function off_background()
@@ -357,16 +389,15 @@ function M.setup(opts)
     end
   end
 
-  -- Remember the active colorscheme across launches: rewrite the cache on every
-  -- change (manual via the keymaps below, or any :colorscheme).
+  -- Remember the active colorscheme per &background across launches: rewrite the
+  -- matching variant entry on every change (manual via the keymaps below, or any
+  -- :colorscheme).
   vim.api.nvim_create_autocmd("ColorScheme", {
-    desc = "Cache the active colorscheme",
+    desc = "Cache the active colorscheme per background",
     callback = function(ev)
-      local file = io.open(cache, "w")
-      if file then
-        file:write(ev.match .. "\n")
-        file:close()
-      end
+      local remembered = read_cache()
+      remembered[vim.o.background] = ev.match
+      write_cache(remembered)
     end,
   })
 
@@ -414,19 +445,15 @@ function M.setup(opts)
     end
   end
 
-  -- On launch: restore the cached colorscheme if it still loads, else shuffle
-  -- (filtered to the current background).
+  -- On launch: restore the cached colorscheme for the current background if it
+  -- still loads, else shuffle (filtered to that background).
   function M.restore()
     if M.playlist.ring:is_empty() then
       print("Add colorscheme names to `vim.g.colorschemes`")
       return nil
     end
-    local file = io.open(cache, "r")
-    local cached = file and file:read("*l") or nil
-    if file then
-      file:close()
-    end
-    if cached and cached ~= "" and pcall(vim.cmd.colorscheme, cached) then
+    local cached = read_cache()[vim.o.background]
+    if cached and pcall(vim.cmd.colorscheme, cached) then
       return cached
     end
     return M.shuffle()
@@ -456,12 +483,19 @@ function M.setup(opts)
       return
     end
     vim.o.background = want
+    -- Keep the current scheme if it suits the new variant (re-applying refreshes
+    -- adaptive schemes); otherwise restore that variant's cached theme, and only
+    -- shuffle as a last resort.
     local current = active_entry()
     if current and suits(current, want) then
       pcall(vim.cmd.colorscheme, name_of(current))
-    else
-      M.shuffle()
+      return
     end
+    local cached = read_cache()[want]
+    if cached and pcall(vim.cmd.colorscheme, cached) then
+      return
+    end
+    M.shuffle()
   end
 
   vim.api.nvim_create_autocmd("FocusGained", {

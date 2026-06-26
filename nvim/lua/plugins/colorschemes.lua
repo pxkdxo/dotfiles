@@ -49,8 +49,9 @@ return {
       borderless_pickers = true,
       -- Set terminal colors used in `:terminal`
       terminal_colors = true,
-      -- Improve start up time by caching highlights. Generate cache with :CyberdreamBuildCache and clear with :CyberdreamClearCache
-      cache = true,
+      -- Off: the highlight cache is built for one variant and isn't rebuilt on a
+      -- light/dark flip (variant="auto"), so it renders the wrong variant.
+      cache = false,
       -- Enable or disable specific extensions
       extensions = {
         cmp = true,
