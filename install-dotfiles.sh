@@ -125,9 +125,15 @@ optchars=$2
 treepath=$3
 destpath=$4
 filename=$5
-# skip: this script, dotfiles already prefixed with '.', and markdown files
-case "${filename}" in "${caller}"|.*|*.md) exit 0 ;; esac
-ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}" || :
+# skip: this script, dotfiles already prefixed with '.', markdown files, and
+# XDG-specific directories that have canonical locations outside ~/.*
+case "${filename}" in
+  "${caller}"|.*|*.md|environment.d|launchd|systemd|user-tmpfiles.d)
+    exit 0
+    ;;
+esac
+ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}" \
+  || case "${optchars}" in *f*) exit 1 ;; esac
 ' -- "${argzero_name}" "${ln_opts}" "${tree_path}" "${home_path}"
 
 # On macOS, link launchd agent plists into ~/Library/LaunchAgents

@@ -349,8 +349,21 @@ class GitSource(SourceBackend):
         """
         status = _git(["git", "status", "--porcelain", "-uall"], cwd=dest, quiet=True)
         stashed = bool(status.stdout.strip())
+        conflict_prefixes = {"UU", "AA", "DD", "AU", "UA", "DU", "UD"}
+        if any(line[:2] in conflict_prefixes for line in status.stdout.splitlines()):
+            print(
+                f"Unresolved conflicts in {dest} from a previous failed sync; "
+                f"find the stash with: git -C {dest} stash list\n"
+                f"then restore with: git -C {dest} stash pop stash@{{N}}",
+                file=sys.stderr,
+            )
+            raise subprocess.CalledProcessError(1, ["git", "stash", "pop"], "", "")
+        stash_msg = f"colorschemes-sync: {self.url}"
         if stashed:
-            _ = _git(["git", "stash", "push", "--include-untracked"], cwd=dest)
+            _ = _git(
+                ["git", "stash", "push", "--include-untracked", "--message", stash_msg],
+                cwd=dest,
+            )
 
         try:
             fetch = [
@@ -369,8 +382,9 @@ class GitSource(SourceBackend):
                 pop = _git(["git", "stash", "pop"], cwd=dest, check=False)
                 if pop.returncode != 0:
                     print(
-                        f"Local changes preserved as a stash entry in {dest}; "
-                        f"resolve manually with: git -C {dest} stash pop",
+                        f"Local changes preserved as stash '{stash_msg}' in {dest}; "
+                        f"find it with: git -C {dest} stash list\n"
+                        f"then restore with: git -C {dest} stash pop stash@{{N}}",
                         file=sys.stderr,
                     )
                     # Don't mask an in-flight exception with the stash-pop error.
