@@ -420,10 +420,6 @@ if [[ -d ~/.bashrc.d ]]; then
   sourced ~/.bashrc.d
 fi
 
-if [[ -r $HOME/.local/share/../bin/env ]]; then
-  . "$HOME/.local/share/../bin/env"
-fi
-
 if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}/broot/launcher/bash/br"
 fi
