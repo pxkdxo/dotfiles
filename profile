@@ -168,7 +168,7 @@ path_insert() {
           path_discard "$1"
           set -- "$1" "$2" "" "${PATH:+${PATH}:}"
           while test -n "$4" && test "$2" -ne 0; do
-            set -- "$1" "$(($2 + 1))" "${3:+$3:}${4%%:*}" "${4#*:}"
+            set -- "$1" "$(($2 - 1))" "${3:+$3:}${4%%:*}" "${4#*:}"
           done
           path_discard "$1"
           PATH="${4%:}" && export PATH="${3:+$3:}$1${PATH:+:${PATH}}"
