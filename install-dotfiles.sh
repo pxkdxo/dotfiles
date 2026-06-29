@@ -40,6 +40,8 @@ else
   ln_replace=''
 fi
 
+dry_run='' # -n: don't activate services (preview-only)
+
 OPTIND=1
 option=''
 optstr=':hnif'
@@ -60,7 +62,10 @@ while getopts "${optstr}" option; do
     printf 'usage: %s\n' "${usage}" >&2
     exit 2
     ;;
-  'n') ln_replace='' ;;
+  'n')
+    ln_replace=''
+    dry_run='1'
+    ;;
   'i') ln_replace='i' ;;
   'f') ln_replace='f' ;;
   esac
@@ -173,6 +178,22 @@ dst_dir=$3
 filename=$4
 ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
 ' -- "${ln_opts}" "$(relpath "${repo_path}/launchd/agents" "${launch_agents}")" "${launch_agents}" || :
+
+  # Load the lightweight agents now instead of at next login. Needs a GUI
+  # session (gui/$UID), so probe that domain and skip over SSH. mcphub is
+  # heavyweight and stays manual (see CLAUDE.md).
+  launch_domain="gui/$(id -u)"
+  if test -z "${dry_run}" && launchctl print "${launch_domain}" > /dev/null 2>&1; then
+    for plist in "${launch_agents}"/com.patrickdeyoreo.*.plist; do
+      test -e "${plist}" || continue
+      label="${plist##*/}"
+      label="${label%.plist}"
+      case "${label}" in *mcphub*) continue ;; esac
+      # bootstrap loads it; if already loaded, kickstart -k restarts it.
+      launchctl bootstrap "${launch_domain}" "${plist}" 2> /dev/null ||
+        launchctl kickstart -k "${launch_domain}/${label}" 2> /dev/null || :
+    done
+  fi
   ;;
 esac
 
@@ -183,10 +204,22 @@ esac
 case "$(uname -s)" in Linux)
   if command -v systemctl > /dev/null 2>&1; then
     systemctl --user daemon-reload 2> /dev/null || :
+    # Starting units needs a reachable user bus; else just register for login.
+    if test -z "${dry_run}" && systemctl --user list-units > /dev/null 2>&1; then
+      have_session=1
+    else
+      have_session=''
+    fi
     for unit in "${repo_path}"/systemd/user/*.service "${repo_path}"/systemd/user/*.socket; do
       test -e "${unit}" || continue
-      case "${unit##*/}" in *@.*) continue ;; esac
-      systemctl --user enable "${unit##*/}" 2> /dev/null || :
+      unit_name="${unit##*/}"
+      case "${unit_name}" in *@.*) continue ;; esac # templated: needs an instance
+      systemctl --user enable "${unit_name}" 2> /dev/null || :
+      case "${unit_name}" in mcphub.*) continue ;; esac # heavyweight: stays manual
+      if test -n "${have_session}"; then
+        systemctl --user enable --now "${unit_name}" 2> /dev/null || :
+        systemctl --user try-restart "${unit_name}" 2> /dev/null || : # pick up edits
+      fi
     done
   fi
   ;;
