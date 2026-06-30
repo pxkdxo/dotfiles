@@ -1,304 +1,180 @@
 return {
   {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
+    "saghen/blink.cmp",
+    -- Pin to v1 and use the prebuilt Rust fuzzy matcher (no local build needed).
+    -- v2 is mid-flight with breaking changes; revisit once it stabilizes.
+    version = "1.*",
+    event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
-      "hrsh7th/cmp-buffer", -- Buffer completions
-      "hrsh7th/cmp-cmdline", -- Cmdline completions
-      "hrsh7th/cmp-path", -- Path completions
-      "hrsh7th/cmp-nvim-lsp", -- LSP completions
-      "hrsh7th/cmp-nvim-lua", -- Neovim Lua API completions
-      "hrsh7th/cmp-nvim-lsp-document-symbol",
-      "L3MON4D3/LuaSnip", -- Snippet engine
-      "saadparwaiz1/cmp_luasnip", -- Snippet completions
-      "petertriho/cmp-git", -- Git
-      -- "PaterJason/cmp-conjure", -- Conjure
-      "ph1losof/ecolog.nvim", -- ecolog
-      -- "zbirenbaum/copilot-cmp", -- GitHub Copilot completions
-      "nvim-mini/mini.icons", -- Completion entry icons
-      "windwp/nvim-autopairs", -- Autopairs trigger
+      "L3MON4D3/LuaSnip", -- snippet engine (preset = "luasnip")
+      "rafamadriz/friendly-snippets",
+      "Kaiser-Yang/blink-cmp-avante", -- avante @mention / / command completion
+      "Kaiser-Yang/blink-cmp-git", -- native git/github commit/issue/PR/mention source
+      "nvim-mini/mini.icons", -- kind icons in the menu
+      -- lazydev.nvim and ecolog.nvim ship their own native blink providers.
+      -- codecompanion.nvim self-registers its blink source on setup.
     },
     opts = {
-      experimental = {
-        ghost_text = false, -- Copilot owns inline ghost text
+      snippets = { preset = "luasnip" },
+      appearance = {
+        use_nvim_cmp_as_default = false,
+        nerd_font_variant = "normal",
+      },
+      keymap = {
+        -- Start from the sane default preset (C-n/C-p/arrows select, C-y accept,
+        -- C-e hide, C-space show) and override the keys we care about.
+        preset = "default",
+        ["<C-q>"] = { "hide", "fallback" },
+        ["<C-@>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+        ["<PageUp>"] = { "scroll_documentation_up", "fallback" },
+        ["<PageDown>"] = { "scroll_documentation_down", "fallback" },
+        ["<C-g>"] = { "show_documentation", "hide_documentation" },
+        -- Leave <C-k> to the LSP signature-help mapping set in lsp.lua.
+        ["<C-k>"] = { "fallback" },
+        -- Confirm only when an entry is actively selected (selection.preselect = false),
+        -- otherwise fall through to a literal <CR>. Mirrors the old nvim-cmp behavior.
+        ["<CR>"] = { "accept", "fallback" },
+        ["<Tab>"] = {
+          -- 1. navigate the menu when it is open
+          function(cmp)
+            if cmp.is_visible() then
+              return cmp.select_next()
+            end
+          end,
+          -- 2. Cursor-style: accept a Copilot ghost suggestion with <Tab> when the
+          --    blink menu is closed (copilot.hide_during_completion keeps the two
+          --    from ever showing at once). <M-Space> still accepts as well.
+          function()
+            local ok, sug = pcall(require, "copilot.suggestion")
+            if ok and sug.is_visible() then
+              sug.accept()
+              return true
+            end
+          end,
+          -- 3. jump forward in an active snippet
+          "snippet_forward",
+          -- 3. only trigger completion when the prefix is non-whitespace,
+          --    otherwise emit a literal <Tab> (indent)
+          function(cmp)
+            local col = vim.fn.col(".") - 1
+            local line = vim.api.nvim_get_current_line()
+            if col == 0 or line:sub(col, col):match("%s") then
+              return false -- fall through to <Tab>
+            end
+            return cmp.show()
+          end,
+          "fallback",
+        },
+        ["<S-Tab>"] = { "select_prev", "fallback" },
+      },
+      completion = {
+        keyword = { range = "full" },
+        -- Don't preselect; auto-insert the text of the highlighted item as you navigate.
+        list = { selection = { preselect = false, auto_insert = true } },
+        -- Semantic auto-brackets on accept (replaces the old nvim-autopairs
+        -- on_confirm_done hook, which has no blink equivalent).
+        accept = { auto_brackets = { enabled = true } },
+        -- Copilot owns inline ghost text; keep blink's off to avoid two producers.
+        ghost_text = { enabled = false },
+        menu = {
+          border = "rounded",
+          scrollbar = false,
+          winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+          draw = {
+            columns = {
+              { "kind_icon" },
+              { "label", "label_description", gap = 1 },
+              { "kind" },
+            },
+            components = {
+              kind_icon = {
+                ellipsis = false,
+                text = function(ctx)
+                  local icon = MiniIcons.get("lsp", ctx.kind)
+                  return " " .. (icon or "") .. " "
+                end,
+                highlight = function(ctx)
+                  local _, hl = MiniIcons.get("lsp", ctx.kind)
+                  return hl
+                end,
+              },
+              kind = {
+                ellipsis = false,
+                text = function(ctx)
+                  return "    (" .. ctx.kind .. ")"
+                end,
+                highlight = "BlinkCmpKind",
+              },
+            },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+          window = { border = "rounded" },
+        },
+      },
+      signature = {
+        enabled = true,
+        window = { border = "rounded" },
+      },
+      sources = {
+        -- Priority is expressed via score_offset (was nvim-cmp's grouped sources).
+        default = { "avante", "lazydev", "lsp", "ecolog", "path", "snippets", "buffer" },
+        -- git/github only in commit-style buffers, on top of the defaults.
+        per_filetype = {
+          gitcommit = { inherit_defaults = true, "git" },
+          NeogitCommitMessage = { inherit_defaults = true, "git" },
+          octo = { inherit_defaults = true, "git" },
+        },
+        providers = {
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            score_offset = 100,
+          },
+          avante = {
+            name = "Avante",
+            module = "blink-cmp-avante",
+            score_offset = 90,
+          },
+          ecolog = {
+            name = "ecolog",
+            module = "ecolog.integrations.cmp.blink_cmp",
+            score_offset = 50,
+          },
+          git = {
+            name = "git",
+            module = "blink-cmp-git",
+            score_offset = 40,
+          },
+          buffer = { score_offset = -10 },
+        },
+      },
+      cmdline = {
+        enabled = true,
+        keymap = { preset = "cmdline" },
+        completion = {
+          menu = { auto_show = true },
+          list = { selection = { preselect = false, auto_insert = true } },
+        },
+        -- `:`  -> command + path ; `/` `?` -> buffer (the old nvim_lsp_document_symbol
+        -- cmdline source has no blink equivalent and is dropped).
+        sources = function()
+          local t = vim.fn.getcmdtype()
+          if t == ":" or t == "@" then
+            return { "cmdline", "path" }
+          end
+          if t == "/" or t == "?" then
+            return { "buffer" }
+          end
+          return {}
+        end,
       },
     },
-    config = function(_, opts)
-      local unpack = unpack or table.unpack
-      local cursor_prefix_is_whitespace = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        local text = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
-        return col == 0 or text:sub(col, col):match("%s") ~= nil
-      end
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
-      opts = opts or {}
-      opts.snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
-      }
-      opts.sources = cmp.config.sources({
-        { name = "avante" },
-        { name = "codecompanion" },
-        { name = "lazydev" },
-        { name = "nvim_lsp" },
-      }, {
-        -- { name = "copilot" },
-        -- { name = "conjure"  },
-        { name = "ecolog" },
-        { name = "luasnip" },
-        { name = "nvim_lua" },
-      }, {
-        { name = "buffer" },
-        { name = "git" },
-        { name = "github" },
-      })
-      opts.window = opts.window or {}
-      opts.window.completion = cmp.config.window.bordered({
-        border = "rounded",
-        col_offset = -3,
-        scrollbar = false,
-        scrolloff = 1,
-        side_padding = 0,
-        winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-      })
-      opts.window.documentation = cmp.config.window.bordered({
-        border = "rounded",
-        scrollbar = false,
-        scrolloff = 1,
-        side_padding = 1,
-      })
-      opts.formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = function(_, vim_item)
-          local name = vim_item.kind
-          local icon, hl = MiniIcons.get("lsp", name)
-          vim_item.kind = " " .. (icon or "") .. " "
-          vim_item.kind_hl_group = hl
-          vim_item.menu = name and ("    (" .. name .. ")") or "<?>"
-          return vim_item
-        end,
-      }
-      opts.mapping = cmp.mapping.preset.insert({
-        ["<C-q>"] = cmp.mapping.abort(),
-        ["<C-@>"] = cmp.mapping.complete(),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-u>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-d>"] = cmp.mapping.scroll_docs(4),
-        ["<PageUp>"] = cmp.mapping.scroll_docs(-4),
-        ["<PageDown>"] = cmp.mapping.scroll_docs(4),
-        ["<C-g>"] = function()
-          if cmp.visible_docs() then
-            cmp.close_docs()
-          else
-            cmp.open_docs()
-          end
-        end,
-        ["<C-]>"] = vim.schedule_wrap(function(fallback)
-          if cmp.visible() then
-            return cmp.complete_common_string()
-          end
-          fallback()
-        end),
-        ["<CR>"] = {
-          i = function(fallback)
-            if cmp.visible() and cmp.get_active_entry() then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-            else
-              fallback()
-            end
-          end,
-          s = cmp.mapping.confirm({ select = true }),
-          c = cmp.mapping.confirm({ select = false }),
-        },
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            if #cmp.get_entries() == 1 then
-              cmp.confirm({ select = true })
-            else
-              cmp.select_next_item()
-            end
-          elseif luasnip.locally_jumpable(1) then
-            luasnip.jump(1)
-          elseif cursor_prefix_is_whitespace() then
-            fallback()
-          else
-            cmp.complete()
-            if #cmp.get_entries() == 1 then
-              cmp.confirm({ select = true })
-            end
-          end
-        end, { "i", "s" }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if not cmp.visible() then
-            fallback()
-          elseif #cmp.get_entries() > 0 then
-            cmp.select_prev_item()
-          end
-        end, { "i", "s" }),
-      })
-      -- Set up cmp
-      cmp.setup(opts)
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<C-]>"] = vim.schedule_wrap(function(fallback)
-            if cmp.visible() then
-              cmp.complete_common_string()
-            else
-              fallback()
-            end
-          end),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp_document_symbol" },
-        }, {
-          { name = "buffer" },
-        }),
-      })
-      cmp.setup.cmdline({ ":" }, {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<C-]>"] = vim.schedule_wrap(function(fallback)
-            if cmp.visible() then
-              cmp.complete_common_string()
-            else
-              fallback()
-            end
-          end),
-          ["<Tab>"] = cmp.mapping(function(_)
-            if cmp.visible() then
-              local n_entries = #cmp.get_entries()
-              if n_entries == 1 then
-                cmp.confirm({ select = true })
-              else
-                cmp.select_next_item()
-              end
-            else
-              cmp.complete()
-              local n_entries = #cmp.get_entries()
-              if n_entries == 1 then
-                cmp.confirm({ select = true })
-              elseif n_entries > 1 then
-                cmp.complete_common_string()
-              end
-            end
-          end),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if not cmp.visible() then
-              fallback()
-            elseif #cmp.get_entries() > 0 then
-              cmp.select_prev_item()
-            end
-          end),
-        }),
-        sources = cmp.config.sources({
-          { name = "cmdline" },
-          { name = "ecolog" },
-          { name = "path" },
-        }, {
-          { name = "buffer" },
-        }),
-      })
-      -- Trigger autopairs on confirmation of a completion
-      cmp.event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
-    end,
-  },
-  {
-    "petertriho/cmp-git",
-    config = function(_, opts)
-      require("cmp_git").setup(opts)
-    end,
-    opts = {
-      -- defaults
-      filetypes = { "gitcommit", "octo", "NeogitCommitMessage" },
-      remotes = { "upstream", "origin" }, -- in order of most to least prioritized
-      enableRemoteUrlRewrites = false, -- enable git url rewrites, see https://git-scm.com/docs/git-config#Documentation/git-config.txt-urlltbasegtinsteadOf
-      git = {
-        commits = {
-          limit = 100,
-          sha_length = 7,
-        },
-      },
-      github = {
-        hosts = {}, -- list of private instances of github
-        issues = {
-          fields = { "title", "number", "body", "updatedAt", "state" },
-          filter = "all", -- assigned, created, mentioned, subscribed, all, repos
-          limit = 100,
-          state = "open", -- open, closed, all
-        },
-        mentions = {
-          limit = 100,
-        },
-        pull_requests = {
-          fields = { "title", "number", "body", "updatedAt", "state" },
-          limit = 100,
-          state = "open", -- open, closed, merged, all
-        },
-      },
-      gitlab = {
-        hosts = {}, -- list of private instances of gitlab
-        issues = {
-          limit = 100,
-          state = "opened", -- opened, closed, all
-        },
-        mentions = {
-          limit = 100,
-        },
-        merge_requests = {
-          limit = 100,
-          state = "opened", -- opened, closed, locked, merged
-        },
-      },
-      trigger_actions = {
-        {
-          debug_name = "git_commits",
-          trigger_character = ":",
-          action = function(sources, trigger_char, callback, params, git_info)
-            return sources.git:get_commits(callback, params, trigger_char)
-          end,
-        },
-        {
-          debug_name = "gitlab_issues",
-          trigger_character = "#",
-          action = function(sources, trigger_char, callback, params, git_info)
-            return sources.gitlab:get_issues(callback, git_info, trigger_char)
-          end,
-        },
-        {
-          debug_name = "gitlab_mentions",
-          trigger_character = "@",
-          action = function(sources, trigger_char, callback, params, git_info)
-            return sources.gitlab:get_mentions(callback, git_info, trigger_char)
-          end,
-        },
-        {
-          debug_name = "gitlab_mrs",
-          trigger_character = "!",
-          action = function(sources, trigger_char, callback, params, git_info)
-            return sources.gitlab:get_merge_requests(callback, git_info, trigger_char)
-          end,
-        },
-        {
-          debug_name = "github_issues_and_pr",
-          trigger_character = "#",
-          action = function(sources, trigger_char, callback, params, git_info)
-            return sources.github:get_issues_and_prs(callback, git_info, trigger_char)
-          end,
-        },
-        {
-          debug_name = "github_mentions",
-          trigger_character = "@",
-          action = function(sources, trigger_char, callback, params, git_info)
-            return sources.github:get_mentions(callback, git_info, trigger_char)
-          end,
-        },
-      },
-    },
-  },
-  {
-    "saadparwaiz1/cmp_luasnip",
-    dependencies = { "L3MON4D3/LuaSnip" },
+    opts_extend = { "sources.default" },
   },
 }

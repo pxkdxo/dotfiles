@@ -23,7 +23,7 @@ nvim/
 │   └── plugins/                 # All plugin specs (auto-imported by lazy.nvim)
 │       ├── ai.lua               # AI assistants: Avante, Copilot, MCPHub, CodeCompanion
 │       ├── colorschemes.lua     # Colorscheme plugins (cyberdream, rose-pine, nightfox, etc.)
-│       ├── completion.lua       # nvim-cmp setup with multiple sources and custom mappings
+│       ├── completion.lua       # blink.cmp setup with multiple sources and custom mappings
 │       ├── copypaste.lua        # yanky.nvim — persistent yank ring with sqlite storage
 │       ├── dap.lua              # Debug Adapter Protocol: nvim-dap, dap-ui, Go + Python adapters
 │       ├── diagnostics.lua      # tiny-inline-diagnostic, todo-comments, nvim-lint, Trouble
@@ -77,6 +77,7 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 | `<leader>d` | Debug | `db` breakpoint, `dc` continue, `du` UI toggle |
 | `<leader>e` | Env | ecolog peek, copy, toggle |
 | `<leader>g` | Git | gitsigns stage/reset/blame, neogit |
+| `<leader>i` | CodeCompanion | `ia` actions, `ic` toggle chat, `ii` inline assistant, `ix` add selection to chat (visual) |
 | `<leader>l` | LSP | `la` code action, `lr` rename, `lf` format |
 | `<leader>m` | Explorer | `mm` toggle nvim-tree, `ml` locate file |
 | `<leader>n` | Notifications | Snacks notification history |
@@ -119,24 +120,29 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 - Exposed via `colors.next()`, `colors.prev()`, `colors.shuffle()`, bound to F11/F12/F24
 
 ### Completion (`lua/plugins/completion.lua`)
-- Three priority groups of sources: (1) avante + lazydev + nvim_lsp, (2) copilot + ecolog + luasnip + nvim_lua, (3) buffer + git
-- Smart `<Tab>` behavior: auto-confirm if single entry, jump snippets, trigger completion on non-whitespace
-- `<CR>` only confirms when an entry is actively selected (prevents accidental confirm)
-- Cmdline completions configured separately for `/` `?` (buffer/lsp symbols) and `:` (cmdline/path)
-- Triggers `nvim-autopairs` on `confirm_done`
+- **Engine**: [blink.cmp](https://github.com/Saghen/blink.cmp), pinned to `version = "1.*"` (prebuilt Rust fuzzy matcher — no local build; needs `curl`+`git`). Migrated off nvim-cmp.
+- Sources via `score_offset` priority (was cmp's grouped sources): `lazydev` (100) > `avante` (90, via `blink-cmp-avante`) > `ecolog` (50, native `ecolog.integrations.cmp.blink_cmp`) > `git` (40, native `blink-cmp-git`, only in `gitcommit`/`NeogitCommitMessage`/`octo` via `per_filetype` + `inherit_defaults`) > `lsp`/`path`/`snippets` > `buffer` (-10). CodeCompanion self-registers its own blink source for `codecompanion`/`codecompanion_input` filetypes.
+- Snippets: `snippets.preset = "luasnip"` (LuaSnip defined in `snippets.lua`; no `cmp_luasnip` bridge needed).
+- Keymaps start from the `default` preset and override: smart `<Tab>` (select-next when menu open → snippet jump → trigger completion only on non-whitespace prefix, else literal Tab), `<CR>` = `{ "accept", "fallback" }` (confirms only when an entry is selected; `selection.preselect = false`), `<C-q>` hide, `<C-Space>`/`<C-@>` show, `<C-u>`/`<C-d>`/`<PageUp>`/`<PageDown>` scroll docs, `<C-g>` toggle docs, `<C-k>` deferred to the LSP signature mapping.
+- `completion.ghost_text` is **off** (Copilot owns inline ghost text). `accept.auto_brackets` is **on** — the semantic replacement for the old `nvim-autopairs` `on_confirm_done` hook (blink has no `confirm_done` event; nvim-autopairs still handles typed pairs standalone).
+- Cmdline: native blink, sources chosen by `getcmdtype()` — `:`/`@` → `cmdline`+`path`, `/`/`?` → `buffer`. (The old `nvim_lsp_document_symbol` cmdline source and `<C-]>` `complete_common_string` have no blink equivalent and were dropped.)
+- Menu/docs use `rounded` borders; kind icons drawn via `MiniIcons.get("lsp", kind)` in the `kind_icon` draw component.
 
 ### AI Stack (`lua/plugins/ai.lua`)
-- **Primary**: [Avante.nvim](https://github.com/yetone/avante.nvim) — uses the `cursor` provider via `cursor-agent` ACP binary, agentic mode
-- **MCP**: [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim) — provides MCP tool access to Avante, disables Avante's built-in file/bash tools in favor of MCP equivalents
-- **Copilot**: `zbirenbaum/copilot.lua` — inline suggestions on `InsertEnter`, accept with `<M-Space>`
-- **Disabled**: CodeCompanion (`cond = false`), Windsurf (`cond = false`)
+- **Primary chat/agent + fast-apply**: [Avante.nvim](https://github.com/yetone/avante.nvim) — agentic mode, `provider = "claude-code"` (Claude Code via the `@agentclientprotocol/claude-agent-acp` ACP binary; `cursor-agent` ACP is configured as an alternative). The Cursor-like diff/apply experience.
+- **MCP**: [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim) — provides MCP tool access to both Avante and CodeCompanion, disables Avante's built-in file/bash tools in favor of MCP equivalents.
+- **Inline ("Cursor Tab")**: `zbirenbaum/copilot.lua` — inline ghost-text suggestions on `InsertEnter`. Accept with `<M-Space>` **or `<Tab>`** (blink's `<Tab>` accepts a Copilot suggestion when the completion menu is closed; `copilot.suggestion.hide_during_completion` keeps the two from colliding). Avante's own experimental `auto_suggestions` is intentionally **off** (it can't reuse the ACP provider and `copilot`-as-provider risks account suspension — see the comment in `ai.lua`).
+- **Next Edit Suggestions (NES)**: `copilot.lua` `nes` + the `copilotlsp-nvim/copilot-lsp` backend — Copilot predicts your *next edit location* (Cursor-Tab's signature feature). `auto_trigger = true`; in normal mode `<Tab>` jumps to/accepts the predicted edit (passthrough-safe — falls back to native `<Tab>`/`<C-i>` jumplist when no edit is pending).
+- **Secondary chat (complementary)**: `olimorris/codecompanion.nvim` — **enabled** and lazy-loaded (`cmd` + `<leader>i…` keys). Modular chat buffer / prompt library / slash-commands, with `codecompanion-history.nvim` + the mcphub extension. Chat/cmd completion via blink (`completion_provider = "blink"`); self-registers its blink source. Avante and CodeCompanion coexist by design (Avante = diff-first edits, CodeCompanion = modular chat); they do not share keymaps.
+- **Disabled**: Windsurf (`cond = false`).
+- **Plugin manager note**: stayed on **lazy.nvim** — `rocks.nvim` was evaluated and rejected for this config (no first-class `cond` gating, function-valued opts can't live in `rocks.toml`, stale third-party Avante rockspec, treesitter friction).
 
 ### LSP (`lua/plugins/lsp.lua`)
 - Uses `mason.nvim` + `mason-lspconfig.nvim` with `automatic_enable = true`
 - LSP keymaps set via a single `LspAttach` autocmd (not per-server)
 - `nvim-navic` breadcrumbs auto-attach when server supports `documentSymbol`
 - `lazydev.nvim` provides Neovim Lua API completions (scoped to `ft = "lua"`)
-- `cmp_nvim_lsp` capabilities are injected via `vim.lsp.config("*", ...)`
+- LSP client capabilities are injected via `vim.lsp.config("*", { capabilities = require("blink.cmp").get_lsp_capabilities() })`; `nvim-lspconfig` depends on `blink.cmp` so it loads before this runs
 
 ### Formatting and Linting
 - **Formatting**: `conform.nvim` in `lua/plugins/formatting.lua` with format-on-save (toggleable via `:FormatToggle` or `vim.g.disable_autoformat`)
@@ -164,7 +170,6 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 
 These plugins exist in the config but are set to `cond = false`:
 - `Exafunction/windsurf.vim` — Windsurf AI coding (alternative to Copilot)
-- `olimorris/codecompanion.nvim` — CodeCompanion chat (alternative to Avante)
 - `rcarriga/nvim-notify` — notification UI (replaced by snacks/noice mini)
 - `Olical/conjure` + `PaterJason/cmp-conjure` — REPL integration
 
@@ -176,6 +181,7 @@ These tools must be available on `$PATH` for full functionality:
 - `rg` (ripgrep) — used as `grepprg` and by fzf-lua
 - `fzf` — used by fzf-lua (also supports tmux popup via `--tmux`)
 - `git` — lazy.nvim bootstrap, gitsigns, neogit
+- `curl` — blink.cmp downloads its prebuilt Rust fuzzy-matcher binary (with `git` as fallback)
 - `make` — Avante build, LuaSnip jsregexp
 - `python3` — nvim-dap-python
 - `cursor-agent` — Avante cursor ACP provider

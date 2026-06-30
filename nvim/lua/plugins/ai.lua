@@ -61,6 +61,11 @@ return {
       mode = "agentic",
       -- provider = "cursor-agent",
       provider = "claude-code",
+      -- NOTE: Avante's "Cursor Tab"-style auto_suggestions is intentionally OFF.
+      -- It is experimental and lower quality than a dedicated engine, it cannot
+      -- reuse our ACP provider (claude-code / cursor-agent) -- it needs a separate
+      -- API-key provider -- and pointing it at `copilot` risks Copilot account
+      -- suspension (yetone/avante.nvim#1048). copilot.lua owns inline ghost text.
       auto_suggestions_provider = "copilot",
       behaviour = {
         auto_suggestions = false, -- inline suggestions handled by copilot.lua
@@ -169,7 +174,7 @@ return {
       --- The below dependencies are optional,
       -- "nvim-mini/mini.pick", -- for file_selector provider mini.pick
       -- "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "saghen/blink.cmp", -- completion for avante commands/mentions (via blink-cmp-avante)
       "ibhagwan/fzf-lua", -- for file_selector provider fzf
       "stevearc/dressing.nvim", -- for input provider dressing
       "folke/snacks.nvim", -- for input provider snacks
@@ -191,8 +196,23 @@ return {
     cond = vim.g.vscode == nil,
     event = "InsertEnter",
     cmd = "Copilot",
+    -- copilot-lsp powers Next Edit Suggestions (NES): Copilot predicts your *next
+    -- edit location* and you <Tab> through/accept them -- the Cursor-Tab feature.
+    dependencies = { "copilotlsp-nvim/copilot-lsp" },
     opts = {
       panel = { enabled = false },
+      -- Next Edit Suggestions (requires copilot-lsp). auto_trigger surfaces a
+      -- predicted edit after each change; <Tab> in normal mode jumps to/accepts it
+      -- (passthrough-safe: falls back to the normal <Tab>/<C-i> when none is pending).
+      nes = {
+        enabled = true,
+        auto_trigger = true,
+        keymap = {
+          accept_and_goto = "<Tab>",
+          accept = false,
+          dismiss = false, -- clears on next edit; avoid remapping <Esc>
+        },
+      },
       suggestion = {
         enabled = true,
         auto_refresh = true,
@@ -221,51 +241,79 @@ return {
   {
     "olimorris/codecompanion.nvim",
     cond = vim.g.vscode == nil,
+    -- Complementary to Avante: Avante for diff-first agentic edits, CodeCompanion
+    -- for the modular chat buffer / prompt library / slash-commands. Lazy-loaded on
+    -- first use so it doesn't pay startup cost when only Avante/Copilot are used.
+    cmd = { "CodeCompanion", "CodeCompanionChat", "CodeCompanionActions", "CodeCompanionCmd" },
+    keys = {
+      { "<leader>i", "", desc = "+CodeCompanion", mode = { "n", "v" } },
+      { "<leader>ia", "<cmd>CodeCompanionActions<cr>", mode = { "n", "v" }, desc = "Action palette" },
+      { "<leader>ic", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n", "v" }, desc = "Toggle chat" },
+      { "<leader>ii", ":CodeCompanion ", mode = { "n", "v" }, desc = "Inline assistant" },
+      { "<leader>ix", "<cmd>CodeCompanionChat Add<cr>", mode = "v", desc = "Add selection to chat" },
+    },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "ravitemer/mcphub.nvim",
       "ravitemer/codecompanion-history.nvim",
+      "saghen/blink.cmp", -- chat-buffer completion (self-registers a blink source)
     },
     opts = {
       adapters = {
         acp = {
-          codex = function()
-            return require("codecompanion.adapters").extend("codex", {
-              defaults = {
-                auth_method = "openai-api-key", -- "openai-api-key"|"codex-api-key"|"chatgpt"
+          -- Claude Code over ACP. The shipped adapter invokes a bare
+          -- `claude-agent-acp` binary, which is not on our PATH; run it via npx
+          -- instead, mirroring the Avante claude-code provider. Auth accepts
+          -- whichever credential the environment provides (OAuth token or API key).
+          claude_code = function()
+            return require("codecompanion.adapters").extend("claude_code", {
+              commands = {
+                default = { "npx", "@agentclientprotocol/claude-agent-acp" },
               },
               env = {
-                OPENAI_API_KEY = os.getenv("OPENAI_API_KEY"),
+                CLAUDE_CODE_OAUTH_TOKEN = "CLAUDE_CODE_OAUTH_TOKEN",
+                ANTHROPIC_API_KEY = "ANTHROPIC_API_KEY",
               },
-            })
-          end,
-          gemini_cli = function()
-            return require("codecompanion.adapters").extend("gemini_cli", {
-              defaults = {
-                auth_method = "gemini-api-key", -- "oauth-personal"|"gemini-api-key"|"vertex-ai"
-              },
-              env = {
-                GEMINI_API_KEY = os.getenv("GEMINI_API_KEY"),
+              handlers = {
+                auth = function(self)
+                  local ok = false
+                  for _, key in ipairs({ "CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY" }) do
+                    local val = self.env_replaced and self.env_replaced[key]
+                    if val and val ~= "" then
+                      vim.env[key] = val
+                      ok = true
+                    end
+                  end
+                  return ok
+                end,
               },
             })
           end,
         },
       },
       interactions = {
-        --NOTE: Change the adapter as required
+        -- Chat over the Claude Code ACP: reuses CLAUDE_CODE_OAUTH_TOKEN (the same
+        -- auth that powers Avante), so no ANTHROPIC_API_KEY is required. Claude Code
+        -- selects the model. To use the HTTP API instead: adapter = "anthropic",
+        -- model = "claude-sonnet-4-6" (note hyphens; needs ANTHROPIC_API_KEY).
+        -- ("claude" is NOT a valid adapter name -- it was anthropic/claude_code.)
         chat = {
-          adapter = "claude",
-          model = "claude-sonnet-4.6",
-        },
-        inline = {
-          adapter = "claude",
-          model = "claude-haiku-4.5",
-        },
-        cmd = {
-          adapter = "codex",
+          adapter = "claude_code",
           opts = {
-            completion_provider = "cmp", -- blink|cmp|coc|default
+            completion_provider = "blink", -- blink|cmp|coc|default
+          },
+        },
+        -- Inline only supports HTTP adapters (not ACP, so not claude_code), so it
+        -- uses the authenticated Copilot subscription for fast in-buffer edits.
+        inline = {
+          adapter = "copilot",
+        },
+        -- Command generation is likewise HTTP-only (no ACP), so it also uses Copilot.
+        cmd = {
+          adapter = "copilot",
+          opts = {
+            completion_provider = "blink", -- blink|cmp|coc|default
           },
         },
         -- background = {

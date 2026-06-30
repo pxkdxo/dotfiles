@@ -54,7 +54,7 @@ return {
       cache = false,
       -- Enable or disable specific extensions
       extensions = {
-        cmp = true,
+        blinkcmp = true,
       },
     },
   },

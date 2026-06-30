@@ -3,11 +3,11 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = {
       "mason.nvim",
-      "hrsh7th/cmp-nvim-lsp",
+      "saghen/blink.cmp", -- loaded before this config runs so capabilities are available
     },
     config = function()
       vim.lsp.config("*", {
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
       })
     end,
     init = function()

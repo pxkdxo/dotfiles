@@ -54,6 +54,11 @@ return {
       integrations = {
         lspsaga = false,
         lsp = false,
+        -- Wire the blink.cmp completion source: this is what calls
+        -- ecolog.integrations.cmp.blink_cmp.setup() to populate the provider/
+        -- shelter state. Without it the blink source stays uninitialized and
+        -- warns "providers not initialized" on every trigger query.
+        blink_cmp = true,
         fzf = {
           shelter = {
             mask_on_copy = false, -- Whether to mask values when copying
