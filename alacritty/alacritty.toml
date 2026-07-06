@@ -19,14 +19,15 @@ multiplier = 2
 size         = 12.5
 offset       = { x = 0, y = 0 }
 glyph_offset = { x = 0, y = 0 }
-normal       = { family = 'RecMonoSmCasual Nerd Font', style = "Regular" }
-bold         = { family = 'RecMonoSmCasual Nerd Font', style = "Bold" }
-italic       = { family = 'RecMonoSmCasual Nerd Font', style = "Italic" }
-bold_italic  = { family = 'RecMonoSmCasual Nerd Font', style = "Bold Italic" }
+normal       = { family = 'SpaceMono Nerd Font', style = "Regular" }
+bold         = { family = 'SpaceMono Nerd Font', style = "Bold" }
+italic       = { family = 'SpaceMono Nerd Font', style = "Italic" }
+bold_italic  = { family = 'SpaceMono Nerd Font', style = "Bold Italic" }
 builtin_box_drawing = false
 
 [terminal]
-shell = { program = "/usr/bin/zsh", args = ["-l"] }
+# Resolved via PATH (execvp) so it works wherever zsh lives, incl. macOS.
+shell = { program = "zsh", args = ["-l"] }
 
 [bell]
 animation = "EaseOutSine"

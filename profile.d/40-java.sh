@@ -43,27 +43,30 @@ else
       fi
       ;;
     [Ll]inux*)
-      # linux - Check known locations and find the preferred or latest version
-      if test -d "/usr/lib/jvm"; then
-        if test -d "/usr/lib/jvm/default"; then
-          JAVA_HOME="/usr/lib/jvm/default"
-        else
-          for directory in /usr/lib/jvm/java-*; do
-            if test -d "${directory}"; then
-              JAVA_HOME="${directory}"
-            fi
-          done
+      # linux - prefer an explicit "default", else the highest-versioned JDK.
+      # Glob order is lexical (java-9 > java-21, java-8 > java-17), so select
+      # with version-sort semantics rather than keeping the last glob match.
+      for jvm_root in /usr/lib/jvm /lib/jvm; do
+        test -d "${jvm_root}" || continue
+        if test -d "${jvm_root}/default"; then
+          JAVA_HOME="${jvm_root}/default"
+          break
         fi
-      elif test -d "/lib/jvm"; then
-        if test -d "/lib/jvm/default"; then
-          JAVA_HOME="/lib/jvm/default"
-        else
-          for directory in /lib/jvm/java-*; do
-            if test -d "${directory}"; then
-              JAVA_HOME="${directory}"
-            fi
-          done
+        java_candidate="$(
+          for directory in "${jvm_root}"/java-*; do
+            test -d "${directory}" && printf '%s\n' "${directory}"
+          done | sort -V | tail -n 1
+        )"
+        if test -n "${java_candidate}"; then
+          JAVA_HOME="${java_candidate}"
+          break
         fi
+      done
+      # Last resort: follow the distro's `java` alternative to its home.
+      if test -z "${JAVA_HOME-}" && test -e /etc/alternatives/java; then
+        java_alt="$(readlink -f /etc/alternatives/java 2> /dev/null)"
+        java_alt="${java_alt%/bin/java}"
+        test -d "${java_alt}/bin" && JAVA_HOME="${java_alt}"
       fi
       ;;
   esac

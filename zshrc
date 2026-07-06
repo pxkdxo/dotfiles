@@ -19,13 +19,18 @@ fi
 # Fallback light/dark guess from the desktop session, else time of day. The
 # OSC query below supersedes this whenever the terminal answers; THEME_VARIANT
 # only applies when it can't (TERM=dumb, unsupported emulator, no tty).
-case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
-  :plasma:*:|:*:KDE:)
-    case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
-      light|\'light\'|*-light|\'*-light\') export THEME_VARIANT="light" ;;
-      dark|\'dark\'|*-dark|\'*-dark\')     export THEME_VARIANT="dark" ;;
-    esac
-    ;;
+# Query GNOME's color-scheme directly (the native signal on GNOME, and mirrored
+# by many KDE setups) rather than gating it behind a desktop match -- the old
+# code only queried it under KDE, so real GNOME sessions never hit it. Fall back
+# to time of day when gsettings is absent or reports no preference.
+if (( $+commands[gsettings] )); then
+  _gnome_scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)"
+else
+  _gnome_scheme=''
+fi
+case "${_gnome_scheme}" in
+  *dark*)  export THEME_VARIANT="dark" ;;
+  *light*) export THEME_VARIANT="light" ;;
   *)
     if ( hour="$(date +%H)" && test "$((hour))" -ge 7 && test "$((hour))" -lt 19; )
     then
@@ -35,6 +40,7 @@ case ":${DESKTOP_SESSION}:${XDG_SESSION_DESKTOP}:" in
     fi
     ;;
 esac
+unset _gnome_scheme
 
 # Resolve this file's directory (the dotfiles repo) once; %x is only reliable
 # while sourcing, but the helpers below also run interactively.

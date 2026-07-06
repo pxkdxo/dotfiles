@@ -39,9 +39,6 @@
 	old = red bold
 	new = green bold
 
-[protocol "file"]
-	allow = always
-
 [alias]
 	# Fix lines like "git git COMMAND"
 	git = !git
@@ -87,7 +84,7 @@
 	sync = "!__git_sync() { git pull && git push; }; __git_sync"
 
 	# Retrieve a gitignore template from gitignore.io
-	ignore = "!__git_ignore() { set -x; if test \"$#\" -gt 0; then curl -fsSL \"https://www.toptal.com/developers/gitignore/api/$*\"; else >&2 echo \"git ignore: error: expected a list of project types for which to retrieve a template - got none\"; >&2 echo \"usage: git ignore TYPE [TYPE ...]\"; exit 2; fi; }; IFS=, __git_ignore"
+	ignore = "!__git_ignore() { if test \"$#\" -gt 0; then curl -fsSL \"https://www.toptal.com/developers/gitignore/api/$*\"; else >&2 echo \"git ignore: error: expected a list of project types for which to retrieve a template - got none\"; >&2 echo \"usage: git ignore TYPE [TYPE ...]\"; exit 2; fi; }; IFS=, __git_ignore"
 
 	# Checkout and pull
 	dev = "!__git_dev() { git checkout dev && git pull --prune; }; __git_dev"

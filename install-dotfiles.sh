@@ -74,6 +74,16 @@ shift "$((OPTIND - 1))"
 
 ln_opts="${ln_opts}${ln_replace}"
 
+# xargs -o (reopen /dev/tty in the child) is only needed so `ln -i` can prompt.
+# Passing it unconditionally makes the installer abort with no controlling tty
+# (CI, provisioning, `ssh host 'sh install-dotfiles.sh -f'`), so gate it on the
+# interactive path.
+if test "${ln_replace}" = 'i'; then
+  xargs_tty='-o'
+else
+  xargs_tty=''
+fi
+
 if test "$#" -gt 1; then
   printf '%s: received too many arguments\n' "${argzero_name}" >&2
   printf 'usage: %s\n' "${usage}" >&2
@@ -133,12 +143,13 @@ relpath() {
 tree_path="$(relpath "${repo_path}" "${home_path}")"
 
 # shellcheck disable=SC2016
-git -C "${repo_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 -o -- sh -c '
+git -C "${repo_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 ${xargs_tty} -- sh -c '
 caller=$1
-optchars=$2
-treepath=$3
-destpath=$4
-filename=$5
+dry_run=$2
+optchars=$3
+treepath=$4
+destpath=$5
+filename=$6
 # skip: this script, dotfiles already prefixed with '.', markdown files, and
 # XDG-specific directories that have canonical locations outside ~/.*
 case "${filename}" in
@@ -146,38 +157,58 @@ case "${filename}" in
     exit 0
     ;;
 esac
-ln "-${optchars}" -- "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}" \
-  || case "${optchars}" in *f*) exit 1 ;; esac
-' -- "${argzero_name}" "${ln_opts}" "${tree_path}" "${home_path}"
+src="${treepath:+${treepath}/}${filename}"
+dst="${destpath:+${destpath}/}.${filename}"
+if test -n "${dry_run}"; then
+  if test -e "${dst}" || test -L "${dst}"; then
+    printf "skip (exists): %s\n" "${dst}"
+  else
+    printf "would link: %s -> %s\n" "${dst}" "${src}"
+  fi
+else
+  ln "-${optchars}" -- "${src}" "${dst}" \
+    || case "${optchars}" in *f*) exit 1 ;; esac
+fi
+' -- "${argzero_name}" "${dry_run}" "${ln_opts}" "${tree_path}" "${home_path}"
 
 # Link tracked helper scripts into ~/.local/bin so they are on PATH (the
 # launchd/systemd units reference them there). New scripts dropped in scripts/
 # become available on the next install with no further wiring.
 local_bin="${home_path}/.local/bin"
-mkdir -p -- "${local_bin}"
+test -n "${dry_run}" || mkdir -p -- "${local_bin}"
 # shellcheck disable=SC2016
 git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts |
-  xargs -0 -n 1 -o -- sh -c '
-optchars=$1
-src_dir=$2
-dst_dir=$3
-filename=$4
-ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
-' -- "${ln_opts}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
+  xargs -0 -n 1 ${xargs_tty} -- sh -c '
+dry_run=$1
+optchars=$2
+src_dir=$3
+dst_dir=$4
+filename=$5
+if test -n "${dry_run}"; then
+  printf "would link: %s/%s -> %s/%s\n" "${dst_dir}" "${filename}" "${src_dir}" "${filename}"
+else
+  ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
+fi
+' -- "${dry_run}" "${ln_opts}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
 
 # On macOS, link launchd agent plists into ~/Library/LaunchAgents
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
-  mkdir -p -- "${launch_agents}"
+  test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
   # shellcheck disable=SC2016
   git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents |
-    xargs -0 -n 1 -o -- sh -c '
-optchars=$1
-src_dir=$2
-dst_dir=$3
-filename=$4
-ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
-' -- "${ln_opts}" "$(relpath "${repo_path}/launchd/agents" "${launch_agents}")" "${launch_agents}" || :
+    xargs -0 -n 1 ${xargs_tty} -- sh -c '
+dry_run=$1
+optchars=$2
+src_dir=$3
+dst_dir=$4
+filename=$5
+if test -n "${dry_run}"; then
+  printf "would link: %s/%s -> %s/%s\n" "${dst_dir}" "${filename}" "${src_dir}" "${filename}"
+else
+  ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
+fi
+' -- "${dry_run}" "${ln_opts}" "$(relpath "${repo_path}/launchd/agents" "${launch_agents}")" "${launch_agents}" || :
 
   # Load the lightweight agents now instead of at next login. Needs a GUI
   # session (gui/$UID), so probe that domain and skip over SSH. mcphub is

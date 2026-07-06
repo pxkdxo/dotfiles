@@ -1,47 +1,34 @@
 #!/usr/bin/env sh
 #
-# pythonrc.sh: see if we have a PYTHONSTARTUP file to execute on interactive startup
+# pythonrc.sh: point PYTHONSTARTUP at the first readable candidate rc file.
+#
+# A flat first-match scan, so a present-but-empty ~/.config/python directory no
+# longer short-circuits the XDG_DATA_HOME and legacy locations (the old nested
+# elif ladder branched on directory existence first and fell through silently).
 
-if test -d "${XDG_CONFIG_HOME:-${HOME}/.config}"/python; then
-  if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/python/pythonrc.py; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/python/pythonrc.py
-  elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/python/rc.py; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/python/rc.py
-  elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/python/pythonrc; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/python/pythonrc
-  elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/python/rc; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/python/rc
+for _pythonrc in \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/python/pythonrc.py" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/python/rc.py" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/python/pythonrc" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/python/rc" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/pythonrc.py" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/rc.py" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/pythonrc" \
+  "${XDG_CONFIG_HOME:-${HOME}/.config}/rc" \
+  "${XDG_DATA_HOME:-${HOME}/.local/share}/python/pythonrc.py" \
+  "${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc.py" \
+  "${XDG_DATA_HOME:-${HOME}/.local/share}/python/pythonrc" \
+  "${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc" \
+  "${HOME}/.pythonrc.py" \
+  "${HOME}/.rc.py" \
+  "${HOME}/.pythonrc" \
+  "${HOME}/.rc"
+do
+  if test -f "${_pythonrc}"; then
+    export PYTHONSTARTUP="${_pythonrc}"
+    break
   fi
-elif test -d "${XDG_CONFIG_HOME:-${HOME}/.config}"; then
-  if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/pythonrc.py; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/pythonrc.py
-  elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/rc.py; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/rc.py
-  elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/pythonrc; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/pythonrc
-  elif test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/rc; then
-    export PYTHONSTARTUP="${XDG_CONFIG_HOME:-${HOME}/.config}"/rc
-  fi
-elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/python"; then
-  if test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/python/pythonrc.py"; then
-    export PYTHONSTARTUP="${XDG_DATA_HOME:-${HOME}/.local/share}/python/pythonrc.py"
-  elif test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc.py"; then
-    export PYTHONSTARTUP="${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc.py"
-  elif test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/python/pythonrc"; then
-    export PYTHONSTARTUP="${XDG_DATA_HOME:-${HOME}/.local/share}/python/pythonrc"
-  elif test -f "${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc"; then
-    export PYTHONSTARTUP="${XDG_DATA_HOME:-${HOME}/.local/share}/python/rc"
-  fi
-else
-  if test -f ~/.pythonrc.py; then
-    export PYTHONSTARTUP=~/.pythonrc.py
-  elif test -f ~/.rc.py; then
-    export PYTHONSTARTUP=~/.rc.py
-  elif test -f ~/.pythonrc; then
-    export PYTHONSTARTUP=~/.pythonrc
-  elif test -f ~/.rc; then
-    export PYTHONSTARTUP=~/.rc
-  fi
-fi
+done
+unset _pythonrc
 
 # vim:ft=sh
