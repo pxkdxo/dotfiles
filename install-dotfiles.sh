@@ -12,7 +12,7 @@ argzero_name="${0##*/}"
 argzero_dirname="${0%"${argzero_name}"}"
 argzero_dirname="${argzero_dirname:-.}"
 
-usage="${argzero_name} [-n|-f] [--] [TARGET_DIRECTORY]"
+usage="${argzero_name} [-n] [--] [TARGET_DIRECTORY]"
 
 print_help() {
   cat
@@ -26,27 +26,25 @@ create a symbolic link in the invoking user's home directory. The name
 of the link will match the name of the file it links to, prefixed with
 a period ('.').
 
-The installer is idempotent and non-interactive: every run overwrites its
-own links so the tree converges regardless of prior state. A pre-existing
-real file or foreign symlink at a link's location is replaced. The one thing
-it will not do silently is destroy a real directory (a symlink cannot portably
-replace a populated one): such a case is reported and left in place -- pass
-"-f" to remove it first. "-n" previews all actions without touching anything.
+The installer is idempotent and non-interactive: every run overwrites its own
+links so the tree converges regardless of prior state. Whatever is already at a
+link's location -- a real file, a foreign symlink, or a real directory -- is
+replaced (a directory is removed first, since a symlink cannot replace one in
+place). "-n" previews all actions, flagging any directory that would be removed,
+without touching anything.
 EOF
 
-force=''   # -f: also replace a real directory that is in the way (rm -rf)
 dry_run='' # -n: preview only; don't touch the filesystem or activate services
 
 OPTIND=1
 option=''
-while getopts ':hnf' option; do
+while getopts ':hn' option; do
   case "${option}" in
   'h')
     print_help
     exit 0
     ;;
   'n') dry_run='1' ;;
-  'f') force='1' ;;
   '?')
     printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
     printf 'usage: %s\n' "${usage}" >&2
@@ -110,30 +108,29 @@ relpath() {
   printf '%s\n' "${_rp_out:-.}" # equal paths -> '.'
 }
 
-# The link workhorse, shared by every block below via `sh -c`. It relies on
+# The link workhorse, shared by every block below via `sh -c`. It leans on
 # `ln`'s own idempotency (-f recreates the link whatever was there before; -n,
-# a synonym for -h on BSD/macOS, replaces a symlink-to-directory instead of
-# dereferencing into it) rather than hand-rolled existence checks. The sole case
-# ln cannot handle portably is a real directory in the way: it would nest a link
-# inside it (silently, rc 0), so that one case is guarded -- removed under -f,
-# otherwise reported and skipped (fail open). DRY_RUN just narrates.
+# a synonym for -h on BSD/macOS, replaces a symlink-to-directory rather than
+# dereferencing into it) instead of hand-rolled existence checks. The one thing
+# ln cannot do portably is replace a real directory: it would nest a link inside
+# it (silently, rc 0), so a real directory is removed first. DRY_RUN narrates and
+# flags any such removal.
 # shellcheck disable=SC2016 # this is a `sh -c` body; it must not expand here
 link_body='
 dst_link() {
   src=$1
   dst=$2
-  if test -n "${DRY_RUN}"; then
-    printf "link: %s -> %s\n" "${dst}" "${src}"
-  elif test -d "${dst}" && ! test -L "${dst}"; then
-    if test -n "${FORCE}"; then
-      rm -rf -- "${dst}" && ln -sfnv -- "${src}" "${dst}"
-    else
-      printf "%s: %s is a directory; leaving it (use -f to replace)\n" \
-        "${CALLER}" "${dst}" >&2
+  if test -d "${dst}" && ! test -L "${dst}"; then
+    if test -n "${DRY_RUN}"; then
+      printf "link: %s -> %s (replaces existing directory)\n" "${dst}" "${src}"
+      return
     fi
-  else
-    ln -sfnv -- "${src}" "${dst}"
+    rm -rf -- "${dst}"
+  elif test -n "${DRY_RUN}"; then
+    printf "link: %s -> %s\n" "${dst}" "${src}"
+    return
   fi
+  ln -sfnv -- "${src}" "${dst}"
 }
 '
 
@@ -144,8 +141,8 @@ tree_path="$(relpath "${repo_path}" "${home_path}")"
 # shellcheck disable=SC2016
 git -C "${repo_path}" ls-tree --name-only -z HEAD |
   xargs -0 -- sh -c "${link_body}"'
-CALLER=$1 DRY_RUN=$2 FORCE=$3 treepath=$4 destpath=$5
-shift 5
+CALLER=$1 DRY_RUN=$2 treepath=$3 destpath=$4
+shift 4
 for filename; do
   # skip: this script, dotfiles already prefixed with ".", markdown files, and
   # XDG-specific directories that have canonical locations outside ~/.*
@@ -155,7 +152,7 @@ for filename; do
   esac
   dst_link "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
 done
-' -- "${argzero_name}" "${dry_run}" "${force}" "${tree_path}" "${home_path}" || :
+' -- "${argzero_name}" "${dry_run}" "${tree_path}" "${home_path}" || :
 
 # Link tracked helper scripts into ~/.local/bin so they are on PATH (the
 # launchd/systemd units reference them there). New scripts dropped in scripts/
@@ -165,12 +162,12 @@ test -n "${dry_run}" || mkdir -p -- "${local_bin}"
 # shellcheck disable=SC2016
 git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts |
   xargs -0 -- sh -c "${link_body}"'
-CALLER=$1 DRY_RUN=$2 FORCE=$3 src_dir=$4 dst_dir=$5
-shift 5
+DRY_RUN=$1 src_dir=$2 dst_dir=$3
+shift 3
 for filename; do
   dst_link "${src_dir}/${filename}" "${dst_dir}/${filename}"
 done
-' -- "${argzero_name}" "${dry_run}" "${force}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
+' -- "${dry_run}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
 
 # On macOS, generate launchd agent plists into ~/Library/LaunchAgents. launchd
 # requires absolute paths, so the tracked plists carry a __HOME__ placeholder
