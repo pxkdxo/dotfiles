@@ -224,7 +224,9 @@ if test -e "${dst}"; then
   *) exit 0 ;;                                  # no-clobber: leave it in place
   esac
 fi
-sed "s|__HOME__|${home}|g" -- "${src}" > "${dst}"
+# No `--`: BSD sed (macOS, where this Darwin block runs) treats it as a
+# filename. src is always an absolute repo path, so it is not needed.
+sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
 ' -- "${dry_run}" "${ln_opts}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
 
   # Load the lightweight agents now instead of at next login. Needs a GUI
