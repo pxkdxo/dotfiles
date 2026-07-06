@@ -16,7 +16,7 @@ usage="${argzero_name} [-n] [--] [TARGET_DIRECTORY]"
 
 print_help() {
   cat
-} <<EOF
+} << EOF
 usage: ${usage}
 
 ${argzero_name} - link dotfiles into a user's home directory
@@ -40,16 +40,16 @@ OPTIND=1
 option=''
 while getopts ':hn' option; do
   case "${option}" in
-  'h')
-    print_help
-    exit 0
-    ;;
-  'n') dry_run='1' ;;
-  '?')
-    printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
-    printf 'usage: %s\n' "${usage}" >&2
-    exit 2
-    ;;
+    'h')
+      print_help
+      exit 0
+      ;;
+    'n') dry_run='1' ;;
+    '?')
+      printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
+      printf 'usage: %s\n' "${usage}" >&2
+      exit 2
+      ;;
   esac
 done
 shift "$((OPTIND - 1))"
@@ -61,20 +61,20 @@ if test "$#" -gt 1; then
 fi
 
 if test "$#" -eq 0; then
-  home_path="$(cd 2>/dev/null && pwd -P && echo '@')"
+  home_path="$(cd 2> /dev/null && pwd -P && echo '@')"
   home_path="${home_path%?@}"
 else
-  home_path="$(cd -- "$1" >/dev/null && pwd -P && echo '@')" # suppress CDPATH noise
+  home_path="$(cd -- "$1" > /dev/null && pwd -P && echo '@')" # suppress CDPATH noise
   home_path="${home_path%?@}"
   shift
 fi
 
-tree_path="$(cd -- "${argzero_dirname}" >/dev/null && pwd -P && echo '@')" # suppress CDPATH noise
+tree_path="$(cd -- "${argzero_dirname}" > /dev/null && pwd -P && echo '@')" # suppress CDPATH noise
 tree_path="${tree_path%?@}"
 repo_path="${tree_path}"
 
 # Fail loudly on a non-repo rather than silently linking nothing.
-git -C "${repo_path}" rev-parse --git-dir >/dev/null 2>&1 || {
+git -C "${repo_path}" rev-parse --git-dir > /dev/null 2>&1 || {
   printf '%s: %s is not a git repository\n' "${argzero_name}" "${repo_path}" >&2
   exit 1
 }
@@ -89,9 +89,9 @@ relpath() {
   _rp_up=''
   while
     case "${_rp_target}" in
-    "${_rp_base}") false ;;     # equal: common ancestor reached
-    "${_rp_base%/}"/*) false ;; # %/ so a root base ('/') yields '/*', not '//*'
-    *) true ;;
+      "${_rp_base}") false ;;   # equal: common ancestor reached
+      "${_rp_base%/}"/*) false ;; # %/ so a root base ('/') yields '/*', not '//*'
+      *) true ;;
     esac
   do
     _rp_base=${_rp_base%/*}
@@ -135,8 +135,8 @@ dst_link() {
 tree_path="$(relpath "${repo_path}" "${home_path}")"
 
 # shellcheck disable=SC2016
-git -C "${repo_path}" ls-tree --name-only -z HEAD |
-  xargs -0 -- sh -c "${link_body}"'
+git -C "${repo_path}" ls-tree --name-only -z HEAD \
+                                                  | xargs -0 -- sh -c "${link_body}"'
 CALLER=$1 DRY_RUN=$2 treepath=$3 destpath=$4
 shift 4
 for filename; do
@@ -156,8 +156,8 @@ done
 local_bin="${home_path}/.local/bin"
 test -n "${dry_run}" || mkdir -p -- "${local_bin}"
 # shellcheck disable=SC2016
-git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts |
-  xargs -0 -- sh -c "${link_body}"'
+git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts \
+                                                          | xargs -0 -- sh -c "${link_body}"'
 DRY_RUN=$1 src_dir=$2 dst_dir=$3
 shift 3
 for filename; do
@@ -172,8 +172,8 @@ case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
   # shellcheck disable=SC2016
-  git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents |
-    xargs -0 -- sh -c '
+  git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents \
+                                                                   | xargs -0 -- sh -c '
 dry_run=$1 src_dir=$2 dst_dir=$3 home=$4
 shift 4
 for filename; do
@@ -198,7 +198,8 @@ done
   if test -z "${dry_run}" && launchctl print "${launch_domain}" > /dev/null 2>&1; then
     for plist in "${launch_agents}"/com.patrickdeyoreo.*.plist; do
       test -e "${plist}" || continue
-      label="${plist##*/}"; label="${label%.plist}"
+      label="${plist##*/}"
+      label="${label%.plist}"
       case "${label}" in *mcphub*) continue ;; esac
       printf "activate: %s\n" "${label}"
       # Reload cleanly: bootout then bootstrap picks up plist edits and runs

@@ -28,12 +28,12 @@ fi
 # Upstream PR: https://github.com/ravitemer/mcp-hub/pull/140
 # Once that merges and a release ships, this whole patch block can go.
 # ---------------------------------------------------------------------------
-mcphub_cli="$(command -v mcp-hub 2>/dev/null || echo "$HOME/.local/bin/mcp-hub")"
-mcphub_dist="$(readlink -f "${mcphub_cli}" 2>/dev/null || echo "")"
+mcphub_cli="$(command -v mcp-hub 2> /dev/null || echo "$HOME/.local/bin/mcp-hub")"
+mcphub_dist="$(readlink -f "${mcphub_cli}" 2> /dev/null || echo "")"
 case "${mcphub_dist}" in
-*/mcp-hub/dist/cli.js)
-  if ! grep -q '_mcphubCleanupRan' "${mcphub_dist}" 2>/dev/null; then
-    node -e '
+  */mcp-hub/dist/cli.js)
+    if ! grep -q '_mcphubCleanupRan' "${mcphub_dist}" 2> /dev/null; then
+      node -e '
         const fs = require("fs");
         const f = process.argv[1];
         const old = "let s,o=async()=>{this.clients.delete(a);";
@@ -43,8 +43,8 @@ case "${mcphub_dist}" in
         fs.writeFileSync(f, src.replace(old, neu));
         console.error("mcphub-launch: patched " + f + " (recursive-close guard)");
       ' "${mcphub_dist}" || :
-  fi
-  ;;
+    fi
+    ;;
 esac
 
 exec "$HOME/.local/bin/mcp-hub" \

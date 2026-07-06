@@ -19,23 +19,23 @@ config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
 detect_variant() {
   if [ "$(uname)" = Darwin ]; then
     # AppleInterfaceStyle is "Dark" in dark mode and unset in light mode.
-    if defaults read -g AppleInterfaceStyle 2>/dev/null | grep -qi dark; then
+    if defaults read -g AppleInterfaceStyle 2> /dev/null | grep -qi dark; then
       echo dark
     else
       echo light
     fi
     return
   fi
-  if command -v gsettings >/dev/null 2>&1; then
-    case "$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)" in
-    *prefer-dark*)
-      echo dark
-      return
-      ;;
-    *prefer-light* | *default*)
-      echo light
-      return
-      ;;
+  if command -v gsettings > /dev/null 2>&1; then
+    case "$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)" in
+      *prefer-dark*)
+        echo dark
+        return
+        ;;
+      *prefer-light* | *default*)
+        echo light
+        return
+        ;;
     esac
   fi
   # No system signal: daytime is light, night is dark.
@@ -49,7 +49,7 @@ detect_variant() {
 
 # Watch mode: apply once, then follow GNOME appearance changes.
 if [ "${1:-}" = --watch ]; then
-  if ! gsettings get org.gnome.desktop.interface color-scheme >/dev/null 2>&1; then
+  if ! gsettings get org.gnome.desktop.interface color-scheme > /dev/null 2>&1; then
     echo "${0##*/}: --watch needs the GNOME color-scheme gsetting" >&2
     exit 1
   fi
@@ -62,19 +62,19 @@ fi
 
 variant="${1:-auto}"
 case "$variant" in
-light | dark) ;;
-auto) variant="$(detect_variant)" ;;
-*)
-  echo "usage: ${0##*/} [light|dark|auto|--watch]" >&2
-  exit 64
-  ;;
+  light | dark) ;;
+  auto) variant="$(detect_variant)" ;;
+  *)
+    echo "usage: ${0##*/} [light|dark|auto|--watch]" >&2
+    exit 64
+    ;;
 esac
 
 # Publish the active variant so live shells can follow it (zshrc reads this each
 # prompt and re-themes on change). XDG_CACHE_HOME, with a ~/.cache fallback.
 theme_file="${XDG_CACHE_HOME:-$HOME/.cache}/term-theme.txt"
 mkdir -p -- "${theme_file%/*}"
-printf '%s\n' "$variant" >"$theme_file" 2>/dev/null || true
+printf '%s\n' "$variant" > "$theme_file" 2> /dev/null || true
 
 # Re-point one app's selector, only when it actually changes. Sets `changed`
 # so we reload terminals just once, and never when already on the variant.
@@ -84,7 +84,7 @@ repoint() {
   dir="$config_home/$1"
   [ -d "$dir" ] && [ -e "$dir/${variant}.theme.$2" ] || return 0
   link="$dir/default.theme.$2"
-  [ "$(readlink "$link" 2>/dev/null)" = "${variant}.theme.$2" ] && return 0
+  [ "$(readlink "$link" 2> /dev/null)" = "${variant}.theme.$2" ] && return 0
   ln -sf "${variant}.theme.$2" "$link"
   changed=1
 }
@@ -95,15 +95,15 @@ repoint kitty conf
 # kitty reloads its config (and the symlink we just repointed) on SIGUSR1 —
 # only nudge it when something changed. alacritty live-reloads on file change.
 if [ "$changed" -eq 1 ]; then
-  pkill -USR1 -x kitty 2>/dev/null || true
+  pkill -USR1 -x kitty 2> /dev/null || true
 fi
 
 # foot: SIGUSR1 -> dark, SIGUSR2 -> light. No symlink needed; safe no-op when
 # foot is not running.
 if [ "$variant" = light ]; then
-  pkill -USR2 -x foot 2>/dev/null || true
+  pkill -USR2 -x foot 2> /dev/null || true
 else
-  pkill -USR1 -x foot 2>/dev/null || true
+  pkill -USR1 -x foot 2> /dev/null || true
 fi
 
 echo "theme: $variant"

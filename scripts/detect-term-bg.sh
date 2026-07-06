@@ -10,29 +10,29 @@ detect_term_bg() {
   # zsh does not word-split unquoted expansions by default; match POSIX so the
   # `set -- $rgb` split below behaves the same in-process as under /bin/sh.
   if [ -n "${ZSH_VERSION-}" ]; then
-    emulate -L sh 2>/dev/null
+    emulate -L sh 2> /dev/null
   fi
 
   # Need a usable terminal and a controlling tty to talk to.
   case "${TERM-}" in
-  '' | dumb) return 1 ;;
+    '' | dumb) return 1 ;;
   esac
   {
-    : </dev/tty
-  } 2>/dev/null || return 1
+    : < /dev/tty
+  } 2> /dev/null || return 1
 
   local saved reply rest comp rgb r g b lightness bel esc c oldifs
-  saved="$(stty -g </dev/tty 2>/dev/null)" || return 1
+  saved="$(stty -g < /dev/tty 2> /dev/null)" || return 1
 
   bel="$(printf '\007')" # BEL: the terminator we send, and the usual reply one
   esc="$(printf '\033')" # ESC: first byte of an ST (ESC \) terminator
 
   # min 0 + time 2 = non-canonical read with a 0.2s timeout (tenths of a
   # second), which bounds how long we ever wait on a terminal that stays silent.
-  stty -echo -icanon min 0 time 2 </dev/tty
+  stty -echo -icanon min 0 time 2 < /dev/tty
   # Multiplexers (tmux 3.x, Zellij) answer OSC 11 themselves, so a plain query
   # works inside them with no passthrough wrapping.
-  printf '\033]11;?\007' >/dev/tty
+  printf '\033]11;?\007' > /dev/tty
 
   # Read the reply and stop the instant its terminator arrives, instead of
   # waiting out the full inter-byte timeout after every answer (a flat ~200ms
@@ -45,23 +45,23 @@ detect_term_bg() {
       reply="$reply$c"
       case "$c" in "$bel") break ;; esac       # BEL-terminated reply
       case "$reply" in *"$esc"\\) break ;; esac # ST (ESC \) terminated reply
-    done </dev/tty
+    done < /dev/tty
   else
-    reply="$(dd if=/dev/tty bs=1 count=64 2>/dev/null)"
+    reply="$(dd if=/dev/tty bs=1 count=64 2> /dev/null)"
   fi
-  stty "$saved" </dev/tty 2>/dev/null
+  stty "$saved" < /dev/tty 2> /dev/null
 
   # Strip the trailing terminator (BEL or ST) from the reply, if present.
   reply="${reply%%"$bel"*}"
 
   case "$reply" in
-  *rgb:*)
-    rest="${reply#*rgb:}"          # RRRR/GGGG/BBBB
-    rest="${rest%%[!0-9A-Fa-f/]*}" # drop any junk after the color
-    ;;
-  *)
-    return 1
-    ;;
+    *rgb:*)
+      rest="${reply#*rgb:}"        # RRRR/GGGG/BBBB
+      rest="${rest%%[!0-9A-Fa-f/]*}" # drop any junk after the color
+      ;;
+    *)
+      return 1
+      ;;
   esac
 
   # Split RRRR/GGGG/BBBB into three hex components.
@@ -76,10 +76,10 @@ detect_term_bg() {
   rgb=
   for comp in "$1" "$2" "$3"; do
     case "${#comp}" in
-    1) comp="$comp$comp" ;;               # 4-bit -> duplicate nibble
-    2) ;;                                 # already 8-bit
-    3 | 4) comp="${comp%"${comp#??}"}" ;; # keep the high byte
-    *) return 1 ;;
+      1) comp="$comp$comp" ;;             # 4-bit -> duplicate nibble
+      2) ;;                               # already 8-bit
+      3 | 4) comp="${comp%"${comp#??}"}" ;; # keep the high byte
+      *) return 1 ;;
     esac
     rgb="$rgb $((0x$comp))"
   done
@@ -97,17 +97,17 @@ detect_term_bg() {
 
 detect_term_bg__main() {
   case "${1-}" in
-  -q | --quiet)
-    detect_term_bg
-    ;;
-  '')
-    verdict="$(detect_term_bg)" || return $?
-    printf 'Terminal background looks %s.\n' "$verdict"
-    ;;
-  *)
-    printf 'usage: %s [-q|--quiet]\n' "${0##*/}" >&2
-    return 64
-    ;;
+    -q | --quiet)
+      detect_term_bg
+      ;;
+    '')
+      verdict="$(detect_term_bg)" || return $?
+      printf 'Terminal background looks %s.\n' "$verdict"
+      ;;
+    *)
+      printf 'usage: %s [-q|--quiet]\n' "${0##*/}" >&2
+      return 64
+      ;;
   esac
 }
 
@@ -117,7 +117,7 @@ detect_term_bg__main() {
 detect_term_bg__sourced=0
 if [ -n "${ZSH_VERSION-}" ]; then
   case "${ZSH_EVAL_CONTEXT-}" in
-  *file*) detect_term_bg__sourced=1 ;;
+    *file*) detect_term_bg__sourced=1 ;;
   esac
 elif [ -n "${BASH_VERSION-}" ]; then
   [ "${BASH_SOURCE-}" != "${0-}" ] && detect_term_bg__sourced=1
@@ -127,5 +127,5 @@ if [ "$detect_term_bg__sourced" -eq 0 ]; then
   detect_term_bg__main "$@"
   exit $?
 fi
-unset -f detect_term_bg__main 2>/dev/null
+unset -f detect_term_bg__main 2> /dev/null
 unset detect_term_bg__sourced

@@ -22,8 +22,7 @@ for _pythonrc in \
   "${HOME}/.pythonrc.py" \
   "${HOME}/.rc.py" \
   "${HOME}/.pythonrc" \
-  "${HOME}/.rc"
-do
+  "${HOME}/.rc"; do
   if test -f "${_pythonrc}"; then
     export PYTHONSTARTUP="${_pythonrc}"
     break
