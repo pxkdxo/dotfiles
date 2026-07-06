@@ -21,22 +21,37 @@ detect_term_bg() {
     : </dev/tty
   } 2>/dev/null || return 1
 
-  local saved reply rest comp rgb r g b lightness bel oldifs
+  local saved reply rest comp rgb r g b lightness bel esc c oldifs
   saved="$(stty -g </dev/tty 2>/dev/null)" || return 1
 
+  bel="$(printf '\007')" # BEL: the terminator we send, and the usual reply one
+  esc="$(printf '\033')" # ESC: first byte of an ST (ESC \) terminator
+
   # min 0 + time 2 = non-canonical read with a 0.2s timeout (tenths of a
-  # second). A read that times out with no data returns EOF, so a single dd
-  # collects the whole reply and stops shortly after the last byte — or
-  # immediately if the terminal ignores the query.
+  # second), which bounds how long we ever wait on a terminal that stays silent.
   stty -echo -icanon min 0 time 2 </dev/tty
   # Multiplexers (tmux 3.x, Zellij) answer OSC 11 themselves, so a plain query
   # works inside them with no passthrough wrapping.
   printf '\033]11;?\007' >/dev/tty
-  reply="$(dd if=/dev/tty bs=1 count=64 2>/dev/null)"
+
+  # Read the reply and stop the instant its terminator arrives, instead of
+  # waiting out the full inter-byte timeout after every answer (a flat ~200ms
+  # tax on each fresh shell). zsh -- the daily-driver shell this is sourced into
+  # -- reads one key at a time with a per-read timeout; other shells fall back to
+  # a single dd that stops on the post-reply EOF.
+  if [ -n "${ZSH_VERSION-}" ]; then
+    reply=
+    while read -r -k 1 -t 0.2 c; do
+      reply="$reply$c"
+      case "$c" in "$bel") break ;; esac       # BEL-terminated reply
+      case "$reply" in *"$esc"\\) break ;; esac # ST (ESC \) terminated reply
+    done </dev/tty
+  else
+    reply="$(dd if=/dev/tty bs=1 count=64 2>/dev/null)"
+  fi
   stty "$saved" </dev/tty 2>/dev/null
 
   # Strip the trailing terminator (BEL or ST) from the reply, if present.
-  bel="$(printf '\007')"
   reply="${reply%%"$bel"*}"
 
   case "$reply" in

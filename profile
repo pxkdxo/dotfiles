@@ -13,13 +13,18 @@ if test -t 1; then
   tput init && stty -ixon -ixoff || :
 fi 2>/dev/null
 
-# Set file creation mode mask
+# Set file creation mode mask. 0002 (group-writable) is only safe on
+# user-private-group systems, where each user's primary group is their own; on
+# shared-group systems it makes new files writable by every group member. Use
+# 0002 only when the primary group name matches the user name, else 0022.
 # EUID is not defined in dash(1)
 # shellcheck disable=SC3028
 if test "${EUID:-$(id -u)}" -eq 0; then
   umask 0022
-else
+elif test "$(id -gn)" = "$(id -un)"; then
   umask 0002
+else
+  umask 0022
 fi
 
 # path_print - Print the value of PATH with a chosen separator

@@ -191,7 +191,10 @@ else
 fi
 ' -- "${dry_run}" "${ln_opts}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
 
-# On macOS, link launchd agent plists into ~/Library/LaunchAgents
+# On macOS, generate launchd agent plists into ~/Library/LaunchAgents. launchd
+# requires absolute paths, so the tracked plists carry a __HOME__ placeholder
+# that is substituted for the real home here -- a symlink would leave __HOME__
+# unresolved. This also survives a future username change (re-run the install).
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
@@ -202,13 +205,27 @@ dry_run=$1
 optchars=$2
 src_dir=$3
 dst_dir=$4
-filename=$5
+home=$5
+filename=$6
+src="${src_dir}/${filename}"
+dst="${dst_dir}/${filename}"
 if test -n "${dry_run}"; then
-  printf "would link: %s/%s -> %s/%s\n" "${dst_dir}" "${filename}" "${src_dir}" "${filename}"
-else
-  ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
+  printf "would generate: %s (from %s, __HOME__ -> %s)\n" "${dst}" "${filename}" "${home}"
+  exit 0
 fi
-' -- "${dry_run}" "${ln_opts}" "$(relpath "${repo_path}/launchd/agents" "${launch_agents}")" "${launch_agents}" || :
+if test -e "${dst}"; then
+  case "${optchars}" in
+  *f*) : ;;                                     # force: overwrite
+  *i*)
+    printf "%s exists. Overwrite? [y/N] " "${dst}" > /dev/tty
+    read -r reply < /dev/tty || reply=""
+    case "${reply}" in [Yy]*) : ;; *) exit 0 ;; esac
+    ;;
+  *) exit 0 ;;                                  # no-clobber: leave it in place
+  esac
+fi
+sed "s|__HOME__|${home}|g" -- "${src}" > "${dst}"
+' -- "${dry_run}" "${ln_opts}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
 
   # Load the lightweight agents now instead of at next login. Needs a GUI
   # session (gui/$UID), so probe that domain and skip over SSH. mcphub is

@@ -9,9 +9,6 @@ A keyboard-driven development environment for macOS and Linux, configured as a s
 rather than a collection of configs. Neovim · Zsh · Tmux · Starship · fzf — with live
 theming, AI tools, and graceful fallbacks throughout.
 
-<!-- screenshot: nvim with LSP, lualine, bufferline -->
-![Neovim](.github/screenshots/nvim.png)
-
 ---
 
 ## Highlights
@@ -22,9 +19,6 @@ vivid. Flip macOS dark mode or GNOME's `color-scheme` and the change propagates 
 re-theme, the shell re-derives `VIVID_THEME`, the Starship palette, and the tmux statusline —
 and already-open shells catch up at the next prompt. `colorschemes.py` (Python 3.12+) manages
 scheme sources; inside Neovim, `F11` / `F12` / `F24` cycle them prev / next / shuffle.
-
-<!-- screenshot: colorscheme cycling (multiple frames or GIF) -->
-![Colorscheme cycling](.github/screenshots/colorschemes.gif)
 
 **AI-assisted editing stack.** [Avante.nvim](https://github.com/yetone/avante.nvim) drives
 agentic editing via `cursor-agent` (ACP); [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim)
@@ -57,9 +51,6 @@ systemd user units. Shell startup is POSIX-portable across both.
 | **Bat / Ripgrep / Vivid** | Pager · search · `LS_COLORS` theming |
 | **Yazi / Ranger** | Terminal file managers |
 | **Git** | Aliases · color config |
-
-<!-- screenshot: tmux panes + starship prompt -->
-![Terminal + Tmux](.github/screenshots/tmux.png)
 
 > The Neovim config has its own [README](nvim/) covering the colorscheme engine, the AI
 > stack, and the module layout.
