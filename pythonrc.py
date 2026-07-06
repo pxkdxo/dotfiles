@@ -1,62 +1,66 @@
 #!/usr/bin/env python3
-"""Initialize an interactive Python interpreter."""
-# pylint: disable=unused-import,unresolved-import
+"""Initialize an interactive Python interpreter.
+
+Modules and names below are pre-imported so common things are one word away in
+the REPL. Kept deliberately to the ones actually reached for during quick
+testing; niche/stdlib-internal modules (bisect, posix, pty, signal, ...) were
+dropped -- import them on demand.
+"""
+# pylint: disable=unused-import
 # ruff: noqa: F401
 
+# Frequently reached-for standard-library modules.
 import base64
-import bisect
-import builtins
 import collections
-import collections.abc
+import contextlib
 import copy
+import dataclasses
 import datetime
-import fileinput
 import functools
-import glob
 import hashlib
-import json
-import importlib
 import inspect
 import io
 import itertools
-import locale
+import json
 import math
-import mimetypes
 import operator
 import os
-
-try:
-    import pathlib
-except ImportError:
-    pass
-import posix
+import pathlib
 import pprint
-import pstats
-import pty
-
-try:
-    import queue
-except ImportError:
-    pass
 import random
 import re
 import shlex
 import shutil
-import signal
+import statistics
 import string
 import subprocess
 import sys
 import tempfile
+import textwrap
 import time
 import timeit
-import tty
-import types
-
-try:
-    import typing
-except ImportError:
-    pass
+import typing
 import uuid
+
+# Handy names imported directly so they need no module prefix in the REPL.
+from collections import ChainMap, Counter, defaultdict, deque, namedtuple
+from dataclasses import dataclass, field
+from datetime import date, datetime, timedelta
+from functools import cache, lru_cache, partial, reduce
+from itertools import (
+    accumulate,
+    chain,
+    combinations,
+    count,
+    cycle,
+    groupby,
+    islice,
+    permutations,
+    product,
+    repeat,
+)
+from pathlib import Path
+from pprint import pprint as pp
 
 
 def __load_readline_setup():

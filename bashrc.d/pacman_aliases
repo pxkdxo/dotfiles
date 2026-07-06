@@ -1,5 +1,11 @@
 # Aliases for the Arch Linux package manager
 
+# pacman only exists on Arch; skip this file entirely elsewhere (e.g. macOS)
+# rather than defining ~60 aliases to a command that isn't there.
+if ! command -v pacman > /dev/null 2>&1; then
+  return 0 2> /dev/null || exit 0
+fi
+
 # Sync
 
 alias pac.s="sudo pacman --sync"
