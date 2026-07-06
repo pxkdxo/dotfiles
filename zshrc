@@ -48,7 +48,7 @@ typeset -g _dotfiles_etc="${${(%):-%x}:A:h}"
 
 # Detect the terminal background (light/dark) via OSC 11 and derive color
 # settings from it. detect-term-bg.sh is sourced (not executed) so it runs
-# in-process; term-bg-resync re-runs detection on demand (bind it to a key or
+# in-process; term-bg-sync re-runs detection on demand (bind it to a key or
 # call it after toggling your terminal theme). Falls back to THEME_VARIANT.
 [[ -r $_dotfiles_etc/scripts/detect-term-bg.sh ]] && source "$_dotfiles_etc/scripts/detect-term-bg.sh"
 
@@ -97,7 +97,7 @@ _term_bg_apply() {
   _tmux_theme
 }
 
-term-bg-resync() {
+term-bg-sync() {
   emulate -L zsh
   local bg
   (( $+functions[detect_term_bg] )) && bg="$(detect_term_bg)"
@@ -126,7 +126,7 @@ if [[ -v TERM_BACKGROUND ]]; then
   _tmux_theme
   _term_bg_seen=$TERM_BACKGROUND
 else
-  term-bg-resync
+  term-bg-sync
   [[ -r $_term_bg_file ]] && _term_bg_seen="$(<$_term_bg_file)"
 fi
 autoload -Uz add-zsh-hook

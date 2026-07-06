@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.patrickdeyoreo.user-env</string>
+    <string>com.patrickdeyoreo.setenv</string>
 
     <!--
         Publish the interactive-login shell environment (PATH, XDG_*, and
@@ -22,10 +22,10 @@
     <true/>
 
     <key>StandardOutPath</key>
-    <string>__HOME__/Library/Logs/user-env.out.log</string>
+    <string>__HOME__/Library/Logs/setenv.out.log</string>
 
     <key>StandardErrorPath</key>
-    <string>__HOME__/Library/Logs/user-env.err.log</string>
+    <string>__HOME__/Library/Logs/setenv.err.log</string>
 
     <key>ProcessType</key>
     <string>Background</string>
