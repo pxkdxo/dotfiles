@@ -241,12 +241,13 @@ __ti_rmso="$(tput rmso)"
 __ti_smul="$(tput smul)"
 __ti_rmul="$(tput rmul)"
 __ti_sgr0="$(tput sgr0)"
-__ti_colors="$(tput colors)"
+# The prompts only ever index __ti_fg by (status % 8), so build just the 8 base
+# foreground colors. The old loop built all `tput colors` entries (256) for both
+# fg and bg -- ~512 tput forks at every shell start, the bulk of bash startup
+# latency -- and __ti_bg was never read.
 declare -a __ti_fg=()
-declare -a __ti_bg=()
-while ((${#__ti_fg[@]} < ${__ti_colors:-8})); do
+while ((${#__ti_fg[@]} < 8)); do
   __ti_fg[${#__ti_fg[@]}]="$(tput setaf "${#__ti_fg[@]}")"
-  __ti_bg[${#__ti_bg[@]}]="$(tput setab "${#__ti_bg[@]}")"
 done
 
 # Limit depth of paths produced by '\w' upon prompt expansion

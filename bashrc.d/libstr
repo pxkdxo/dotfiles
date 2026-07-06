@@ -2,9 +2,11 @@
 #
 ## string manipulation library
 
+# These helpers use ${var,,}/${var^^}/@P etc. (bash 4.0+). Quietly skip on the
+# 3.2 floor instead of warning on every interactive shell -- the functions just
+# won't be defined there.
 if test -z "${BASH_VERSION%%.*}" || (( "${BASH_VERSION%%.*}" < 4 )); then
-    >&2 printf 'libstr: requires bash 4.0 or higher - found %s\n' "${BASH_VERSION}"
-    return 2 || exit 2
+    return 0 2> /dev/null || exit 0
 fi
 
 if  (( __libstr__ )) && [[ $0 != "${BASH_SOURCE[0]}" ]]
