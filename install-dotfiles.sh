@@ -193,6 +193,7 @@ for filename; do
     # No `--` on sed: BSD sed treats it as a filename, and src is absolute.
     rm -f -- "${dst}"
     sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
+    printf "generate: %s\n" "${dst}"
   fi
 done
 ' -- "${dry_run}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
@@ -202,11 +203,13 @@ done
   # heavyweight and stays manual (see CLAUDE.md).
   launch_domain="gui/$(id -u)"
   if test -z "${dry_run}" && launchctl print "${launch_domain}" > /dev/null 2>&1; then
+    printf "activating launch agents (a few seconds)...\n"
     for plist in "${launch_agents}"/com.patrickdeyoreo.*.plist; do
       test -e "${plist}" || continue
       label="${plist##*/}"
       label="${label%.plist}"
       case "${label}" in *mcphub*) continue ;; esac
+      printf "activate: %s\n" "${label}"
       # bootstrap loads it; if already loaded, kickstart -k restarts it.
       launchctl bootstrap "${launch_domain}" "${plist}" 2> /dev/null ||
         launchctl kickstart -k "${launch_domain}/${label}" 2> /dev/null || :
@@ -232,6 +235,7 @@ case "$(uname -s)" in Linux)
       test -e "${unit}" || continue
       unit_name="${unit##*/}"
       case "${unit_name}" in *@.*) continue ;; esac # templated: needs an instance
+      printf "enable: %s\n" "${unit_name}"
       systemctl --user enable "${unit_name}" 2> /dev/null || :
       case "${unit_name}" in mcphub.*) continue ;; esac # heavyweight: stays manual
       if test -n "${have_session}"; then
