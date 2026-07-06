@@ -194,40 +194,35 @@ fi
 # On macOS, generate launchd agent plists into ~/Library/LaunchAgents. launchd
 # requires absolute paths, so the tracked plists carry a __HOME__ placeholder
 # that is substituted for the real home here -- a symlink would leave __HOME__
-# unresolved. This also survives a future username change (re-run the install).
+# unresolved. These are generated artifacts that must always match the current
+# $HOME, so they are unconditionally regenerated (no -i/-f/-n clobber prompt);
+# this also survives a future username change on re-run.
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
   # shellcheck disable=SC2016
   git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents |
-    xargs -0 -n 1 ${xargs_tty} -- sh -c '
+    xargs -0 -n 1 -- sh -c '
 dry_run=$1
-optchars=$2
-src_dir=$3
-dst_dir=$4
-home=$5
-filename=$6
+src_dir=$2
+dst_dir=$3
+home=$4
+filename=$5
 src="${src_dir}/${filename}"
 dst="${dst_dir}/${filename}"
 if test -n "${dry_run}"; then
   printf "would generate: %s (from %s, __HOME__ -> %s)\n" "${dst}" "${filename}" "${home}"
   exit 0
 fi
-if test -e "${dst}"; then
-  case "${optchars}" in
-  *f*) : ;;                                     # force: overwrite
-  *i*)
-    printf "%s exists. Overwrite? [y/N] " "${dst}" > /dev/tty
-    read -r reply < /dev/tty || reply=""
-    case "${reply}" in [Yy]*) : ;; *) exit 0 ;; esac
-    ;;
-  *) exit 0 ;;                                  # no-clobber: leave it in place
-  esac
-fi
-# No `--`: BSD sed (macOS, where this Darwin block runs) treats it as a
-# filename. src is always an absolute repo path, so it is not needed.
+# Remove any existing file OR stale symlink first. Earlier installs symlinked
+# these plists back into the repo; writing through such a symlink (dst -> src)
+# would truncate the tracked template to empty before sed could read it. rm
+# drops the link itself, so we then create a fresh regular file from an intact
+# source. No `--` on sed: BSD sed (macOS) treats it as a filename, and src is
+# always an absolute repo path anyway.
+rm -f -- "${dst}"
 sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
-' -- "${dry_run}" "${ln_opts}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
+' -- "${dry_run}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
 
   # Load the lightweight agents now instead of at next login. Needs a GUI
   # session (gui/$UID), so probe that domain and skip over SSH. mcphub is
