@@ -73,8 +73,7 @@ tree_path="$(cd -- "${argzero_dirname}" >/dev/null && pwd -P && echo '@')" # sup
 tree_path="${tree_path%?@}"
 repo_path="${tree_path}"
 
-# Fail loudly on a non-repo rather than silently linking nothing (this is what
-# `set -o pipefail` used to catch on the git|xargs pipelines below).
+# Fail loudly on a non-repo rather than silently linking nothing.
 git -C "${repo_path}" rev-parse --git-dir >/dev/null 2>&1 || {
   printf '%s: %s is not a git repository\n' "${argzero_name}" "${repo_path}" >&2
   exit 1
@@ -108,13 +107,10 @@ relpath() {
   printf '%s\n' "${_rp_out:-.}" # equal paths -> '.'
 }
 
-# The link workhorse, shared by every block below via `sh -c`. It leans on
-# `ln`'s own idempotency (-f recreates the link whatever was there before; -n,
-# a synonym for -h on BSD/macOS, replaces a symlink-to-directory rather than
-# dereferencing into it) instead of hand-rolled existence checks. The one thing
-# ln cannot do portably is replace a real directory: it would nest a link inside
-# it (silently, rc 0), so a real directory is removed first. DRY_RUN narrates and
-# flags any such removal.
+# Shared link helper (used by the blocks below via `sh -c`). ln -sfn is
+# idempotent: it recreates the link over any file or symlink (-n/-h replaces a
+# symlink-to-dir instead of dereferencing into it). The one case it can't handle
+# is a real directory -- ln would nest a link inside it -- so remove that first.
 # shellcheck disable=SC2016 # this is a `sh -c` body; it must not expand here
 link_body='
 dst_link() {
@@ -169,11 +165,9 @@ for filename; do
 done
 ' -- "${dry_run}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
 
-# On macOS, generate launchd agent plists into ~/Library/LaunchAgents. launchd
-# requires absolute paths, so the tracked plists carry a __HOME__ placeholder
-# substituted for the real home here -- a symlink would leave __HOME__
-# unresolved. These are generated artifacts that must always match the current
-# $HOME, so each run regenerates them (also survives a future username change).
+# On macOS, generate launchd plists into ~/Library/LaunchAgents. launchd needs
+# absolute paths, so the tracked templates carry a __HOME__ placeholder that is
+# substituted here (a symlink would leave it unresolved); each run regenerates.
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
@@ -188,9 +182,9 @@ for filename; do
   if test -n "${dry_run}"; then
     printf "generate: %s (__HOME__ -> %s)\n" "${dst}" "${home}"
   else
-    # rm first: an earlier install may have left dst as a symlink back into the
-    # repo; writing through it (sed > dst) would truncate the source template.
-    # No `--` on sed: BSD sed treats it as a filename, and src is absolute.
+    # rm first: a stale symlink here could point back into the repo, and
+    # `sed > dst` through it would truncate the source. (No `--`: BSD sed reads
+    # it as a filename; src is absolute anyway.)
     rm -f -- "${dst}"
     sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
     printf "generate: %s\n" "${dst}"
@@ -198,21 +192,20 @@ for filename; do
 done
 ' -- "${dry_run}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
 
-  # Load the lightweight agents now instead of at next login. Needs a GUI
-  # session (gui/$UID), so probe that domain and skip over SSH. mcphub is
-  # heavyweight and stays manual (see CLAUDE.md).
+  # Activate now instead of at next login. Needs a GUI session (gui/$UID), so
+  # probe that domain and skip over SSH. mcphub is heavyweight and stays manual.
   launch_domain="gui/$(id -u)"
   if test -z "${dry_run}" && launchctl print "${launch_domain}" > /dev/null 2>&1; then
-    printf "activating launch agents (a few seconds)...\n"
     for plist in "${launch_agents}"/com.patrickdeyoreo.*.plist; do
       test -e "${plist}" || continue
-      label="${plist##*/}"
-      label="${label%.plist}"
+      label="${plist##*/}"; label="${label%.plist}"
       case "${label}" in *mcphub*) continue ;; esac
       printf "activate: %s\n" "${label}"
-      # bootstrap loads it; if already loaded, kickstart -k restarts it.
-      launchctl bootstrap "${launch_domain}" "${plist}" 2> /dev/null ||
-        launchctl kickstart -k "${launch_domain}/${label}" 2> /dev/null || :
+      # Reload cleanly: bootout then bootstrap picks up plist edits and runs
+      # RunAtLoad. (`kickstart -k` instead would force-restart into launchd's
+      # ~10s respawn throttle on an agent that just ran.)
+      launchctl bootout "${launch_domain}/${label}" 2> /dev/null || :
+      launchctl bootstrap "${launch_domain}" "${plist}" 2> /dev/null || :
     done
   fi
   ;;
