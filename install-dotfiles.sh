@@ -12,7 +12,7 @@ argzero_name="${0##*/}"
 argzero_dirname="${0%"${argzero_name}"}"
 argzero_dirname="${argzero_dirname:-.}"
 
-usage="${argzero_name} [-n|-i|-f] [--] [TARGET_DIRECTORY]"
+usage="${argzero_name} [-n|-f] [--] [TARGET_DIRECTORY]"
 
 print_help() {
   cat
@@ -26,63 +26,35 @@ create a symbolic link in the invoking user's home directory. The name
 of the link will match the name of the file it links to, prefixed with
 a period ('.').
 
-The options "-n", "-i", and "-f", control whether or not existing files
-are replaced. With "-n", no files are replaced. With "-i", the user is
-prompted interactively for any file that would be replaced. With "-f",
-the user is not prompted and files are replaced.
+The installer is idempotent and non-interactive: every run overwrites its
+own links so the tree converges regardless of prior state. A pre-existing
+real file or foreign symlink at a link's location is replaced. The one thing
+it will not do silently is destroy a real directory (a symlink cannot portably
+replace a populated one): such a case is reported and left in place -- pass
+"-f" to remove it first. "-n" previews all actions without touching anything.
 EOF
 
-ln_opts="snv" # -s symlink, -n no-dereference, -v verbose
-
-if test -t 0; then
-  ln_replace='i'
-else
-  ln_replace=''
-fi
-
-dry_run='' # -n: don't activate services (preview-only)
+force=''   # -f: also replace a real directory that is in the way (rm -rf)
+dry_run='' # -n: preview only; don't touch the filesystem or activate services
 
 OPTIND=1
 option=''
-optstr=':hnif'
-
-while getopts "${optstr}" option; do
+while getopts ':hnf' option; do
   case "${option}" in
   'h')
     print_help
     exit 0
     ;;
+  'n') dry_run='1' ;;
+  'f') force='1' ;;
   '?')
     printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
     printf 'usage: %s\n' "${usage}" >&2
     exit 2
     ;;
-  ':')
-    printf '%s: -%c: missing required argument\n' "${argzero_name}" "${OPTARG}" >&2
-    printf 'usage: %s\n' "${usage}" >&2
-    exit 2
-    ;;
-  'n')
-    ln_replace=''
-    dry_run='1'
-    ;;
-  'i') ln_replace='i' ;;
-  'f') ln_replace='f' ;;
   esac
 done
 shift "$((OPTIND - 1))"
-
-ln_opts="${ln_opts}${ln_replace}"
-
-# xargs -o (reopen /dev/tty in the child) is only needed so `ln -i` can prompt.
-# Passing it unconditionally makes the installer abort with no controlling tty
-# (CI, provisioning, `ssh host 'sh install-dotfiles.sh -f'`), so gate it on the
-# interactive path.
-if test "${ln_replace}" = 'i'; then
-  xargs_tty='-o'
-else
-  xargs_tty=''
-fi
 
 if test "$#" -gt 1; then
   printf '%s: received too many arguments\n' "${argzero_name}" >&2
@@ -138,38 +110,52 @@ relpath() {
   printf '%s\n' "${_rp_out:-.}" # equal paths -> '.'
 }
 
+# The link workhorse, shared by every block below via `sh -c`. It relies on
+# `ln`'s own idempotency (-f recreates the link whatever was there before; -n,
+# a synonym for -h on BSD/macOS, replaces a symlink-to-directory instead of
+# dereferencing into it) rather than hand-rolled existence checks. The sole case
+# ln cannot handle portably is a real directory in the way: it would nest a link
+# inside it (silently, rc 0), so that one case is guarded -- removed under -f,
+# otherwise reported and skipped (fail open). DRY_RUN just narrates.
+# shellcheck disable=SC2016 # this is a `sh -c` body; it must not expand here
+link_body='
+dst_link() {
+  src=$1
+  dst=$2
+  if test -n "${DRY_RUN}"; then
+    printf "link: %s -> %s\n" "${dst}" "${src}"
+  elif test -d "${dst}" && ! test -L "${dst}"; then
+    if test -n "${FORCE}"; then
+      rm -rf -- "${dst}" && ln -sfnv -- "${src}" "${dst}"
+    else
+      printf "%s: %s is a directory; leaving it (use -f to replace)\n" \
+        "${CALLER}" "${dst}" >&2
+    fi
+  else
+    ln -sfnv -- "${src}" "${dst}"
+  fi
+}
+'
+
 # Home dotfile links sit directly in $home, so each targets the repo relative
 # to home.
 tree_path="$(relpath "${repo_path}" "${home_path}")"
 
 # shellcheck disable=SC2016
-git -C "${repo_path}" ls-tree --name-only -z HEAD | xargs -0 -n 1 ${xargs_tty} -- sh -c '
-caller=$1
-dry_run=$2
-optchars=$3
-treepath=$4
-destpath=$5
-filename=$6
-# skip: this script, dotfiles already prefixed with '.', markdown files, and
-# XDG-specific directories that have canonical locations outside ~/.*
-case "${filename}" in
-  "${caller}"|.*|*.md|environment.d|launchd|scripts|systemd|user-tmpfiles.d)
-    exit 0
-    ;;
-esac
-src="${treepath:+${treepath}/}${filename}"
-dst="${destpath:+${destpath}/}.${filename}"
-if test -n "${dry_run}"; then
-  if test -e "${dst}" || test -L "${dst}"; then
-    printf "skip (exists): %s\n" "${dst}"
-  else
-    printf "would link: %s -> %s\n" "${dst}" "${src}"
-  fi
-else
-  ln "-${optchars}" -- "${src}" "${dst}" \
-    || case "${optchars}" in *f*) exit 1 ;; esac
-fi
-' -- "${argzero_name}" "${dry_run}" "${ln_opts}" "${tree_path}" "${home_path}"
+git -C "${repo_path}" ls-tree --name-only -z HEAD |
+  xargs -0 -- sh -c "${link_body}"'
+CALLER=$1 DRY_RUN=$2 FORCE=$3 treepath=$4 destpath=$5
+shift 5
+for filename; do
+  # skip: this script, dotfiles already prefixed with ".", markdown files, and
+  # XDG-specific directories that have canonical locations outside ~/.*
+  case "${filename}" in
+    "${CALLER}"|.*|*.md|environment.d|launchd|scripts|systemd|user-tmpfiles.d)
+      continue ;;
+  esac
+  dst_link "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
+done
+' -- "${argzero_name}" "${dry_run}" "${force}" "${tree_path}" "${home_path}" || :
 
 # Link tracked helper scripts into ~/.local/bin so they are on PATH (the
 # launchd/systemd units reference them there). New scripts dropped in scripts/
@@ -178,50 +164,40 @@ local_bin="${home_path}/.local/bin"
 test -n "${dry_run}" || mkdir -p -- "${local_bin}"
 # shellcheck disable=SC2016
 git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts |
-  xargs -0 -n 1 ${xargs_tty} -- sh -c '
-dry_run=$1
-optchars=$2
-src_dir=$3
-dst_dir=$4
-filename=$5
-if test -n "${dry_run}"; then
-  printf "would link: %s/%s -> %s/%s\n" "${dst_dir}" "${filename}" "${src_dir}" "${filename}"
-else
-  ln "-${optchars}" -- "${src_dir}/${filename}" "${dst_dir}/${filename}" || :
-fi
-' -- "${dry_run}" "${ln_opts}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
+  xargs -0 -- sh -c "${link_body}"'
+CALLER=$1 DRY_RUN=$2 FORCE=$3 src_dir=$4 dst_dir=$5
+shift 5
+for filename; do
+  dst_link "${src_dir}/${filename}" "${dst_dir}/${filename}"
+done
+' -- "${argzero_name}" "${dry_run}" "${force}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
 
 # On macOS, generate launchd agent plists into ~/Library/LaunchAgents. launchd
 # requires absolute paths, so the tracked plists carry a __HOME__ placeholder
-# that is substituted for the real home here -- a symlink would leave __HOME__
+# substituted for the real home here -- a symlink would leave __HOME__
 # unresolved. These are generated artifacts that must always match the current
-# $HOME, so they are unconditionally regenerated (no -i/-f/-n clobber prompt);
-# this also survives a future username change on re-run.
+# $HOME, so each run regenerates them (also survives a future username change).
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
   # shellcheck disable=SC2016
   git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents |
-    xargs -0 -n 1 -- sh -c '
-dry_run=$1
-src_dir=$2
-dst_dir=$3
-home=$4
-filename=$5
-src="${src_dir}/${filename}"
-dst="${dst_dir}/${filename}"
-if test -n "${dry_run}"; then
-  printf "would generate: %s (from %s, __HOME__ -> %s)\n" "${dst}" "${filename}" "${home}"
-  exit 0
-fi
-# Remove any existing file OR stale symlink first. Earlier installs symlinked
-# these plists back into the repo; writing through such a symlink (dst -> src)
-# would truncate the tracked template to empty before sed could read it. rm
-# drops the link itself, so we then create a fresh regular file from an intact
-# source. No `--` on sed: BSD sed (macOS) treats it as a filename, and src is
-# always an absolute repo path anyway.
-rm -f -- "${dst}"
-sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
+    xargs -0 -- sh -c '
+dry_run=$1 src_dir=$2 dst_dir=$3 home=$4
+shift 4
+for filename; do
+  src="${src_dir}/${filename}"
+  dst="${dst_dir}/${filename}"
+  if test -n "${dry_run}"; then
+    printf "generate: %s (__HOME__ -> %s)\n" "${dst}" "${home}"
+  else
+    # rm first: an earlier install may have left dst as a symlink back into the
+    # repo; writing through it (sed > dst) would truncate the source template.
+    # No `--` on sed: BSD sed treats it as a filename, and src is absolute.
+    rm -f -- "${dst}"
+    sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
+  fi
+done
 ' -- "${dry_run}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
 
   # Load the lightweight agents now instead of at next login. Needs a GUI
