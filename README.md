@@ -16,9 +16,10 @@ theming, AI tools, and graceful fallbacks throughout.
 **Light/dark that follows the whole machine.** Theme definitions live in one place and
 propagate to every tool — Neovim, Alacritty, Ghostty, Kitty, Foot, bat, and `LS_COLORS` via
 vivid. Flip macOS dark mode or GNOME's `color-scheme` and the change propagates live: terminals
-re-theme, the shell re-derives `VIVID_THEME`, the Starship palette, and the tmux statusline —
-and already-open shells catch up at the next prompt. `colorschemes.py` (Python 3.12+) manages
-scheme sources; inside Neovim, `F11` / `F12` / `F24` cycle them prev / next / shuffle.
+re-theme, the shell re-derives `VIVID_THEME`, the Starship palette, the tmux statusline, and
+fzf's colors — and already-open shells catch up at the next prompt. `colorschemes.py`
+(Python 3.12+) manages scheme sources; inside Neovim, `F11` / `F12` / `F24` cycle them
+prev / next / shuffle.
 
 **AI-assisted editing stack.** [Avante.nvim](https://github.com/yetone/avante.nvim) drives
 agentic editing via `cursor-agent` (ACP); [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim)
@@ -59,14 +60,17 @@ systemd user units. Shell startup is POSIX-portable across both.
 
 ## Installation
 
-These files follow the XDG base-directory spec. The canonical layout puts the
-repository at `~/.local/etc` (which serves as `XDG_CONFIG_HOME`), the state
-tree at `~/.local/var` (with cache at `~/.local/var/cache`), and makes
-`~/.config`, `~/.cache`, and `~/.local/state` compat symlinks into that tree.
+The layout is XDG throughout, arranged as a prefix-style tree:
 
-Clone the repo — `~/.local/etc` is the canonical spot, but anywhere works —
-then run the installer, which bootstraps the whole layout on every platform
-(systemd Linux, macOS, termux):
+```
+~/.local/etc                          this repository — serves as XDG_CONFIG_HOME
+~/.local/var                          XDG_STATE_HOME · cache at var/cache · tmp at var/tmp
+~/.config  ~/.cache  ~/.local/state   compat symlinks into the tree
+```
+
+Clone — `~/.local/etc` is the canonical spot, but anywhere works — and run
+the installer, which bootstraps the whole layout on every platform (systemd
+Linux, macOS, termux):
 
 ```sh
 git clone --recurse-submodules https://github.com/pxkdxo/dotfiles ~/.local/etc
@@ -76,20 +80,21 @@ cd ~/.local/etc
 ./install-dotfiles.sh -h     # full usage
 ```
 
-The installer creates the directory tree (macOS has no systemd-tmpfiles, so
-this is what builds it there), places `~/.local/etc` (a symlink to the
-checkout when you cloned elsewhere), migrates a pre-existing real `~/.config`
-into the tree entry-by-entry, adopts `~/.cache`, links home-convention files
-(shell rc, gnupg, vim, X session files) as `~/.*`, links `scripts/` into
-`~/.local/bin`, and registers services (systemd user units / launchd agents).
+One run takes a lived-in home to the full layout. The installer creates the
+tree (macOS has no systemd-tmpfiles; this is what builds it there), places
+`~/.local/etc` (a symlink when you cloned elsewhere), migrates a real
+`~/.config` into the tree entry-by-entry, folds `~/.cache` and
+`~/.local/state` into `~/.local/var`, links home-convention files (shell rc,
+gnupg, vim, X session files) as `~/.*`, links `scripts/` into `~/.local/bin`,
+and registers services (systemd user units / launchd agents).
 
-> **Guard rails:** migrations are automatic — a lived-in home installs in one
-> run — but nothing is ever deleted. Where `~/.config` and the repo both have
-> an entry, the repo wins and the displaced entry is preserved in
-> `~/.config.migrated/`; cache and state collisions are parked the same way.
-> The only hard stop is a populated `~/.local/etc` that isn't this checkout.
-> The `~/.*` links themselves do replace what's at their destination
-> (including a real `~/.zshrc`), so preview with `-n` first.
+> **Guard rails:** nothing in this system deletes your data — not the
+> installer, and not login-time management (the tmpfiles configs are
+> create-only by design). On a migration collision the repo wins and the
+> displaced entry is parked in a `*.migrated/` directory. The one hard stop
+> is a populated `~/.local/etc` that isn't this checkout. The `~/.*` links do
+> replace what's at their destination (including a real `~/.zshrc`), so
+> preview with `-n` first.
 
 Already cloned without `--recurse-submodules`? Run
 `git submodule update --init --recursive`.
@@ -101,8 +106,8 @@ few; the rest enhance specific features.
 
 - **Required:** a shell (Zsh or Bash), **git**, a standard coreutils userland.
 - **Recommended (full experience):** **Neovim**, a **Nerd Font** (configs use
-  *RecMonoSmCasual Nerd Font* / *Maple Mono NF*), **fzf**, **ripgrep**, **fd**, **bat**,
-  **zoxide**, **Starship**, **tmux**.
+  *SpaceMono Nerd Font*), **fzf**, **ripgrep**, **fd**, **bat**, **zoxide**, **vivid**,
+  **Starship**, **tmux**.
 - **Neovim AI stack:** **node** / **npm** (MCPHub builds `mcp-hub`), **make** + a C
   compiler (Avante), and `cursor-agent` for the ACP provider.
 - **Optional, per feature:** **eza** / **lsd** (dir previews) · **wl-clipboard** / **xsel** /
