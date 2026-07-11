@@ -4,7 +4,6 @@
 [core]
 	editor = nvim
 	excludesfile = ~/.config/git/ignore
-	attributesfile = ~/.gitattributes
 	ignorecase = false
 
 [init]

@@ -2,11 +2,8 @@
 # gpg-agent.sh: gpg-agent config
 # see gpg-agent(1)
 
-# Point pinentry at the tty that owns this login shell. Login-shell only by
-# design: the passphrase prompt lands on the tty of the most recent login,
-# rather than following every command the way ohmyzsh's gpg-agent preexec
-# hook did (a gpg-connect-agent fork before each command). zsh provides $TTY
-# without a fork; bash and plain sh pay one tty(1) call.
+# Point pinentry at this login shell's tty; the prompt follows the most
+# recent login, by design. zsh has $TTY for free; bash/sh fork tty(1) once.
 if test -t 0; then
   GPG_TTY="${TTY:-$(tty)}"
   export GPG_TTY

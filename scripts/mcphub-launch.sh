@@ -29,7 +29,18 @@ fi
 # Once that merges and a release ships, this whole patch block can go.
 # ---------------------------------------------------------------------------
 mcphub_cli="$(command -v mcp-hub 2> /dev/null || echo "$HOME/.local/bin/mcp-hub")"
-mcphub_dist="$(readlink -f "${mcphub_cli}" 2> /dev/null || echo "")"
+# Resolve to the real path with plain readlink; BSD readlink has no -f.
+mcphub_dist="${mcphub_cli}"
+_hops=0
+while test -L "${mcphub_dist}" && test "${_hops}" -lt 32; do
+  _target="$(readlink "${mcphub_dist}")" || break
+  case "${_target}" in
+    /*) mcphub_dist="${_target}" ;;
+    *) mcphub_dist="${mcphub_dist%/*}/${_target}" ;;
+  esac
+  _hops=$((_hops + 1))
+done
+unset _hops _target
 case "${mcphub_dist}" in
   */mcp-hub/dist/cli.js)
     if ! grep -q '_mcphubCleanupRan' "${mcphub_dist}" 2> /dev/null; then

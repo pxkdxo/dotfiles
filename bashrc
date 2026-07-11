@@ -98,15 +98,7 @@ case ${TERM} in
 esac
 
 # Enable colors for ls, etc
-if command -v dircolors 1> /dev/null; then
-  if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors"; then
-    eval "$(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors")"
-  elif test -f ~/.dircolors; then
-    eval "$(dircolors -b -- ~/.dircolors)"
-  else
-    eval "$(dircolors -b)"
-  fi
-fi
+# LS_COLORS: profile.d/80-dircolors.sh (login); non-login shells inherit it.
 
 # Set prompt based on whether or not this is running as root
 if [[ ${EUID} == 0 ]]; then
@@ -321,14 +313,15 @@ ps_update() {
 # Add to precmd functions
 add_precmd_functions ps_update
 
-# Configure window title
+# Configure window title. Resolve TTY once; the preexec hooks run per command.
+if [[ -z ${TTY:-} && -t 0 ]]; then
+  TTY="$(tty 2> /dev/null)" || TTY=''
+fi
 if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]; then
   __window_title_precmd() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
   }
   __window_title_preexec() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\e]0;%s\a' "${WINDOW_TITLE@P}"
   }
@@ -338,13 +331,11 @@ if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]; then
 elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   # shellcheck disable=SC1003
   __window_title_precmd() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
   # shellcheck disable=SC1003
   __window_title_preexec() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
@@ -352,18 +343,8 @@ elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   add_preexec_functions __window_title_preexec
 fi
 
-if command -v gpg-agent > /dev/null 2>&1; then
-  # Set GPG_TTY to device on stdin
-  if [[ -t 0 ]]; then
-    if GPG_TTY="$(tty 2> /dev/null)"; then
-      export GPG_TTY
-    else
-      unset -v GPG_TTY
-    fi
-  fi
-  # Refresh gpg-agent in case we switched to an X-session
-  gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
-fi
+# GPG_TTY + agent tty refresh: profile.d/30-gpg-agent.sh (login); pinentry
+# targets the most recent login shell by design.
 
 # command-not-found hook
 command_not_found_handle() {
@@ -399,6 +380,13 @@ fi
 # Load bash_aliases file if it exists
 if [[ -f ~/.bash_aliases ]]; then
   source ~/.bash_aliases
+fi
+
+# fzf keybindings and completion (needs fzf >= 0.48 for --bash)
+if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.bash" ]]; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.bash"
+elif command -v fzf > /dev/null; then
+  eval "$(fzf --bash 2> /dev/null)"
 fi
 
 # sourcer - source directories too

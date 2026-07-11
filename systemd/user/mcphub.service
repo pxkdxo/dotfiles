@@ -1,10 +1,7 @@
 [Unit]
 Description=MCP Hub aggregator (mcp-hub) — central proxy that fans out to all configured MCP servers
 Documentation=https://github.com/ravitemer/mcp-hub
-# Wait until the user session has network access. graphical-session.target is also fine
-# for desktop users, but network-online is the more universally portable choice.
-After=network-online.target
-Wants=network-online.target
+# network-online.target is a no-op in user scope; mcp-hub retries on its own.
 
 [Service]
 Type=simple

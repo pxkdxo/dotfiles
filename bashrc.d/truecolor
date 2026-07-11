@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-set8f () 
+# ${_@P} needs bash >= 4.4 (macOS ships 3.2)
+if ((BASH_VERSINFO[0] < 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 4))); then
+  return 0
+fi
+
+set8f ()
 { 
     : "\\[\\e[38;2;$((16#$1));$((16#$2));$((16#$3))m\\]${*:4}"
     printf '%s' "${_@P}" "$(tput sgr0)" $'\n'

@@ -3,6 +3,9 @@
 # Requires: 90-fzf.sh (for helpers) and fzf
 # Sourced by 90-fzf.sh when fzf is available
 
+# Loaded via 90-fzf.sh only; the profile.d loader's own glob pass is a no-op.
+test "${_fzf_extensions_wanted:-}" = 1 || return 0
+
 if command -v fzf > /dev/null 2>&1; then
 
   # ============================================================================
