@@ -388,6 +388,15 @@ if [[ -f ~/.bash_aliases ]]; then
   source ~/.bash_aliases
 fi
 
+# fzf keybindings and completion (Ctrl-R / Ctrl-T / Alt-C), mirroring zshrc's
+# fzf.zsh sourcing -- fzf/fzf.bash sat in the repo unsourced, so bash had no
+# fzf integration at all. Needs fzf >= 0.48 (`fzf --bash`), like the zsh side.
+if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.bash" ]]; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.bash"
+elif command -v fzf > /dev/null; then
+  eval "$(fzf --bash 2> /dev/null)"
+fi
+
 # sourcer - source directories too
 sourced() {
   local subpath

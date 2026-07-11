@@ -96,9 +96,29 @@ _tmux_theme() {
   tmux source-file -F "#{@theme_dir}/tmux-theme.conf" 2>/dev/null
 }
 
+# Re-point the base scheme (dark|light) inside the fzf opts arrays built
+# further down, so a live theme flip reaches fzf like it does starship, tmux,
+# and LS_COLORS. The arrays don't exist yet during the startup apply (no-op
+# here; the build below bakes in the then-current TERM_BACKGROUND) -- this
+# matters on watcher/manual re-applies in a running shell. Only the generated
+# defaults carry a --color element; opts read from an fzfrc are untouched.
+_fzf_sync_colors() {
+  emulate -L zsh
+  local want=${TERM_BACKGROUND:-dark} other arr
+  [[ $want == light ]] && other=dark || other=light
+  for arr in fzf_default_opts fzf_completion_opts fzf_alt_c_opts \
+    fzf_ctrl_t_opts fzf_ctrl_r_opts; do
+    (( ${(P)+arr} )) || continue
+    # both spellings: the generated defaults quote the value (--color='dark,)
+    # while fzfrc carries it bare (--color=dark,)
+    eval "${arr}=(\"\${${arr}[@]//--color='${other},/--color='${want},}\")"
+    eval "${arr}=(\"\${${arr}[@]//--color=${other},/--color=${want},}\")"
+  done
+}
+
 # Apply a known background (light|dark) to this shell: export the signal, map
 # VIVID_THEME (the lscolors precmd then regenerates LS_COLORS), and refresh
-# starship + tmux. No detection — the caller supplies the variant.
+# starship + tmux + fzf. No detection — the caller supplies the variant.
 _term_bg_apply() {
   emulate -L zsh
   export TERM_BACKGROUND="$1"
@@ -108,6 +128,7 @@ _term_bg_apply() {
   esac
   _starship_palette
   _tmux_theme
+  _fzf_sync_colors
 }
 
 term-bg-sync() {
