@@ -27,6 +27,7 @@ nvim/
 │       ├── copypaste.lua        # yanky.nvim — persistent yank ring with sqlite storage
 │       ├── dap.lua              # Debug Adapter Protocol: nvim-dap, dap-ui, Go + Python adapters
 │       ├── diagnostics.lua      # tiny-inline-diagnostic, todo-comments, nvim-lint, Trouble
+│       ├── editing.lua          # nvim-surround, treesj, nvim-autopairs (leap disabled)
 │       ├── env.lua              # ecolog.nvim — environment variable management and shelter
 │       ├── explorers.lua        # nvim-tree file explorer (right-side panel, netrw disabled)
 │       ├── formatting.lua       # conform.nvim — format-on-save and :FormatToggle
@@ -37,7 +38,7 @@ nvim/
 │       ├── lsp.lua              # LSP: nvim-lspconfig, mason, mason-lspconfig, navic, lazydev
 │       ├── markdown.lua         # Markdown preview + render-markdown.nvim
 │       ├── mini.lua             # mini.icons + mini.comment
-│       ├── movement.lua         # Motion/editing: nvim-surround, treesj, flash, autopairs
+│       ├── movement.lua         # flash.nvim motions (jump / treesitter select)
 │       ├── nvim-treesitter.lua  # Treesitter: parsers, context, textobjects (select/move/swap)
 │       ├── repl.lua             # Conjure REPL integration (disabled by default)
 │       ├── search.lua           # grug-far.nvim — search and replace
@@ -58,7 +59,7 @@ nvim/
 4. **`config.lazy.setup(...)`** bootstraps lazy.nvim and imports all plugin specs from `lua/plugins/`
 5. If NOT in VSCode (`vim.g.vscode == nil`):
    - A curated colorscheme list is set on `vim.g.colorschemes`
-   - The colorscheme rotation engine (`utils.colors.setup()`) is initialized and advances to the first scheme via `colors.next()`
+   - The colorscheme rotation engine (`utils.colors.setup()`) is initialized and `colors.restore()` re-applies the scheme cached for the current `&background` (falling back to a background-filtered shuffle)
    - Global keymaps are bound (function keys, window/buffer navigation, visual line moves, etc.)
 
 ## VSCode Compatibility
@@ -79,7 +80,7 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 | `<leader>g` | Git | gitsigns stage/reset/blame, neogit |
 | `<leader>i` | CodeCompanion | `ia` actions, `ic` toggle chat, `ii` inline assistant, `ix` add selection to chat (visual) |
 | `<leader>l` | LSP | `la` code action, `lr` rename, `lf` format |
-| `<leader>m` | Explorer | `mm` toggle nvim-tree, `ml` locate file |
+| `<leader>m` | Explorer | `M` toggle nvim-tree, `mm` reveal current file |
 | `<leader>n` | Notifications | Snacks notification history |
 | `<leader>p` | Yank History | yanky.nvim picker |
 | `<leader>q` | Session | persistence.nvim load/save/select |
@@ -89,12 +90,13 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 | `` <leader>` `` | Terminal | toggleterm send lines |
 | `<leader><leader>` | Quick Save | `:w` |
 | `<Space>` | TreeSJ | `t` toggle, `s` split, `j` join |
-| `f` / `F` | Flash | Jump / Remote flash |
-| `t` / `T` | Flash Treesitter | Treesitter select / search |
+| `s` (n/x/o) | Flash | Jump |
+| `S` (n/o) | Flash Treesitter | Treesitter select (visual `S` belongs to nvim-surround) |
+| `r` (o) / `R` (o/x) | Flash | Remote flash / Treesitter search |
 | `af`/`if` `ac`/`ic` `aa`/`ia` `al`/`il` `ao`/`io` | Textobjects (select) | around / inside function, class, argument, loop, conditional |
 | `]f`/`[f` `]c`/`[c` (and `]F`/`[F`, `]C`/`[C` for ends) | Textobjects (move) | Next / prev function or class |
 | `<M-j>` / `<M-k>` | Textobjects (swap) | Swap parameter with next / previous |
-| `;` / `,` | Textobjects (repeat) | Repeat last treesitter move forward / backward |
+| `<M-n>` / `<M-p>` | Textobjects (repeat) | Repeat last treesitter move forward / backward |
 | `v_an` / `v_in` / `v_]n` / `v_[n` | Incremental selection | Neovim 0.12 core treesitter defaults (init/grow-outer/next-sibling/prev-sibling) |
 | `F1`–`F6` | Quick Access | Tree, helptags, fzf global, grug-far, keymaps, commands |
 | `F10` | Toggle hlsearch | |
@@ -216,11 +218,11 @@ Run `nvim --startuptime /tmp/startup.log` or use `:Lazy profile`. The snacks.nvi
 - `rainbow-delimiters.nvim` ships a muted Gruvbox-inspired default palette. `plugins/ui.lua` overrides the `RainbowDelimiter*` highlight groups with a vivid Catppuccin-Mocha palette and re-applies them on every `ColorScheme` event so rainbow indent guides stay visible during F11/F12/F24 rotation
 - `nvim-treesitter` runs on `branch = 'main'` (the full rewrite). It is intentionally not lazy-loaded per upstream. Parser installation uses an **explicit list of ~87 parsers** passed to `require('nvim-treesitter').install({...})` (async on startup, idempotent thereafter, installed to `~/.local/share/nvim/site/parser/`). Note the main-branch tier names are misleading — `'stable'` is only 7 hand-picked parsers and `'unstable'` is the 315-parser bulk (contains markdown, lua, python, etc.), so we bypass tiers entirely and curate the list. A `FileType` autocmd calls `vim.treesitter.start(buf)` wrapped in `pcall` (silently swallows errors for filetypes without a parser, e.g. `help`/`man`). `nvim-treesitter-textobjects` is also on its `main` branch with `require('nvim-treesitter-textobjects').setup{...}` and explicit `vim.keymap.set` wiring. `nvim-treesitter-context` remains on its own `master` (different repo, unchanged API)
 - Incremental selection uses Neovim 0.12 core defaults (`v_an`/`v_in`/`v_]n`/`v_[n`) — the old `<leader>nn`/`<leader>rn`/`<leader>rc`/`<leader>rm` keymaps from nvim-treesitter master are retired. Semantic note: `v_]n`/`v_[n` navigate to sibling nodes (not grow to an enclosing scope); use textobject selection (e.g., `vaf`) for scope-based grow-to-function
-- `;` / `,` are rebound to `repeatable_move` from `nvim-treesitter-textobjects` (not the native repeat of `f`/`F`/`t`/`T`) — fine here because `f`/`F`/`t`/`T` are owned by flash.nvim, which doesn't rely on `;` / `,`
+- Treesitter move repeat lives on `<M-n>` / `<M-p>` (from `nvim-treesitter-textobjects` `repeatable_move`) because `;` / `,` are the localleader/leader keys and can't be rebound; native `f`/`F`/`t`/`T` are untouched — flash.nvim maps `s`/`S`/`r`/`R`, not `f`
 - `_undofile` hook in `config/options.lua` uses `vim.bo.undofile = false` (buffer-local) inside a `BufWritePre` autocmd, matching the old `:setlocal noundofile` behavior. Using `vim.o.undofile` there would leak the disabled state to unrelated future buffers
 
 ## File Naming Conventions
 
-- Plugin files are named by functional domain, not by plugin name (e.g., `movement.lua` contains surround, treesj, flash, and autopairs; `ui.lua` contains lualine, bufferline, indent-blankline, rainbow-delimiters, ufo, noice, alpha, bqf, illuminate, and notify)
+- Plugin files are named by functional domain, not by plugin name (e.g., `editing.lua` contains surround, treesj, and autopairs; `movement.lua` contains flash; `ui.lua` contains lualine, bufferline, indent-blankline, rainbow-delimiters, ufo, noice, alpha, bqf, illuminate, and notify)
 - Utility modules follow a `module/init.lua` + `module/name.lua` pattern
 - The `core/utils.lua` vs `utils/` split is historical — `core/utils.lua` has UI helpers used by lualine; `utils/colors.lua` has the colorscheme engine

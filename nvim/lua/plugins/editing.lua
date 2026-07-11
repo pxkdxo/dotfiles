@@ -32,29 +32,6 @@ return {
     end
   },
   {
-    "MagicDuck/grug-far.nvim",
-    cond = vim.g.vscode == nil,
-    opts = { headerMaxWidth = 80 },
-    cmd = { "GrugFar", "GrugFarWithin" },
-    keys = {
-      {
-        "<leader>sr",
-        function()
-          local grug = require("grug-far")
-          local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
-          grug.open({
-            transient = true,
-            prefills = {
-              filesFilter = ext and ext ~= "" and "*." .. ext or nil,
-            },
-          })
-        end,
-        mode = { "n", "x" },
-        desc = "Search and Replace",
-      },
-    },
-  },
-  {
     "https://codeberg.org/andyg/leap.nvim",
     cond = false,
     version = false,
@@ -82,6 +59,7 @@ return {
       )
     end,
   },
+  -- conform.nvim is configured in formatting.lua; grug-far in search.lua
   {
     'windwp/nvim-autopairs',
     cond = true,
@@ -101,10 +79,5 @@ return {
         highlight_grey='Comment',
       },
     },
-  },
-  {
-    'stevearc/conform.nvim',
-    cond = vim.g.vscode == nil,
-    opts = {},
   },
 }
