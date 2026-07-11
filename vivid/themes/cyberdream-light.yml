@@ -1,8 +1,5 @@
-# Cyberdream Light for vivid — vendored copy.
-# Colors from starship/palettes/cyberdream_light.palette.toml (upstream:
-# scottmckendry/cyberdream.nvim); structure mirrors the other themes here.
-# Committed directly because the old symlink into colorschemes/sources/ only
-# resolved after scripts/colorschemes.py ran under the ~/.local/etc layout.
+# Cyberdream Light for vivid. Colors from
+# starship/palettes/cyberdream_light.palette.toml (upstream: cyberdream.nvim).
 
 colors:
   black: "acacac"

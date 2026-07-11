@@ -1,11 +1,9 @@
 #!/usr/bin/env sh
 # ~/.profile.d/podman.sh: Configure the environment to use Podman as a Docker substitute
 #
-# Detection only -- no service lifecycle here. Starting the macOS podman VM
-# from a login script meant every terminal tab could kick it; that now lives
-# in launchd/agents/com.patrickdeyoreo.podman-machine.plist. On Linux the
-# socket paths are checked directly first, so the common case sets
-# DOCKER_HOST without forking podman at all.
+# Detection only: the macOS VM is started by the podman-machine launchd
+# agent, never by login shells. Socket paths are checked before ever forking
+# podman.
 
 if test -n "${DOCKER_HOST:-}"; then
   : # already configured (inherited from the session environment)

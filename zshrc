@@ -16,12 +16,9 @@ else
   ZSH="${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyzsh"
 fi
 
-# Fallback light/dark guess from the desktop session, else time of day. The
-# OSC query below supersedes this whenever the terminal answers, so the guess
-# (and its gsettings fork) is deferred until a shell actually needs it
-# (TERM=dumb, unsupported emulator, no tty). Query GNOME's color-scheme
-# directly (the native signal on GNOME, and mirrored by many KDE setups); fall
-# back to time of day when gsettings is absent or reports no preference.
+# Fallback light/dark guess: GNOME color-scheme (mirrored by many KDE
+# setups), else time of day. Only called when the OSC 11 query below gets no
+# answer, so the common path never forks gsettings.
 _theme_variant_guess() {
   emulate -L zsh
   [[ -n ${THEME_VARIANT-} ]] && return
@@ -70,9 +67,8 @@ _starship_palette() {
   palette="$_dotfiles_etc/starship/palettes/$name.palette.toml"
   [[ -r $theme && -r $palette ]] || return
   cache="${XDG_CACHE_HOME:-$HOME/.cache}/starship.toml"
-  # Reuse the cache when it already targets this palette (first line) and is
-  # newer than both sources: skips three forks (mkdir/grep/cat) plus a file
-  # write on every fresh shell that isn't flipping polarity.
+  # Cache hit: first line already names this palette and the file is newer
+  # than both sources -- skip the forks and the rewrite.
   if [[ -r $cache && $cache -nt $theme && $cache -nt $palette ]] \
     && IFS= read -r line < "$cache" 2>/dev/null \
     && [[ $line == "palette = \"$name\"" ]]; then
@@ -96,12 +92,9 @@ _tmux_theme() {
   tmux source-file -F "#{@theme_dir}/tmux-theme.conf" 2>/dev/null
 }
 
-# Re-point the base scheme (dark|light) inside the fzf opts arrays built
-# further down, so a live theme flip reaches fzf like it does starship, tmux,
-# and LS_COLORS. The arrays don't exist yet during the startup apply (no-op
-# here; the build below bakes in the then-current TERM_BACKGROUND) -- this
-# matters on watcher/manual re-applies in a running shell. Only the generated
-# defaults carry a --color element; opts read from an fzfrc are untouched.
+# Re-point the dark|light base in the fzf opts arrays so a live theme flip
+# reaches fzf too. No-op at startup (the arrays are built further down and
+# bake in the current TERM_BACKGROUND); matters on later re-applies.
 _fzf_sync_colors() {
   emulate -L zsh
   local want=${TERM_BACKGROUND:-dark} other arr
@@ -109,8 +102,7 @@ _fzf_sync_colors() {
   for arr in fzf_default_opts fzf_completion_opts fzf_alt_c_opts \
     fzf_ctrl_t_opts fzf_ctrl_r_opts; do
     (( ${(P)+arr} )) || continue
-    # both spellings: the generated defaults quote the value (--color='dark,)
-    # while fzfrc carries it bare (--color=dark,)
+    # both spellings: generated defaults quote the value, fzfrc carries it bare
     eval "${arr}=(\"\${${arr}[@]//--color='${other},/--color='${want},}\")"
     eval "${arr}=(\"\${${arr}[@]//--color=${other},/--color=${want},}\")"
   done

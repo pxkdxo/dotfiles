@@ -1,8 +1,7 @@
 [Unit]
 Description=MCP Hub aggregator (mcp-hub) — central proxy that fans out to all configured MCP servers
 Documentation=https://github.com/ravitemer/mcp-hub
-# No network-online ordering: that target lives in the system manager and is
-# a silent no-op in user scope. mcp-hub retries its servers itself.
+# network-online.target is a no-op in user scope; mcp-hub retries on its own.
 
 [Service]
 Type=simple

@@ -98,9 +98,7 @@ case ${TERM} in
 esac
 
 # Enable colors for ls, etc
-# LS_COLORS comes from profile.d/80-dircolors.sh at login; re-evaluating
-# dircolors here forked it a second time on every login shell. Non-login
-# shells inherit LS_COLORS from their parent's environment.
+# LS_COLORS: profile.d/80-dircolors.sh (login); non-login shells inherit it.
 
 # Set prompt based on whether or not this is running as root
 if [[ ${EUID} == 0 ]]; then
@@ -315,9 +313,7 @@ ps_update() {
 # Add to precmd functions
 add_precmd_functions ps_update
 
-# Configure window title. TTY never changes within a shell, so resolve it
-# once here -- the preexec hooks below run before every command, and a
-# $(tty) inside them forked once per command line.
+# Configure window title. Resolve TTY once; the preexec hooks run per command.
 if [[ -z ${TTY:-} && -t 0 ]]; then
   TTY="$(tty 2> /dev/null)" || TTY=''
 fi
@@ -347,10 +343,8 @@ elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   add_preexec_functions __window_title_preexec
 fi
 
-# GPG_TTY and the gpg-agent tty refresh are handled once per login by
-# profile.d/30-gpg-agent.sh; doing both here again meant two redundant forks
-# for every login shell. Non-login shells inherit GPG_TTY from the login
-# environment (pinentry targets the most recent login shell by design).
+# GPG_TTY + agent tty refresh: profile.d/30-gpg-agent.sh (login); pinentry
+# targets the most recent login shell by design.
 
 # command-not-found hook
 command_not_found_handle() {
@@ -388,9 +382,7 @@ if [[ -f ~/.bash_aliases ]]; then
   source ~/.bash_aliases
 fi
 
-# fzf keybindings and completion (Ctrl-R / Ctrl-T / Alt-C), mirroring zshrc's
-# fzf.zsh sourcing -- fzf/fzf.bash sat in the repo unsourced, so bash had no
-# fzf integration at all. Needs fzf >= 0.48 (`fzf --bash`), like the zsh side.
+# fzf keybindings and completion (needs fzf >= 0.48 for --bash)
 if [[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.bash" ]]; then
   source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.bash"
 elif command -v fzf > /dev/null; then

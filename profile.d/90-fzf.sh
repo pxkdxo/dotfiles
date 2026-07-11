@@ -144,10 +144,8 @@ if command -v fzf > /dev/null 2>&1; then
     fi
   }
 
-  # Source extensions (process, files, git, docker, kube, history, ssh, env, etc.)
-  # _fzf_extensions_wanted gates the file so the profile.d loader's own glob
-  # pass over 90-fzf-extensions.sh (which sorts before this file) is a no-op
-  # and everything is defined exactly once, after the helpers above exist.
+  # Source extensions; the sentinel makes the profile.d loader's own glob
+  # pass over 90-fzf-extensions.sh a no-op, so everything defines once.
   _fzf_extensions_wanted=1
   for _profile_d in \
     "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d" \

@@ -3,10 +3,8 @@
 # zshenv, zprofile, zshrc, zlogin
 # see zsh(1)
 
-# Load login shell config. Source under sh emulation: profile.d scripts are
-# POSIX sh and rely on sh semantics -- under native zsh an unmatched glob
-# (e.g. ~/Library/Python/*/bin in 60-macos.sh on a bare Mac) raises NOMATCH
-# and aborts the rest of the sourced file instead of staying literal.
+# Load login shell config under sh emulation: profile.d is POSIX sh, and a
+# native-zsh NOMATCH on an unmatched glob would abort the sourced file.
 if [[ -f ~/.profile && -r ~/.profile ]]; then
   emulate sh -c '. ~/.profile'
 fi

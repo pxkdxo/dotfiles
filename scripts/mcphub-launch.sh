@@ -29,9 +29,7 @@ fi
 # Once that merges and a release ships, this whole patch block can go.
 # ---------------------------------------------------------------------------
 mcphub_cli="$(command -v mcp-hub 2> /dev/null || echo "$HOME/.local/bin/mcp-hub")"
-# Resolve the CLI to its real path. BSD readlink (stock macOS) has no -f --
-# which silently skipped this whole patch there -- so walk the links with
-# plain readlink, which is portable.
+# Resolve to the real path with plain readlink; BSD readlink has no -f.
 mcphub_dist="${mcphub_cli}"
 _hops=0
 while test -L "${mcphub_dist}" && test "${_hops}" -lt 32; do

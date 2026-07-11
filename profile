@@ -193,9 +193,7 @@ path_insert() {
 # Push this to the front of PATH
 path_push ~/.local/bin
 
-# Homebrew initialization lives in profile.d/10-homebrew.sh, whose first
-# branch handles brew-already-on-PATH; running shellenv here too meant a
-# duplicate brew fork on every login.
+# Homebrew init lives in profile.d/10-homebrew.sh (covers brew-on-PATH too).
 
 # Load additional profile config
 for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do

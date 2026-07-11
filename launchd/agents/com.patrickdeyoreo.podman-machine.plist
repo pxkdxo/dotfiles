@@ -6,12 +6,9 @@
     <string>com.patrickdeyoreo.podman-machine</string>
 
     <!--
-        Start the podman machine VM once at login. This used to live in
-        profile.d/30-podman.sh, which meant every login shell (every terminal
-        tab on macOS) forked `podman machine inspect` and could kick the VM;
-        a login script is the wrong owner for service lifecycle. One-shot at
-        load; podman machine start exits immediately if already running, and
-        the guard makes the agent a silent no-op on machines without podman.
+        Start the podman machine VM once at login (login shells only detect;
+        see profile.d/30-podman.sh). `podman machine start` exits immediately
+        if already running; the guard makes this a no-op without podman.
     -->
     <key>ProgramArguments</key>
     <array>

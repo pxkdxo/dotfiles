@@ -36,14 +36,11 @@ files, ...) as ~/.<name>, links scripts/ into ~/.local/bin, removes stale
 ~/.<name> links from earlier layouts, and registers services (systemd user
 units on Linux, launchd agents on macOS).
 
-Migrations are automatic but nothing is ever deleted: a populated real
-~/.config is migrated entry-by-entry into the repo tree, and on a name
-collision the repo wins with the displaced entry set aside in
-~/.config.migrated; ~/.cache is adopted into ~/.local/var/cache and
-~/.local/state is folded into ~/.local/var the same way (collisions keep the
-canonical-tree copy and park the other in an aside directory). The only
-refusal left is a populated ~/.local/etc that is not this checkout -- two
-candidate repo trees is a choice no script should make.
+Migrations are automatic and nothing is ever deleted: a real ~/.config
+migrates entry-by-entry into the repo tree (repo wins collisions), ~/.cache
+and ~/.local/state fold into the var tree; displaced entries land in
+*.migrated aside directories. The one refusal: a populated ~/.local/etc that
+is not this checkout.
 
 The run is idempotent and non-interactive; nothing prompts. "-n" previews
 every action without touching the filesystem or any service manager.
@@ -145,12 +142,9 @@ refuse() {
   exit 1
 }
 
-# ---------------------------------------------------------------------------
-# Bootstrap the canonical tree. user-tmpfiles.d manages the same layout on
-# systemd Linux but is deliberately create-only (login-time management must
-# never delete data), so every migration lives here, guarded. macOS and
-# termux have no tmpfiles at all: this block is what creates the tree there.
-# ---------------------------------------------------------------------------
+# Bootstrap the canonical tree. user-tmpfiles.d mirrors this on systemd
+# Linux but is create-only (login must never delete data): all migration
+# happens here. macOS/termux have no tmpfiles; this is what builds the tree.
 
 for dirname in .local .local/bin .local/share .local/var .local/var/cache \
   .local/var/log .local/var/tmp; do
@@ -163,9 +157,8 @@ local_etc="${home_path}/.local/etc"
 config_dir="${home_path}/.config"
 repo_phys="$(phys "${repo_path}")"
 
-# Place the repo at ~/.local/etc: keep a real checkout that is already there,
-# otherwise (re)point a symlink at this checkout. A populated real directory
-# that is NOT this checkout is a conflict only a human should resolve.
+# Place the repo at ~/.local/etc: keep an in-place checkout, else (re)point
+# a symlink here. A populated foreign directory is a human's call.
 if test "$(phys "${local_etc}")" = "${repo_phys}" && test -n "${repo_phys}"; then
   : # already in place
 elif test -L "${local_etc}" || ! test -e "${local_etc}"; then
@@ -183,12 +176,9 @@ else
     "or reconcile the two trees by hand, then re-run."
 fi
 
-# ~/.config: compat alias for the repo tree. A real populated ~/.config is
-# migrated entry-by-entry into the repo (untracked app config is expected to
-# cohabit -- .gitignore is an allowlist). On a name collision the repo wins:
-# these dotfiles ARE the wanted config for the tools they cover, so the
-# displaced entry is set aside -- preserved, never deleted -- and the run
-# continues instead of blocking a lived-in home.
+# ~/.config: alias for the repo tree. A real ~/.config migrates entry-by-
+# entry into the repo (untracked app config cohabits; .gitignore is an
+# allowlist). Repo wins collisions; the displaced entry is set aside.
 if test "$(phys "${config_dir}")" = "${repo_phys}"; then
   : # ~/.config already reaches the repo (as the checkout itself or via link)
 elif test -L "${config_dir}" || ! test -e "${config_dir}"; then
@@ -220,9 +210,8 @@ elif test -d "${config_dir}"; then
   fi
 fi
 
-# ~/.cache: adopt into ~/.local/var/cache. Caches are disposable, so this is
-# automatic -- but nothing is ever deleted: entries move when the name is
-# free, and collisions are set aside for inspection.
+# ~/.cache: adopt into ~/.local/var/cache. Non-colliding entries move;
+# collisions are set aside, never deleted.
 cache_dir="${home_path}/.cache"
 var_cache="${home_path}/.local/var/cache"
 if test "$(phys "${cache_dir}")" = "$(phys "${var_cache}")" && test -n "$(phys "${cache_dir}")"; then
@@ -246,9 +235,8 @@ elif test -d "${cache_dir}"; then
       test -n "${dry_run}" || mv -- "${entry}" "${var_cache}/"
     fi
   done
-  # Shell history is the one non-disposable file kept under the cache tree;
-  # if a collision parked it in the aside dir, preserve its content by
-  # appending to the adopted copy (the original stays in the aside dir).
+  # bash history is the one non-disposable file under the cache tree: if a
+  # collision parked it, append its content to the adopted copy.
   if test -f "${cache_aside}/bash/history" && test -f "${var_cache}/bash/history"; then
     note "append set-aside bash history into ${var_cache}/bash/history"
     test -n "${dry_run}" || cat -- "${cache_aside}/bash/history" >> "${var_cache}/bash/history"
@@ -263,10 +251,8 @@ elif test -d "${cache_dir}"; then
   fi
 fi
 
-# ~/.local/state: fold into ~/.local/var. Non-colliding entries move; on a
-# collision the ~/.local/var copy wins (on this layout it is the tree the
-# systemd session has been writing to) and the state-side entry is set
-# aside -- preserved, never deleted.
+# ~/.local/state: fold into ~/.local/var. The var copy wins collisions (it
+# is the tree systemd sessions write to); the state-side entry is set aside.
 state_dir="${home_path}/.local/state"
 var_dir="${home_path}/.local/var"
 if test "$(phys "${state_dir}")" = "$(phys "${var_dir}")" && test -n "$(phys "${state_dir}")"; then
@@ -327,14 +313,10 @@ dst_link() {
 # to home.
 tree_path="$(relpath "${repo_path}" "${home_path}")"
 
-# Only home-convention files get a ~/.<name> link. XDG-app configs (nvim,
-# kitty, git, tmux, ...) are reached through ~/.config -> the repo and their
-# tools never read ~/.<name>; linking them there planted decoys -- including
-# ~/.git (making $HOME look repo-adjacent) and ~/.tmux.conf (tmux resolves
-# #{d:current_file} through the symlink to $HOME, so @theme_dir broke and the
-# statusline theme silently never loaded). Anything this installer used to
-# link that is no longer in the allowlist is unlinked, but only when it is
-# provably our own link (its content matches exactly what we would create).
+# Only home-convention files get a ~/.<name> link; XDG-app configs are
+# reached via ~/.config and their tools never read ~/.<name> (~/.tmux.conf
+# even broke theming: tmux resolves #{d:current_file} to $HOME through the
+# link). Stale links from older layouts are removed only when provably ours.
 # shellcheck disable=SC2016
 git -C "${repo_path}" ls-tree --name-only -z HEAD \
                                                   | xargs -0 -- sh -c "${link_body}"'
@@ -430,9 +412,8 @@ esac
 # link — just register them. Skip templated units (they need an instance), and
 # stay best-effort: no systemd user session must not fail the install.
 case "$(uname -s)" in Linux)
-  # Apply the user tmpfiles config now (dirs, fifos, compat links) instead of
-  # waiting for the next login -- and because some distros don't enable the
-  # user-scope systemd-tmpfiles-setup.service at all.
+  # Apply user tmpfiles now: immediate effect, and some distros never enable
+  # the user-scope setup service.
   if test -z "${dry_run}" && command -v systemd-tmpfiles > /dev/null 2>&1; then
     printf 'apply: systemd-tmpfiles --user --create\n'
     systemd-tmpfiles --user --create 2> /dev/null || :
