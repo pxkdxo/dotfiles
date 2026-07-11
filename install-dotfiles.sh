@@ -19,19 +19,31 @@ print_help() {
 } << EOF
 usage: ${usage}
 
-${argzero_name} - link dotfiles into a user's home directory
+${argzero_name} - bootstrap the dotfiles layout in a user's home directory
 
-For each file and directory tracked at the top level of this repository,
-create a symbolic link in the invoking user's home directory. The name
-of the link will match the name of the file it links to, prefixed with
-a period ('.').
+Establishes the canonical tree on every platform (systemd Linux, macOS,
+termux):
 
-The installer is idempotent and non-interactive: every run overwrites its own
-links so the tree converges regardless of prior state. Whatever is already at a
-link's location -- a real file, a foreign symlink, or a real directory -- is
-replaced (a directory is removed first, since a symlink cannot replace one in
-place). "-n" previews all actions, flagging any directory that would be removed,
-without touching anything.
+  ~/.local/etc          the repository (physically, or a symlink to this
+                        checkout) -- this is XDG_CONFIG_HOME
+  ~/.local/var          the state tree (XDG_STATE_HOME), with cache at
+                        ~/.local/var/cache and tmp at ~/.local/var/tmp
+  ~/.config, ~/.cache, ~/.local/state
+                        compat symlinks into the tree
+
+Then links home-convention files (shell rc, gnupg, inputrc, vim, X session
+files, ...) as ~/.<name>, links scripts/ into ~/.local/bin, removes stale
+~/.<name> links from earlier layouts, and registers services (systemd user
+units on Linux, launchd agents on macOS).
+
+Migrations are guarded: a populated real ~/.config is merged entry-by-entry
+into the repo tree and the run REFUSES on conflicts instead of guessing; a
+real ~/.cache is adopted into ~/.local/var/cache (caches are disposable;
+conflicting entries are set aside, never deleted); a populated real
+~/.local/state is reported with suggested commands but never touched.
+
+The run is idempotent and non-interactive; nothing prompts. "-n" previews
+every action without touching the filesystem or any service manager.
 EOF
 
 dry_run='' # -n: preview only; don't touch the filesystem or activate services
@@ -107,6 +119,163 @@ relpath() {
   printf '%s\n' "${_rp_out:-.}" # equal paths -> '.'
 }
 
+# phys DIR — print DIR's physical path (symlinks resolved), empty if absent
+phys() {
+  (cd -P -- "$1" 2> /dev/null && pwd -P) || :
+}
+
+# dir_empty DIR — true when DIR exists and contains nothing
+dir_empty() {
+  test -d "$1" && test -z "$(ls -A -- "$1" 2> /dev/null)"
+}
+
+# note ACTION — print an action line (both real and dry runs print; dry runs
+# print INSTEAD of acting)
+note() {
+  printf '%s\n' "$*"
+}
+
+refuse() {
+  >&2 printf '%s: refusing: %s\n' "${argzero_name}" "$1"
+  shift
+  for _refuse_line; do >&2 printf '  %s\n' "${_refuse_line}"; done
+  exit 1
+}
+
+# ---------------------------------------------------------------------------
+# Bootstrap the canonical tree. user-tmpfiles.d manages the same layout on
+# systemd Linux but is deliberately create-only (login-time management must
+# never delete data), so every migration lives here, guarded. macOS and
+# termux have no tmpfiles at all: this block is what creates the tree there.
+# ---------------------------------------------------------------------------
+
+for dirname in .local .local/bin .local/share .local/var .local/var/cache \
+  .local/var/log .local/var/tmp; do
+  test -d "${home_path}/${dirname}" && continue
+  note "mkdir: ${home_path}/${dirname}"
+  test -n "${dry_run}" || mkdir -p -- "${home_path}/${dirname}"
+done
+
+local_etc="${home_path}/.local/etc"
+config_dir="${home_path}/.config"
+repo_phys="$(phys "${repo_path}")"
+
+# Place the repo at ~/.local/etc: keep a real checkout that is already there,
+# otherwise (re)point a symlink at this checkout. A populated real directory
+# that is NOT this checkout is a conflict only a human should resolve.
+if test "$(phys "${local_etc}")" = "${repo_phys}" && test -n "${repo_phys}"; then
+  : # already in place
+elif test -L "${local_etc}" || ! test -e "${local_etc}"; then
+  note "link: ${local_etc} -> ${repo_phys}"
+  test -n "${dry_run}" || ln -sfn -- "$(relpath "${repo_phys}" "${home_path}/.local")" "${local_etc}"
+elif dir_empty "${local_etc}"; then
+  note "replace empty directory: ${local_etc} -> ${repo_phys}"
+  test -n "${dry_run}" || {
+    rmdir -- "${local_etc}"
+    ln -s -- "$(relpath "${repo_phys}" "${home_path}/.local")" "${local_etc}"
+  }
+else
+  refuse "~/.local/etc is a populated directory that is not this checkout" \
+    "Run the installer from that tree instead:  cd ${local_etc} && ./${argzero_name}" \
+    "or reconcile the two trees by hand, then re-run."
+fi
+
+# ~/.config: compat alias for the repo tree. A real populated ~/.config is
+# merged entry-by-entry into the repo (untracked app config is expected to
+# cohabit -- .gitignore is an allowlist); on any name collision, refuse.
+if test "$(phys "${config_dir}")" = "${repo_phys}"; then
+  : # ~/.config already reaches the repo (as the checkout itself or via link)
+elif test -L "${config_dir}" || ! test -e "${config_dir}"; then
+  note "link: ${config_dir} -> ${local_etc}"
+  test -n "${dry_run}" || ln -sfn -- '.local/etc' "${config_dir}"
+elif test -d "${config_dir}"; then
+  conflicts=''
+  for entry in "${config_dir}"/* "${config_dir}"/.[!.]* "${config_dir}"/..?*; do
+    test -e "${entry}" || test -L "${entry}" || continue
+    basename="${entry##*/}"
+    if test -e "${repo_phys}/${basename}" || test -L "${repo_phys}/${basename}"; then
+      conflicts="${conflicts} ${basename}"
+    fi
+  done
+  if test -n "${conflicts}"; then
+    refuse "~/.config is a real directory and these entries also exist in the repo tree:" \
+      "${conflicts}" \
+      "Review each against ${repo_phys}, keep whichever copy you want, then re-run."
+  fi
+  for entry in "${config_dir}"/* "${config_dir}"/.[!.]* "${config_dir}"/..?*; do
+    test -e "${entry}" || test -L "${entry}" || continue
+    note "migrate: ${entry} -> ${repo_phys}/"
+    test -n "${dry_run}" || mv -- "${entry}" "${repo_phys}/"
+  done
+  note "link: ${config_dir} -> ${local_etc}"
+  test -n "${dry_run}" || {
+    rmdir -- "${config_dir}"
+    ln -s -- '.local/etc' "${config_dir}"
+  }
+fi
+
+# ~/.cache: adopt into ~/.local/var/cache. Caches are disposable, so this is
+# automatic -- but nothing is ever deleted: entries move when the name is
+# free, and collisions are set aside for inspection.
+cache_dir="${home_path}/.cache"
+var_cache="${home_path}/.local/var/cache"
+if test "$(phys "${cache_dir}")" = "$(phys "${var_cache}")" && test -n "$(phys "${cache_dir}")"; then
+  : # already unified
+elif test -L "${cache_dir}" || ! test -e "${cache_dir}"; then
+  note "link: ${cache_dir} -> ${var_cache}"
+  test -n "${dry_run}" || ln -sfn -- '.local/var/cache' "${cache_dir}"
+elif test -d "${cache_dir}"; then
+  cache_aside="${cache_dir}.migrated"
+  for entry in "${cache_dir}"/* "${cache_dir}"/.[!.]* "${cache_dir}"/..?*; do
+    test -e "${entry}" || test -L "${entry}" || continue
+    basename="${entry##*/}"
+    if test -e "${var_cache}/${basename}" || test -L "${var_cache}/${basename}"; then
+      note "set aside (name collision): ${entry} -> ${cache_aside}/"
+      test -n "${dry_run}" || {
+        mkdir -p -- "${cache_aside}"
+        mv -- "${entry}" "${cache_aside}/"
+      }
+    else
+      note "adopt: ${entry} -> ${var_cache}/"
+      test -n "${dry_run}" || mv -- "${entry}" "${var_cache}/"
+    fi
+  done
+  # Shell history is the one non-disposable file kept under the cache tree;
+  # if a collision parked it in the aside dir, preserve its content by
+  # appending to the adopted copy (the original stays in the aside dir).
+  if test -f "${cache_aside}/bash/history" && test -f "${var_cache}/bash/history"; then
+    note "append set-aside bash history into ${var_cache}/bash/history"
+    test -n "${dry_run}" || cat -- "${cache_aside}/bash/history" >> "${var_cache}/bash/history"
+  fi
+  note "link: ${cache_dir} -> ${var_cache}"
+  test -n "${dry_run}" || {
+    rmdir -- "${cache_dir}"
+    ln -s -- '.local/var/cache' "${cache_dir}"
+  }
+  if test -d "${cache_aside}"; then
+    note "NOTE: collided cache entries preserved in ${cache_aside}; review and delete at leisure."
+  fi
+fi
+
+# ~/.local/state: report only. State is persistent data; merging two
+# populated trees deserves human judgment, so never touch a real one.
+state_dir="${home_path}/.local/state"
+if test -L "${state_dir}" || ! test -e "${state_dir}"; then
+  note "link: ${state_dir} -> ${home_path}/.local/var"
+  test -n "${dry_run}" || ln -sfn -- 'var' "${state_dir}"
+elif dir_empty "${state_dir}"; then
+  note "replace empty directory: ${state_dir} -> ${home_path}/.local/var"
+  test -n "${dry_run}" || {
+    rmdir -- "${state_dir}"
+    ln -s -- 'var' "${state_dir}"
+  }
+else
+  note "NOTE: ~/.local/state is a populated real directory; leaving it alone."
+  note "      The canonical state tree is ~/.local/var. To unify, review and merge:"
+  note "        mv ${state_dir}/<entry> ${home_path}/.local/var/  # per entry, resolving conflicts"
+  note "        rmdir ${state_dir} && ln -s var ${state_dir}"
+fi
+
 # Shared link helper (used by the blocks below via `sh -c`). ln -sfn is
 # idempotent: it recreates the link over any file or symlink (-n/-h replaces a
 # symlink-to-dir instead of dereferencing into it). The one case it can't handle
@@ -134,19 +303,39 @@ dst_link() {
 # to home.
 tree_path="$(relpath "${repo_path}" "${home_path}")"
 
+# Only home-convention files get a ~/.<name> link. XDG-app configs (nvim,
+# kitty, git, tmux, ...) are reached through ~/.config -> the repo and their
+# tools never read ~/.<name>; linking them there planted decoys -- including
+# ~/.git (making $HOME look repo-adjacent) and ~/.tmux.conf (tmux resolves
+# #{d:current_file} through the symlink to $HOME, so @theme_dir broke and the
+# statusline theme silently never loaded). Anything this installer used to
+# link that is no longer in the allowlist is unlinked, but only when it is
+# provably our own link (its content matches exactly what we would create).
 # shellcheck disable=SC2016
 git -C "${repo_path}" ls-tree --name-only -z HEAD \
                                                   | xargs -0 -- sh -c "${link_body}"'
 CALLER=$1 DRY_RUN=$2 treepath=$3 destpath=$4
 shift 4
 for filename; do
-  # skip: this script, dotfiles already prefixed with ".", markdown files, and
-  # XDG-specific directories that have canonical locations outside ~/.*
+  dst="${destpath:+${destpath}/}.${filename}"
   case "${filename}" in
-    "${CALLER}"|.*|*.md|environment.d|launchd|scripts|systemd|user-tmpfiles.d)
-      continue ;;
+    bash_completion | bash_completion.d | bash_logout | bash_profile | bashrc \
+      | bashrc.d | dircolors | gnupg | inputrc | npmrc | profile | termux \
+      | vim | xinitrc | xprofile | xserverrc | xsession | Xresources \
+      | Xresources.d | zlogin | zlogout | zprofile | zshenv | zshrc)
+      dst_link "${treepath:+${treepath}/}${filename}" "${dst}"
+      ;;
+    "${CALLER}" | .* | *.md | environment.d | launchd | scripts | systemd | user-tmpfiles.d)
+      ;;
+    *)
+      # formerly linked as ~/.<name>; remove exactly our own stale link
+      if test -L "${dst}" \
+        && test "$(readlink -- "${dst}")" = "${treepath:+${treepath}/}${filename}"; then
+        printf "unlink stale: %s\n" "${dst}"
+        test -n "${DRY_RUN}" || rm -- "${dst}"
+      fi
+      ;;
   esac
-  dst_link "${treepath:+${treepath}/}${filename}" "${destpath:+${destpath}/}.${filename}"
 done
 ' -- "${argzero_name}" "${dry_run}" "${tree_path}" "${home_path}" || :
 
@@ -217,6 +406,13 @@ esac
 # link — just register them. Skip templated units (they need an instance), and
 # stay best-effort: no systemd user session must not fail the install.
 case "$(uname -s)" in Linux)
+  # Apply the user tmpfiles config now (dirs, fifos, compat links) instead of
+  # waiting for the next login -- and because some distros don't enable the
+  # user-scope systemd-tmpfiles-setup.service at all.
+  if test -z "${dry_run}" && command -v systemd-tmpfiles > /dev/null 2>&1; then
+    printf 'apply: systemd-tmpfiles --user --create\n'
+    systemd-tmpfiles --user --create 2> /dev/null || :
+  fi
   if command -v systemctl > /dev/null 2>&1; then
     test -n "${dry_run}" || systemctl --user daemon-reload 2> /dev/null || :
     # Starting units needs a reachable user bus; else just register for login.

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.patrickdeyoreo.podman-machine</string>
+
+    <!--
+        Start the podman machine VM once at login. This used to live in
+        profile.d/30-podman.sh, which meant every login shell (every terminal
+        tab on macOS) forked `podman machine inspect` and could kick the VM;
+        a login script is the wrong owner for service lifecycle. One-shot at
+        load; podman machine start exits immediately if already running, and
+        the guard makes the agent a silent no-op on machines without podman.
+    -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/sh</string>
+        <string>-c</string>
+        <string>command -v podman > /dev/null 2>&amp;1 || exit 0; state="$(podman machine inspect --format '{{ .State }}' 2> /dev/null)" || exit 0; test "$state" = running || exec podman machine start</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/podman-machine.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/podman-machine.err.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__HOME__/.local/share/homebrew/bin:__HOME__/.local/share/homebrew/sbin:__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

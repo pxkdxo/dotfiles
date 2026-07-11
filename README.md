@@ -59,30 +59,39 @@ systemd user units. Shell startup is POSIX-portable across both.
 
 ## Installation
 
-These files follow the XDG base-directory spec and are designed to live at `~/.config`.
+These files follow the XDG base-directory spec. The canonical layout puts the
+repository at `~/.local/etc` (which serves as `XDG_CONFIG_HOME`), the state
+tree at `~/.local/var` (with cache at `~/.local/var/cache`), and makes
+`~/.config`, `~/.cache`, and `~/.local/state` compat symlinks into that tree.
 
-Clone directly into your config directory:
-
-```sh
-git clone --recurse-submodules https://github.com/pxkdxo/dotfiles ~/.config
-```
-
-> **Note:** this replaces your existing `~/.config`. Back it up first, or clone elsewhere
-> and merge selectively. Already cloned without `--recurse-submodules`? Run
-> `git submodule update --init --recursive`.
-
-Or use the install script to symlink individual files as `~/.*`:
+Clone the repo — `~/.local/etc` is the canonical spot, but anywhere works —
+then run the installer, which bootstraps the whole layout on every platform
+(systemd Linux, macOS, termux):
 
 ```sh
-git clone --recurse-submodules https://github.com/pxkdxo/dotfiles
-cd dotfiles
-./install-dotfiles.sh        # link everything (non-interactive; replaces existing files)
+git clone --recurse-submodules https://github.com/pxkdxo/dotfiles ~/.local/etc
+cd ~/.local/etc
 ./install-dotfiles.sh -n     # dry run — print every action without touching anything
+./install-dotfiles.sh        # bootstrap + link (non-interactive)
 ./install-dotfiles.sh -h     # full usage
 ```
 
-> **Warning:** the installer does not prompt. Anything at a link's destination —
-> including a real `~/.zshrc` or `~/.gnupg` — is replaced. Preview with `-n` first.
+The installer creates the directory tree (macOS has no systemd-tmpfiles, so
+this is what builds it there), places `~/.local/etc` (a symlink to the
+checkout when you cloned elsewhere), migrates a pre-existing real `~/.config`
+into the tree entry-by-entry, adopts `~/.cache`, links home-convention files
+(shell rc, gnupg, vim, X session files) as `~/.*`, links `scripts/` into
+`~/.local/bin`, and registers services (systemd user units / launchd agents).
+
+> **Guard rails:** migrations refuse on conflicts rather than guessing — if
+> both `~/.config` and the repo tree contain an entry with the same name, the
+> run stops and tells you what to reconcile. Nothing is ever deleted: cache
+> collisions are set aside, and a populated `~/.local/state` is only reported.
+> The `~/.*` links themselves do replace what's at their destination
+> (including a real `~/.zshrc`), so preview with `-n` first.
+
+Already cloned without `--recurse-submodules`? Run
+`git submodule update --init --recursive`.
 
 ### Dependencies
 
