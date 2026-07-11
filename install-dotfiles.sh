@@ -36,11 +36,14 @@ files, ...) as ~/.<name>, links scripts/ into ~/.local/bin, removes stale
 ~/.<name> links from earlier layouts, and registers services (systemd user
 units on Linux, launchd agents on macOS).
 
-Migrations are guarded: a populated real ~/.config is merged entry-by-entry
-into the repo tree and the run REFUSES on conflicts instead of guessing; a
-real ~/.cache is adopted into ~/.local/var/cache (caches are disposable;
-conflicting entries are set aside, never deleted); a populated real
-~/.local/state is reported with suggested commands but never touched.
+Migrations are automatic but nothing is ever deleted: a populated real
+~/.config is migrated entry-by-entry into the repo tree, and on a name
+collision the repo wins with the displaced entry set aside in
+~/.config.migrated; ~/.cache is adopted into ~/.local/var/cache and
+~/.local/state is folded into ~/.local/var the same way (collisions keep the
+canonical-tree copy and park the other in an aside directory). The only
+refusal left is a populated ~/.local/etc that is not this checkout -- two
+candidate repo trees is a choice no script should make.
 
 The run is idempotent and non-interactive; nothing prompts. "-n" previews
 every action without touching the filesystem or any service manager.
@@ -181,37 +184,40 @@ else
 fi
 
 # ~/.config: compat alias for the repo tree. A real populated ~/.config is
-# merged entry-by-entry into the repo (untracked app config is expected to
-# cohabit -- .gitignore is an allowlist); on any name collision, refuse.
+# migrated entry-by-entry into the repo (untracked app config is expected to
+# cohabit -- .gitignore is an allowlist). On a name collision the repo wins:
+# these dotfiles ARE the wanted config for the tools they cover, so the
+# displaced entry is set aside -- preserved, never deleted -- and the run
+# continues instead of blocking a lived-in home.
 if test "$(phys "${config_dir}")" = "${repo_phys}"; then
   : # ~/.config already reaches the repo (as the checkout itself or via link)
 elif test -L "${config_dir}" || ! test -e "${config_dir}"; then
   note "link: ${config_dir} -> ${local_etc}"
   test -n "${dry_run}" || ln -sfn -- '.local/etc' "${config_dir}"
 elif test -d "${config_dir}"; then
-  conflicts=''
+  config_aside="${config_dir}.migrated"
   for entry in "${config_dir}"/* "${config_dir}"/.[!.]* "${config_dir}"/..?*; do
     test -e "${entry}" || test -L "${entry}" || continue
-    basename="${entry##*/}"
-    if test -e "${repo_phys}/${basename}" || test -L "${repo_phys}/${basename}"; then
-      conflicts="${conflicts} ${basename}"
+    entry_name="${entry##*/}"
+    if test -e "${repo_phys}/${entry_name}" || test -L "${repo_phys}/${entry_name}"; then
+      note "set aside (repo wins): ${entry} -> ${config_aside}/"
+      test -n "${dry_run}" || {
+        mkdir -p -- "${config_aside}"
+        mv -- "${entry}" "${config_aside}/"
+      }
+    else
+      note "migrate: ${entry} -> ${repo_phys}/"
+      test -n "${dry_run}" || mv -- "${entry}" "${repo_phys}/"
     fi
-  done
-  if test -n "${conflicts}"; then
-    refuse "~/.config is a real directory and these entries also exist in the repo tree:" \
-      "${conflicts}" \
-      "Review each against ${repo_phys}, keep whichever copy you want, then re-run."
-  fi
-  for entry in "${config_dir}"/* "${config_dir}"/.[!.]* "${config_dir}"/..?*; do
-    test -e "${entry}" || test -L "${entry}" || continue
-    note "migrate: ${entry} -> ${repo_phys}/"
-    test -n "${dry_run}" || mv -- "${entry}" "${repo_phys}/"
   done
   note "link: ${config_dir} -> ${local_etc}"
   test -n "${dry_run}" || {
     rmdir -- "${config_dir}"
     ln -s -- '.local/etc' "${config_dir}"
   }
+  if test -d "${config_aside}"; then
+    note "NOTE: displaced config entries preserved in ${config_aside}; review and delete at leisure."
+  fi
 fi
 
 # ~/.cache: adopt into ~/.local/var/cache. Caches are disposable, so this is
@@ -257,23 +263,41 @@ elif test -d "${cache_dir}"; then
   fi
 fi
 
-# ~/.local/state: report only. State is persistent data; merging two
-# populated trees deserves human judgment, so never touch a real one.
+# ~/.local/state: fold into ~/.local/var. Non-colliding entries move; on a
+# collision the ~/.local/var copy wins (on this layout it is the tree the
+# systemd session has been writing to) and the state-side entry is set
+# aside -- preserved, never deleted.
 state_dir="${home_path}/.local/state"
-if test -L "${state_dir}" || ! test -e "${state_dir}"; then
-  note "link: ${state_dir} -> ${home_path}/.local/var"
+var_dir="${home_path}/.local/var"
+if test "$(phys "${state_dir}")" = "$(phys "${var_dir}")" && test -n "$(phys "${state_dir}")"; then
+  : # already unified
+elif test -L "${state_dir}" || ! test -e "${state_dir}"; then
+  note "link: ${state_dir} -> ${var_dir}"
   test -n "${dry_run}" || ln -sfn -- 'var' "${state_dir}"
-elif dir_empty "${state_dir}"; then
-  note "replace empty directory: ${state_dir} -> ${home_path}/.local/var"
+elif test -d "${state_dir}"; then
+  state_aside="${state_dir}.migrated"
+  for entry in "${state_dir}"/* "${state_dir}"/.[!.]* "${state_dir}"/..?*; do
+    test -e "${entry}" || test -L "${entry}" || continue
+    entry_name="${entry##*/}"
+    if test -e "${var_dir}/${entry_name}" || test -L "${var_dir}/${entry_name}"; then
+      note "set aside (name collision): ${entry} -> ${state_aside}/"
+      test -n "${dry_run}" || {
+        mkdir -p -- "${state_aside}"
+        mv -- "${entry}" "${state_aside}/"
+      }
+    else
+      note "migrate: ${entry} -> ${var_dir}/"
+      test -n "${dry_run}" || mv -- "${entry}" "${var_dir}/"
+    fi
+  done
+  note "link: ${state_dir} -> ${var_dir}"
   test -n "${dry_run}" || {
     rmdir -- "${state_dir}"
     ln -s -- 'var' "${state_dir}"
   }
-else
-  note "NOTE: ~/.local/state is a populated real directory; leaving it alone."
-  note "      The canonical state tree is ~/.local/var. To unify, review and merge:"
-  note "        mv ${state_dir}/<entry> ${home_path}/.local/var/  # per entry, resolving conflicts"
-  note "        rmdir ${state_dir} && ln -s var ${state_dir}"
+  if test -d "${state_aside}"; then
+    note "NOTE: collided state entries preserved in ${state_aside}; review and delete at leisure."
+  fi
 fi
 
 # Shared link helper (used by the blocks below via `sh -c`). ln -sfn is

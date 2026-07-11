@@ -83,10 +83,11 @@ into the tree entry-by-entry, adopts `~/.cache`, links home-convention files
 (shell rc, gnupg, vim, X session files) as `~/.*`, links `scripts/` into
 `~/.local/bin`, and registers services (systemd user units / launchd agents).
 
-> **Guard rails:** migrations refuse on conflicts rather than guessing — if
-> both `~/.config` and the repo tree contain an entry with the same name, the
-> run stops and tells you what to reconcile. Nothing is ever deleted: cache
-> collisions are set aside, and a populated `~/.local/state` is only reported.
+> **Guard rails:** migrations are automatic — a lived-in home installs in one
+> run — but nothing is ever deleted. Where `~/.config` and the repo both have
+> an entry, the repo wins and the displaced entry is preserved in
+> `~/.config.migrated/`; cache and state collisions are parked the same way.
+> The only hard stop is a populated `~/.local/etc` that isn't this checkout.
 > The `~/.*` links themselves do replace what's at their destination
 > (including a real `~/.zshrc`), so preview with `-n` first.
 
