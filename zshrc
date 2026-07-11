@@ -17,30 +17,33 @@ else
 fi
 
 # Fallback light/dark guess from the desktop session, else time of day. The
-# OSC query below supersedes this whenever the terminal answers; THEME_VARIANT
-# only applies when it can't (TERM=dumb, unsupported emulator, no tty).
-# Query GNOME's color-scheme directly (the native signal on GNOME, and mirrored
-# by many KDE setups) rather than gating it behind a desktop match -- the old
-# code only queried it under KDE, so real GNOME sessions never hit it. Fall back
-# to time of day when gsettings is absent or reports no preference.
-if (( $+commands[gsettings] )); then
-  _gnome_scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)"
-else
-  _gnome_scheme=''
-fi
-case "${_gnome_scheme}" in
-  *dark*)  export THEME_VARIANT="dark" ;;
-  *light*) export THEME_VARIANT="light" ;;
-  *)
-    if ( hour="$(date +%H)" && test "$((hour))" -ge 7 && test "$((hour))" -lt 19; )
-    then
-      export THEME_VARIANT="light"
-    else
-      export THEME_VARIANT="dark"
-    fi
-    ;;
-esac
-unset _gnome_scheme
+# OSC query below supersedes this whenever the terminal answers, so the guess
+# (and its gsettings fork) is deferred until a shell actually needs it
+# (TERM=dumb, unsupported emulator, no tty). Query GNOME's color-scheme
+# directly (the native signal on GNOME, and mirrored by many KDE setups); fall
+# back to time of day when gsettings is absent or reports no preference.
+_theme_variant_guess() {
+  emulate -L zsh
+  [[ -n ${THEME_VARIANT-} ]] && return
+  local scheme hour
+  if (( $+commands[gsettings] )); then
+    scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2> /dev/null)"
+  fi
+  case "${scheme}" in
+    (*dark*)  THEME_VARIANT="dark" ;;
+    (*light*) THEME_VARIANT="light" ;;
+    (*)
+      zmodload -F zsh/datetime b:strftime p:EPOCHSECONDS 2> /dev/null
+      strftime -s hour '%H' "${EPOCHSECONDS}" 2> /dev/null || hour=0
+      if (( hour >= 7 && hour < 19 )); then
+        THEME_VARIANT="light"
+      else
+        THEME_VARIANT="dark"
+      fi
+      ;;
+  esac
+  export THEME_VARIANT
+}
 
 # Resolve this file's directory (the dotfiles repo) once; %x is only reliable
 # while sourcing, but the helpers below also run interactively.
@@ -58,19 +61,29 @@ typeset -g _dotfiles_etc="${${(%):-%x}:A:h}"
 _starship_palette() {
   emulate -L zsh
   command -v starship > /dev/null || return
-  local name cache theme
+  local name cache theme palette line
   case ${TERM_BACKGROUND:-dark} in
     light) name=catppuccin_latte ;;
     *)     name=catppuccin_mocha ;;
   esac
   theme="$_dotfiles_etc/starship/starship.toml"
-  [[ -r $theme && -r $_dotfiles_etc/starship/palettes/$name.palette.toml ]] || return
+  palette="$_dotfiles_etc/starship/palettes/$name.palette.toml"
+  [[ -r $theme && -r $palette ]] || return
   cache="${XDG_CACHE_HOME:-$HOME/.cache}/starship.toml"
+  # Reuse the cache when it already targets this palette (first line) and is
+  # newer than both sources: skips three forks (mkdir/grep/cat) plus a file
+  # write on every fresh shell that isn't flipping polarity.
+  if [[ -r $cache && $cache -nt $theme && $cache -nt $palette ]] \
+    && IFS= read -r line < "$cache" 2>/dev/null \
+    && [[ $line == "palette = \"$name\"" ]]; then
+    export STARSHIP_CONFIG="$cache"
+    return
+  fi
   mkdir -p "${cache:h}" 2>/dev/null
   {
     print -r -- "palette = \"$name\""
     grep -vE '^palette[[:space:]]*=' "$theme"
-    cat "$_dotfiles_etc/starship/palettes/$name.palette.toml"
+    cat "$palette"
   } > "$cache" 2>/dev/null && export STARSHIP_CONFIG="$cache"
 }
 
@@ -101,7 +114,11 @@ term-bg-sync() {
   emulate -L zsh
   local bg
   (( $+functions[detect_term_bg] )) && bg="$(detect_term_bg)"
-  _term_bg_apply "${bg:-${THEME_VARIANT:-dark}}"
+  if [[ -z ${bg} ]]; then
+    _theme_variant_guess
+    bg="${THEME_VARIANT:-dark}"
+  fi
+  _term_bg_apply "${bg}"
 }
 
 # Follow set-term-theme live: it writes the active variant to this file; check
@@ -208,13 +225,10 @@ plugins=(
   fancy-ctrl-z
   fancy-ctrl-q
   firewalld
-  fzf
   lscolors
   gh
   git
-  git-prompt
   golang
-  gpg-agent
   zsh-history-substring-search
   iterm2
   mkcd
