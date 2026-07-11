@@ -218,7 +218,7 @@ esac
 # stay best-effort: no systemd user session must not fail the install.
 case "$(uname -s)" in Linux)
   if command -v systemctl > /dev/null 2>&1; then
-    systemctl --user daemon-reload 2> /dev/null || :
+    test -n "${dry_run}" || systemctl --user daemon-reload 2> /dev/null || :
     # Starting units needs a reachable user bus; else just register for login.
     if test -z "${dry_run}" && systemctl --user list-units > /dev/null 2>&1; then
       have_session=1
@@ -230,6 +230,7 @@ case "$(uname -s)" in Linux)
       unit_name="${unit##*/}"
       case "${unit_name}" in *@.*) continue ;; esac # templated: needs an instance
       printf "enable: %s\n" "${unit_name}"
+      test -n "${dry_run}" && continue # -n previews without touching anything
       systemctl --user enable "${unit_name}" 2> /dev/null || :
       case "${unit_name}" in mcphub.*) continue ;; esac # heavyweight: stays manual
       if test -n "${have_session}"; then

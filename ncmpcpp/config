@@ -10,7 +10,10 @@ lyrics_directory = ~/.local/share/ncmpcpp/lyrics
 
 #### connection settings #####
 
-mpd_host = /run/user/1000/mpd/socket
+# No mpd_host here: ncmpcpp does not expand env vars in its config, and a
+# literal socket path pins the UID (the old value hardcoded /run/user/1000).
+# ncmpcpp honors $MPD_HOST, exported by environment.d/40-mpd.conf (systemd
+# sessions) and profile.d/40-mpd.sh (login shells everywhere else).
 
 mpd_port = 6600
 

@@ -46,7 +46,7 @@ if command -v fzf > /dev/null 2>&1; then
       :
     elif test "${XDG_SESSION_TYPE:-}" = "wayland" \
       && test -n "${WAYLAND_DISPLAY:-}" \
-      && command -v wl-copy; then
+      && command -v wl-copy > /dev/null; then
       echo 'wl-copy -n > /dev/null 2>&1'
     elif test "${XDG_SESSION_TYPE:-}" = "x11" \
       && test -n "${DISPLAY:-}" \
@@ -145,6 +145,10 @@ if command -v fzf > /dev/null 2>&1; then
   }
 
   # Source extensions (process, files, git, docker, kube, history, ssh, env, etc.)
+  # _fzf_extensions_wanted gates the file so the profile.d loader's own glob
+  # pass over 90-fzf-extensions.sh (which sorts before this file) is a no-op
+  # and everything is defined exactly once, after the helpers above exist.
+  _fzf_extensions_wanted=1
   for _profile_d in \
     "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d" \
     "${HOME}/.local/etc/profile.d"; do
@@ -154,7 +158,7 @@ if command -v fzf > /dev/null 2>&1; then
       break
     fi
   done
-  unset _profile_d
+  unset _profile_d _fzf_extensions_wanted
 
 fi
 # end fzf availability guard

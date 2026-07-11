@@ -29,7 +29,20 @@ fi
 # Once that merges and a release ships, this whole patch block can go.
 # ---------------------------------------------------------------------------
 mcphub_cli="$(command -v mcp-hub 2> /dev/null || echo "$HOME/.local/bin/mcp-hub")"
-mcphub_dist="$(readlink -f "${mcphub_cli}" 2> /dev/null || echo "")"
+# Resolve the CLI to its real path. BSD readlink (stock macOS) has no -f --
+# which silently skipped this whole patch there -- so walk the links with
+# plain readlink, which is portable.
+mcphub_dist="${mcphub_cli}"
+_hops=0
+while test -L "${mcphub_dist}" && test "${_hops}" -lt 32; do
+  _target="$(readlink "${mcphub_dist}")" || break
+  case "${_target}" in
+    /*) mcphub_dist="${_target}" ;;
+    *) mcphub_dist="${mcphub_dist%/*}/${_target}" ;;
+  esac
+  _hops=$((_hops + 1))
+done
+unset _hops _target
 case "${mcphub_dist}" in
   */mcp-hub/dist/cli.js)
     if ! grep -q '_mcphubCleanupRan' "${mcphub_dist}" 2> /dev/null; then

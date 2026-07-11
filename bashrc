@@ -98,15 +98,9 @@ case ${TERM} in
 esac
 
 # Enable colors for ls, etc
-if command -v dircolors 1> /dev/null; then
-  if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors"; then
-    eval "$(dircolors -b -- "${XDG_CONFIG_HOME:-${HOME}/.config}/dircolors")"
-  elif test -f ~/.dircolors; then
-    eval "$(dircolors -b -- ~/.dircolors)"
-  else
-    eval "$(dircolors -b)"
-  fi
-fi
+# LS_COLORS comes from profile.d/80-dircolors.sh at login; re-evaluating
+# dircolors here forked it a second time on every login shell. Non-login
+# shells inherit LS_COLORS from their parent's environment.
 
 # Set prompt based on whether or not this is running as root
 if [[ ${EUID} == 0 ]]; then
@@ -321,14 +315,17 @@ ps_update() {
 # Add to precmd functions
 add_precmd_functions ps_update
 
-# Configure window title
+# Configure window title. TTY never changes within a shell, so resolve it
+# once here -- the preexec hooks below run before every command, and a
+# $(tty) inside them forked once per command line.
+if [[ -z ${TTY:-} && -t 0 ]]; then
+  TTY="$(tty 2> /dev/null)" || TTY=''
+fi
 if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]; then
   __window_title_precmd() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
   }
   __window_title_preexec() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\e]0;%s\a' "${WINDOW_TITLE@P}"
   }
@@ -338,13 +335,11 @@ if [[ ${TERM} == @(rxvt|vte|xterm)?(-*) ]]; then
 elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   # shellcheck disable=SC1003
   __window_title_precmd() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\${0##*/})"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
   # shellcheck disable=SC1003
   __window_title_preexec() {
-    TTY="$(tty)"
     WINDOW_TITLE="(${TTY##/dev/}) \\u@\\h (\\W)"
     printf '\ek%s\e\' "${WINDOW_TITLE@P}"
   }
@@ -352,18 +347,10 @@ elif [[ ${TERM} == @(screen|tmux)?(-*) ]]; then
   add_preexec_functions __window_title_preexec
 fi
 
-if command -v gpg-agent > /dev/null 2>&1; then
-  # Set GPG_TTY to device on stdin
-  if [[ -t 0 ]]; then
-    if GPG_TTY="$(tty 2> /dev/null)"; then
-      export GPG_TTY
-    else
-      unset -v GPG_TTY
-    fi
-  fi
-  # Refresh gpg-agent in case we switched to an X-session
-  gpg-connect-agent updatestartuptty /bye 1> /dev/null 2>&1
-fi
+# GPG_TTY and the gpg-agent tty refresh are handled once per login by
+# profile.d/30-gpg-agent.sh; doing both here again meant two redundant forks
+# for every login shell. Non-login shells inherit GPG_TTY from the login
+# environment (pinentry targets the most recent login shell by design).
 
 # command-not-found hook
 command_not_found_handle() {

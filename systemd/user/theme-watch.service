@@ -11,6 +11,9 @@ Type=simple
 # Applies `set-term-theme auto` once, then re-applies on every color-scheme change.
 # set-term-theme itself falls back to time of day when gsettings is unavailable, but
 # --watch needs gsettings to have something to monitor.
+# Skip cleanly (not "failed", no restart churn) on hosts without the GNOME
+# color-scheme setting -- --watch exits 1 there and the unit crash-looped.
+ExecCondition=/bin/sh -c 'command -v gsettings > /dev/null && gsettings get org.gnome.desktop.interface color-scheme > /dev/null 2>&1'
 ExecStart=%h/.local/bin/set-term-theme.sh --watch
 
 # gsettings, pkill, defaults, etc. systemd does not import the interactive PATH.

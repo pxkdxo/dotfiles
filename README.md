@@ -76,11 +76,13 @@ Or use the install script to symlink individual files as `~/.*`:
 ```sh
 git clone --recurse-submodules https://github.com/pxkdxo/dotfiles
 cd dotfiles
-./install-dotfiles.sh        # interactive — prompts before replacing
-./install-dotfiles.sh -f     # force-replace
-./install-dotfiles.sh -n     # dry run
+./install-dotfiles.sh        # link everything (non-interactive; replaces existing files)
+./install-dotfiles.sh -n     # dry run — print every action without touching anything
 ./install-dotfiles.sh -h     # full usage
 ```
+
+> **Warning:** the installer does not prompt. Anything at a link's destination —
+> including a real `~/.zshrc` or `~/.gnupg` — is replaced. Preview with `-n` first.
 
 ### Dependencies
 
