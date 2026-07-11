@@ -8,12 +8,14 @@ return {
     },
     opts = function()
       local utils = require("core.utils")
+      -- Highlight group names, resolved at render time so the colors track
+      -- the active colorscheme across the F11/F12/F24 rotation.
       local copilot_colors = {
-        [""] = utils.get_hlgroup("Comment"),
-        ["Normal"] = utils.get_hlgroup("Comment"),
-        ["InProgress"] = utils.get_hlgroup("DiagnosticInfo"),
-        ["Warning"] = utils.get_hlgroup("DiagnosticWarn"),
-        ["Error"] = utils.get_hlgroup("DiagnosticHint"),
+        [""] = "Comment",
+        ["Normal"] = "Comment",
+        ["InProgress"] = "DiagnosticInfo",
+        ["Warning"] = "DiagnosticWarn",
+        ["Error"] = "DiagnosticError",
       }
       local filetype_map = {
         lazy = { name = "lazy.nvim", icon = "󰒲 " },
@@ -102,7 +104,9 @@ return {
               cond = function()
                 return require("core.utils").get_buffer_count() > 1
               end,
-              color = utils.get_hlgroup("Operator", nil),
+              color = function()
+                return utils.get_hlgroup("Operator")
+              end,
               padding = { left = 0, right = 1 },
             },
             {
@@ -116,7 +120,9 @@ return {
                 return vim.fn.tabpagenr("$") > 1
               end,
               icon = "󰓩",
-              color = utils.get_hlgroup("Special", nil),
+              color = function()
+                return utils.get_hlgroup("Special")
+              end,
             },
             {
               function()
@@ -125,7 +131,9 @@ return {
               cond = function()
                 return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
               end,
-              color = utils.get_hlgroup("Comment", nil),
+              color = function()
+                return utils.get_hlgroup("Comment")
+              end,
             },
           },
           lualine_x = {
@@ -149,7 +157,9 @@ return {
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
-              color = utils.get_hlgroup("String"),
+              color = function()
+                return utils.get_hlgroup("String")
+              end,
             },
             {
               function()
@@ -166,7 +176,7 @@ return {
                   return
                 end
                 local status = require("copilot.status").data
-                return copilot_colors[status.status] or copilot_colors[""]
+                return utils.get_hlgroup(copilot_colors[status.status] or copilot_colors[""])
               end,
             },
             {
@@ -186,14 +196,18 @@ return {
                 return vim.v.hlsearch == 1
               end,
               icon = " ",
-              color = utils.get_hlgroup("String"),
+              color = function()
+                return utils.get_hlgroup("String")
+              end,
             },
             {
               "progress",
             },
             {
               "location",
-              color = utils.get_hlgroup("Boolean"),
+              color = function()
+                return utils.get_hlgroup("Boolean")
+              end,
             },
           },
           lualine_z = {
@@ -363,14 +377,11 @@ return {
   {
     "RRethy/vim-illuminate",
     cond = vim.g.vscode == nil,
-    event = "InsertEnter",
-    opts = {
-      bind = true,
-      handler_opts = {
-        border = "rounded",
-      },
-      hint_prefix = "✭ ",
-    },
+    event = { "BufReadPost", "BufNewFile" },
+    -- Defaults are right (lsp > treesitter > regex providers). The options
+    -- previously set here (bind/handler_opts/hint_prefix) belonged to
+    -- lsp_signature.nvim and were silently ignored.
+    opts = {},
     config = function(_, opts)
       require("illuminate").configure(opts)
     end,

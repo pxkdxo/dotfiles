@@ -36,9 +36,12 @@ Bound to function keys:
 
 The deque (`DoubleNode` / `Deque`) and `Playlist` are generic and fully
 LuaCATS-annotated — colorschemes are just the first thing plugged into the `play`
-callback. Cursor state is per-session (in memory), not persisted across restarts.
-This pairs with the repository-level `colorschemes.py`, which fetches and links the
-actual theme files; Neovim just cycles whatever is present.
+callback. Entries can be tagged `light`/`dark` so rotation stays within the active
+`&background`; the last-used scheme is cached per variant
+(`~/.cache/nvim-colorscheme.txt`) and restored on launch, and a `FocusGained`
+watcher re-syncs when the terminal flips between light and dark. This pairs with
+the repository-level `colorschemes.py`, which fetches and links the actual theme
+files; Neovim just cycles whatever is present.
 
 ---
 
@@ -74,23 +77,24 @@ with no server.
   (`textDocument/inlayHint`); breadcrumbs via `nvim-navic` attach only on servers that
   support document symbols.
 - Servers are installed through `mason` with `mason-lspconfig` auto-enable, and default
-  capabilities are wired to `nvim-cmp`.
+  capabilities are wired to `blink.cmp`.
 
 ---
 
 ## Completion
 
-The `nvim-cmp` setup is the most involved single file. It defines:
+The `blink.cmp` setup is the most involved single file. It defines:
 
-- **Tiered sources** — AI (`avante`, `codecompanion`) and `lazydev` first, then
-  `nvim_lsp`; then `ecolog`, `luasnip`, `nvim_lua`; then `buffer` / `git`. Priority is
-  explicit rather than flat.
-- **Custom `<Tab>` / `<CR>` logic** — Tab confirms when there's a single entry, jumps
-  snippets when jumpable, falls through on leading whitespace, and otherwise triggers
-  completion; CR behaves differently in insert vs. search vs. command modes.
-- **Command-line completion** for `/`, `?`, and `:` with their own source sets
-  (document-symbol search; cmdline + path + `ecolog` for `:`).
-- Autopairs fire on completion confirm; entry icons come from `mini.icons`.
+- **Tiered sources** — priority via `score_offset`: `lazydev`, then `avante`, then
+  LSP, then `ecolog` / `path` / `snippets`, with `buffer` last. Git/GitHub
+  completions (`blink-cmp-git`) load only in commit-style buffers.
+- **Custom `<Tab>` logic** — Tab navigates the menu when it's open, accepts a Copilot
+  ghost suggestion when it's closed, jumps forward in an active snippet, falls
+  through to a literal Tab on leading whitespace, and otherwise triggers completion.
+  `<CR>` accepts only when an entry is actively selected.
+- **Command-line completion** with source sets chosen by `getcmdtype()` —
+  cmdline + path for `:`, buffer words for `/` and `?`.
+- Semantic auto-brackets on accept; entry icons come from `mini.icons`.
 
 ---
 
