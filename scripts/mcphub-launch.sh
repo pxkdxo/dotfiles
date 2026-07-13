@@ -54,7 +54,7 @@ case "${mcphub_dist}" in
         fs.writeFileSync(f, src.replace(old, neu));
         console.error("mcphub-launch: patched " + f + " (recursive-close guard)");
       ' "${mcphub_dist}" || :
-    fi
+  fi
     ;;
 esac
 

@@ -27,9 +27,9 @@ if command -v gpgconf > /dev/null; then
         && test "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne "$$" \
         && test -S "${ssh_socket}"; then
         export SSH_AUTH_SOCK="${ssh_socket}"
-      else
+    else
         unset SSH_AUTH_SOCK
-      fi
+    fi
       unset ssh_socket
       ;;
   esac

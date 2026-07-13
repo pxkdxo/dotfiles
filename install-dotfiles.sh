@@ -136,9 +136,9 @@ note() {
 }
 
 refuse() {
-      >&2 printf '%s: refusing: %s\n' "${argzero_name}" "$1"
+          >&2 printf '%s: refusing: %s\n' "${argzero_name}" "$1"
   shift
-  for _refuse_line; do     >&2 printf '  %s\n' "${_refuse_line}"; done
+  for _refuse_line; do         >&2 printf '  %s\n' "${_refuse_line}"; done
   exit 1
 }
 

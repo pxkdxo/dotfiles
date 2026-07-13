@@ -8,13 +8,13 @@ case "$(uname -s)" in
       case ":${PATH}:" in
         *:"${HOME}/Applications/Cursor.app/Contents/Resources/app/bin":*) ;;
         *) export PATH="${HOME}/Applications/Cursor.app/Contents/Resources/app/bin${PATH:+:${PATH}}" ;;
-      esac
-    elif test -x "/Applications/Cursor.app/Contents/Resources/app/bin/code"; then
+    esac
+  elif   test -x "/Applications/Cursor.app/Contents/Resources/app/bin/code"; then
       case ":${PATH}:" in
         *:"/Applications/Cursor.app/Contents/Resources/app/bin":*) ;;
         *) export PATH="/Applications/Cursor.app/Contents/Resources/app/bin${PATH:+:${PATH}}" ;;
-      esac
-    fi
+    esac
+  fi
     ;;
 esac
 

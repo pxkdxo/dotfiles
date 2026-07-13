@@ -53,13 +53,13 @@ else
         *)
           if test "${_colors:-0}" -ge 256; then
             export SYSTEMD_COLORS=256
-          elif test "${_colors:-0}" -ge 88; then
+      elif     test "${_colors:-0}" -ge 88; then
             export SYSTEMD_COLORS=88
-          elif test "${_colors:-0}" -ge 16; then
+      elif     test "${_colors:-0}" -ge 16; then
             export SYSTEMD_COLORS=16
-          fi
+      fi
           ;;
-      esac
+    esac
       unset _colors
       ;;
   esac

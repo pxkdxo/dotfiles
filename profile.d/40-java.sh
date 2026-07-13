@@ -11,36 +11,36 @@ else
       # macOS - Prefer HOMEBREW_PREFIX (set by Homebrew), fallback to brew --prefix, java_home last
       if test -n "${HOMEBREW_PREFIX:-}" && test -d "${HOMEBREW_PREFIX}/opt/openjdk"; then
         export JAVA_HOME="${HOMEBREW_PREFIX}/opt/openjdk"
-      elif command -v brew > /dev/null && JAVA_HOME="$(brew --prefix 2> /dev/null)/opt/openjdk" && test -d "${JAVA_HOME}"; then
+    elif   command -v brew > /dev/null && JAVA_HOME="$(brew --prefix 2> /dev/null)/opt/openjdk" && test -d "${JAVA_HOME}"; then
         export JAVA_HOME
-      elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/opt/openjdk"; then
+    elif   test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/opt/openjdk"; then
         export JAVA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/opt/openjdk"
-      elif test -d "${HOME}/.local/opt/homebrew/openjdk"; then
+    elif   test -d "${HOME}/.local/opt/homebrew/openjdk"; then
         export JAVA_HOME="${HOME}/.local/opt/homebrew/openjdk"
-      elif test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/openjdk"; then
+    elif   test -d "${XDG_DATA_HOME:-${HOME}/.local/share}/openjdk"; then
         export JAVA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/openjdk"
-      elif test -d "/usr/local/share/homebrew/openjdk"; then
+    elif   test -d "/usr/local/share/homebrew/openjdk"; then
         export JAVA_HOME="/usr/local/share/homebrew/openjdk"
-      elif test -d "/usr/local/opt/homebrew/openjdk"; then
+    elif   test -d "/usr/local/opt/homebrew/openjdk"; then
         export JAVA_HOME="/usr/local/opt/homebrew/openjdk"
-      elif test -d "/usr/share/homebrew/openjdk"; then
+    elif   test -d "/usr/share/homebrew/openjdk"; then
         export JAVA_HOME="/usr/share/homebrew/openjdk"
-      elif test -d "/opt/homebrew/opt/openjdk"; then
+    elif   test -d "/opt/homebrew/opt/openjdk"; then
         export JAVA_HOME="/opt/homebrew/opt/openjdk"
-      elif test -d "/usr/local/share/openjdk"; then
+    elif   test -d "/usr/local/share/openjdk"; then
         export JAVA_HOME="/usr/local/share/openjdk"
-      elif test -d "/usr/local/opt/openjdk"; then
+    elif   test -d "/usr/local/opt/openjdk"; then
         export JAVA_HOME="/usr/local/opt/openjdk"
-      elif test -d "/usr/share/openjdk"; then
+    elif   test -d "/usr/share/openjdk"; then
         export JAVA_HOME="/usr/share/openjdk"
-      elif test -d "/opt/openjdk"; then
+    elif   test -d "/opt/openjdk"; then
         export JAVA_HOME="/opt/openjdk"
-      elif command -v /usr/libexec/java_home > /dev/null \
+    elif   command -v /usr/libexec/java_home > /dev/null \
         && JAVA_HOME="$(/usr/libexec/java_home 2> /dev/null)"; then
         export JAVA_HOME
-      else
+    else
         unset JAVA_HOME
-      fi
+    fi
       ;;
     [Ll]inux*)
       # linux - prefer an explicit "default", else the highest-versioned JDK.
@@ -51,23 +51,23 @@ else
         if test -d "${jvm_root}/default"; then
           JAVA_HOME="${jvm_root}/default"
           break
-        fi
+      fi
         java_candidate="$(
           for directory in "${jvm_root}"/java-*; do
             test -d "${directory}" && printf '%s\n' "${directory}"
-          done | sort -V | tail -n 1
-        )"
+        done   | sort -V | tail -n 1
+      )"
         if test -n "${java_candidate}"; then
           JAVA_HOME="${java_candidate}"
           break
-        fi
-      done
+      fi
+    done
       # Last resort: follow the distro's `java` alternative to its home.
       if test -z "${JAVA_HOME-}" && test -e /etc/alternatives/java; then
         java_alt="$(readlink -f /etc/alternatives/java 2> /dev/null)"
         java_alt="${java_alt%/bin/java}"
         test -d "${java_alt}/bin" && JAVA_HOME="${java_alt}"
-      fi
+    fi
       ;;
   esac
 fi

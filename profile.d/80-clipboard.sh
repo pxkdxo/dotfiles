@@ -8,18 +8,18 @@ cbdetect() {
     Darwin* | darwin*)
       {
         command -v pbcopy && command -v pbpaste
-      } > /dev/null && {
+    }   > /dev/null && {
         cbcopy() { cat "${1:-/dev/stdin}" | pbcopy; }
         cbpaste() { pbpaste; }
-      }
+    }
       ;;
     Linux*Android* | Linux*android* | linux*android*)
       {
         command -v termux-clipboard-set && command -v termux-clipboard-get
-      } > /dev/null && {
+    }   > /dev/null && {
         cbcopy() { cat "${1:-/dev/stdin}" | termux-clipboard-set; }
         cbpaste() { termux-clipboard-get; }
-      }
+    }
       ;;
     Cygwin* | cygwin* | Msys* | msys*)
       cbcopy() { cat "${1:-/dev/stdin}" > /dev/clipboard; }

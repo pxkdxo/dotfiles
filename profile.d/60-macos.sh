@@ -10,9 +10,9 @@ case "$(uname -s 2> /dev/null)" in
           *)
             export PATH="${PATH:+${PATH}:}${name}"
             ;;
-        esac
-      fi
-    done
+      esac
+    fi
+  done
     unset name
     ;;
 esac

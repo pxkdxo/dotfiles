@@ -17,13 +17,13 @@ command -v launchctl > /dev/null 2>&1 || exit 0 # macOS only
 # PATH shim), not the coreutil that dumps the environment.
 sh -lc /usr/bin/env 2> /dev/null | while IFS='=' read -r name value; do
   case "${name}" in
-    # blanks and continuation lines from multi-line values
-    '' | *[!A-Za-z0-9_]*) continue ;;
-    # identity / volatile / shell-internal — wrong to pin in the GUI session
-    HOME | USER | LOGNAME | SHELL | PWD | OLDPWD | SHLVL | _ | TMPDIR) continue ;;
-    # terminal- and session-specific
-    TERM | TERMINFO | COLORTERM | SECURITYSESSIONID) continue ;;
-    SSH_* | XPC_* | __CF* | TERM_*) continue ;;
+  # blanks and continuation lines from multi-line values
+  '' | *[!A-Za-z0-9_]*) continue ;;
+  # identity / volatile / shell-internal — wrong to pin in the GUI session
+  HOME | USER | LOGNAME | SHELL | PWD | OLDPWD | SHLVL | _ | TMPDIR) continue ;;
+  # terminal- and session-specific
+  TERM | TERMINFO | COLORTERM | SECURITYSESSIONID) continue ;;
+  SSH_* | XPC_* | __CF* | TERM_*) continue ;;
   esac
   launchctl setenv "${name}" "${value}" 2> /dev/null || :
 done
