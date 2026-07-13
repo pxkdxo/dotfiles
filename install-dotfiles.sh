@@ -16,7 +16,7 @@ usage="${argzero_name} [-n] [--] [TARGET_DIRECTORY]"
 
 print_help() {
   cat
-} << EOF
+} <<EOF
 usage: ${usage}
 
 ${argzero_name} - bootstrap the dotfiles layout in a user's home directory
@@ -52,16 +52,16 @@ OPTIND=1
 option=''
 while getopts ':hn' option; do
   case "${option}" in
-    'h')
-      print_help
-      exit 0
-      ;;
-    'n') dry_run='1' ;;
-    '?')
-      printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
-      printf 'usage: %s\n' "${usage}" >&2
-      exit 2
-      ;;
+  'h')
+    print_help
+    exit 0
+    ;;
+  'n') dry_run='1' ;;
+  '?')
+    printf '%s: -%c: unrecognized option\n' "${argzero_name}" "${OPTARG}" >&2
+    printf 'usage: %s\n' "${usage}" >&2
+    exit 2
+    ;;
   esac
 done
 shift "$((OPTIND - 1))"
@@ -73,20 +73,20 @@ if test "$#" -gt 1; then
 fi
 
 if test "$#" -eq 0; then
-  home_path="$(cd 2> /dev/null && pwd -P && echo '@')"
+  home_path="$(cd 2>/dev/null && pwd -P && echo '@')"
   home_path="${home_path%?@}"
 else
-  home_path="$(cd -- "$1" > /dev/null && pwd -P && echo '@')" # suppress CDPATH noise
+  home_path="$(cd -- "$1" >/dev/null && pwd -P && echo '@')" # suppress CDPATH noise
   home_path="${home_path%?@}"
   shift
 fi
 
-tree_path="$(cd -- "${argzero_dirname}" > /dev/null && pwd -P && echo '@')" # suppress CDPATH noise
+tree_path="$(cd -- "${argzero_dirname}" >/dev/null && pwd -P && echo '@')" # suppress CDPATH noise
 tree_path="${tree_path%?@}"
 repo_path="${tree_path}"
 
 # Fail loudly on a non-repo rather than silently linking nothing.
-git -C "${repo_path}" rev-parse --git-dir > /dev/null 2>&1 || {
+git -C "${repo_path}" rev-parse --git-dir >/dev/null 2>&1 || {
   printf '%s: %s is not a git repository\n' "${argzero_name}" "${repo_path}" >&2
   exit 1
 }
@@ -101,9 +101,9 @@ relpath() {
   _rp_up=''
   while
     case "${_rp_target}" in
-      "${_rp_base}") false ;;   # equal: common ancestor reached
-      "${_rp_base%/}"/*) false ;; # %/ so a root base ('/') yields '/*', not '//*'
-      *) true ;;
+    "${_rp_base}") false ;;     # equal: common ancestor reached
+    "${_rp_base%/}"/*) false ;; # %/ so a root base ('/') yields '/*', not '//*'
+    *) true ;;
     esac
   do
     _rp_base=${_rp_base%/*}
@@ -121,12 +121,12 @@ relpath() {
 
 # phys DIR — print DIR's physical path (symlinks resolved), empty if absent
 phys() {
-  (cd -P -- "$1" 2> /dev/null && pwd -P) || :
+  (cd -P -- "$1" 2>/dev/null && pwd -P) || :
 }
 
 # dir_empty DIR — true when DIR exists and contains nothing
 dir_empty() {
-  test -d "$1" && test -z "$(ls -A -- "$1" 2> /dev/null)"
+  test -d "$1" && test -z "$(ls -A -- "$1" 2>/dev/null)"
 }
 
 # note ACTION — print an action line (both real and dry runs print; dry runs
@@ -136,9 +136,9 @@ note() {
 }
 
 refuse() {
-          >&2 printf '%s: refusing: %s\n' "${argzero_name}" "$1"
+  >&2 printf '%s: refusing: %s\n' "${argzero_name}" "$1"
   shift
-  for _refuse_line; do         >&2 printf '  %s\n' "${_refuse_line}"; done
+  for _refuse_line; do >&2 printf '  %s\n' "${_refuse_line}"; done
   exit 1
 }
 
@@ -239,7 +239,7 @@ elif test -d "${cache_dir}"; then
   # collision parked it, append its content to the adopted copy.
   if test -f "${cache_aside}/bash/history" && test -f "${var_cache}/bash/history"; then
     note "append set-aside bash history into ${var_cache}/bash/history"
-    test -n "${dry_run}" || cat -- "${cache_aside}/bash/history" >> "${var_cache}/bash/history"
+    test -n "${dry_run}" || cat -- "${cache_aside}/bash/history" >>"${var_cache}/bash/history"
   fi
   note "link: ${cache_dir} -> ${var_cache}"
   test -n "${dry_run}" || {
@@ -318,8 +318,8 @@ tree_path="$(relpath "${repo_path}" "${home_path}")"
 # even broke theming: tmux resolves #{d:current_file} to $HOME through the
 # link). Stale links from older layouts are removed only when provably ours.
 # shellcheck disable=SC2016
-git -C "${repo_path}" ls-tree --name-only -z HEAD \
-                                                  | xargs -0 -- sh -c "${link_body}"'
+git -C "${repo_path}" ls-tree --name-only -z HEAD |
+  xargs -0 -- sh -c "${link_body}"'
 CALLER=$1 DRY_RUN=$2 treepath=$3 destpath=$4
 shift 4
 for filename; do
@@ -351,8 +351,8 @@ done
 local_bin="${home_path}/.local/bin"
 test -n "${dry_run}" || mkdir -p -- "${local_bin}"
 # shellcheck disable=SC2016
-git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts \
-                                                          | xargs -0 -- sh -c "${link_body}"'
+git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts |
+  xargs -0 -- sh -c "${link_body}"'
 DRY_RUN=$1 src_dir=$2 dst_dir=$3
 shift 3
 for filename; do
@@ -361,27 +361,27 @@ done
 ' -- "${dry_run}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
 
 # On macOS, generate launchd plists into ~/Library/LaunchAgents. launchd needs
-# absolute paths, so the tracked templates carry a __HOME__ placeholder that is
+# absolute paths, so the tracked templates carry a {HOME} placeholder that is
 # substituted here (a symlink would leave it unresolved); each run regenerates.
 case "$(uname -s)" in Darwin)
   launch_agents="${home_path}/Library/LaunchAgents"
   test -n "${dry_run}" || mkdir -p -- "${launch_agents}"
   # shellcheck disable=SC2016
-  git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents \
-                                                                   | xargs -0 -- sh -c '
+  git -C "${repo_path}" ls-tree --name-only -z HEAD:launchd/agents |
+    xargs -0 -- sh -c '
 dry_run=$1 src_dir=$2 dst_dir=$3 home=$4
 shift 4
 for filename; do
   src="${src_dir}/${filename}"
   dst="${dst_dir}/${filename}"
   if test -n "${dry_run}"; then
-    printf "generate: %s (__HOME__ -> %s)\n" "${dst}" "${home}"
+    printf "generate: %s (HOME -> %s)\n" "${dst}" "${home}"
   else
     # rm first: a stale symlink here could point back into the repo, and
     # `sed > dst` through it would truncate the source. (No `--`: BSD sed reads
     # it as a filename; src is absolute anyway.)
     rm -f -- "${dst}"
-    sed "s|__HOME__|${home}|g" "${src}" > "${dst}"
+    sed "s|{HOME}|${home}|g" "${src}" > "${dst}"
     printf "generate: %s\n" "${dst}"
   fi
 done
@@ -390,7 +390,7 @@ done
   # Activate now instead of at next login. Needs a GUI session (gui/$UID), so
   # probe that domain and skip over SSH. mcphub is heavyweight and stays manual.
   launch_domain="gui/$(id -u)"
-  if test -z "${dry_run}" && launchctl print "${launch_domain}" > /dev/null 2>&1; then
+  if test -z "${dry_run}" && launchctl print "${launch_domain}" >/dev/null 2>&1; then
     for plist in "${launch_agents}"/com.patrickdeyoreo.*.plist; do
       test -e "${plist}" || continue
       label="${plist##*/}"
@@ -400,8 +400,8 @@ done
       # Reload cleanly: bootout then bootstrap picks up plist edits and runs
       # RunAtLoad. (`kickstart -k` instead would force-restart into launchd's
       # ~10s respawn throttle on an agent that just ran.)
-      launchctl bootout "${launch_domain}/${label}" 2> /dev/null || :
-      launchctl bootstrap "${launch_domain}" "${plist}" 2> /dev/null || :
+      launchctl bootout "${launch_domain}/${label}" 2>/dev/null || :
+      launchctl bootstrap "${launch_domain}" "${plist}" 2>/dev/null || :
     done
   fi
   ;;
@@ -414,14 +414,14 @@ esac
 case "$(uname -s)" in Linux)
   # Apply user tmpfiles now: immediate effect, and some distros never enable
   # the user-scope setup service.
-  if test -z "${dry_run}" && command -v systemd-tmpfiles > /dev/null 2>&1; then
+  if test -z "${dry_run}" && command -v systemd-tmpfiles >/dev/null 2>&1; then
     printf 'apply: systemd-tmpfiles --user --create\n'
-    systemd-tmpfiles --user --create 2> /dev/null || :
+    systemd-tmpfiles --user --create 2>/dev/null || :
   fi
-  if command -v systemctl > /dev/null 2>&1; then
-    test -n "${dry_run}" || systemctl --user daemon-reload 2> /dev/null || :
+  if command -v systemctl >/dev/null 2>&1; then
+    test -n "${dry_run}" || systemctl --user daemon-reload 2>/dev/null || :
     # Starting units needs a reachable user bus; else just register for login.
-    if test -z "${dry_run}" && systemctl --user list-units > /dev/null 2>&1; then
+    if test -z "${dry_run}" && systemctl --user list-units >/dev/null 2>&1; then
       have_session=1
     else
       have_session=''
@@ -432,11 +432,11 @@ case "$(uname -s)" in Linux)
       case "${unit_name}" in *@.*) continue ;; esac # templated: needs an instance
       printf "enable: %s\n" "${unit_name}"
       test -n "${dry_run}" && continue # -n previews without touching anything
-      systemctl --user enable "${unit_name}" 2> /dev/null || :
+      systemctl --user enable "${unit_name}" 2>/dev/null || :
       case "${unit_name}" in mcphub.*) continue ;; esac # heavyweight: stays manual
       if test -n "${have_session}"; then
-        systemctl --user enable --now "${unit_name}" 2> /dev/null || :
-        systemctl --user try-restart "${unit_name}" 2> /dev/null || : # pick up edits
+        systemctl --user enable --now "${unit_name}" 2>/dev/null || :
+        systemctl --user try-restart "${unit_name}" 2>/dev/null || : # pick up edits
       fi
     done
   fi

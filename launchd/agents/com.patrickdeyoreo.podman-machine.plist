@@ -21,15 +21,15 @@
     <true/>
 
     <key>StandardOutPath</key>
-    <string>__HOME__/Library/Logs/podman-machine.out.log</string>
+    <string>{HOME}/Library/Logs/podman-machine.out.log</string>
 
     <key>StandardErrorPath</key>
-    <string>__HOME__/Library/Logs/podman-machine.err.log</string>
+    <string>{HOME}/Library/Logs/podman-machine.err.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
-        <string>__HOME__/.local/share/homebrew/bin:__HOME__/.local/share/homebrew/sbin:__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <string>{HOME}/.local/share/homebrew/bin:{HOME}/.local/share/homebrew/sbin:{HOME}/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
     </dict>
 
     <key>ProcessType</key>

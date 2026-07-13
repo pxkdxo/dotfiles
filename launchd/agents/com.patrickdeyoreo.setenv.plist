@@ -15,17 +15,17 @@
     -->
     <key>ProgramArguments</key>
     <array>
-        <string>__HOME__/.local/bin/export-login-env.sh</string>
+        <string>{HOME}/.local/bin/export-login-env.sh</string>
     </array>
 
     <key>RunAtLoad</key>
     <true/>
 
     <key>StandardOutPath</key>
-    <string>__HOME__/Library/Logs/setenv.out.log</string>
+    <string>{HOME}/Library/Logs/setenv.out.log</string>
 
     <key>StandardErrorPath</key>
-    <string>__HOME__/Library/Logs/setenv.err.log</string>
+    <string>{HOME}/Library/Logs/setenv.err.log</string>
 
     <key>ProcessType</key>
     <string>Background</string>
