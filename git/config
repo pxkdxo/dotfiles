@@ -1,10 +1,13 @@
 # ~/.config/git/config: user-global git config
 # see git(1) git-config(1)
 
+[include]
+	path = ~/.local/share/git/config/user.gitconfig
+
 [core]
 	editor = nvim
-	excludesfile = ~/.config/git/ignore
-	ignorecase = false
+	excludesFile = ~/.config/git/ignore
+	ignoreCase = false
 
 [init]
 	defaultBranch = main
@@ -12,9 +15,6 @@
 
 [credential]
 	helper = cache --timeout 3600
-
-[user]
-	name = Patrick DeYoreo
 
 [push]
 	default = current
