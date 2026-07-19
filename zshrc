@@ -231,7 +231,6 @@ plugins=(
   aws
   brew
   codex
-  command-not-found
   ctags
   docker
   extract
