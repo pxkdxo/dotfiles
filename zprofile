@@ -9,9 +9,12 @@ if [[ -f ~/.profile && -r ~/.profile ]]; then
   emulate sh -c '. ~/.profile'
 fi
 
-# Add zsh site-functions to FPATH
+# Add zsh site-functions to FPATH, guarded: FPATH is inherited by child
+# shells, so appending unconditionally would duplicate this entry under
+# shell nesting (tmux, a shell inside a shell, etc.).
 if [[ -d ~/.local/share/zsh/site-functions ]]; then
-  FPATH="${FPATH:+${FPATH}:}${HOME}/.local/share/zsh/site-functions"
+  (( ${fpath[(Ie)${HOME}/.local/share/zsh/site-functions]} )) \
+    || FPATH="${FPATH:+${FPATH}:}${HOME}/.local/share/zsh/site-functions"
 fi
 
 # vi:ft=zsh

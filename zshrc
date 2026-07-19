@@ -272,6 +272,17 @@ plugins=(
   # zstyles
 )
 
+# Login and non-login shells get separate completion-dump caches: their
+# $fpath legitimately differs (login mode also runs profile.d), so a
+# shared cache invalidates itself whenever the shell type alternates -- a
+# full ~900ms compinit rebuild each time. Set before oh-my-zsh loads to
+# pre-empt its own shared default.
+if [[ -o login ]]; then
+  ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${HOST}-${ZSH_VERSION}-login"
+else
+  ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${HOST}-${ZSH_VERSION}-nonlogin"
+fi
+
 # Load oh-my-zsh
 #
 if test -v ZSH; then
