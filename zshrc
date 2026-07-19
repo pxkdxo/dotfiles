@@ -259,7 +259,6 @@ plugins=(
   tmux
   uv
   venv
-  virtualenv
   zshaliases
   zshoptions
   zshparam
