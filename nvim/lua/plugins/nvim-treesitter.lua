@@ -30,7 +30,7 @@ return {
         "readline",        "regex",           "rego",            "requirements",
         "rst",             "ruby",            "rust",            "scala",
         "sql",             "ssh_config",      "swift",           "terraform",
-        "tmux",            "toml",            "tsx",             "typescript",
+        "toml",            "tsx",             "typescript",
         "udev",            "vim",             "vimdoc",          "xml",
         "xresources",      "yaml",            "zig",
       })

@@ -98,3 +98,7 @@
 	main = "!__git_main() { git checkout main && git pull --prune; }; __git_main"
 
 # vi:ft=gitconfig:ts=8:sw=8:noet
+[safe]
+[user]
+	email = patrick.deyoreo@proton.me
+	name = Patrick DeYoreo
