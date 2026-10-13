@@ -356,6 +356,7 @@ git -C "${repo_path}" ls-tree --name-only -z HEAD:scripts |
 DRY_RUN=$1 src_dir=$2 dst_dir=$3
 shift 3
 for filename; do
+  case "${filename}" in mcphub-launch.sh) continue ;; esac
   dst_link "${src_dir}/${filename}" "${dst_dir}/${filename}"
 done
 ' -- "${dry_run}" "$(relpath "${repo_path}/scripts" "${local_bin}")" "${local_bin}" || :
@@ -372,7 +373,9 @@ case "$(uname -s)" in Darwin)
 dry_run=$1 src_dir=$2 dst_dir=$3 home=$4
 shift 4
 for filename; do
+  case "${filename}" in *mcphub*) continue ;; esac
   src="${src_dir}/${filename}"
+  test -f "${src}" || continue
   dst="${dst_dir}/${filename}"
   if test -n "${dry_run}"; then
     printf "generate: %s (HOME -> %s)\n" "${dst}" "${home}"
@@ -388,14 +391,14 @@ done
 ' -- "${dry_run}" "${repo_path}/launchd/agents" "${launch_agents}" "${home_path}" || :
 
   # Activate now instead of at next login. Needs a GUI session (gui/$UID), so
-  # probe that domain and skip over SSH. mcphub is heavyweight and stays manual.
+  # probe that domain and skip over SSH. MCP is provisioned separately by setup-mcp.sh.
   launch_domain="gui/$(id -u)"
   if test -z "${dry_run}" && launchctl print "${launch_domain}" >/dev/null 2>&1; then
     for plist in "${launch_agents}"/com.patrickdeyoreo.*.plist; do
       test -e "${plist}" || continue
       label="${plist##*/}"
       label="${label%.plist}"
-      case "${label}" in *mcphub*) continue ;; esac
+      case "${label}" in *mcphub*|*mcp-shared*) continue ;; esac
       printf "activate: %s\n" "${label}"
       # Reload cleanly: bootout then bootstrap picks up plist edits and runs
       # RunAtLoad. (`kickstart -k` instead would force-restart into launchd's
@@ -430,10 +433,10 @@ case "$(uname -s)" in Linux)
       test -e "${unit}" || continue
       unit_name="${unit##*/}"
       case "${unit_name}" in *@.*) continue ;; esac # templated: needs an instance
+      case "${unit_name}" in mcphub.*|mcp-shared.*) continue ;; esac # setup-mcp.sh owns MCP activation
       printf "enable: %s\n" "${unit_name}"
       test -n "${dry_run}" && continue # -n previews without touching anything
       systemctl --user enable "${unit_name}" 2>/dev/null || :
-      case "${unit_name}" in mcphub.*) continue ;; esac # heavyweight: stays manual
       if test -n "${have_session}"; then
         systemctl --user enable --now "${unit_name}" 2>/dev/null || :
         systemctl --user try-restart "${unit_name}" 2>/dev/null || : # pick up edits
@@ -443,4 +446,5 @@ case "$(uname -s)" in Linux)
   ;;
 esac
 
+printf 'MCP: run %s/setup-mcp.sh after installing uv, Node.js and Homebrew and restoring ~/.env.\n' "${repo_path}"
 exit

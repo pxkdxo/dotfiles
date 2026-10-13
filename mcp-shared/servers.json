@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "AWS Documentation": {
+    "aws_docs": {
       "args": [
         "awslabs.aws-documentation-mcp-server@1.2.1"
       ],
@@ -8,9 +8,19 @@
       "env": {
         "AWS_DOCUMENTATION_PARTITION": "aws",
         "FASTMCP_LOG_LEVEL": "WARNING"
-      }
+      },
+      "inherit": [
+        "PATH",
+        "HOME",
+        "TMPDIR",
+        "AWS_PROFILE",
+        "AWS_DEFAULT_PROFILE",
+        "AWS_CONFIG_FILE",
+        "AWS_SHARED_CREDENTIALS_FILE",
+        "AWS_SDK_LOAD_CONFIG"
+      ]
     },
-    "Context7": {
+    "context7": {
       "env": {
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
@@ -18,9 +28,10 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       },
       "type": "http",
-      "url": "https://mcp.context7.com/mcp"
+      "url": "https://mcp.context7.com/mcp",
+      "args": []
     },
-    "Homebrew": {
+    "homebrew": {
       "args": [
         "mcp-server"
       ],
@@ -42,7 +53,8 @@
     },
     "browser_tools": {
       "args": [
-        "@agentdeskai/browser-tools-mcp@latest"
+        "-y",
+        "@agentdeskai/browser-tools-mcp@2.0.2"
       ],
       "command": "npx"
     },
@@ -54,7 +66,17 @@
       "env": {
         "AWS_REGION": "${AWS_REGION}",
         "FASTMCP_LOG_LEVEL": "WARNING"
-      }
+      },
+      "inherit": [
+        "PATH",
+        "HOME",
+        "TMPDIR",
+        "AWS_PROFILE",
+        "AWS_DEFAULT_PROFILE",
+        "AWS_CONFIG_FILE",
+        "AWS_SHARED_CREDENTIALS_FILE",
+        "AWS_SDK_LOAD_CONFIG"
+      ]
     },
     "dynamodb": {
       "args": [
@@ -64,7 +86,17 @@
       "env": {
         "AWS_REGION": "${AWS_REGION}",
         "FASTMCP_LOG_LEVEL": "WARNING"
-      }
+      },
+      "inherit": [
+        "PATH",
+        "HOME",
+        "TMPDIR",
+        "AWS_PROFILE",
+        "AWS_DEFAULT_PROFILE",
+        "AWS_CONFIG_FILE",
+        "AWS_SHARED_CREDENTIALS_FILE",
+        "AWS_SDK_LOAD_CONFIG"
+      ]
     },
     "fetch": {
       "args": [
@@ -75,11 +107,12 @@
     "filesystem": {
       "args": [
         "-y",
-        "@modelcontextprotocol/server-filesystem",
+        "@modelcontextprotocol/server-filesystem@2026.8.31",
         "${HOME}/Documents"
       ],
       "command": "npx",
-      "env": {}
+      "env": {},
+      "enabled": false
     },
     "github": {
       "env": {
@@ -89,26 +122,27 @@
         "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
+      "url": "https://api.githubcopilot.com/mcp/",
+      "args": []
     },
     "memory": {
       "args": [
         "-y",
-        "@modelcontextprotocol/server-memory"
+        "@modelcontextprotocol/server-memory@1.0.0"
       ],
       "command": "npx"
     },
     "puppeteer": {
       "args": [
         "-y",
-        "@modelcontextprotocol/server-puppeteer"
+        "@modelcontextprotocol/server-puppeteer@2025.5.12"
       ],
       "command": "npx"
     },
-    "sequentialthinking": {
+    "sequential_thinking": {
       "args": [
         "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
+        "@modelcontextprotocol/server-sequential-thinking@1.0.0"
       ],
       "command": "npx"
     },

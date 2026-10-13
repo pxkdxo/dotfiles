@@ -21,11 +21,9 @@ fzf's colors — and already-open shells catch up at the next prompt. `colorsche
 (Python 3.12+) manages scheme sources; inside Neovim, `F11` / `F12` / `F24` cycle them
 prev / next / shuffle.
 
-**AI-assisted editing stack.** [Avante.nvim](https://github.com/yetone/avante.nvim) drives
-agentic editing via `cursor-agent` (ACP); [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim)
-routes MCP tools into it — connecting to an externally-managed hub rather than spawning a
-duplicate, and replacing Avante's built-in file/bash tools with the hub's equivalents.
-Copilot handles inline completions.
+**AI-assisted editing stack.** Avante and CodeCompanion use our `mcp-client.nvim`
+and explicit ACP endpoints. A supervised `mcp-proxy` shares one backend instance
+per local server across Neovim, Codex and Cursor. Copilot handles inline completion.
 
 **Neovim works inside VSCode.** The full config loads inside vscode-neovim, with UI plugins
 gated off and motion/editing plugins active. No separate VSCode config.
@@ -44,7 +42,7 @@ systemd user units. Shell startup is POSIX-portable across both.
 
 | Tool | Config |
 |---|---|
-| **Neovim** | Lua · lazy.nvim · full LSP (mason) · blink.cmp · Treesitter · Avante + MCPHub + Copilot · which-key |
+| **Neovim** | Lua · lazy.nvim · full LSP (mason) · blink.cmp · Treesitter · Avante + mcp-client + Copilot · which-key |
 | **Zsh** | Oh-My-Zsh (personal fork) · fzf bindings · zoxide · fast-syntax-highlighting · autosuggestions |
 | **Tmux** | Vi keys · true-color · system clipboard · auto light/dark statusline · socket-activated user service |
 | **Starship** | Two-line prompt · git status · language versions · AWS context |
@@ -96,6 +94,12 @@ and registers services (systemd user units / launchd agents).
 > replace what's at their destination (including a real `~/.zshrc`), so
 > preview with `-n` first.
 
+For shared MCP, restore your private `~/.env`, install `uv`, Node.js/npm and
+Homebrew, then run `./setup-mcp.sh`. This installs locked Python dependencies,
+merges Codex/Cursor/Claude Code connections, and activates launchd on macOS or a systemd user
+service on Linux. See [MCP setup and verification](mcp-shared/README.md). The base
+installer intentionally performs no MCP downloads or credential setup.
+
 Already cloned without `--recurse-submodules`? Run
 `git submodule update --init --recursive`.
 
@@ -108,7 +112,7 @@ few; the rest enhance specific features.
 - **Recommended (full experience):** **Neovim**, a **Nerd Font** (configs use
   *SpaceMono Nerd Font*), **fzf**, **ripgrep**, **fd**, **bat**, **zoxide**, **vivid**,
   **Starship**, **tmux**.
-- **Neovim AI stack:** **node** / **npm** (MCPHub builds `mcp-hub`), **make** + a C
+- **Neovim AI stack:** **node** / **npm**, **uv** (shared MCP runtime), **make** + a C
   compiler (Avante), and `cursor-agent` for the ACP provider.
 - **Optional, per feature:** **eza** / **lsd** (dir previews) · **wl-clipboard** / **xsel** /
   **xclip** (clipboard) · **pass** + **gnupg** (password store) · **podman** (Docker

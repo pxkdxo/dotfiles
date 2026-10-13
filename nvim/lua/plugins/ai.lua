@@ -1,36 +1,4 @@
-return {
-  {
-    "ravitemer/mcphub.nvim",
-    cond = vim.g.vscode == nil,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    -- Only run the global npm install when npm is actually available.
-    -- The plugin itself works without npm at runtime when `server_url` points
-    -- at an externally-managed mcp-hub (e.g. systemd/launchd-supervised).
-    build = vim.fn.executable("npm") == 1 and "npm install -g mcp-hub@latest" or nil,
-    opts = function()
-      return {
-        -- Connect to the launchd-managed mcp-hub at ~/Library/LaunchAgents/com.patrickdeyoreo.mcphub.plist
-        -- instead of spawning a duplicate on a different port. Falls back to
-        -- the plugin spawning its own hub if this URL is unreachable.
-        server_url = "http://localhost:37373",
-        native_servers = {
-          orchestrator = require("servers.orchestrator"),
-        },
-        extensions = {
-          avante = {
-            make_slash_commands = true, -- make /slash commands from MCP server prompts
-            make_tools = true,
-            make_vars = true,
-          },
-        },
-      }
-    end,
-    config = function(_, opts)
-      require("mcphub").setup(opts)
-    end,
-  },
+local specs = {
   {
     "yetone/avante.nvim",
     cond = vim.g.vscode == nil,
@@ -108,29 +76,6 @@ return {
           prompt = "Please refactor this code following best practices.",
         },
       },
-      system_prompt = function()
-        local hub = require("mcphub").get_hub_instance()
-        return hub and hub:get_active_servers_prompt() or ""
-      end,
-      -- Using function prevents requiring mcphub before it's loaded
-      custom_tools = function()
-        return {
-          require("mcphub.extensions.avante").mcp_tool(),
-        }
-      end,
-      -- mcphub provides equivalent tools
-      disabled_tools = {
-        "list_files", -- Built-in file operations
-        "search_files",
-        "read_file",
-        "create_file",
-        "rename_file",
-        "delete_file",
-        "create_dir",
-        "rename_dir",
-        "delete_dir",
-        "bash", -- Built-in terminal access
-      },
       spinner = {
         generating = {
           "·",
@@ -171,6 +116,7 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
+      { "ColinKennedy/mega.cmdparse", dependencies = { "ColinKennedy/mega.logging" } }, -- required: backs the :Avante command
       --- The below dependencies are optional,
       -- "nvim-mini/mini.pick", -- for file_selector provider mini.pick
       -- "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
@@ -283,7 +229,6 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "ravitemer/mcphub.nvim",
       "ravitemer/codecompanion-history.nvim",
       "saghen/blink.cmp", -- chat-buffer completion (self-registers a blink source)
     },
@@ -358,22 +303,9 @@ return {
             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion/chat_history.json",
           },
         },
-        mcphub = {
-          callback = "mcphub.extensions.codecompanion",
-          opts = {
-            -- MCP Tools
-            make_tools = true,
-            show_server_tools_in_chat = true,
-            add_mcp_prefix_to_tool_names = false,
-            show_result_in_chat = true,
-            -- MCP Resources
-            make_vars = false, -- Broken, tries to access 'variables'
-            -- MCP Prompts
-            make_slash_commands = true,
-          },
-        },
       },
     },
   },
 }
 
+return require("servers.mcp_shared").transform(specs)

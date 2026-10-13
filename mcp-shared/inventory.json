@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "probe": {
+      "command": "${POC_PYTHON}",
+      "args": [
+        "${POC_ROOT}/probe_server.py"
+      ],
+      "env": {
+        "PROBE_SECRET": "${POC_SECRET}"
+      }
+    },
+    "time": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-time@2026.8.18"
+      ],
+      "env": {}
+    }
+  }
+}

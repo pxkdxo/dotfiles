@@ -13,6 +13,7 @@
 !/README.md
 
 !/*-dotfiles.sh
+!/setup-mcp.sh
 
 !/scripts/*
 
@@ -75,7 +76,19 @@
 !/launchd/agents/*.plist
 !/launchd/*.sh
 
-!/mcphub/servers.json
+!/mcp-shared/*.lua
+!/mcp-shared/*.py
+!/mcp-shared/*.json
+!/mcp-shared/*.txt
+!/mcp-shared/*.lock
+!/mcp-shared/*.md
+!/mcp-shared/client/lua/**
+!/mcp-shared/client/LICENSE
+/mcp-shared/.venv/
+/mcp-shared/__pycache__/
+/mcp-shared/connections.json
+/mcp-shared/proxy.json
+/systemd/user/mcp-shared.service
 
 !/mpd/mpd.conf
 

@@ -21,7 +21,7 @@ nvim/
 │   │   ├── init.lua             # Utils module aggregator (exposes colors)
 │   │   └── colors.lua           # Colorscheme rotation engine (Deque + Playlist data structures)
 │   └── plugins/                 # All plugin specs (auto-imported by lazy.nvim)
-│       ├── ai.lua               # AI assistants: Avante, Copilot, MCPHub, CodeCompanion
+│       ├── ai.lua               # AI assistants: Avante, Copilot, mcp-client.nvim, CodeCompanion
 │       ├── colorschemes.lua     # Colorscheme plugins (cyberdream, rose-pine, nightfox, etc.)
 │       ├── completion.lua       # blink.cmp setup with multiple sources and custom mappings
 │       ├── copypaste.lua        # yanky.nvim — persistent yank ring with sqlite storage
@@ -132,10 +132,10 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 
 ### AI Stack (`lua/plugins/ai.lua`)
 - **Primary chat/agent + fast-apply**: [Avante.nvim](https://github.com/yetone/avante.nvim) — agentic mode, `provider = "claude-code"` (Claude Code via the `@agentclientprotocol/claude-agent-acp` ACP binary; `cursor-agent` ACP is configured as an alternative). The Cursor-like diff/apply experience.
-- **MCP**: [MCPHub.nvim](https://github.com/ravitemer/mcphub.nvim) — provides MCP tool access to both Avante and CodeCompanion, disables Avante's built-in file/bash tools in favor of MCP equivalents.
+- **MCP**: `mcp-client.nvim` connects to the shared `mcp-proxy` on named loopback endpoints. `lua/servers/mcp_shared.lua` supplies Avante/CodeCompanion adapters and explicit ACP connections; the native orchestrator stays editor-local. The canonical inventory is `~/.config/mcp-shared/servers.json` (tracked in dotfiles).
 - **Inline ("Cursor Tab")**: `zbirenbaum/copilot.lua` — inline ghost-text suggestions on `InsertEnter`, auto-triggered as you type (`suggestion.auto_trigger = true`). Blink's menu and Copilot's ghost text can both be visible at once (`hide_during_completion` only gates a native-popup-menu edge case, not blink, which renders its own floating window). Insert-mode keys, defined in `completion.lua`'s blink keymap chains: `<Tab>` accepts the suggestion once blink's menu is closed (blink wins while open); `<S-Tab>` accepts a pending NES edit once blink's menu is closed (standard `select_prev` cycling while open) — not `<M-Tab>`, since most window managers intercept Alt-Tab before it reaches the terminal; `<C-Tab>` dismisses blink/the suggestion/any pending NES and inserts a literal tab, bypassing all of it. Avante's own experimental `auto_suggestions` is intentionally **off** (it can't reuse the ACP provider and `copilot`-as-provider risks account suspension — see the comment in `ai.lua`).
 - **Next Edit Suggestions (NES)**: `copilot.lua` `nes` + the `copilotlsp-nvim/copilot-lsp` backend — Copilot predicts your *next edit location* (Cursor-Tab's signature feature). `auto_trigger = true`; in normal mode `<Tab>` jumps to/accepts the predicted edit (passthrough-safe — falls back to native `<Tab>`/`<C-i>` jumplist when no edit is pending).
-- **Secondary chat (complementary)**: `olimorris/codecompanion.nvim` — **enabled** and lazy-loaded (`cmd` + `<leader>i…` keys). Modular chat buffer / prompt library / slash-commands, with `codecompanion-history.nvim` + the mcphub extension. Chat/cmd completion via blink (`completion_provider = "blink"`); self-registers its blink source. Avante and CodeCompanion coexist by design (Avante = diff-first edits, CodeCompanion = modular chat); they do not share keymaps.
+- **Secondary chat (complementary)**: `olimorris/codecompanion.nvim` — **enabled** and lazy-loaded (`cmd` + `<leader>i…` keys). Modular chat buffer / prompt library / slash-commands, with `codecompanion-history.nvim` + the mcp-client extension. Chat/cmd completion via blink (`completion_provider = "blink"`); self-registers its blink source. Avante and CodeCompanion coexist by design (Avante = diff-first edits, CodeCompanion = modular chat); they do not share keymaps.
 - **Disabled**: Windsurf (`cond = false`).
 - **Plugin manager note**: stayed on **lazy.nvim** — `rocks.nvim` was evaluated and rejected for this config (no first-class `cond` gating, function-valued opts can't live in `rocks.toml`, stale third-party Avante rockspec, treesitter friction).
 
@@ -178,7 +178,7 @@ These plugins exist in the config but are set to `cond = false`:
 ## External Dependencies
 
 These tools must be available on `$PATH` for full functionality:
-- `node` / `npm` — required for MCPHub, Copilot, markdown-preview
+- `node` / `npm` — required for Copilot, Claude ACP, markdown-preview
 - `yarn` — required for markdown-preview build
 - `rg` (ripgrep) — used as `grepprg` and by fzf-lua
 - `fzf` — used by fzf-lua (also supports tmux popup via `--tmux`)

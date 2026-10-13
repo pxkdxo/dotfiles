@@ -126,7 +126,7 @@ nvim/
   lua/plugins/             one file per concern (lsp, completion, dap, git, ui, ai, …)
   lua/utils/               reusable helpers (colors.lua = the playlist/deque)
   lua/core/                shared utilities
-  lua/servers/             MCP server modules registered with mcphub
+  lua/servers/             native MCP server modules and shared client wiring
 ```
 
 Plugins are split into single-concern files under `lua/plugins/` (LSP, DAP, Treesitter,
@@ -138,23 +138,13 @@ set lives in those specs and the `lazy.nvim` lockfile.
 
 ## AI integration
 
-AI-assisted editing is configured around `mcphub.nvim`, `avante.nvim`, and
-`codecompanion.nvim`, with a deliberate choice about how the MCP hub is run:
-
-- **Connects to an externally-supervised hub.** `mcphub.nvim` is pointed at
-  `http://localhost:37373`, the mcp-hub instance managed by launchd (macOS) or systemd
-  (Linux) at the repo level — rather than spawning a second hub inside the editor. If
-  that URL is unreachable, the plugin falls back to launching its own. One hub, shared
-  across Claude Code, Cursor, and Neovim.
-- **Tool de-confliction.** Avante's built-in file and shell tools (`read_file`,
-  `create_file`, `bash`, etc.) are disabled because the MCP hub provides equivalents —
-  avoiding two implementations of the same capability.
-- **Provider wiring.** Credentials are read from the environment (`os.getenv`), never
-  written into the config; see secret handling below.
-
-> An example orchestrator native server under `lua/servers/` is generated tooling
-> rather than hand-written, wired in only as an optional MCP server. The integration
-> config is the local part.
+Avante and CodeCompanion use the vendored `mcp-client.nvim` snapshot and explicit
+ACP HTTP endpoints from `~/.config/mcp-shared/connections.json`. The shared proxy
+runs under launchd or systemd; the editor never spawns duplicate backends.
+Avante retains its built-in file and shell tools. Native orchestrator tools remain
+inside the editor. Run `~/.local/etc/setup-mcp.sh` to provision the service; see
+[portable MCP setup](../mcp-shared/README.md). If MCP is not installed or credentials
+are unavailable, the editor loads with MCP integration disabled and a warning.
 
 ---
 
