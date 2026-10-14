@@ -1,12 +1,10 @@
 # Shared MCP setup
 
-Dotfiles contains the canonical `servers.json`, Python supervisor and locked dependencies,
-and a vendored snapshot of our `pxkdxo/mcp-client.nvim` Lua client (including the reviewed
-adapter/session fixes). No checkout under Documents or private GitHub access is required.
-The client snapshot comes from `https://github.com/pxkdxo/mcp-client.nvim` at base
-commit `a4263652e55d51dd9fde6c68c0abe76a50922a95`, plus the adapter, session and native-bridge fixes
-validated during this migration. Update the vendored Lua source deliberately; it is not downloaded
-from an uncommitted branch on installation.
+Dotfiles contains the canonical `servers.json`, Python supervisor and locked dependencies.
+Neovim's Lua client is the public `pxkdxo/mcp-client.nvim` plugin, installed by lazy.nvim
+from `nvim/lua/servers/mcp_shared.lua`. The installed commit is pinned in the local
+`nvim/lazy-lock.json` (not tracked here), so a new machine installs the current `main`;
+update an existing one with `:Lazy update mcp-client.nvim`.
 
 ## New machine
 

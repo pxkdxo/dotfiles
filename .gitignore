@@ -82,8 +82,6 @@
 !/mcp-shared/*.txt
 !/mcp-shared/*.lock
 !/mcp-shared/*.md
-!/mcp-shared/client/lua/**
-!/mcp-shared/client/LICENSE
 /mcp-shared/.venv/
 /mcp-shared/__pycache__/
 /mcp-shared/connections.json

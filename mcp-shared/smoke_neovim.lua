@@ -1,8 +1,8 @@
-local plugin = vim.fn.expand("~/.config/mcp-shared/client")
+local plugin = vim.fn.stdpath("data") .. "/lazy/mcp-client.nvim"
 vim.opt.runtimepath:append(plugin)
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/lazy/plenary.nvim")
 local client = require("mcp-client.client")
-assert(debug.getinfo(client.connect, "S").source:find("mcp%-shared/client/"), "client loaded outside dotfiles")
+assert(debug.getinfo(client.connect, "S").source:find("/lazy/mcp%-client%.nvim/"), "client not loaded from lazy.nvim install")
 local connected
 client.connect({ url = "http://127.0.0.1:37373/servers/time/mcp", name = "time" }, {
   on_connect = function(c, err) connected = { c = c, err = err } end,

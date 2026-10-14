@@ -1,7 +1,6 @@
 -- Shared MCP wiring for the existing Neovim AI plugins.
 local M = {}
 local root = vim.fn.stdpath("config") .. "/../mcp-shared"
-local client_dir = root .. "/client"
 local resolved
 
 function M.connections()
@@ -51,8 +50,7 @@ function M.transform(specs)
     return specs
   end
   local result = {{
-    dir = client_dir,
-    name = "mcp-client.nvim",
+    "pxkdxo/mcp-client.nvim",
     lazy = false,
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = function()
