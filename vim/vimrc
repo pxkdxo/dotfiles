@@ -64,7 +64,7 @@ Plug 'tpope/vim-repeat'
 Plug 'mhinz/vim-startify'
 Plug 'hashivim/vim-terraform'
 Plug 'pangloss/vim-javascript'
-Plug 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim', has('python3') ? {} : { 'on': [] }
 Plug 'github/copilot.vim'
 Plug 'haishanh/night-owl.vim'
 Plug 'macguirerintoul/night_owl_light.vim'
@@ -680,8 +680,8 @@ let g:airline_themes = [
       \ 'papercolor',
       \ 'soda'
       \ ]
-let g:airline_theme = g:airline_themes[1]
-execute 'AirlineTheme' g:airline_theme
+let g:airline_theme = g:airline_themes[0]
+"execute 'AirlineTheme' g:airline_theme
 "
 "
 " Define a function to rotate the colorscheme

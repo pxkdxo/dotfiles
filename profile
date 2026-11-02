@@ -191,7 +191,13 @@ path_insert() {
 }
 
 # Push this to the front of PATH
-path_push ~/.local/bin
+if test -d ~/.local/bin; then
+  path_push ~/.local/bin
+fi
+if test -n "${HOMEBREW_REPOSITORY:-}"; then
+  path_push "${HOMEBREW_REPOSITORY}/sbin"
+  path_push "${HOMEBREW_REPOSITORY}/bin"
+fi
 
 # Homebrew init lives in profile.d/10-homebrew.sh (covers brew-on-PATH too).
 
@@ -203,9 +209,12 @@ for profile in "${XDG_CONFIG_HOME:-${HOME}/.config}/profile.d"/*.sh; do
 done
 
 # Push this stuff back to the front if it wasn't already there
-path_push ~/.local/bin
-
-path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/sbin"
-path_push "${XDG_DATA_HOME:-${HOME}/.local/share}/homebrew/bin"
+if test -d ~/.local/bin; then
+  path_push ~/.local/bin
+fi
+if test -n "${HOMEBREW_REPOSITORY:-}"; then
+  path_push "${HOMEBREW_REPOSITORY}/sbin"
+  path_push "${HOMEBREW_REPOSITORY}/bin"
+fi
 
 # vi:ft=sh

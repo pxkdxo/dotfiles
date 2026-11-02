@@ -2,8 +2,8 @@
 # editor.sh: configure the EDITOR environment variable
 # see environ(7) and select-editor(1)
 
-# Try update-alternatives first (Debian/Ubuntu)
-if command -v update-alternatives > /dev/null && EDITOR="$(
+# Try update-alternatives first (Debian/Ubuntu), then fall back.
+if command -v update-alternatives >/dev/null && EDITOR="$(
   command -v -- "$(
     update-alternatives --query editor | sed -E -n '
       # Find the line starting with "Value:" and extract the value it contains
