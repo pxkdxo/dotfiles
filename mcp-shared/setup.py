@@ -108,7 +108,7 @@ def install(home, system, prepare_only=False):
     args = [str(ROOT/'.venv/bin/python'), str(ROOT/'service.py'), '--inventory', str(inventory), '--state-dir', str(home/'.local/state/mcp-shared'), '--env-file', str(envfile), '--port', '37373']
     if system == 'Darwin':
         (home/'Library/Logs').mkdir(parents=True, exist_ok=True)
-        plist = {'Label':LABEL, 'ProgramArguments':args, 'RunAtLoad':True, 'KeepAlive':False, 'ExitTimeOut':45, 'WorkingDirectory':str(home), 'EnvironmentVariables':{'PATH':service_path(home)}, 'StandardOutPath':str(home/'Library/Logs/mcp-shared.out.log'), 'StandardErrorPath':str(home/'Library/Logs/mcp-shared.err.log'), 'ProcessType':'Background'}
+        plist = {'Label':LABEL, 'ProgramArguments':args, 'RunAtLoad':True, 'KeepAlive':{'SuccessfulExit':False}, 'ThrottleInterval':30, 'ExitTimeOut':45, 'WorkingDirectory':str(home), 'EnvironmentVariables':{'PATH':service_path(home)}, 'StandardOutPath':str(home/'Library/Logs/mcp-shared.out.log'), 'StandardErrorPath':str(home/'Library/Logs/mcp-shared.err.log'), 'ProcessType':'Background'}
         target = home/'Library/LaunchAgents'/f'{LABEL}.plist'
         write(target, plistlib.dumps(plist))
         if not prepare_only:
@@ -134,7 +134,8 @@ Description=Shared MCP proxy and supervised backends
 Type=simple
 ExecStart="%h/.local/etc/mcp-shared/.venv/bin/python" "%h/.local/etc/mcp-shared/service.py" --inventory "%h/.local/etc/mcp-shared/servers.json" --state-dir "%h/.local/state/mcp-shared" --env-file "%h/.env" --port 37373
 WorkingDirectory=%h
-Restart=no
+Restart=on-failure
+RestartSec=30
 KillMode=control-group
 TimeoutStopSec=45
 Environment="PATH=REPLACE_PATH"

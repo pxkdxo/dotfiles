@@ -86,7 +86,7 @@ def cleanup(process, known):
         for pid,identity in known.items():
             current=table.get(pid)
             if current and current[1:]==identity[1:]:
-                with suppress(ProcessLookupError): os.killpg(current[1],sig)
+                with suppress(ProcessLookupError,PermissionError): os.killpg(current[1],sig)
         deadline=time.monotonic()+(1 if sig==signal.SIGTERM else 3)
         while time.monotonic()<deadline:
             table=process_table()
@@ -95,6 +95,13 @@ def cleanup(process, known):
             if not survivors: return
             time.sleep(.1)
     raise RuntimeError("Owned child processes survived cleanup")
+
+def notify(message):
+    command={"darwin":["osascript","-e",f'display notification "{message}" with title "mcp-shared"'],
+             "linux":["notify-send","mcp-shared",message]}.get(sys.platform)
+    if command:
+        with suppress(OSError,subprocess.SubprocessError):
+            subprocess.run(command,timeout=5,capture_output=True)
 
 async def healthy(url, timeout):
     async def check():
@@ -175,6 +182,7 @@ async def run(args, env):
                 state["state"]="failed"
                 private_json(status_path,state)
                 LOG.error("Restart budget exhausted; awaiting manual service restart")
+                notify("MCP proxy stopped: restart budget exhausted. Restart the mcp-shared service.")
                 await stop.wait()
                 return
             LOG.warning("restarting shared proxy; interrupted calls are not replayed")
@@ -189,8 +197,8 @@ def main():
     parser.add_argument("--env-file",type=Path)
     parser.add_argument("--port",type=int,default=37373)
     parser.add_argument("--interval",type=float,default=60)
-    parser.add_argument("--timeout",type=float,default=8)
-    parser.add_argument("--failures",type=int,default=2)
+    parser.add_argument("--timeout",type=float,default=30)
+    parser.add_argument("--failures",type=int,default=3)
     parser.add_argument("--max-restarts",type=int,default=3)
     parser.add_argument("--startup-timeout",type=float,default=90)
     args=parser.parse_args()
@@ -209,5 +217,6 @@ def main():
         asyncio.run(run(args,env))
     except (ValueError,KeyError,OSError,RuntimeError) as error:
         LOG.error("%s",str(error) if isinstance(error,(ValueError,RuntimeError)) else type(error).__name__)
+        notify("MCP service exited. Restart the mcp-shared service.")
         sys.exit(1)
 if __name__=="__main__": main()

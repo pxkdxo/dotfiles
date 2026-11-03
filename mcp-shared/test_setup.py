@@ -51,12 +51,12 @@ class SetupTests(unittest.TestCase):
                     self.assertNotIn('Documents/Code',p.read_text())
                 if system=='Darwin':
                     plist=plistlib.loads((home/'Library/LaunchAgents'/f'{setup.LABEL}.plist').read_bytes())
-                    self.assertFalse(plist['KeepAlive'])
+                    self.assertEqual(plist['KeepAlive'],{'SuccessfulExit':False})
                     self.assertEqual(plist['ProgramArguments'][0],str(root/'.venv/bin/python'))
                 else:
                     unit=(home/'.config/systemd/user/mcp-shared.service').read_text()
                     self.assertIn('KillMode=control-group',unit)
-                    self.assertIn('Restart=no',unit)
+                    self.assertIn('Restart=on-failure',unit)
                     self.assertIn('"%h/.local/etc/mcp-shared/.venv/bin/python"',unit)
                     self.assertNotIn('/Users/',unit)
 

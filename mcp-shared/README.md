@@ -45,8 +45,11 @@ logs in `~/Library/Logs/mcp-shared.err.log`. Setup waits through launchd's async
 Linux: `systemctl --user status mcp-shared.service` and
 `journalctl --user -u mcp-shared.service`. The generated unit enables at user login, uses
 `KillMode=control-group` to clean up all descendants, and gives shutdown 45 seconds.
-`Restart=no` leaves restart budgeting to the supervisor, matching launchd's `KeepAlive=false`.
-A failed supervisor/budget needs manual `systemctl --user restart mcp-shared.service`.
+`Restart=on-failure` relaunches the supervisor only if it crashes, matching launchd's
+`KeepAlive={SuccessfulExit=false}`. Budget exhaustion keeps the supervisor alive and idle so a relaunch
+cannot reset the budget.
+A failed supervisor/budget raises a desktop notification and needs manual
+`systemctl --user restart mcp-shared.service` (macOS: `launchctl kickstart -k gui/$(id -u)/com.patrickdeyoreo.mcp-shared`).
 The user bus must be available during setup. To run after logout, deliberately enable lingering
 with `loginctl enable-linger "$USER"` on the Linux machine; setup does not change that policy.
 
