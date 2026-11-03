@@ -63,8 +63,13 @@ function M.transform(specs)
     config = function(_, opts)
       require("mcp-client").setup(opts)
       vim.api.nvim_create_autocmd("User", {
-        pattern = { "MCPAttach", "MCPDetach" },
-        callback = refresh_adapters,
+        pattern = { "MCPAttach", "MCPDetach", "MCPNotify" },
+        callback = function(ev)
+          if ev.match == "MCPNotify" and not (ev.data.method or ""):match("list_changed$") then
+            return
+          end
+          refresh_adapters()
+        end,
       })
     end,
   }}

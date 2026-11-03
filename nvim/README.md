@@ -138,13 +138,15 @@ set lives in those specs and the `lazy.nvim` lockfile.
 
 ## AI integration
 
-Avante and CodeCompanion use the vendored `mcp-client.nvim` snapshot and explicit
-ACP HTTP endpoints from `~/.config/mcp-shared/connections.json`. The shared proxy
+Avante and CodeCompanion use [`mcp-client.nvim`](https://github.com/pxkdxo/mcp-client.nvim)
+and explicit ACP HTTP endpoints from `~/.config/mcp-shared/connections.json`. The shared proxy
 runs under launchd or systemd; the editor never spawns duplicate backends.
 Avante retains its built-in file and shell tools. Native orchestrator tools remain
 inside the editor. Run `~/.local/etc/setup-mcp.sh` to provision the service; see
 [portable MCP setup](../mcp-shared/README.md). If MCP is not installed or credentials
 are unavailable, the editor loads with MCP integration disabled and a warning.
+`:MCPStatus` shows each connection's state and negotiated protocol; `:MCPReconnect`
+reconnects after restarting the proxy.
 
 ---
 
