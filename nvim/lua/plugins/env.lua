@@ -13,6 +13,14 @@ return {
       { '<leader>eS', '<cmd>EcologSelect<cr>', desc = 'Switch env file' },
       { '<leader>es', '<cmd>EcologShelterToggle<cr>', desc = 'Shelter toggle' },
     },
+    config = function(_, opts)
+      require('ecolog').setup(opts)
+      for _, au in ipairs(vim.api.nvim_get_autocmds({ event = 'VimLeavePre' })) do
+        if au.desc == 'Ecolog cleanup on exit' then
+          vim.api.nvim_del_autocmd(au.id)
+        end
+      end
+    end,
     opts = {
       preferred_environment = 'local',
       types = true,

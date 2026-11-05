@@ -9,17 +9,16 @@ if test -t 0; then
   export GPG_TTY
 fi
 
-# Fix for passphrase prompt on the correct tty
+# Fix for passphrase prompt on the correct tty (backgrounded, off the startup path)
 if command -v gpg-connect-agent > /dev/null; then
-  gpg-connect-agent updatestartuptty /bye > /dev/null 2>&1
+  (gpg-connect-agent updatestartuptty /bye > /dev/null 2>&1 &)
 fi
 
 # Configure SSH to use gpg-agent (if supported). Read enable-ssh-support
-# directly from gpg-agent.conf instead of `gpgconf --list-options
-# gpg-agent`, which round-trips through gpg-agent's component-query path
-# and costs ~600ms here for a value the config file already states.
+# directly from gpg-agent.conf instead of `gpgconf --list-options gpg-agent`,
+# which round-trips through gpg-agent's component-query path.
 if command -v gpgconf > /dev/null; then
-  gpg_agent_conf="$(gpgconf --list-dirs 2> /dev/null | sed -n 's/^homedir://p')/gpg-agent.conf"
+  gpg_agent_conf="${GNUPGHOME:-${HOME}/.gnupg}/gpg-agent.conf"
 
   if test -r "${gpg_agent_conf}" \
     && grep -Eq '^[[:space:]]*enable-ssh-support([[:space:]]|$)' "${gpg_agent_conf}"; then

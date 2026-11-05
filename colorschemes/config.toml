@@ -32,23 +32,25 @@ directory = 'collections'
 [[collections.spec]]
 name = 'iTerm2-Color-Schemes'
 source = 'iTerm2-Color-Schemes'
-filter = { exclude = ['backgrounds', 'gh-pages', 'screenshots', 'tools'] }
+filter = { exclude = ['backgrounds', 'gh-pages', 'screenshots', 'tools', '*.md'] }
 
 [[collections.spec]]
 name = 'cyberdream.nvim:extras'
 source = 'cyberdream.nvim'
-filter = { paths = ['extras'] }
+filter = { paths = ['extras'], exclude = ['*.md'] }
 
 [[collections.spec]]
 name = 'squirrelsong:themes'
 source = 'squirrelsong'
-filter = { paths = ['themes'] }
+filter = { paths = ['themes'], exclude = ['*.md'] }
 
 [[collections.spec]]
 name = 'tokyonight.nvim:extras'
 source = 'tokyonight.nvim'
-filter = { paths = ['extras'] }
+filter = { paths = ['extras'], filetype = ["d", "f"], exclude = ['*.md'] }
 
 [[collections.spec]]
 name = "vivid-themes"
 source = "vivid-themes"
+app = "vivid"
+filter = { filetype = "f", exclude = ["*.md"] }

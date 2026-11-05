@@ -126,12 +126,21 @@ _term_bg_apply() {
 term-bg-sync() {
   emulate -L zsh
   local bg
-  (( $+functions[detect_term_bg] )) && bg="$(detect_term_bg)"
+  (( $+functions[detect_term_bg] )) && detect_term_bg && bg=$REPLY
   if [[ -z ${bg} ]]; then
     _theme_variant_guess
     bg="${THEME_VARIANT:-dark}"
   fi
   _term_bg_apply "${bg}"
+}
+
+# Replay keys typed while detect_term_bg waited on the terminal.
+typeset -g _TERM_BG_TYPEAHEAD=
+_term_bg_replay() {
+  [[ -n $_TERM_BG_TYPEAHEAD ]] || return
+  local keys=$_TERM_BG_TYPEAHEAD
+  _TERM_BG_TYPEAHEAD=
+  zle -U -- "$keys"
 }
 
 # Follow set-term-theme live: it writes the active variant to this file; check
@@ -185,11 +194,8 @@ fi
 
 ZSH_THEME=""
 DISABLE_AUTO_UPDATE="true"
-
-# export FAST_THEME="q-jmnemonic"
-export FAST_THEME="sv-plant"
-# export FAST_THEME="zdharma"
-# export FAST_THEME="base16"
+# compinit -u: skip the per-start compaudit directory check.
+ZSH_DISABLE_COMPFIX="true"
 
 # VIVID_THEME is selected dynamically near the top of this file from the
 # terminal's background color. Uncomment one of these to pin it instead.
@@ -265,7 +271,6 @@ plugins=(
   keybindings
   globalias-alt
   clipboard-keybindings
-  fast-syntax-highlighting
   zsh-interactive-cd
   zsh-autosuggestions
   # zsh-autocomplete
@@ -290,13 +295,9 @@ if test -v ZSH; then
     source "${ZSH}/oh-my-zsh.sh"
   fi
 
-  # Set completion keys
+  # Tab: fzf directory picker after `cd`, expand-or-complete everywhere else
   #
-  bindkey '^I' expand-or-complete
-
-  # fzf interactive cd
-  #
-  bindkey '^@' zic-completion
+  bindkey '^I' zic-completion
 
   # zoxide interactive jump
   #
@@ -323,6 +324,11 @@ if test -v ZSH; then
   # bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
 
 fi
+
+# Registered after oh-my-zsh: its key-bindings.zsh re-registers zle-line-init
+# and would drop an earlier hook.
+autoload -Uz add-zle-hook-widget
+add-zle-hook-widget line-init _term_bg_replay
 
 # Mark 'run-help' for autoloading (-X: load THIS function from fpath on first call)
 #
@@ -440,6 +446,17 @@ if test -z "${FZF_CTRL_R_OPTS}"; then
     '--bind='\''ctrl-x:become%zsh -c $@ -- {2..}%'\'''
     '--bind='\''ctrl-o:execute-silent(printf %s {2..} | { pbcopy || wl-copy -n || xclip -sel clipboard -in || xsel --clipboard --input -n; })'\'''
   )
+fi
+
+# Syntax highlighting (must come after all other widget-wrapping plugins)
+#
+if (( $+commands[zsh-patina] )); then
+  eval "$(zsh-patina activate)"
+
+  # autonamedirs names any variable holding $PWD, so %~ in the title would print
+  # ~REPLY or ~_ZSH_PATINA_ENCODED_PWD: un-name both before the title is set.
+  _unname_patina_pwd() { unhash -d REPLY _ZSH_PATINA_ENCODED_PWD 2> /dev/null; return 0 }
+  precmd_functions=(_unname_patina_pwd "${(@)precmd_functions:#_unname_patina_pwd}")
 fi
 
 # Load ~/.env

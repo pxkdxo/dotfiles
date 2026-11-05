@@ -142,7 +142,7 @@ Most plugins use `cond = vim.g.vscode == nil` to disable themselves inside VSCod
 ### LSP (`lua/plugins/lsp.lua`)
 - Uses `mason.nvim` + `mason-lspconfig.nvim` with `automatic_enable = true`
 - LSP keymaps set via a single `LspAttach` autocmd (not per-server)
-- `nvim-navic` breadcrumbs auto-attach when server supports `documentSymbol`
+- `nvim-navic` breadcrumbs auto-attach when server supports `documentSymbol`; `lsp.preference` (`ty` over `basedpyright`) picks the server when several attach to one buffer
 - `lazydev.nvim` provides Neovim Lua API completions (scoped to `ft = "lua"`)
 - LSP client capabilities are injected via `vim.lsp.config("*", { capabilities = require("blink.cmp").get_lsp_capabilities() })`; `nvim-lspconfig` depends on `blink.cmp` so it loads before this runs
 

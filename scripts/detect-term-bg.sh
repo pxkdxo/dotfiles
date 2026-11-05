@@ -3,7 +3,10 @@
 # "dark" by querying its background color with OSC 11.
 #
 # Dual purpose:
-#   * SOURCE it  -> defines detect_term_bg(); no other side effects.
+#   * SOURCE it  -> defines detect_term_bg(), which sets REPLY to "light" or
+#     "dark" (returns 1 when undetectable). Call it in-process, not in $(...).
+#     In zsh, keys typed while it waits are left in $_TERM_BG_TYPEAHEAD for the
+#     caller to replay.
 #   * EXECUTE it -> prints the verdict. Add -q/--quiet for just "light"/"dark".
 
 detect_term_bg() {
@@ -18,10 +21,10 @@ detect_term_bg() {
     '' | dumb) return 1 ;;
   esac
   {
-    : < /dev/tty
+    true < /dev/tty
   } 2> /dev/null || return 1
 
-  local saved reply rest comp rgb r g b lightness bel esc c oldifs
+  local saved reply typed rest comp rgb r g b lightness bel esc c oldifs
   saved="$(stty -g < /dev/tty 2> /dev/null)" || return 1
 
   bel="$(printf '\007')" # BEL: the terminator we send, and the usual reply one
@@ -34,18 +37,22 @@ detect_term_bg() {
   # works inside them with no passthrough wrapping.
   printf '\033]11;?\007' > /dev/tty
 
-  # Read the reply and stop the instant its terminator arrives, instead of
-  # waiting out the full inter-byte timeout after every answer (a flat ~200ms
-  # tax on each fresh shell). zsh -- the daily-driver shell this is sourced into
-  # -- reads one key at a time with a per-read timeout; other shells fall back to
-  # a single dd that stops on the post-reply EOF.
+  # Read until the OSC 11 reply terminator arrives, so a prompt isn't delayed
+  # waiting out the inter-byte timeout. Anything read ahead of the reply is the
+  # user's typeahead: stash it for replay. zsh reads one key at a time with a
+  # per-read timeout; other shells fall back to a single dd that stops on the
+  # post-reply EOF (and drops typeahead).
   if [ -n "${ZSH_VERSION-}" ]; then
     reply=
     while read -r -k 1 -t 0.2 c; do
       reply="$reply$c"
-      case "$c" in "$bel") break ;; esac       # BEL-terminated reply
-      case "$reply" in *"$esc"\\) break ;; esac # ST (ESC \) terminated reply
+      case "$reply" in
+        *"${esc}]11;"*"$bel" | *"${esc}]11;"*"${esc}\\") break ;;
+      esac
     done < /dev/tty
+    typed="${reply%%"${esc}]11;"*}"
+    reply="${reply#"$typed"}"
+    _TERM_BG_TYPEAHEAD="${_TERM_BG_TYPEAHEAD-}$typed"
   else
     reply="$(dd if=/dev/tty bs=1 count=64 2> /dev/null)"
   fi
@@ -89,20 +96,20 @@ detect_term_bg() {
   # Rec. 709 perceived brightness, 0..255.
   lightness="$(((2126 * r + 7152 * g + 722 * b) / 10000))"
   if [ "$lightness" -ge 128 ]; then
-    printf 'light\n'
+    REPLY=light
   else
-    printf 'dark\n'
+    REPLY=dark
   fi
 }
 
 detect_term_bg__main() {
   case "${1-}" in
     -q | --quiet)
-      detect_term_bg
+      detect_term_bg && printf '%s\n' "$REPLY"
       ;;
     '')
-      verdict="$(detect_term_bg)" || return $?
-      printf 'Terminal background looks %s.\n' "$verdict"
+      detect_term_bg || return $?
+      printf 'Terminal background looks %s.\n' "$REPLY"
       ;;
     *)
       printf 'usage: %s [-q|--quiet]\n' "${0##*/}" >&2

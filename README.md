@@ -43,7 +43,7 @@ systemd user units. Shell startup is POSIX-portable across both.
 | Tool | Config |
 |---|---|
 | **Neovim** | Lua · lazy.nvim · full LSP (mason) · blink.cmp · Treesitter · Avante + mcp-client + Copilot · which-key |
-| **Zsh** | Oh-My-Zsh (personal fork) · fzf bindings · zoxide · fast-syntax-highlighting · autosuggestions |
+| **Zsh** | Oh-My-Zsh (personal fork) · fzf bindings · zoxide · zsh-patina · autosuggestions |
 | **Tmux** | Vi keys · true-color · system clipboard · auto light/dark statusline · socket-activated user service |
 | **Starship** | Two-line prompt · git status · language versions · AWS context |
 | **Terminals** | Alacritty · Ghostty · Kitty · Foot — coordinated, auto light/dark |

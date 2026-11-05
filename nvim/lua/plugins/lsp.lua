@@ -51,13 +51,6 @@ return {
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = buf }), { bufnr = buf })
             end, "Toggle inlay hints")
           end
-
-          if client and client:supports_method("textDocument/documentSymbol") then
-            local ok, navic = pcall(require, "nvim-navic")
-            if ok then
-              navic.attach(client, buf)
-            end
-          end
         end,
       })
     end,
@@ -66,7 +59,7 @@ return {
     "SmiteshP/nvim-navic",
     lazy = true,
     opts = {
-      lsp = { auto_attach = true },
+      lsp = { auto_attach = true, preference = { "ty", "basedpyright" } },
       highlight = true,
       separator = " > ",
       depth_limit = 5,

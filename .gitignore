@@ -152,6 +152,7 @@
 !/zlogin
 !/zlogout
 !/zprofile
+!/zsh-patina/config.toml
 !/zshenv
 !/zshrc
 
