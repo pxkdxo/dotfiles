@@ -60,8 +60,8 @@ _starship_palette() {
   command -v starship > /dev/null || return
   local name cache theme palette line
   case ${TERM_BACKGROUND:-dark} in
-    light) name=catppuccin_latte ;;
-    *)     name=catppuccin_mocha ;;
+    light) name=cyberdream_light ;;
+    *)     name=cyberdream ;;
   esac
   theme="$_dotfiles_etc/starship/starship.toml"
   palette="$_dotfiles_etc/starship/palettes/$name.palette.toml"
@@ -273,6 +273,7 @@ plugins=(
   clipboard-keybindings
   zsh-interactive-cd
   zsh-autosuggestions
+  # zsh-patina
   # zsh-autocomplete
   # zstyles
 )

@@ -24,6 +24,7 @@
 !/alacritty/*.yml
 !/alacritty/colorschemes
 !/alacritty/themes
+!/alacritty/themes/*
 
 !/bash_completion
 !/bash_logout
@@ -33,7 +34,9 @@
 !/bashrc.d/**
 
 !/bat/config
-!/bat/themes/**
+!/bat/colorschemes
+!/bat/themes
+!/bat/themes/*
 
 !/colors-*.py
 !/colorschemes-*.py
@@ -52,6 +55,7 @@
 !/ghostty/*.theme
 !/ghostty/colorschemes
 !/ghostty/themes
+!/ghostty/themes/*
 
 !/fzf/fzfrc
 !/fzf/*.bash
@@ -69,9 +73,13 @@
 !/inputrc
 !/inputrc.d/**
 
+!/iterm2/colorschemes
+!/iterm2/DynamicProfiles/*.json
+
 !/kitty/*.conf
 !/kitty/colorschemes
 !/kitty/themes
+!/kitty/themes/*
 
 !/launchd/agents/*.plist
 !/launchd/*.sh
@@ -138,6 +146,9 @@
 !/vim/colorschemes
 !/vim/vimrc
 
+!/vivid/themes.toml
+!/vivid/colorschemes
+!/vivid/themes
 !/vivid/themes/*
 
 !/xinitrc
@@ -152,9 +163,13 @@
 !/zlogin
 !/zlogout
 !/zprofile
-!/zsh-patina/config.toml
 !/zshenv
 !/zshrc
+
+!/zsh-patina/config.toml
+!/zsh-patina/colorschemes
+!/zsh-patina/themes
+!/zsh-patina/themes/*
 
 !/yazi/flavors/*/**
 !/yazi/plugins/*/**

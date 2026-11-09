@@ -5,14 +5,14 @@
 __extract_palette_short_doc() {
   cat
   return "$((${1-0}))"
-} << EOF
+} <<EOF
 Find and scan different versions of a colorscheme to make a palette.
 EOF
 
 __extract_palette_usage() {
   cat
   return "$((${1-0}))"
-} << EOF
+} <<EOF
 usage: ${0##*/} COLORSCHEME_NAME [COLORSCHEME_NAME ...]
 EOF
 
@@ -39,22 +39,22 @@ extract_palette() {
   local colors=""
   for colors in "$@"; do
     case "${colors}" in
-      */*)
-        directory="${colors%/*}"
-        colors="${colors##*/}"
-        ;;
-      *)
-        directory="${XDG_CONFIG_HOME:-${HOME}/.config}/colorschemes"
-        ;;
+    */*)
+      directory="${colors%/*}"
+      colors="${colors##*/}"
+      ;;
+    *)
+      directory="${XDG_CONFIG_HOME:-${HOME}/.config}/colorschemes"
+      ;;
     esac
     search_re="${directory}/.*/${colors//[ _-]/[ _-]}\([.][a-z0-9_-][a-z0-9_-]*\)*"
     if result=$(
       find -L "${directory}"/ -mindepth 2 -type f -iregex "${search_re}" -exec \
-        grep -E -I --ignore-case --no-filename --only-matching "${filter_re}" '{}' + \
-        | LC_ALL=C tr -- ':[:upper:][:blank:]-' '=[:lower:]_' \
-        | sed -E -n "s/${sub_pattern}/${sub_replace}/p" \
-        | sed -E -e 's/^fg/foreground/' -e 's/^bg/background/' -e 's/_foreground/_fg/' -e 's/_background/_bg/' \
-        | sort -u --field-separator '=' --key '1,1b'
+        grep -E -I --ignore-case --no-filename --only-matching "${filter_re}" '{}' + |
+        LC_ALL=C tr -- ':[:upper:][:blank:]-' '=[:lower:]_' |
+        sed -E -n "s/${sub_pattern}/${sub_replace}/p" |
+        sed -E -e 's/^fg/foreground/' -e 's/^bg/background/' -e 's/_foreground/_fg/' -e 's/_background/_bg/' |
+        sort -u --field-separator '=' --key '1,1b'
     ) && test -n "${result}"; then
       if test "${put_nl}" -eq 0; then
         put_nl=1
@@ -62,7 +62,7 @@ extract_palette() {
         echo
       fi
       colors="${colors//[[:blank:][:cntrl:][:punct:]]/_}"
-      printf '%b>>>%b %b%s%b\n' '\e[0;1m' '\e[0m' '\e[1;4m' "${colors}.palette.toml" '\e[0m'
+      printf '%b===%b %b%s%b %b===%b\n' '\e[0;1m' '\e[0m' '\e[1;4m' "${colors}.palette.toml" '\e[0m' '\e[0;1m' '\e[0m'
       printf '[palettes."%s"]\n%s\n' "${colors}" "${result}" | tee "${colors}.palette.toml"
     fi
   done

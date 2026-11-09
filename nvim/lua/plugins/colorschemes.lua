@@ -40,7 +40,7 @@ return {
       -- Enable transparent background
       transparent = true,
       -- Reduce the overall saturation of colours for a more muted look
-      saturation = 0.94, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
+      -- saturation = 0.94, -- accepts a value between 0 and 1. 0 will be fully desaturated (greyscale) and 1 will be the full color (default)
       -- Enable italics comments
       italic_comments = true,
       -- Replace all fillchars with ' ' for the ultimate clean look

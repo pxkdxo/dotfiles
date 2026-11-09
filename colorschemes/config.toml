@@ -32,7 +32,13 @@ directory = 'collections'
 [[collections.spec]]
 name = 'iTerm2-Color-Schemes'
 source = 'iTerm2-Color-Schemes'
-filter = { exclude = ['backgrounds', 'gh-pages', 'screenshots', 'tools', '*.md'] }
+filter = { exclude = ['backgrounds', 'gh-pages', 'schemes', 'screenshots', 'tools', '*.md'] }
+
+[[collections.spec]]
+name = 'iTerm2-Color-Schemes:iterm2'
+source = 'iTerm2-Color-Schemes'
+app = 'iterm2'
+filter = { paths = ['schemes'], pattern = '*.itermcolors', filetype = 'f' }
 
 [[collections.spec]]
 name = 'cyberdream.nvim:extras'
@@ -42,12 +48,30 @@ filter = { paths = ['extras'], exclude = ['*.md'] }
 [[collections.spec]]
 name = 'squirrelsong:themes'
 source = 'squirrelsong'
-filter = { paths = ['themes'], exclude = ['*.md'] }
+filter = { paths = ['themes'], exclude = ['*.md', '*.template.*', 'colors'] }
+
+[[collections.spec]]
+name = 'squirrelsong:vim'
+source = 'squirrelsong'
+app = 'vim'
+filter = { paths = ['themes/Vim/colors'], filetype = 'f' }
 
 [[collections.spec]]
 name = 'tokyonight.nvim:extras'
 source = 'tokyonight.nvim'
-filter = { paths = ['extras'], filetype = ["d", "f"], exclude = ['*.md'] }
+filter = { paths = ['extras'], exclude = ['*.md', 'colors', 'iterm'] }
+
+[[collections.spec]]
+name = 'tokyonight.nvim:iterm2'
+source = 'tokyonight.nvim'
+app = 'iterm2'
+filter = { paths = ['extras/iterm'], pattern = '*.itermcolors', filetype = 'f' }
+
+[[collections.spec]]
+name = 'tokyonight.nvim:vim'
+source = 'tokyonight.nvim'
+app = 'vim'
+filter = { paths = ['extras/vim/colors'], filetype = 'f' }
 
 [[collections.spec]]
 name = "vivid-themes"
