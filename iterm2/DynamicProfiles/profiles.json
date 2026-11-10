@@ -701,7 +701,7 @@
               "knobs": {
                 "base: compression resistance": 1,
                 "base: priority": 4.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": 0,
                 "shared font": "",
                 "shared text color": {
@@ -726,7 +726,7 @@
               "knobs": {
                 "base: compression resistance": 1,
                 "base: priority": 5.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": 0,
                 "path": "path",
                 "shared text color": {
@@ -859,7 +859,7 @@
               "knobs": {
                 "base: compression resistance": 1,
                 "base: priority": 4.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": "0",
                 "shared font": "",
                 "shared text color": {
@@ -884,7 +884,7 @@
               "knobs": {
                 "base: compression resistance": 1.0,
                 "base: priority": 5.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": "0",
                 "shared font": "",
                 "shared text color": {
@@ -908,7 +908,7 @@
             "configuration": {
               "knobs": {
                 "base: priority": 6.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": "0",
                 "shared text color": {
                   "Alpha Component": 1.0,
@@ -2578,7 +2578,7 @@
               "knobs": {
                 "base: compression resistance": 1.0,
                 "base: priority": 4.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": 0,
                 "shared font": "",
                 "shared text color": {
@@ -2626,7 +2626,7 @@
               "knobs": {
                 "base: compression resistance": 1,
                 "base: priority": 5.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": 0,
                 "path": "path",
                 "shared text color": {
@@ -2738,7 +2738,7 @@
               "knobs": {
                 "base: compression resistance": 1,
                 "base: priority": 4.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": "0",
                 "shared font": "",
                 "shared text color": {
@@ -2763,7 +2763,7 @@
               "knobs": {
                 "base: compression resistance": 1,
                 "base: priority": 5.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": "0",
                 "shared font": "",
                 "shared text color": {
@@ -2787,7 +2787,7 @@
             "configuration": {
               "knobs": {
                 "base: priority": 6.0,
-                "maxwidth": Infinity,
+                "maxwidth": 1000000000,
                 "minwidth": "0",
                 "shared text color": {
                   "Alpha Component": 1.0,

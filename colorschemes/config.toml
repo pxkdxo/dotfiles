@@ -1,5 +1,5 @@
-[sources]
-directory = 'sources'
+# Sources and collections for scripts/colorschemes.py. Collections are listed in
+# precedence order: when two provide the same <app>/<colorscheme>, the first wins.
 
 [[sources.spec]]
 name = 'iTerm2-Color-Schemes'
@@ -19,15 +19,24 @@ source = { url = 'https://github.com/sapegin/squirrelsong.git', ref = 'master' }
 [[sources.spec]]
 name = 'tokyonight.nvim'
 type = 'git'
-source = { url = "https://github.com/folke/tokyonight.nvim.git", ref = 'main' }
+source = { url = 'https://github.com/folke/tokyonight.nvim.git', ref = 'main' }
+
+# Themes written by scripts/generate-app-themes.py (and any added by hand).
 
 [[sources.spec]]
 name = 'vivid-themes'
 type = 'dir'
 source = { path = '${XDG_CONFIG_HOME}/vivid/themes' }
 
-[collections]
-directory = 'collections'
+[[sources.spec]]
+name = 'bat-themes'
+type = 'dir'
+source = { path = '${XDG_CONFIG_HOME}/bat/themes' }
+
+[[sources.spec]]
+name = 'starship-palettes'
+type = 'dir'
+source = { path = '${XDG_CONFIG_HOME}/starship/palettes' }
 
 [[collections.spec]]
 name = 'iTerm2-Color-Schemes'
@@ -48,7 +57,7 @@ filter = { paths = ['extras'], exclude = ['*.md'] }
 [[collections.spec]]
 name = 'squirrelsong:themes'
 source = 'squirrelsong'
-filter = { paths = ['themes'], exclude = ['*.md', '*.template.*', 'colors'] }
+filter = { paths = ['themes'], exclude = ['*.md', '*.template.*', 'Vim'] }
 
 [[collections.spec]]
 name = 'squirrelsong:vim'
@@ -59,7 +68,7 @@ filter = { paths = ['themes/Vim/colors'], filetype = 'f' }
 [[collections.spec]]
 name = 'tokyonight.nvim:extras'
 source = 'tokyonight.nvim'
-filter = { paths = ['extras'], exclude = ['*.md', 'colors', 'iterm'] }
+filter = { paths = ['extras'], exclude = ['*.md', 'iterm', 'vim'] }
 
 [[collections.spec]]
 name = 'tokyonight.nvim:iterm2'
@@ -74,7 +83,19 @@ app = 'vim'
 filter = { paths = ['extras/vim/colors'], filetype = 'f' }
 
 [[collections.spec]]
-name = "vivid-themes"
-source = "vivid-themes"
-app = "vivid"
-filter = { filetype = "f", exclude = ["*.md"] }
+name = 'vivid-themes'
+source = 'vivid-themes'
+app = 'vivid'
+filter = { filetype = 'f' }
+
+[[collections.spec]]
+name = 'bat-themes'
+source = 'bat-themes'
+app = 'bat'
+filter = { filetype = 'f' }
+
+[[collections.spec]]
+name = 'starship-palettes'
+source = 'starship-palettes'
+app = 'starship'
+filter = { filetype = 'f' }

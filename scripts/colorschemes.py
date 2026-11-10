@@ -440,18 +440,17 @@ class Collection:
     app: str | None = None
     filter: Filter = field(default_factory=Filter)
 
-    def matched_paths(self, sources_dir: Path) -> dict[str, Path]:
-        """Map basename to source path for each entry the filter selects,
+    def matched_paths(self, root: Path) -> dict[str, Path]:
+        """Map basename to path for each entry under `root` the filter selects,
         keeping the first on a basename collision.
         """
-        source_path = sources_dir / self.source
-        if not source_path.is_dir():
+        if not root.is_dir():
             raise CommandError(
                 f"source '{self.source}' of collection '{self.name}' not found at "
-                + f"{source_path}; run 'sync' first"
+                + f"{root}; run 'sync' first"
             )
         matched: dict[str, Path] = {}
-        for path in self.filter.match(source_path):
+        for path in self.filter.match(root):
             kept = matched.setdefault(path.name, path)
             if kept != path:
                 warn(
@@ -461,18 +460,22 @@ class Collection:
         return matched
 
     def link(
-        self, sources_dir: Path, collections_dir: Path, linker: Linker
+        self, root: Path, link_root: Path, collections_dir: Path, linker: Linker
     ) -> list[Colorscheme]:
-        """Link this collection to its source and return the colorschemes it
+        """Link this collection to the entries it selects under `root`, which
+        the links reach through `link_root`, and return the colorschemes it
         provides.
         """
-        if linker.dry_run and not (sources_dir / self.source).is_dir():
+        if linker.dry_run and not root.is_dir():
             print(f"  would link '{self.name}' once source '{self.source}' is fetched")
             return []
-        matched = self.matched_paths(sources_dir)
+        matched = self.matched_paths(root)
         collection_dir = collections_dir / self.name
         link_dir = collection_dir / self.app if self.app else collection_dir
-        linked = sum(linker.symlink(link_dir / n, p) for n, p in matched.items())
+        linked = sum(
+            linker.symlink(link_dir / name, link_root / path.relative_to(root))
+            for name, path in matched.items()
+        )
         removed = linker.remove_stale_links(link_dir, matched.__contains__)
         if self.app:
             removed += linker.remove_stale_links(collection_dir, lambda _: False)
@@ -611,6 +614,20 @@ class Config:
             collections=collections,
         )
 
+    def source_root(self, name: str, linker: Linker) -> Path:
+        """Directory holding source `name`'s files. A dry run reads a dir
+        source in place until a sync has linked it into `sources_dir`.
+        """
+        fetched = self.sources_dir / name
+        if fetched.exists() or not linker.dry_run:
+            return fetched
+        source = next(s for s in self.sources if s.name == name)
+        return (
+            expand_path(source.path).resolve()
+            if isinstance(source, DirSource)
+            else fetched
+        )
+
 
 def _parse_source(data: dict[str, Any]) -> Source:
     kind = data["type"]
@@ -643,7 +660,12 @@ def link(config: Config, linker: Linker) -> None:
     colorschemes = [
         cs
         for collection in config.collections
-        for cs in collection.link(config.sources_dir, config.collections_dir, linker)
+        for cs in collection.link(
+            config.source_root(collection.source, linker),
+            config.sources_dir / collection.source,
+            config.collections_dir,
+            linker,
+        )
     ]
     names = {c.name for c in config.collections}
     if config.collections_dir.is_dir():
