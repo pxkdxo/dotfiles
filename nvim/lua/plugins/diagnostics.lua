@@ -86,19 +86,14 @@ return {
         markdown = { "markdownlint" },
         python = { "ruff" },
         sh = { "shellcheck" },
-        terraform = { "tflint" },
         typescript = { "eslint_d" },
         typescriptreact = { "eslint_d" },
         yaml = { "yamllint" },
         zsh = { "zsh" },
       }
-      -- tflint and golangcilint re-scan the whole module/package on every invocation
-      -- (multi-second, CPU-bound), unlike the other linters here which are fast,
-      -- single-file tools. Running them on InsertLeave respawns that scan every time
-      -- you leave insert mode, which is what makes editing large codebases feel slow.
-      -- Keep them on save/read only; other filetypes still get the responsive
-      -- InsertLeave lint.
-      local slow_linters = { tflint = true, golangcilint = true }
+      -- Terraform is linted by the tflint language server (via mason-lspconfig).
+      -- Whole-package linters run on save/read only, not on InsertLeave.
+      local slow_linters = { golangcilint = true }
 
       local function fast_linters_for(ft)
         local names = {}

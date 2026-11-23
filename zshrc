@@ -50,10 +50,10 @@ typeset -g _dotfiles_etc="${${(%):-%x}:A:h}"
 # settings from it. detect-term-bg.sh is sourced (not executed) so it runs
 # in-process; term-bg-sync re-runs detection on demand (bind it to a key or
 # call it after toggling your terminal theme). Falls back to THEME_VARIANT.
-[[ -r $_dotfiles_etc/scripts/detect-term-bg.sh ]] && source "$_dotfiles_etc/scripts/detect-term-bg.sh"
+[[ -r ${_dotfiles_etc}/scripts/detect-term-bg.sh ]] && source "${_dotfiles_etc}/scripts/detect-term-bg.sh"
 
 # Assemble starship's active theme + the background-appropriate palette into a
-# cache file and point $STARSHIP_CONFIG at it. starship re-reads it each prompt,
+# cache file and point ${STARSHIP_CONFIG} at it. starship re-reads it each prompt,
 # so a resync makes the prompt follow light/dark without restarting the shell.
 _starship_palette() {
   emulate -L zsh
@@ -61,33 +61,33 @@ _starship_palette() {
   local name cache theme palette line
   case ${TERM_BACKGROUND:-dark} in
     light) name=cyberdream_light ;;
-    *)     name=cyberdream ;;
+    *)     name=xcode_dark_hc ;;
   esac
-  theme="$_dotfiles_etc/starship/starship.toml"
-  palette="$_dotfiles_etc/starship/palettes/$name.palette.toml"
-  [[ -r $theme && -r $palette ]] || return
-  cache="${XDG_CACHE_HOME:-$HOME/.cache}/starship.toml"
+  theme="${_dotfiles_etc}/starship/starship.toml"
+  palette="${_dotfiles_etc}/starship/palettes/${name}.palette.toml"
+  [[ -r ${theme} && -r ${palette} ]] || return
+  cache="${XDG_CACHE_HOME:-${HOME}/.cache}/starship.toml"
   # Cache hit: first line already names this palette and the file is newer
   # than both sources -- skip the forks and the rewrite.
-  if [[ -r $cache && $cache -nt $theme && $cache -nt $palette ]] \
-    && IFS= read -r line < "$cache" 2>/dev/null \
-    && [[ $line == "palette = \"$name\"" ]]; then
-    export STARSHIP_CONFIG="$cache"
+  if [[ -r ${cache} && ${cache} -nt ${theme} && ${cache} -nt ${palette} ]] \
+    && IFS= read -r line < "${cache}" 2>/dev/null \
+    && [[ ${line} == "palette = \"${name}\"" ]]; then
+    export STARSHIP_CONFIG="${cache}"
     return
   fi
   mkdir -p "${cache:h}" 2>/dev/null
   {
-    print -r -- "palette = \"$name\""
-    grep -vE '^palette[[:space:]]*=' "$theme"
-    cat "$palette"
-  } > "$cache" 2>/dev/null && export STARSHIP_CONFIG="$cache"
+    print -r -- "palette = \"${name}\""
+    grep -vE '^palette[[:space:]]*=' "${theme}"
+    cat "${palette}"
+  } > "${cache}" 2>/dev/null && export STARSHIP_CONFIG="${cache}"
 }
 
 # Re-source the tmux statusline theme for the current background. Server-global,
 # so the last client to resync wins if two are attached in different polarities.
 _tmux_theme() {
   emulate -L zsh
-  [[ -n $TMUX ]] || return
+  [[ -n ${TMUX} ]] || return
   tmux set -g @bg "${TERM_BACKGROUND:-dark}" 2>/dev/null
   tmux source-file -F "#{@theme_dir}/tmux-theme.conf" 2>/dev/null
 }
@@ -98,7 +98,7 @@ _tmux_theme() {
 _fzf_sync_colors() {
   emulate -L zsh
   local want=${TERM_BACKGROUND:-dark} other arr
-  [[ $want == light ]] && other=dark || other=light
+  [[ ${want} == light ]] && other=dark || other=light
   for arr in fzf_default_opts fzf_completion_opts fzf_alt_c_opts \
     fzf_ctrl_t_opts fzf_ctrl_r_opts; do
     (( ${(P)+arr} )) || continue
@@ -116,7 +116,7 @@ _term_bg_apply() {
   export TERM_BACKGROUND="$1"
   case $1 in
     light) export VIVID_THEME=cyberdream-light ;;
-    *)     export VIVID_THEME=cyberdream ;;
+    *)     export VIVID_THEME=xcode-dark-hc ;;
   esac
   _starship_palette
   _tmux_theme
@@ -126,7 +126,7 @@ _term_bg_apply() {
 term-bg-sync() {
   emulate -L zsh
   local bg
-  (( $+functions[detect_term_bg] )) && detect_term_bg && bg=$REPLY
+  (( $+functions[detect_term_bg] )) && detect_term_bg && bg=${REPLY}
   if [[ -z ${bg} ]]; then
     _theme_variant_guess
     bg="${THEME_VARIANT:-dark}"
@@ -137,23 +137,23 @@ term-bg-sync() {
 # Replay keys typed while detect_term_bg waited on the terminal.
 typeset -g _TERM_BG_TYPEAHEAD=
 _term_bg_replay() {
-  [[ -n $_TERM_BG_TYPEAHEAD ]] || return
-  local keys=$_TERM_BG_TYPEAHEAD
+  [[ -n ${_TERM_BG_TYPEAHEAD} ]] || return
+  local keys=${_TERM_BG_TYPEAHEAD}
   _TERM_BG_TYPEAHEAD=
-  zle -U -- "$keys"
+  zle -U -- "${keys}"
 }
 
 # Follow set-term-theme live: it writes the active variant to this file; check
 # it cheaply each prompt (zsh reads $(<file) without a fork) and re-apply only
 # when it *changes* — so a manual terminal tweak isn't clobbered by a stale file.
-_term_bg_file="${XDG_CACHE_HOME:-$HOME/.cache}/term-theme.txt"
+_term_bg_file="${XDG_CACHE_HOME:-${HOME}/.cache}/term-theme.txt"
 _term_bg_watch() {
   emulate -L zsh
   local want
-  [[ -r $_term_bg_file ]] && want="$(<$_term_bg_file)" || return
-  [[ $want == $_term_bg_seen ]] && return
-  _term_bg_seen=$want
-  [[ -n $want ]] && _term_bg_apply "$want"
+  [[ -r ${_term_bg_file} ]] && want="$(<${_term_bg_file})" || return
+  [[ ${want} == ${_term_bg_seen} ]] && return
+  _term_bg_seen=${want}
+  [[ -n ${want} ]] && _term_bg_apply "${want}"
 }
 
 # Establish this shell's background, and seed the watcher so the first prompt
@@ -163,13 +163,14 @@ _term_bg_watch() {
 typeset -g _term_bg_seen=
 if [[ -v TERM_BACKGROUND ]]; then
   _tmux_theme
-  _term_bg_seen=$TERM_BACKGROUND
+  _term_bg_seen=${TERM_BACKGROUND}
 else
   term-bg-sync
-  [[ -r $_term_bg_file ]] && _term_bg_seen="$(<$_term_bg_file)"
+  [[ -r ${_term_bg_file} ]] && _term_bg_seen="$(<${_term_bg_file})"
 fi
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _term_bg_watch
+
 # Zoxide (use 'z' / 'zi')
 #
 if command -v zoxide > /dev/null; then
@@ -182,8 +183,8 @@ fi
 #
 export FZF_COMPLETION_TRIGGER='^s'
 
-if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh; then
-  source "${XDG_CONFIG_HOME:-${HOME}/.config}"/fzf/fzf.zsh
+if test -f "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.zsh"; then
+  source "${XDG_CONFIG_HOME:-${HOME}/.config}/fzf/fzf.zsh"
 elif command -v fzf > /dev/null; then
   eval "$(fzf --zsh 2> /dev/null)"
 fi
@@ -196,20 +197,6 @@ ZSH_THEME=""
 DISABLE_AUTO_UPDATE="true"
 # compinit -u: skip the per-start compaudit directory check.
 ZSH_DISABLE_COMPFIX="true"
-
-# VIVID_THEME is selected dynamically near the top of this file from the
-# terminal's background color. Uncomment one of these to pin it instead.
-# export VIVID_THEME='embark'
-# export VIVID_THEME='tokyonight-night'
-# export VIVID_THEME='carbonfox'
-# export VIVID_THEME='cyberdyne'
-# export VIVID_THEME='cyberpunk'
-# export VIVID_THEME='cyberdream'
-# export VIVID_THEME='cyberdream-light'
-# export VIVID_THEME='kanso-pearl'
-# export VIVID_THEME='modus-vivendi'
-# export VIVID_THEME='poimandres'
-# export VIVID_THEME='xcode-dark-hc'
 
 # Path to the ohmyzsh installation.
 #
@@ -279,14 +266,14 @@ plugins=(
 )
 
 # Login and non-login shells get separate completion-dump caches: their
-# $fpath legitimately differs (login mode also runs profile.d), so a
+# ${fpath} legitimately differs (login mode also runs profile.d), so a
 # shared cache invalidates itself whenever the shell type alternates -- a
 # full ~900ms compinit rebuild each time. Set before oh-my-zsh loads to
 # pre-empt its own shared default.
 if [[ -o login ]]; then
-  ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${HOST}-${ZSH_VERSION}-login"
+  ZSH_COMPDUMP="${ZDOTDIR:-${HOME}}/.zcompdump-${HOST}-${ZSH_VERSION}-login"
 else
-  ZSH_COMPDUMP="${ZDOTDIR:-$HOME}/.zcompdump-${HOST}-${ZSH_VERSION}-nonlogin"
+  ZSH_COMPDUMP="${ZDOTDIR:-${HOME}}/.zcompdump-${HOST}-${ZSH_VERSION}"
 fi
 
 # Load oh-my-zsh
@@ -320,9 +307,9 @@ if test -v ZSH; then
 
   # zsh-autocomplete: make Tab/ShiftTab cycle completions
   # bindkey              '^I'         menu-complete
-  # bindkey "$terminfo[kcbt]" reverse-menu-complete
+  # bindkey "${terminfo[kcbt]}" reverse-menu-complete
   # bindkey -M menuselect              '^I'         menu-complete
-  # bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
+  # bindkey -M menuselect "${terminfo[kcbt]}" reverse-menu-complete
 
 fi
 
@@ -451,10 +438,10 @@ fi
 
 # Syntax highlighting (must come after all other widget-wrapping plugins)
 #
-if (( $+commands[zsh-patina] )); then
+if (( ${+commands[zsh-patina]} )); then
   eval "$(zsh-patina activate)"
 
-  # autonamedirs names any variable holding $PWD, so %~ in the title would print
+  # autonamedirs names any variable holding ${PWD}, so %~ in the title would print
   # ~REPLY or ~_ZSH_PATINA_ENCODED_PWD: un-name both before the title is set.
   _unname_patina_pwd() { unhash -d REPLY _ZSH_PATINA_ENCODED_PWD 2> /dev/null; return 0 }
   precmd_functions=(_unname_patina_pwd "${(@)precmd_functions:#_unname_patina_pwd}")
